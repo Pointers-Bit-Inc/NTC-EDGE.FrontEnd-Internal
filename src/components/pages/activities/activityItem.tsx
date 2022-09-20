@@ -30,7 +30,6 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {isTablet} from "react-native-device-info";
-import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import {RootStateOrAny, useSelector} from "react-redux";
 
 const styles = StyleSheet.create({

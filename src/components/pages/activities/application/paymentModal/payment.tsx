@@ -3,7 +3,6 @@ import {
     ActivityIndicator,
     FlatList,
     Image,
-    KeyboardAvoidingView,
     Modal,
     Platform,
     SafeAreaView,
@@ -19,7 +18,7 @@ import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {capitalize} from "@pages/activities/script";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {ACCOUNTANT, APPROVED, CASHIER} from "../../../../../reducers/activity/initialstate";
+import {ACCOUNTANT, CASHIER} from "../../../../../reducers/activity/initialstate";
 import AnimatedImage from 'react-native-animated-image-viewer';
 import {fontValue} from "@pages/activities/fontValue";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
@@ -28,14 +27,12 @@ import {isMobile} from "@pages/activities/isMobile";
 import PdfViewr from "@pages/activities/application/pdf";
 import FileIcon from "@assets/svg/file";
 import Card from "@pages/activities/application/card";
-import useApplicantForm from "src/hooks/useApplicantForm";
 import useSafeState from "../../../../../hooks/useSafeState";
 import CloseIcon from "@assets/svg/close";
 import {isNumber} from "../../../../../utils/ntc";
 import {infoColor} from "@styles/color";
 import {PlusIcon} from "@atoms/icon";
 import LoadingModal from "@pages/activities/loading/loadingModal";
-import {setEditModalVisible} from "../../../../../reducers/activity/actions";
 import {setUserProfileForm} from "../../../../../reducers/application/actions";
 import KeyboardShift from "@molecules/keyboard";
 
@@ -371,13 +368,13 @@ const Payment = (_props: any) => {
 
     }
 
-   /* useEffect(() => {
-        if (Platform.OS == "web") {
-            props.setPaymentIndex(props.paymentIndex)
-            dispatch(setEditModalVisible(true))
-        }
+    /* useEffect(() => {
+         if (Platform.OS == "web") {
+             props.setPaymentIndex(props.paymentIndex)
+             dispatch(setEditModalVisible(true))
+         }
 
-    }, [])*/
+     }, [])*/
     const applicantForm = (stateName, value) => {
         let newForm = {...userProfileForm}
         newForm[stateName] = value
@@ -399,7 +396,7 @@ const Payment = (_props: any) => {
         for (const [key, value] of Object.entries(userOriginalProfileForm)) {
 
             if (userOriginalProfileForm?.[key] != userProfileForm?.[key]) {
-                console.log(key, userOriginalProfileForm?.[key] , userProfileForm?.[key])
+                console.log(key, userOriginalProfileForm?.[key], userProfileForm?.[key])
                 hasChanges = true
 
                 props.hasChanges(hasChanges)
@@ -417,268 +414,272 @@ const Payment = (_props: any) => {
             {() => (
 
 
-            <ScrollView
+                <ScrollView
 
-            >
+                >
 
-                <View style={styles.containers}>
-                    <View onLayout={onLayoutComponent} style={styles.statement}>
+                    <View style={styles.containers}>
+                        <View onLayout={onLayoutComponent} style={styles.statement}>
 
-                        <View style={{alignItems: 'center', backgroundColor: "#E0E0E0"}}>
-                            <Text
-                                style={{paddingVertical: 6, fontSize: fontValue(14), fontFamily: Bold}}
-                                color="#37405B"
-
-                            >
-                                {"Statement of Account".toUpperCase()}
-                            </Text>
-                        </View>
-                        <View style={{marginTop: 20}}>
-                            <View
-                                style={{
-                                    width: "100%",
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
+                            <View style={{alignItems: 'center', backgroundColor: "#E0E0E0"}}>
                                 <Text
-                                    style={{fontSize: fontValue(14), fontFamily: Bold}}
+                                    style={{paddingVertical: 6, fontSize: fontValue(14), fontFamily: Bold}}
                                     color="#37405B"
+
                                 >
-                                    Particular
-                                </Text>
-                                <Text
-                                    style={{fontSize: fontValue(14), fontFamily: Bold}}
-                                    color="#37405B"
-                                >
-                                    Amount
+                                    {"Statement of Account".toUpperCase()}
                                 </Text>
                             </View>
-                            {
-                                soa.length ? soa?.map((s, index) => {
-                                        return <View key={index} style={{
-                                            borderBottomColor: "#E5E5E5",
-                                            borderBottomWidth: 2,
-                                            width: "100%"
-                                        }}>
-
-                                            <View
-                                                key={s._id}
-                                                style={paymentStyles.soaItem}
-                                            >
-
-                                                <View style={{flex: 1}}>
-
-                                                    <Card updateApplication={updateApplication}
-                                                          updateForm={(stateName, value) => {
-                                                              if (!!soa.filter(s => {
-                                                                  return s.item == value
-                                                              }).length) {
-                                                                  s.error = true
-
-                                                              } else {
-
-                                                                  s.error = false
-                                                              }
-                                                              applicantForm(stateName, value)
-                                                          }}
-                                                          error={s.error}
-                                                          stateName={"soa." + s.id + ".item"}
-                                                          edit={props.edit}
-                                                          display={userProfileForm?.["soa." + s.id + ".item"] || "Item"}
-                                                          label={"Item:"}
-                                                          style={{
-                                                              paddingVertical: 14,
-                                                              color: "#37405B",
-                                                              fontSize: fontValue(12)
-                                                          }}
-                                                          applicant={userProfileForm?.["soa." + s.id + ".item"]}/>
-                                                </View>
-                                                <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
-                                                    <Card updateApplication={updateApplication}
-
-                                                          keyboardType={'decimal-pad'}
-                                                          updateForm={(stateName, value) => {
-                                                              updateSoa('amount', parseFloat(value), s.id)
-                                                              applicantForm('totalFee', getTotal(soa))
-                                                              applicantForm(stateName, value)
-                                                          }}
-                                                          touchableStyle={{alignSelf: "flex-end"}}
-                                                          stateName={"soa." + s.id + ".amount"}
-                                                          edit={props.edit}
-                                                          display={userProfileForm?.["soa." + s.id + ".amount"] || "0"}
-                                                          label={"Amount:"}
-                                                          style={{
-                                                              paddingVertical: 14,
-                                                              color: "#37405B",
-                                                              fontSize: fontValue(14)
-                                                          }}
-                                                          applicant={userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + userProfileForm?.["soa." + s.id + ".amount"] : 0}/>
-                                                </View>
-                                                {props.edit && <View style={{}}>
-                                                    <TouchableOpacity onPress={() => {
-                                                        console.log(s.id, index)
-                                                        closeItem(s.id, index)
-                                                    }}
-                                                                      style={{paddingHorizontal: 10}}>
-                                                        <CloseIcon/>
-                                                    </TouchableOpacity>
-                                                </View>}
-
-                                            </View>
-
-
-                                        </View>
-                                    }
-                                ) : <View style={{alignItems: 'center', justifyContent: 'center', paddingVertical: 10}}><Text
-                                    style={{fontSize: fontValue(16), fontFamily: Regular500}}>No S.O.A</Text></View>
-                            }
-                            {props.edit && <TouchableOpacity onPress={addSoa}><View
-                                style={{flexDirection: 'row', alignItems: "center", paddingTop: fontValue(14)}}>
-                                <View style={{marginRight: fontValue(10)}}>
-                                    <PlusIcon size={fontValue(12)} color={infoColor}/>
-                                </View>
-
-                                <Text style={{fontSize: fontValue(15), fontFamily: Regular, color: infoColor}}>Add
-                                    Item</Text>
-                            </View></TouchableOpacity>}
-                            <View style={{paddingTop: 15}}>
+                            <View style={{marginTop: 20}}>
                                 <View
                                     style={{
-                                        borderTopWidth: 1,
-                                        borderTopColor: "#000",
-                                        backgroundColor: "#E0E0E0",
+                                        width: "100%",
                                         flexDirection: 'row',
-                                        justifyContent: "flex-end",
-                                        alignItems: 'center',
-                                        paddingVertical: fontValue(5)
+                                        justifyContent: 'space-between'
                                     }}
                                 >
-
                                     <Text
-
+                                        style={{fontSize: fontValue(14), fontFamily: Bold}}
                                         color="#37405B"
-                                        style={{fontSize: fontValue(14), fontFamily: Regular, marginRight: 30}}
                                     >
-                                        {"Total".toUpperCase()}
+                                        Particular
                                     </Text>
                                     <Text
-                                        style={{fontSize: fontValue(16), fontFamily: Bold}}
+                                        style={{fontSize: fontValue(14), fontFamily: Bold}}
                                         color="#37405B"
                                     >
-                                        ₱{getTotal()}
+                                        Amount
                                     </Text>
                                 </View>
+                                {
+                                    soa.length ? soa?.map((s, index) => {
+                                            return <View key={index} style={{
+                                                borderBottomColor: "#E5E5E5",
+                                                borderBottomWidth: 2,
+                                                width: "100%"
+                                            }}>
+
+                                                <View
+                                                    key={s._id}
+                                                    style={paymentStyles.soaItem}
+                                                >
+
+                                                    <View style={{flex: 1}}>
+
+                                                        <Card updateApplication={updateApplication}
+                                                              updateForm={(stateName, value) => {
+                                                                  if (!!soa.filter(s => {
+                                                                      return s.item == value
+                                                                  }).length) {
+                                                                      s.error = true
+
+                                                                  } else {
+
+                                                                      s.error = false
+                                                                  }
+                                                                  applicantForm(stateName, value)
+                                                              }}
+                                                              error={s.error}
+                                                              stateName={"soa." + s.id + ".item"}
+                                                              edit={props.edit}
+                                                              display={userProfileForm?.["soa." + s.id + ".item"] || "Item"}
+                                                              label={"Item:"}
+                                                              style={{
+                                                                  paddingVertical: 14,
+                                                                  color: "#37405B",
+                                                                  fontSize: fontValue(12)
+                                                              }}
+                                                              applicant={userProfileForm?.["soa." + s.id + ".item"]}/>
+                                                    </View>
+                                                    <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
+                                                        <Card updateApplication={updateApplication}
+
+                                                              keyboardType={'decimal-pad'}
+                                                              updateForm={(stateName, value) => {
+                                                                  updateSoa('amount', parseFloat(value), s.id)
+                                                                  applicantForm('totalFee', getTotal(soa))
+                                                                  applicantForm(stateName, value)
+                                                              }}
+                                                              touchableStyle={{alignSelf: "flex-end"}}
+                                                              stateName={"soa." + s.id + ".amount"}
+                                                              edit={props.edit}
+                                                              display={userProfileForm?.["soa." + s.id + ".amount"] || "0"}
+                                                              label={"Amount:"}
+                                                              style={{
+                                                                  paddingVertical: 14,
+                                                                  color: "#37405B",
+                                                                  fontSize: fontValue(14)
+                                                              }}
+                                                              applicant={userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + userProfileForm?.["soa." + s.id + ".amount"] : 0}/>
+                                                    </View>
+                                                    {props.edit && <View style={{}}>
+                                                        <TouchableOpacity onPress={() => {
+                                                            console.log(s.id, index)
+                                                            closeItem(s.id, index)
+                                                        }}
+                                                                          style={{paddingHorizontal: 10}}>
+                                                            <CloseIcon/>
+                                                        </TouchableOpacity>
+                                                    </View>}
+
+                                                </View>
+
+
+                                            </View>
+                                        }
+                                    ) : <View style={{
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        paddingVertical: 10
+                                    }}><Text
+                                        style={{fontSize: fontValue(16), fontFamily: Regular500}}>No S.O.A</Text></View>
+                                }
+                                {props.edit && <TouchableOpacity onPress={addSoa}><View
+                                    style={{flexDirection: 'row', alignItems: "center", paddingTop: fontValue(14)}}>
+                                    <View style={{marginRight: fontValue(10)}}>
+                                        <PlusIcon size={fontValue(12)} color={infoColor}/>
+                                    </View>
+
+                                    <Text style={{fontSize: fontValue(15), fontFamily: Regular, color: infoColor}}>Add
+                                        Item</Text>
+                                </View></TouchableOpacity>}
+                                <View style={{paddingTop: 15}}>
+                                    <View
+                                        style={{
+                                            borderTopWidth: 1,
+                                            borderTopColor: "#000",
+                                            backgroundColor: "#E0E0E0",
+                                            flexDirection: 'row',
+                                            justifyContent: "flex-end",
+                                            alignItems: 'center',
+                                            paddingVertical: fontValue(5)
+                                        }}
+                                    >
+
+                                        <Text
+
+                                            color="#37405B"
+                                            style={{fontSize: fontValue(14), fontFamily: Regular, marginRight: 30}}
+                                        >
+                                            {"Total".toUpperCase()}
+                                        </Text>
+                                        <Text
+                                            style={{fontSize: fontValue(16), fontFamily: Bold}}
+                                            color="#37405B"
+                                        >
+                                            ₱{getTotal()}
+                                        </Text>
+                                    </View>
+                                </View>
+
+
                             </View>
 
 
                         </View>
+                        <View style={{overflow: "hidden", zIndex: -1, flexDirection: "row",}}>
+                            {
+                                !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map((bottom, index) =>
+                                    <BorderPaymentBottom key={index} style={{marginTop: -2}}/>)
+                            }
+                        </View>
+
+                        <View style={[paymentStyles.container, {paddingTop: 12}]}>
 
 
-                    </View>
-                    <View style={{overflow: "hidden", zIndex: -1, flexDirection: "row",}}>
-                        {
-                            !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map((bottom, index) =>
-                                <BorderPaymentBottom key={index} style={{marginTop: -2}}/>)
-                        }
-                    </View>
+                            {((user?.role?.key !== ACCOUNTANT) && (user?.role?.key === CASHIER)) &&
+                                <View style={requirementStyles.container}>
 
-                    <View style={[paymentStyles.container, {paddingTop: 12}]}>
+                                    <View style={[requirementStyles.card, {padding: undefined}]}>
+                                        <View style={requirementStyles.cardContainer}>
+                                            <TouchableOpacity onPress={() => {
+                                                setVisibleModal(true)
+                                            }}>
+                                                <View>
+                                                    <Text style={requirementStyles.title}>Payment</Text>
+                                                    <View style={requirementStyles.cardTitle}>
 
+                                                        <View style={{alignItems: "center"}}>
 
-                        {((user?.role?.key !== ACCOUNTANT) && (user?.role?.key === CASHIER)) &&
-                            <View style={requirementStyles.container}>
-
-                                <View style={[requirementStyles.card, {padding: undefined}]}>
-                                    <View style={requirementStyles.cardContainer}>
-                                        <TouchableOpacity onPress={() => {
-                                            setVisibleModal(true)
-                                        }}>
-                                            <View>
-                                                <Text style={requirementStyles.title}>Payment</Text>
-                                                <View style={requirementStyles.cardTitle}>
-
-                                                    <View style={{alignItems: "center"}}>
-
-                                                        <Text style={requirementStyles.paymentDescription}>Payment
-                                                            received
-                                                            for</Text>
-                                                        <Text
-                                                            style={requirementStyles.paymentDescription}>NTC-EDGE</Text>
-                                                        <Text style={requirementStyles.paymentDescription}>the amout
-                                                            of</Text>
-                                                        <Text
-                                                            style={[requirementStyles.paymentDescription, {fontFamily: Bold}]}>PHP {props.totalFee}</Text>
-                                                        {props.paymentMethod && <View style={{paddingVertical: 10}}>
-                                                            <Text>
-                                                                <Text
-                                                                    style={[requirementStyles.paymentDescription, {fontFamily: Bold}]}>
-                                                                    Payment
-                                                                    method: {capitalize(props.paymentMethod?.replace("-", " "))}
+                                                            <Text style={requirementStyles.paymentDescription}>Payment
+                                                                received
+                                                                for</Text>
+                                                            <Text
+                                                                style={requirementStyles.paymentDescription}>NTC-EDGE</Text>
+                                                            <Text style={requirementStyles.paymentDescription}>the amout
+                                                                of</Text>
+                                                            <Text
+                                                                style={[requirementStyles.paymentDescription, {fontFamily: Bold}]}>PHP {props.totalFee}</Text>
+                                                            {props.paymentMethod && <View style={{paddingVertical: 10}}>
+                                                                <Text>
+                                                                    <Text
+                                                                        style={[requirementStyles.paymentDescription, {fontFamily: Bold}]}>
+                                                                        Payment
+                                                                        method: {capitalize(props.paymentMethod?.replace("-", " "))}
+                                                                    </Text>
                                                                 </Text>
-                                                            </Text>
-                                                        </View>}
+                                                            </View>}
+
+                                                        </View>
 
                                                     </View>
 
+
                                                 </View>
+                                            </TouchableOpacity>
 
+                                            {props?.proofOfPayment && <View style={{
+                                                ...Platform.select({
+                                                    native: {
+                                                        padding: 10
+                                                    },
+                                                    default: {
+                                                        padding: 22
+                                                    }
+                                                })
+                                            }}>
+                                                <FlatList
+                                                    style={{
 
-                                            </View>
-                                        </TouchableOpacity>
+                                                        padding: 15,
+                                                        paddingVertical: 10,
+                                                        flex: 1,
+                                                        borderColor: "#ECECEC",
+                                                        borderWidth: 1,
+                                                        backgroundColor: "#FBFBFB",
+                                                        borderRadius: 5
+                                                    }}
+                                                    showsHorizontalScrollIndicator={!isMobile}
+                                                    showsVerticalScrollIndicator={isMobile}
+                                                    horizontal={isMobile ? false : true}
+                                                    data={props.proofOfPayment}
+                                                    keyExtractor={item => item.id}
+                                                    renderItem={({item, index}) => (
+                                                        <ProofPaymentView proofOfPayment={item}/>
+                                                    )}
+                                                />
 
-                                        {props?.proofOfPayment && <View style={{
-                                            ...Platform.select({
-                                                native: {
-                                                    padding: 10
-                                                },
-                                                default: {
-                                                    padding: 22
-                                                }
-                                            })
-                                        }}>
-                                            <FlatList
-                                                style={{
+                                            </View>}
+                                        </View>
 
-                                                    padding: 15,
-                                                    paddingVertical: 10,
-                                                    flex: 1,
-                                                    borderColor: "#ECECEC",
-                                                    borderWidth: 1,
-                                                    backgroundColor: "#FBFBFB",
-                                                    borderRadius: 5
-                                                }}
-                                                showsHorizontalScrollIndicator={!isMobile}
-                                                showsVerticalScrollIndicator={isMobile}
-                                                horizontal={isMobile ? false : true}
-                                                data={props.proofOfPayment}
-                                                keyExtractor={item => item.id}
-                                                renderItem={({item, index}) => (
-                                                    <ProofPaymentView proofOfPayment={item}/>
-                                                )}
-                                            />
-
-                                        </View>}
                                     </View>
-
                                 </View>
-                            </View>
 
-                        }
+                            }
 
 
+                        </View>
                     </View>
-                </View>
 
 
-                <PaymentModal updatedAt={props?.updatedAt}
-                              paymentMethod={props?.paymentMethod}
-                              applicant={props?.applicant}
-                              totalFee={props?.totalFee}
-                              officialReceipt={props?.officialReceipt}
-                              visible={visibleModal}
-                              onDismissed={onDismissed}/>
-            </ScrollView>
+                    <PaymentModal updatedAt={props?.updatedAt}
+                                  paymentMethod={props?.paymentMethod}
+                                  applicant={props?.applicant}
+                                  totalFee={props?.totalFee}
+                                  officialReceipt={props?.officialReceipt}
+                                  visible={visibleModal}
+                                  onDismissed={onDismissed}/>
+                </ScrollView>
             )}
         </KeyboardShift>
     </View>

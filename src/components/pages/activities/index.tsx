@@ -67,7 +67,7 @@ import {renderSwiper} from "@pages/activities/swiper";
 import ActivityItem from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
 import FakeSearchBar from "@pages/activities/fakeSearchBar";
-import {ACTIVITYITEM, APPROVED, PAID, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
+import {ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
@@ -76,12 +76,8 @@ import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
-import {Regular, Regular500} from "@styles/font";
+import {Regular} from "@styles/font";
 import {FlashList} from "@shopify/flash-list";
-import SplitIcon from "@assets/svg/SplitIcon";
-import useSafeState from "../../../hooks/useSafeState";
-import axios from "axios";
-import {BASE_URL} from "../../../services/config";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -261,28 +257,24 @@ const ActivitiesPage = (props) => {
     );
 
     const tabBarAnimatedStyle = useAnimatedStyle(() => ({
-       // transform: [{translateY: translateY.value}],
+        // transform: [{translateY: translateY.value}],
     }));
 
     const headerAnimatedStyle = useAnimatedStyle(() => {
 
-        return {
-
-        };
+        return {};
     })
 
     const contentContainerStyle = useMemo<StyleProp<ViewStyle>>(
-        () => ({
-
-        }),
+        () => ({}),
         [rendered, headerHeight, bottom, screenHeight, headerDiff]
     );
 
     const sharedProps = useMemo<Partial<FlatListProps<Connection>>>(
         () => ({
-           // contentContainerStyle,
+            // contentContainerStyle,
 
-           // scrollIndicatorInsets: {top: heightExpanded},
+            // scrollIndicatorInsets: {top: heightExpanded},
         }),
         [contentContainerStyle, sync, heightExpanded]
     );
@@ -335,7 +327,7 @@ const ActivitiesPage = (props) => {
                 config={config}
                 key={i}
 
-                selected={ Platform?.OS == "web" ? act?.item?._id : false}
+                selected={Platform?.OS == "web" ? act?.item?._id : false}
                 currentUser={user}
                 role={user?.role?.key}
                 searchQuery={searchTerm}
@@ -369,104 +361,104 @@ const ActivitiesPage = (props) => {
     }, [countRefresh, updateModal, user._id])
 
     const listHeaderComponent = () => <ListHeaderComponent searchVisible={searchVisible} pnApplications={pnApplications}
-                                                           containerHeight={fontValue(containerHeight)} onScroll={(event) => {
-        if (!isMobile) {
-            new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    resolve(event?.nativeEvent?.contentOffset?.y)
-                }, 1000);
-            }).then((data) => {
-                setYPos(data)
-            });
-        }
+                                                           containerHeight={fontValue(containerHeight)}
+                                                           onScroll={(event) => {
+                                                               if (!isMobile) {
+                                                                   new Promise((resolve, reject) => {
+                                                                       setTimeout(() => {
+                                                                           resolve(event?.nativeEvent?.contentOffset?.y)
+                                                                       }, 1000);
+                                                                   }).then((data) => {
+                                                                       setYPos(data)
+                                                                   });
+                                                               }
 
-    }} ref={scrollViewRef} callbackfn={(item: any, index: number) => {
-        return item?.activity && <FlashList
-            scrollEventThrottle={16}
-            refreshing={true}
-            key={index}
-            listKey={(item, index) => `_key${index.toString()}`}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.items}
-            data={item?.activity}
-            estimatedItemSize={300}
-            renderItem={(act, i) => {
-                return getRenderItem(act, i, index)
-            }
-            }
-            keyExtractor={(item, index) => `_key${index.toString()}`}
-        />
-    }}/>;
+                                                           }} ref={scrollViewRef}
+                                                           callbackfn={(item: any, index: number) => {
+                                                               return item?.activity && <FlashList
+                                                                   scrollEventThrottle={16}
+                                                                   refreshing={true}
+                                                                   key={index}
+                                                                   listKey={(item, index) => `_key${index.toString()}`}
+                                                                   showsVerticalScrollIndicator={false}
+                                                                   contentContainerStyle={styles.items}
+                                                                   data={item?.activity}
+                                                                   estimatedItemSize={300}
+                                                                   renderItem={(act, i) => {
+                                                                       return getRenderItem(act, i, index)
+                                                                   }
+                                                                   }
+                                                                   keyExtractor={(item, index) => `_key${index.toString()}`}
+                                                               />
+                                                           }}/>;
 
     const renderItem = useCallback(({item, index}) => (
-            <>
-                <ApplicationList
-                    key={index}
-                    onPress={() => {
-                        userPress(index)
+        <>
+            <ApplicationList
+                key={index}
+                onPress={() => {
+                    userPress(index)
+                }}
+                item={item}
+                numbers={numberCollapsed}
+                index={index}
 
-                    }}
-                    item={item}
-                    numbers={numberCollapsed}
-                    index={index}
+                element={(activity: any, i: number, selected) => {
+                    return (
+                        <ActivityItem
+                            isOpen={isOpen}
 
-                    element={(activity: any, i: number, selected) => {
-                        return (
-                            <ActivityItem
-                                isOpen={isOpen}
+                            config={config}
+                            /*
+                                isPinned={true}
+                            */
+                            searchQuery={searchTerm}
+                            key={i}
+                            selected={Platform?.OS == "web" ? activity?._id : false}
+                            parentIndex={index}
+                            role={user?.role?.key}
+                            activity={activity}
+                            currentUser={user}
+                            onPressUser={(event: any) => {
 
-                                config={config}
-                                /*
-                                    isPinned={true}
-                                */
-                                searchQuery={searchTerm}
-                                key={i}
-                                selected={Platform?.OS == "web" ? activity?._id : false}
-                                parentIndex={index}
-                                role={user?.role?.key}
-                                activity={activity}
-                                currentUser={user}
-                                onPressUser={(event: any) => {
-
-                                    dispatch(setEdit(false))
-                                    dispatch(setHasChange(false))
-                                    dispatch(setSelectedYPos({yPos, type: 0}))
-                                    dispatch(setApplicationItem({
-                                        ...activity,
-                                        isOpen: `${index}${i}`
-                                    }));
-
+                                dispatch(setEdit(false))
+                                dispatch(setHasChange(false))
+                                dispatch(setSelectedYPos({yPos, type: 0}))
+                                dispatch(setApplicationItem({
+                                    ...activity,
+                                    isOpen: `${index}${i}`
+                                }));
 
 
-                                    //setDetails({ ...activity , isOpen : `${ index }${ i }` });
-                                    /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                    })*/
-                                    if (event?.icon == 'more') {
-                                        setMoreModalVisible(true)
+                                //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                })*/
+                                if (event?.icon == 'more') {
+                                    setMoreModalVisible(true)
+                                } else {
+                                    if (Platform.OS == "web") {
+                                        setModalVisible(true)
                                     } else {
-                                        if (Platform.OS == "web") {
-                                            setModalVisible(true)
-                                        } else {
-                                            props.navigation.navigate(ACTIVITYITEM, {
-                                                onDismissed: onDismissedModal,
-                                                onChangeEvent: onChangeEvent,
-                                                onChangeAssignedId: onChangeAssignedId
-                                            });
-                                        }
-
-
-                                        //
+                                        props.navigation.navigate(ACTIVITYITEM, {
+                                            onDismissed: onDismissedModal,
+                                            onChangeEvent: onChangeEvent,
+                                            onChangeAssignedId: onChangeAssignedId
+                                        });
                                     }
 
-                                }}
 
-                                index={`${index}${i}`}
-                                swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
-                        )
-                    }}/>
-            </>
-        ), [countRefresh, updateModal, user._id]);
-    const  onEndReached = () => {
+                                    //
+                                }
+
+                            }}
+
+                            index={`${index}${i}`}
+                            swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                    )
+                }}/>
+        </>
+    ), [countRefresh, updateModal, user._id]);
+    const onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(
             isMobile && !(
                 Platform?.isPad || isTablet()))) {
@@ -475,7 +467,7 @@ const ActivitiesPage = (props) => {
         }
     }
 
-    const  listEmptyComponent = useMemoizedFn(() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+    const listEmptyComponent = useMemoizedFn(() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length));
 
@@ -509,7 +501,7 @@ const ActivitiesPage = (props) => {
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [notPnApplications , pnApplications, refreshing]
+        [notPnApplications, pnApplications, refreshing]
     );
 
 
@@ -534,7 +526,7 @@ const ActivitiesPage = (props) => {
             onEndReached={onEndReached}
             ref={pendingRef}
             refreshing={true}
-           // onScroll={pendingScrollHandler}
+            // onScroll={pendingScrollHandler}
             estimatedItemSize={300}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
@@ -567,14 +559,14 @@ const ActivitiesPage = (props) => {
             onEndReached={onEndReached}
             ref={historyRef}
             refreshing={true}
-           //onScroll={historyScrollHandler}
+            //onScroll={historyScrollHandler}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
                 //onMomentumScrollBegin();
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [notPnApplications , refreshing ]
+        [notPnApplications, refreshing]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
@@ -584,24 +576,25 @@ const ActivitiesPage = (props) => {
         ],
         [rendered, headerHeight, tabBarAnimatedStyle]
     );
-    const tabBarOptions = useMemo(() =>{
+    const tabBarOptions = useMemo(() => {
         return {
-        tabBarLabelStyle: {
+            tabBarLabelStyle: {
 
-            fontFamily: Regular,
-            fontSize: fontValue(12),
-        },
-        "tabBarActiveTintColor": "#2F5BFA",
-        "tabBarInactiveTintColor": "#606A80",
-        "tabBarIndicatorStyle": {
-            "height": 3,
-            "backgroundColor": "#2F5BFA"
+                fontFamily: Regular,
+                fontSize: fontValue(12),
+            },
+            "tabBarActiveTintColor": "#2F5BFA",
+            "tabBarInactiveTintColor": "#606A80",
+            "tabBarIndicatorStyle": {
+                "height": 3,
+                "backgroundColor": "#2F5BFA"
+            }
         }
-    }}, [])
+    }, [])
     const renderTabBar = useCallback<(props: MaterialTopTabBarProps) => React.ReactElement>(
         (props) => (
             <Animated.View style={tabBarStyle}>
-                <TabBar  onIndexChange={setTabIndex} {...props} />
+                <TabBar onIndexChange={setTabIndex} {...props} />
             </Animated.View>
         ),
         [tabBarStyle]
@@ -610,7 +603,7 @@ const ActivitiesPage = (props) => {
         () => [
             //rendered ? styles.headerContainer : undefined,
 
-           // headerAnimatedStyle,
+            // headerAnimatedStyle,
         ],
 
         [rendered, headerAnimatedStyle]
@@ -629,9 +622,7 @@ const ActivitiesPage = (props) => {
 
 
     const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
-        () => [
-
-        ],
+        () => [],
         [collapsedOverlayAnimatedStyle, heightCollapsed]
     );
     const headerContainerMergeStyle = useMemo(() => [styles1.rect, styles1.horizontal, {
@@ -644,9 +635,9 @@ const ActivitiesPage = (props) => {
                 paddingTop: 10,
             }
         })
-    },], [isMobile,Platform?.isPad, isTablet()])
+    },], [isMobile, Platform?.isPad, isTablet()])
 
-    const containerMergeStyle = useMemo(() => [styles1.container, styles1.shadow,isMobile ?  {
+    const containerMergeStyle = useMemo(() => [styles1.container, styles1.shadow, isMobile ? {
         flex: 1,
     } : {
         overflow: "scroll",
@@ -658,19 +649,19 @@ const ActivitiesPage = (props) => {
                     Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : (feedVisible ? 466 : 0),
         flexGrow: 0,
         flexShrink: 0
-    }], [isMobile,Platform?.isPad, isTablet(), isLandscapeSync(), feedVisible])
-    const activityMergeStyle = useMemo(() => [styles1.activity,  {
+    }], [isMobile, Platform?.isPad, isTablet(), isLandscapeSync(), feedVisible])
+    const activityMergeStyle = useMemo(() => [styles1.activity, {
         color: (
             isMobile && !(
                 Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
-    }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width, ])
+    }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width,])
 
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
 
             <View style={{flex: 1, backgroundColor: primaryColor,}}>
-             <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
+                <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
 
                     <View style={containerMergeStyle}>
 
@@ -697,14 +688,16 @@ const ActivitiesPage = (props) => {
                                     }
 
                                     }>
-                                        <Filter pressed={visible} width={fontValue(Platform.isPad ? 30 :21)}
-                                                height={fontValue(Platform.isPad ? 30 :21)}/>
+                                        <Filter pressed={visible} width={fontValue(Platform.isPad ? 30 : 21)}
+                                                height={fontValue(Platform.isPad ? 30 : 21)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
 
-                                            {Platform.OS == "web" || Platform.isPad ? <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
-                                                            height={fontValue(24)} fill={"#fff"}/> : <View style={{paddingLeft: 23}}><RefreshRN/></View>}
+                                            {Platform.OS == "web" || Platform.isPad ?
+                                                <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
+                                                            height={fontValue(24)} fill={"#fff"}/> :
+                                                <View style={{paddingLeft: 23}}><RefreshRN/></View>}
                                         </TouchableOpacity>
                                     }
                                 </View>
@@ -760,15 +753,18 @@ const ActivitiesPage = (props) => {
 
 
                         {user?.role?.permission?.tabPermission?.all || user?.role?.permission?.tabPermission?.pending || user?.role?.permission?.tabPermission?.history ?
-                            <Tab.Navigator  screenOptions={tabBarOptions} >
-                                {user?.role?.permission?.tabPermission?.all ? <Tab.Screen name="All">{renderAllActivities}</Tab.Screen> : null}
-                                {user?.role?.permission?.tabPermission?.pending ?<Tab.Screen name="Pending">{renderPending}</Tab.Screen> : null}
-                                {user?.role?.permission?.tabPermission?.history ?<Tab.Screen name="History">{renderHistory}</Tab.Screen> : null}
-                        </Tab.Navigator>: <></>}
+                            <Tab.Navigator screenOptions={tabBarOptions}>
+                                {user?.role?.permission?.tabPermission?.all ?
+                                    <Tab.Screen name="All">{renderAllActivities}</Tab.Screen> : null}
+                                {user?.role?.permission?.tabPermission?.pending ?
+                                    <Tab.Screen name="Pending">{renderPending}</Tab.Screen> : null}
+                                {user?.role?.permission?.tabPermission?.history ?
+                                    <Tab.Screen name="History">{renderHistory}</Tab.Screen> : null}
+                            </Tab.Navigator> : <></>}
 
                     </View>
                     {
-                        lodash.isEmpty(applicationItem) && dimensions?.width > 768  && Platform.OS == "web" ?
+                        lodash.isEmpty(applicationItem) && dimensions?.width > 768 && Platform.OS == "web" ?
                             <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
                                 <NoActivity/>
