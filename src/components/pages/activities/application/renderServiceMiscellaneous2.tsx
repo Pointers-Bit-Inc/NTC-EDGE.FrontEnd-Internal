@@ -77,7 +77,6 @@ function Title(props:{nextValue,index,value}){
 
     }
     arr.push(props?.value)
-    console.log(arr)
     return <></>
 }
 
