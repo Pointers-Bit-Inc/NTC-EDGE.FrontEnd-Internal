@@ -2,6 +2,10 @@ import {View} from "react-native";
 import {
     activity,
     chat,
+    configurationCreate,
+    configurationDelete,
+    configurationEdit,
+    configurationView,
     employeeCreate,
     employeeDelete,
     employeeEdit,
@@ -13,7 +17,8 @@ import {
     rolePermissionDelete,
     rolePermissionEdit,
     rolePermissionView,
-    scheduleCreate, scheduleDelete,
+    scheduleCreate,
+    scheduleDelete,
     scheduleEdit,
     scheduleView,
     tabAllPermission,
@@ -130,6 +135,20 @@ function RoleChecklist(props: { value: any[], onChange: (value) => void }) {
                 {label: "Read", value: scheduleView},
                 {label: "Update", value: scheduleEdit},
                 {label: "Delete", value: scheduleDelete},
+            ]}
+        />
+        <Text size={14} style={styles.text}>Configuration</Text>
+        <CheckboxList
+            size={12}
+            showCheckAll={false}
+            value={props.value}
+            onChange={props.onChange
+            }
+            options={[
+                {label: "Create", value: configurationCreate},
+                {label: "Read", value: configurationView},
+                {label: "Update", value: configurationEdit},
+                {label: "Delete", value: configurationDelete},
             ]}
         />
     </View>;

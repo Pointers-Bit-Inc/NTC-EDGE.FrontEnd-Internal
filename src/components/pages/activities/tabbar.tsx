@@ -356,7 +356,7 @@ export default function TabBar({navigation,route}){
                 {user?.role?.permission?.employeePermission.view ? <Drawer.Screen options={{drawerLabel:EMPLOYEES,headerShown:false}} name={EMPLOYEES} component={EmployeeNavigator}/> : <></>}
                 {user?.role?.permission?.userPermission.view ? <Drawer.Screen options={{drawerLabel:USERS,headerShown:false}} name={USERS} component={UserNavigator}/>: <></>}
                  {/*<Drawer.Screen options={{drawerLabel:SETTINGS,headerShown:false}} name={SETTINGS} component={Settings}/>*/}
-                {user?.role?.permission?.settingPermission?.view ?<Drawer.Screen options={{drawerLabel: SETTINGS, headerShown: false}} name={CONFIGURATION}
+                {user?.role?.permission?.configurationPermission?.view ?<Drawer.Screen options={{drawerLabel: SETTINGS, headerShown: false}} name={CONFIGURATION}
                                                                                  component={ConfigurationNavigator}/> : <></>}
              </Drawer.Navigator>}
             <AwesomeAlert

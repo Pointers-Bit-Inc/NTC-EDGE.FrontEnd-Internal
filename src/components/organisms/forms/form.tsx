@@ -74,7 +74,7 @@ const FormField=({
                 return <View style={{paddingBottom: 22}}>
                     <CustomDropdown key={id}
                                     value={element?.value}
-                                    label="Select Item"
+                                    label={element?.label || "Select Item"}
                                     data={ element.data }
                                     onSelect={ ({ value }) => {
                                         if (value) onChange(id, value,'select', element?.stateName)

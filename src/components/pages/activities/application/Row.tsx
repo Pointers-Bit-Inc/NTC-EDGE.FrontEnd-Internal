@@ -46,6 +46,7 @@ const Row = (props: { outlineStyle?: any, containerStyle?:any, inputStyle?: any,
             }}
 
                                                                                        onChange={(e) => {
+                                                                   console.log( e?.nativeEvent?.text)
                 props.updateForm(props.stateName, e?.nativeEvent?.text)
             }} value={props.applicant } label={props.label}/> : <></>}
         </>

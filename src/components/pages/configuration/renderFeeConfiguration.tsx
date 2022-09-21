@@ -1,4 +1,4 @@
-import {isValidDate, transformText} from "../../../utils/ntc";
+import {isValidDate, transformText} from "../../../../utils/ntc";
 import Row from "@pages/activities/application/Row";
 import {FlatList,StyleSheet,Text,View} from "react-native";
 import React, {memo, useMemo, useRef, useState} from "react";
@@ -11,6 +11,7 @@ import hairlineWidth=StyleSheet.hairlineWidth;
 import DateField from "@pages/activities/application/datefield";
 import Customdropdown from "@pages/activities/dropdown/customdropdown";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
+import {validate} from "react-native-uuid/dist/validate";
 
 const styles=StyleSheet.create({
     subChildSeparator:{
@@ -55,8 +56,8 @@ const styles=StyleSheet.create({
 });
 let title='';
 let no=null;
-
-function Title(props:{nextValue,index,}){
+let arr = []
+function Title(props:{nextValue,index,value}){
 
     if(!(
         (
@@ -66,13 +67,16 @@ function Title(props:{nextValue,index,}){
         title=transformText(
             props.nextValue||props.index);
 
-        return <>{title?.toUpperCase() ? <View style={{paddingVertical: 5}}>
+        arr = []
+        arr.push(props.value)
+        return <>{title?.toUpperCase() && !!arr?.join("")?.toString() ? <View style={{paddingVertical: 5}}>
             <View style={styles.rect}>
                 <Text style={styles.file}>{title?.toUpperCase()}</Text>
             </View>
         </View> : <></>}</>
 
     }
+    arr.push(props?.value)
     return <></>
 }
 
@@ -85,13 +89,13 @@ function Separator({index}){
 
 }
 
-const RenderServiceMiscellaneous=(props)=>{
+const RenderFeeConfiguration=(props)=>{
     let service=JSON.parse(JSON.stringify(props.service||{}));
 
 
     const flatten=(obj)=>{
         var result={};
-         (
+        (
             async function f(e,p=undefined){
                 switch(typeof e){
                     case "object":
@@ -143,10 +147,10 @@ const RenderServiceMiscellaneous=(props)=>{
             nextValue=keys?.split?.(".")?.[keys?.split?.(".")?.length-2]||keys?.split?.(".")?.[0];
         }
 
-
+        //console.log(index,prevValue,nextValue,findIndex, value)
         return (<View>
 
-            {props?.isTitleVisible   ? <Title nextValue={nextValue} index={index}/> : <></>}
+            {props?.isTitleVisible ? <Title nextValue={nextValue} index={index} value={value}/> : <></>}
             <Separator index={index}/>
 
             {isValidDate(props?.userProfileForm?.["service." + keys]) ? <DateField
@@ -190,7 +194,7 @@ const RenderServiceMiscellaneous=(props)=>{
         />
     )
 };
-RenderServiceMiscellaneous.defaultProps = {
+RenderFeeConfiguration.defaultProps = {
     isTitleVisible: true
 }
-export default memo(RenderServiceMiscellaneous)
+export default memo(RenderFeeConfiguration)

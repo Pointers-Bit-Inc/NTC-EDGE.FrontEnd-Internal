@@ -11,7 +11,7 @@ import {Bold} from "@styles/font";
 import {useToast} from "./useToast";
 import {
     activity,
-    chat,
+    chat, configurationCreate, configurationDelete, configurationEdit, configurationView,
     employeeCreate,
     employeeDelete,
     employeeEdit,
@@ -247,6 +247,18 @@ const useRoleAndPermission =(navigation) => {
         if (_permission?.schedulePermission?.view) {
             p.push(scheduleView)
         }
+        if (_permission?.con?.create) {
+            p.push(scheduleCreate)
+        }
+        if (_permission?.schedulePermission?.delete) {
+            p.push(scheduleDelete)
+        }
+        if (_permission?.schedulePermission?.edit) {
+            p.push(scheduleEdit)
+        }
+        if (_permission?.schedulePermission?.view) {
+            p.push(scheduleView)
+        }
         if (_permission?.resetPasswordPermission) {
             p.push(resetPasswordPermission)
         }
@@ -275,9 +287,17 @@ const useRoleAndPermission =(navigation) => {
     const [createRole, setCreateRole] = useState(false)
 
     function parsePermission(_access: any[], _permission: {
+        configurationPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean };
         schedulePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean };
         tabPermission: {pending: boolean, all: boolean, history: boolean};
-        chatPermission: boolean;qrCodePermission: boolean; resetPasswordPermission: boolean; rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; activityPermission: boolean; meetPermission: boolean; employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
+        chatPermission: boolean;
+        qrCodePermission: boolean;
+        resetPasswordPermission: boolean;
+        rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean };
+        userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean };
+        activityPermission: boolean;
+        meetPermission: boolean;
+        employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
         if (_access.indexOf(chat) !== -1) {
             _permission.chatPermission = true
         }
@@ -336,6 +356,18 @@ const useRoleAndPermission =(navigation) => {
         }
         if (_access.indexOf(rolePermissionView) !== -1) {
             _permission.rolePermission.view = true
+        }
+        if (_access.indexOf(configurationCreate) !== -1) {
+            _permission.configurationPermission.create = true
+        }
+        if (_access.indexOf(configurationDelete) !== -1) {
+            _permission.configurationPermission.delete = true
+        }
+        if (_access.indexOf(configurationEdit) !== -1) {
+            _permission.configurationPermission.edit = true
+        }
+        if (_access.indexOf(configurationView) !== -1) {
+            _permission.configurationPermission.view = true
         }
         if (_access.indexOf(resetPasswordPermission) !== -1) {
             _permission.resetPasswordPermission = true

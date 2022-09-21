@@ -186,7 +186,8 @@ const BasicInfo = (_props: any) => {
 
     const applicantForm = (stateName, value) => {
         let newForm = {...userProfileForm}
-        newForm[stateName] = value
+
+        newForm[stateName] =value
 
 
        dispatch(setUserProfileForm(newForm))

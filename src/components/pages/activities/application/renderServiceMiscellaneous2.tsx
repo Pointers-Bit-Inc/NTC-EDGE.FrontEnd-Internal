@@ -173,8 +173,8 @@ const RenderServiceMiscellaneous=(props)=>{
                 stateName={"service." + keys}
                 edit={props.edit}
                 label={prevValue ? `${transformText(keys?.split?.(".")?.[keys?.split?.(".")?.length-1])}:` : ""}
-                display={value.toString()}
-                applicant={props?.userProfileForm?.["service." + keys] || value}/>
+                display={value}
+                applicant={props?.userProfileForm?.["service." + keys]}/>
             }
         </View>)
 
