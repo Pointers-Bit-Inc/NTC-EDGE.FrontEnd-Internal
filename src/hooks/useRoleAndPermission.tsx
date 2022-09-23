@@ -462,6 +462,7 @@ const useRoleAndPermission =(navigation) => {
     }, [access, originalAccess])
     const onClose = () => {
         setCreateRole(false)
+        if(navigation.canGoBack()) navigation.goBack()
         dispatch(setRole({}))
     };
     const alertConfirm =  () => {
