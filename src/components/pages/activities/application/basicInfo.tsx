@@ -181,7 +181,7 @@ const BasicInfo = (_props: any) => {
                 animated: true,
             });
         }
-    }, [applicant?._id])
+    }, [props?.id])
 
 
     const applicantForm = (stateName, value) => {
