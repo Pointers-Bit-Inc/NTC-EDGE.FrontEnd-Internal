@@ -467,7 +467,7 @@ export default function ConfigurationPage(props: any) {
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-                    <View style={{alignItems: "center"}}>
+                  {/*  <View style={{alignItems: "center"}}>
                         <TouchableOpacity onPress={() => onUpdateCreateRegion('patch')} disabled={!updateValid}
                                           style={{
                                               backgroundColor: updateValid ? successColor : disabledColor,
@@ -478,7 +478,7 @@ export default function ConfigurationPage(props: any) {
 
 
                         </TouchableOpacity>
-                    </View>
+                    </View>*/}
 
 
                 </View> : <></>
