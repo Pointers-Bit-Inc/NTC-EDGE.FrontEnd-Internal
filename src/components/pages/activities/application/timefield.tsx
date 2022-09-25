@@ -5,7 +5,7 @@ import {Regular,Regular500} from "@styles/font";
 import useSafeState from "../../../../hooks/useSafeState";
 import CheckIcon from "@assets/svg/check";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
-import {formatAMPM, toIsoFormat} from "../../../../utils/ntc";
+import {ampmArray, datesArray, formatAMPM, hoursArray, toIsoFormat} from "../../../../utils/ntc";
 import {disabledColor} from "@styles/color";
 import CloseIcon from "@assets/svg/close";
 import Moment from "moment";
@@ -43,40 +43,29 @@ const styles = StyleSheet.create({
 
 const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
 
-    const dates = useMemo(() =>props?.applicant?.split('T')?.[0]?.split('-'), [props?.applicant]), [time, setTime]= useSafeState(formatAMPM(new Date(props?.applicant)))
+    const dates = useMemo(() =>props?.applicant?.split('T')?.[0]?.split('-'), [props?.applicant])
+
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
 
-
-    const datesArray =Array.from(Array(60), (_, i) => {
-        return {
-            label: i.toString().length == 1 ? "0" +(i).toString() : (i).toString(),
-            value: i.toString().length == 1 ? "0" +(i).toString() : (i).toString(),
-        }
-    });
-    const hoursArray =Array.from(Array(12), (_, i) => {
-        return {
-            label: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
-            value: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
-        }
-    });
-    const ampmArray = [
-        {
-            label: "pm",
-            value: "pm"
-        },
-        {
-            label: "am",
-            value: "am"
-        }
-    ]
     const [edit, setEdit] = useSafeState(false)
-    const [hourValue, setHourValue] = useSafeState(time?.[0])
-    const [minuteValue, setMinuteValue] = useSafeState(time?.[1])
-    const [ampmValue, setAmpmValue] = useSafeState(time?.[2])
+    const [hourValue, setHourValue] = useSafeState()
+
+
+
+    const [minuteValue, setMinuteValue] = useSafeState(0)
+    const [ampmValue, setAmpmValue] = useSafeState(0)
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
+
+    const time = useMemo(() => {
+        const format = formatAMPM(new Date(props?.applicant))
+        setHourValue(format?.[0])
+        setMinuteValue(format?.[1])
+        setAmpmValue(format?.[2])
+        return format
+    }, [props?.applicant])
 
     useEffect(()=>{
 
@@ -92,7 +81,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
             <View style={{padding: 3,flexDirection: "row", justifyContent: "space-between"}}>
                 <View style={{flex: 0.9}}>
                     <CustomDropdown value={hourValue}
-                                    label="Select Item"
+                                    label="Select Hour"
                                     data={hoursArray}
                                     onSelect={({value}) => {
                                         if (value) setHourValue(value)
@@ -100,7 +89,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                 </View>
                 <View style={{flex:0.7, paddingHorizontal: 5}}>
                     <CustomDropdown value={minuteValue}
-                                    label="Select Item"
+                                    label="Select Minute"
                                     data={datesArray}
                                     onSelect={({value}) => {
                                         if (value) setMinuteValue(value)
@@ -108,7 +97,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                 </View>
                 <View style={{flex:0.7}}>
                     <CustomDropdown value={ampmValue}
-                                    label="Select Item"
+                                    label="Select AM/PM"
                                     data={ampmArray}
                                     onSelect={({value}) => {
                                         if (value) {

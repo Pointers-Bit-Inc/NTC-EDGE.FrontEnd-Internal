@@ -15,6 +15,9 @@ import {disabledColor, successColor} from "@styles/color";
 import {InputField} from "@molecules/form-fields";
 import useRoleAndPermission from "../../../hooks/useRoleAndPermission";
 import RoleChecklist from "@pages/role-and-permission/RoleCheckList";
+import ApplicationApproved from "@assets/svg/application-approved";
+import useMemoizedFn from "../../../hooks/useMemoizedFn";
+import listEmpty from "@pages/activities/listEmpty";
 
 
 export default function RoleAndPermissionPage(props: any) {
@@ -41,7 +44,8 @@ export default function RoleAndPermissionPage(props: any) {
         success,
         display,
         alertConfirm,
-        alertCancel
+        alertCancel,
+        listEmptyComponent
     } = useRoleAndPermission(props.navigation);
 
 
@@ -93,6 +97,7 @@ export default function RoleAndPermissionPage(props: any) {
                 </View>
                 <View style={{flex: 1}}>
                     <FlatList
+                        ListEmptyComponent={listEmptyComponent}
                         data={rolesMemo}
                         contentContainerStyle={{padding: 10,}}
                         renderItem={renderItem}
@@ -136,26 +141,18 @@ export default function RoleAndPermissionPage(props: any) {
                                 },
                             ]}>
                             <View style={styles.wrap}>
+                                <Text style={styles.regularText}>
+                                    <ApplicationApproved  height={fontValue(80)} width={fontValue(80)}/>
+                                </Text>
                                 <View style={styles.modalHeader}/>
                                 <Text style={styles.headerText}>Successfully Updated!</Text>
-                                <Text style={styles.regularText}>
 
-                                </Text>
                                 <View
                                     style={{
                                         flexDirection: 'row',
+                                        justifyContent: "center"
                                     }}>
-                                    <TouchableOpacity
-                                        style={[styles.button, styles.buttonCancel]}
-                                        onPress={() => {
-                                            Animated.spring(animation, {
-                                                toValue: 0,
-                                                useNativeDriver: false,
-                                            }).start();
-                                            alertCancel()
-                                        }}>
-                                        <Text style={styles.buttonText}>Close</Text>
-                                    </TouchableOpacity>
+
                                     <TouchableOpacity
                                         style={styles.button}
                                         onPress={() => {
@@ -167,7 +164,7 @@ export default function RoleAndPermissionPage(props: any) {
                                             });
                                             alertConfirm()
                                         }}>
-                                        <Text style={styles.buttonText}>Confirm</Text>
+                                        <Text style={styles.buttonText}>Ok</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

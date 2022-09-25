@@ -384,20 +384,24 @@ const toIsoFormat = (date) => {
         'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' +
         pad(d.getUTCSeconds()) +  'Z');
 }
-function formatAMPM(date) {
-var hours = date.getHours();
-var minutes = date.getMinutes();
-var ampm = hours >= 12 ? 'pm' : 'am';
-hours = hours % 12;
-hours = hours ? hours : 12;
-minutes = minutes < 10 ? '0'+minutes : minutes;
-return [hours, minutes, ampm];
+
+
+const formatAMPM = (date) => {
+
+
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes.toString().padStart(2, '0');
+    return  [hours, minutes, ampm];
 }
 const isNumber = (v: unknown) => typeof v === 'number' && !Number.isNaN(v);
 function isValidDate(dateString) {
     //format yyyy-mm-dd
     var regEx = /^\d{4}-\d{2}-\d{2}$/;
-    if(!dateString?.match(regEx)) return false;
+    if(!dateString?.toString()?.match(regEx)) return false;
     var d = new Date(dateString);
     var dNum = d.getTime();
     if(!dNum && dNum !== 0) return false;
@@ -505,7 +509,111 @@ const recursionObject = (obj, fn) => {
     }
 
 }
+function fuzzysearch (needle, haystack) {
+    var _needle = needle?.toLowerCase()
+    var _haystack = haystack?.toLowerCase()
+    var hlen = haystack?.length;
+    var nlen = needle?.length;
+    if (nlen > hlen) {
+        return false;
+    }
+    if (nlen === hlen) {
+        return _needle === _haystack;
+    }
+    outer: for (var i = 0, j = 0; i < nlen; i++) {
+        var nch = _needle.charCodeAt(i);
+        while (j < hlen) {
+            if (_haystack.charCodeAt(j++) === nch) {
+                continue outer;
+            }
+        }
+        return false;
+    }
+    return true;
+}
+const datesArray =Array.from(Array(60), (_, i) => {
+    return {
+        label: i.toString().length == 1 ? "0" +(i).toString() : (i).toString(),
+        value: i.toString().length == 1 ? "0" +(i).toString() : (i).toString(),
+    }
+});
+
+const hoursArray =Array.from(Array(12), (_, i) => {
+    return {
+        label: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
+        value: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
+    }
+});
+const monthsArray = [
+    {label: 'January', value: '01'},
+    {label: 'February', value: '02'},
+    {label: 'March', value: '03'},
+    {label: 'April', value: '04'},
+    {label: 'May', value: '05'},
+    {label: 'June', value: '06'},
+    {label: 'July', value: '07'},
+    {label: 'August', value: '08'},
+    {label: 'September', value: '09'},
+    {label: 'October', value: '10'},
+    {label: 'November', value: '11'},
+    {label: 'December', value: '12'},
+];
+const ampmArray = [
+    {
+        label: "pm",
+        value: "pm"
+    },
+    {
+        label: "am",
+        value: "am"
+    }
+]
+const permission = {
+    "chatPermission": false,
+    "activityPermission": false,
+    "meetPermission": false,
+    "resetPasswordPermission": false,
+    "qrCodePermission": false,
+    "configurationPermission": {
+        "view": false,
+        "edit": false,
+        "delete": false,
+        "create": false
+    },
+    "userPermission": {
+        "view": false,
+        "edit": false,
+        "delete": false,
+        "create": false
+    },
+    "schedulePermission": {
+        "view": false,
+        "edit": false,
+        "delete": false,
+        "create": false
+    },
+    "employeePermission": {
+        "view": false,
+        "edit": false,
+        "delete": false,
+        "create": false
+    },
+    "rolePermission": {
+        "view": false,
+        "edit": false,
+        "delete": false,
+        "create": false
+    },
+    "tabPermission": {
+        "all": false,
+        "pending": false,
+        "history": false
+    },
+}
 export {
+    permission ,
+    datesArray,hoursArray,ampmArray,monthsArray,
+    fuzzysearch,
     recursionObject,
     regionList,
     toFixedTrunc,

@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular,Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
@@ -7,7 +7,7 @@ import useSafeState from "../../../../hooks/useSafeState";
 import CheckIcon from "@assets/svg/check";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import Moment from "moment";
-import {yearList} from "../../../../utils/ntc";
+import {monthsArray, yearList} from "../../../../utils/ntc";
 import {disabledColor} from "@styles/color";
 import CloseIcon from "@assets/svg/close";
 const styles = StyleSheet.create({
@@ -43,31 +43,20 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
         const [time, setTime]= useSafeState(typeof props?.applicant == 'string' ? props?.applicant?.split('T')?.[1] : null)
 
 
+
+
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
 
 
-    const monthsArray = [
-        {label: 'January', value: '01'},
-        {label: 'February', value: '02'},
-        {label: 'March', value: '03'},
-        {label: 'April', value: '04'},
-        {label: 'May', value: '05'},
-        {label: 'June', value: '06'},
-        {label: 'July', value: '07'},
-        {label: 'August', value: '08'},
-        {label: 'September', value: '09'},
-        {label: 'October', value: '10'},
-        {label: 'November', value: '11'},
-        {label: 'December', value: '12'},
-    ];
+
    let _year = year || Moment().get('year');
     let _month = month || '00';
     const datesArray = Array.from(Array(Moment(new Date()).set({year: _year, month: _month}).daysInMonth()), (_, i) => {
         return {
-            label: (i + 1).toString(),
-            value: (i + 1).toString(),
+            label: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
+            value: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
         }
     });
     const [edit, setEdit] = useSafeState(false)
@@ -80,7 +69,15 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
         let _day = dayValue.length == 1 ? "0" + dayValue : dayValue
         props.updateForm(props.stateName, `${yearValue}-${monthValue}-${_day}` + (time ? `T${time}` : ""))
     }, [monthValue, dayValue, yearValue])
+    const date = useMemo(() =>{
 
+        const _dates = typeof props?.applicant == 'string' ?  props?.applicant?.split('T')?.[0]?.split('-') : [(props?.applicant?.year || 1), (props?.applicant?.month || 1), (props?.applicant?.day || 1)]
+        console.log(_dates)
+        setYearValue(_dates?.[0])
+        setMonthValue(_dates?.[1])
+        setDayValue(_dates?.[2])
+        return _dates
+    }, [props?.applicant])
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <View style={ styles.group2 }>
         <Text style={ styles.detail }>{ props.label }</Text>
         <Text style={ styles.detailInput }>{ props.display || props.applicant }</Text>

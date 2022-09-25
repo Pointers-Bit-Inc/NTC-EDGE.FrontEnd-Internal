@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {memo, useMemo} from "react";
+import React, {memo, useCallback, useMemo} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular, Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         textAlign: "left"
     },
 })
-const Row = (props: { outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
+const Row = (props: { visibleText?: string, outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
     const applicantMemo = useMemo(()=>props.display || props.applicant, [props.display,  props.applicant])
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
@@ -35,24 +35,27 @@ const Row = (props: { outlineStyle?: any, containerStyle?:any, inputStyle?: any,
     function get_url_extension(url: string) {
         return url?.split?.(/[#?]/)?.[0]?.split?.('.')?.pop()?.trim();
     }
-    return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
+
+    const getOnChange = useCallback((e) => {
+
+        props.updateForm(props.stateName, e?.nativeEvent?.text)
+    }, [props.updateForm])
+
+    return ((!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) )  ?
         <View style={styles.group2}>
             {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
-            {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo} </Text>}
+            {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo || props.visibleText || ""} </Text>}
         </View> : <>
-            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline}   onSubmitEditing={(event) => {
+            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)
                 setEdit(false)
             }}
 
-                                                                                       onChange={(e) => {
-                                                                   console.log( e?.nativeEvent?.text)
-                props.updateForm(props.stateName, e?.nativeEvent?.text)
-            }} value={props.applicant } label={props.label}/> : <></>}
+                                                                                      onChange={getOnChange} value={props.applicant } label={props.label}/> : <></>}
         </>
 };
 
 Row.defaultProps = {
-    editable: true, show: true, showEdit: true, multiline: false, inputStyle: {}, containerStyle :{}, outlineStyle: {}
+    editable: true, show: true, showEdit: true, multiline: false, inputStyle: {}, containerStyle :{}, outlineStyle: {}, visibleText: ""
 }
 export default memo(Row)

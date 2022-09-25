@@ -5,6 +5,10 @@ const {
   SET_ADD_CONFIGURATION,
   SET_EDIT_CONFIGURATION,
     SET_REGIONS,
+    SET_HAS_CHANGE_FEE,
+    SET_FEE,
+    SET_FEE_FLATTEN,
+    SET_FEE_ORIGINAL_FLATTEN,
     SET_REGION
 } = require('./types').default;
 
@@ -28,6 +32,22 @@ export default function basket(state = initialState, action = {}) {
         }
         case SET_REGION: {
             state = state.set('region', action.payload);
+            return state
+        }
+        case SET_FEE: {
+            state = state.set('fee', action.payload);
+            return state
+        }
+        case SET_HAS_CHANGE_FEE: {
+            state = state.set('hasChangeFee', action.payload);
+            return state
+        }
+        case SET_FEE_FLATTEN: {
+            state = state.set('feeFlatten', action.payload);
+            return state
+        }
+        case SET_FEE_ORIGINAL_FLATTEN: {
+            state = state.set('feeOriginalFlatten', action.payload);
             return state
         }
         case SET_DELETE_CONFIGURATION: {

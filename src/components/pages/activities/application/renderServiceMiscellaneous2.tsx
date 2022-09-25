@@ -129,7 +129,6 @@ const RenderServiceMiscellaneous=(props)=>{
     ], []);
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
-
         var index,prevValue,nextValue,findIndex;
         findIndex=keys?.split?.(".")?.reverse()?.map((key,index)=>{
             return key

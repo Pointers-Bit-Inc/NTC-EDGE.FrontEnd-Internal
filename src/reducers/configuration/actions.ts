@@ -1,4 +1,5 @@
-const { SET_REGIONS, SET_REGION, SET_EDIT_CONFIGURATION, SET_CONFIGURATIONS, SET_CONFIGURATION, SET_DELETE_CONFIGURATION , SET_ADD_CONFIGURATION} = require('./types').default;
+const {  SET_FEE_FLATTEN,
+  SET_FEE_ORIGINAL_FLATTEN, SET_HAS_CHANGE_FEE, SET_FEE, SET_REGIONS, SET_REGION, SET_EDIT_CONFIGURATION, SET_CONFIGURATIONS, SET_CONFIGURATION, SET_DELETE_CONFIGURATION , SET_ADD_CONFIGURATION} = require('./types').default;
 
 export function setConfigurations(payload) {
   return {
@@ -23,6 +24,33 @@ export function setRegions(payload) {
 export function setRegion(payload) {
   return {
     type: SET_REGION,
+    payload,
+  };
+}
+
+export function setFee(payload) {
+  return {
+    type: SET_FEE,
+    payload,
+  };
+}
+export function setFeeFlatten(payload) {
+  return {
+    type: SET_FEE_FLATTEN,
+    payload,
+  };
+}
+export function setFeeOriginalFlatten(payload) {
+  return {
+    type: SET_FEE_ORIGINAL_FLATTEN,
+    payload,
+  };
+}
+
+
+export function setHasChangeFee(payload) {
+  return {
+    type: SET_HAS_CHANGE_FEE,
     payload,
   };
 }

@@ -457,7 +457,7 @@ const ActivitiesPage = (props) => {
                     )
                 }}/>
         </>
-    ), [countRefresh, updateModal, user._id]);
+    ), [countRefresh, updateModal, user._id, refreshing]);
     const onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(
             isMobile && !(

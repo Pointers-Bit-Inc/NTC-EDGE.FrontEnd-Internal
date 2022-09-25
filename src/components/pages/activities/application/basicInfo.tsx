@@ -488,7 +488,6 @@ const BasicInfo = (_props: any) => {
             );
         }
     }, [props.edit]);
-
     const dimension = useWindowDimensions()
     return <View ref={containerRef} style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
@@ -755,16 +754,18 @@ const BasicInfo = (_props: any) => {
                                                                     service={props?.service}/>
 
 
-                                        {props.edit || userProfileForm?.["note"]  ? <View style={styles.group3}>
+                                        <View style={styles.group3}>
                                            <View style={styles.group}>
                                                <View style={styles.rect}>
                                                    <Text style={styles.header}>Note</Text>
                                                </View>
                                            </View>
                                         <View style={{paddingVertical: 5}}>
+
                                             <Row  /*show={true}
 
-                                      */        multiline={true}
+                                      */        display={userProfileForm?.["note"] || "....."}
+                                                multiline={true}
                                                 containerStyle={ {
                                                     height : undefined ,
                                                     borderColor : "#D1D1D6" ,
@@ -789,7 +790,7 @@ const BasicInfo = (_props: any) => {
                                                 applicant={userProfileForm?.["note"]}/>
                                         </View>
 
-                                       </View> : <></>}
+                                       </View>
                                     </View>
 
                                 </View>

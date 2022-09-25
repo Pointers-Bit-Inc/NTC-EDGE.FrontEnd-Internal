@@ -35,8 +35,10 @@ import {setSessionToken} from "../reducers/user/actions";
 import lodash from "lodash";
 import {isMobile} from "@pages/activities/isMobile";
 import {fontValue} from "@pages/activities/fontValue";
-import {isDiff} from "../utils/ntc";
+import {isDiff, permission} from "../utils/ntc";
 import useModalAnimation from "./useModalAnimation";
+import useMemoizedFn from "./useMemoizedFn";
+import listEmpty from "@pages/activities/listEmpty";
 
 
 
@@ -64,8 +66,7 @@ const useRoleAndPermission =(navigation) => {
             dispatch(setRoles(response.data))
             setLoading(false);
         }).catch((response) => {
-
-            console.log(response.response)
+            setLoading(false);
         })
     }
     const rolesMemo = useMemo(() => {
@@ -142,46 +143,12 @@ const useRoleAndPermission =(navigation) => {
     const {showToast} = useToast();
     const [access, setAccess] = useState([])
 
-    let permission = {
-        "chatPermission": false,
-        "activityPermission": false,
-        "meetPermission": false,
-        "resetPasswordPermission": false,
-        "qrCodePermission": false,
-        "userPermission": {
-            "view": false,
-            "edit": false,
-            "delete": false,
-            "create": false
-        },
-        "schedulePermission": {
-            "view": false,
-            "edit": false,
-            "delete": false,
-            "create": false
-        },
-        "employeePermission": {
-            "view": false,
-            "edit": false,
-            "delete": false,
-            "create": false
-        },
-        "rolePermission": {
-            "view": false,
-            "edit": false,
-            "delete": false,
-            "create": false
-        },
-        "tabPermission": {
-            "all": false,
-            "pending": false,
-            "history": false
-        },
-    }
+
     const [originalAccess, setOriginalAccess] = useState([])
 
 
     const parseAccess = (_permission: {
+        configurationPermission: any,
         schedulePermission: any;
         tabPermission: any; chatPermission: any; qrCodePermission: any; resetPasswordPermission: any; rolePermission: any; userPermission: any; activityPermission: any; meetPermission: any; employeePermission: any; }) => {
         if (lodash.isEmpty(role)) return
@@ -247,17 +214,17 @@ const useRoleAndPermission =(navigation) => {
         if (_permission?.schedulePermission?.view) {
             p.push(scheduleView)
         }
-        if (_permission?.con?.create) {
-            p.push(scheduleCreate)
+        if (_permission?.configurationPermission?.create) {
+            p.push(configurationCreate)
         }
-        if (_permission?.schedulePermission?.delete) {
-            p.push(scheduleDelete)
+        if (_permission?.configurationPermission?.delete) {
+            p.push(configurationDelete)
         }
-        if (_permission?.schedulePermission?.edit) {
-            p.push(scheduleEdit)
+        if (_permission?.configurationPermission?.edit) {
+            p.push(configurationEdit)
         }
-        if (_permission?.schedulePermission?.view) {
-            p.push(scheduleView)
+        if (_permission?.configurationPermission?.view) {
+            p.push(configurationView)
         }
         if (_permission?.resetPasswordPermission) {
             p.push(resetPasswordPermission)
@@ -469,9 +436,10 @@ const useRoleAndPermission =(navigation) => {
         onClose()
         setAlert(false)
     };
-
+    const listEmptyComponent = useMemoizedFn(() => listEmpty(loading, "", roles.length));
     const alertCancel = ()=>setAlert(false)
     return {
+        listEmptyComponent,
         alertCancel,
         alertConfirm,
         onClose,

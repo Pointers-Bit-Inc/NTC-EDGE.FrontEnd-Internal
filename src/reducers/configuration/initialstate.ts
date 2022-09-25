@@ -3,7 +3,11 @@ const InitialState = Record({
   configurations: [],
   configuration:{},
   region:{},
-  regions:[]
+  regions:[],
+  fee: {},
+  feeFlatten: {},
+  feeOriginalFlatten: {},
+  hasChangeFee: false
 });
 
 export default InitialState;

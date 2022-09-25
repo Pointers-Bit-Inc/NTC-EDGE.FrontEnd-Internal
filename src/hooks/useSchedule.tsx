@@ -82,7 +82,8 @@ function useSchedule(props: any) {
             value: "",
             error: false,
             type: '',
-        }
+        },
+
     ]);
     const [formValue, setFormValue] = useState(originalForm);
 
