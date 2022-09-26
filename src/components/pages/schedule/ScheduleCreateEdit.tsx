@@ -18,32 +18,35 @@ import Moment from "moment";
 
 function ScheduleTime(props: { value: any, id: string, onChange: any}) {
 
-    const dates = useMemo(() =>props?.value?.split('T')?.[0]?.split('-'), [props?.value])
+    const dates = useMemo(() =>{
+        console.log(props?.value, "dates")
+        return (typeof props!.value == "string" ? (props?.value) : (props?.value?.toISOString()))?.split?.('T')?.[0]?.split?.('-')
+    }, [props?.value])
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
-
+    let _year = year || Moment().get('year');
+    let _month = month || '00';
     const [hourValue, setHourValue] = useSafeState()
-
-
-
     const [minuteValue, setMinuteValue] = useSafeState(0)
     const [ampmValue, setAmpmValue] = useSafeState(0)
-
+    const [monthValue, setMonthValue] = useSafeState(_month)
+    const [dayValue, setDayValue] = useSafeState(parseInt(day).toString())
+    const [yearValue, setYearValue] = useSafeState(_year)
     const time = useMemo(() => {
         const format = formatAMPM(new Date(props?.value))
         setHourValue(format?.[0])
         setMinuteValue(format?.[1])
         setAmpmValue(format?.[2])
         return format
-    }, [props?.value])
+    }, [])
 
 
     useEffect(()=>{
 
 
-        props.onChange(props.id, toIsoFormat(Moment(`${year}-${month}-${day} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
-    }, [minuteValue, hourValue, ampmValue])
+        props.onChange(props.id, toIsoFormat(Moment(`${dates?.[0]}-${dates?.[1]}-${dates?.[2]} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
+    }, [minuteValue, hourValue, ampmValue, yearValue, monthValue, dayValue])
 
     return <>
         <View style={{flex: 0.9}}>
