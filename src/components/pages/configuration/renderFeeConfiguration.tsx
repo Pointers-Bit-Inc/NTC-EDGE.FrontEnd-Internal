@@ -97,12 +97,9 @@ const RenderFeeConfiguration = (props) => {
             async function f(e, p = undefined) {
                 switch (typeof e) {
                     case "object":
-
                         if (true) {
-
                             p = p ? p + "." : "";
                             _.forIn(e, async function (value, i) {
-
                                 if (e[i]?.hasOwnProperty('year')) {
                                     e[i] = moment(e[i])?.format('LL')
                                 }
@@ -188,7 +185,9 @@ const RenderFeeConfiguration = (props) => {
                 return fuzzysearch(props.search, transformText(e?.[0]))
             })}
             renderItem={_renderParent}
-            keyExtractor={(item, index) => `${index}`}
+            keyExtractor={(item, index) =>{
+                return `${item?.[0] + index}`
+            } }
             scrollEnabled={false}
         />
     )

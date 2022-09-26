@@ -1,5 +1,5 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {memo, useCallback, useMemo} from "react";
+import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import React, {memo, useCallback, useMemo, useRef, useState} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular, Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
@@ -29,29 +29,41 @@ const styles = StyleSheet.create({
 })
 const Row = (props: { visibleText?: string, outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
-    const applicantMemo = useMemo(()=>props.display || props.applicant, [props.display,  props.applicant])
+    const [value, setValue] = useState()
+    const [initialState, setInitialState] = useState(true)
+    const applicantMemo = useMemo(()=>{
+        if(initialState && !value){
+            setValue( props.display || props.applicant)
+        }
+        return props.display || props.applicant
+    }, [props.display,  props.applicant])
+
+
+
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
     const SUPPORTED_FORMATS = ["jpg", "jpeg", "png"];
     function get_url_extension(url: string) {
         return url?.split?.(/[#?]/)?.[0]?.split?.('.')?.pop()?.trim();
     }
 
-    const getOnChange = useCallback((e) => {
 
-        props.updateForm(props.stateName, e?.nativeEvent?.text)
-    }, [props.updateForm])
 
+    const textInput = useRef();
+    const getOnChange =((e) => {
+        setValue(e?.nativeEvent?.text)
+    })
     return ((!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) )  ?
         <View style={styles.group2}>
             {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
             {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo || props.visibleText || ""} </Text>}
         </View> : <>
-            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
+            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField  ref={textInput}  containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)
                 setEdit(false)
-            }}
+            }} onBlur={(event) => {
 
-                                                                                      onChange={getOnChange} value={props.applicant } label={props.label}/> : <></>}
+                props.updateForm(props.stateName, value)
+            }} onChange={getOnChange} defaultValue={applicantMemo} value={value} label={props.label}/> : <></>}
         </>
 };
 
