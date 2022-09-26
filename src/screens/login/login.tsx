@@ -51,7 +51,7 @@ const Login = ({ navigation }: any) => {
         <ImageBackground
             resizeMode="stretch"
             source={ background }
-            style={[ styles.bgImage, {width: dimension.width, height: dimension.height}] }
+            style={[ styles.bgImage, {width: dimension.width, height: height}] }
             imageStyle={ { flex : 1 } }
         >
             <StatusBar barStyle="light-content"/>
