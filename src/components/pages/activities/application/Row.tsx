@@ -32,8 +32,9 @@ const Row = (props: { visibleText?: string, outlineStyle?: any, containerStyle?:
     const [value, setValue] = useState()
     const [initialState, setInitialState] = useState(true)
     const applicantMemo = useMemo(()=>{
-        if(initialState && !value){
+        if(initialState && !value && (props.display || props.applicant)){
             setValue( props.display || props.applicant)
+            setInitialState(false)
         }
         return props.display || props.applicant
     }, [props.display,  props.applicant])
