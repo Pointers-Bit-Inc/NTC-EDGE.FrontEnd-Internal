@@ -78,6 +78,7 @@ import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
 import {Regular} from "@styles/font";
 import {FlashList} from "@shopify/flash-list";
+import CalendarIcon from "@assets/svg/calendarIcon";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -683,13 +684,24 @@ const ActivitiesPage = (props) => {
                                         isMobile && !(
                                             Platform?.isPad || isTablet())) || dimensions?.width < 768 ? `Activity` : `Feed`}</Text>
                                     <View style={{flex: 1}}/>
+                                    {/*<View style={{paddingHorizontal: 15}}>
+                                        <TouchableOpacity onPress={() => {
+                                            dispatch(setVisible(true))
+                                        }
+
+                                        }>
+                                            <CalendarIcon color={(Platform.OS == "web" || Platform.isPad)? "#4E4B66"  :"white"} pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
+                                                          height={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}/>
+                                        </TouchableOpacity>
+                                    </View>*/}
+
                                     <TouchableOpacity onPress={() => {
                                         dispatch(setVisible(true))
                                     }
 
                                     }>
-                                        <Filter pressed={visible} width={fontValue(Platform.isPad ? 30 : 21)}
-                                                height={fontValue(Platform.isPad ? 30 : 21)}/>
+                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 30 : 21)}
+                                                height={fontValue(Platform.OS == "web" || Platform.isPad ? 30 : 21)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
