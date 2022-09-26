@@ -317,7 +317,7 @@ export default function ConfigurationPage(props: any) {
     const applicantFeeForm = (stateName, value) => {
 
         let newForm = {...feeFlatten}
-        newForm[stateName] = _.toNumber(value) || value
+        newForm[stateName] = _.toNumber(value) || value || 0
         dispatch(setFeeFlatten(Object.assign(feeFlatten, newForm)))
     }
     const listEmptyComponent = useMemoizedFn(() => listEmpty(!loading, "", fee.length ));
