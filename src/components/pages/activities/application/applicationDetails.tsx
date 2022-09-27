@@ -125,7 +125,7 @@ const ApplicationDetails = (props: any) => {
                        applicant={userProfileForm?.["service.applicationType.element"]}/>
 
                 {
-                    props?.documents && (props?.applicantType || props?.service?.name) && props?.paymentStatus == PAID &&
+                    ((props?.documents && (props?.applicantType || props?.service?.name)) || (props?.paymentStatus == PAID)) &&
                     <View style={{paddingVertical: 10}}>
                         <Pressable onPress={() => setModalVisible(true)}>
                             <View style={{flexDirection: "row"}}>
