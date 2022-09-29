@@ -1,4 +1,4 @@
-import React, {FC, memo, ReactElement, useEffect, useRef, useState} from 'react';
+import React, {FC, memo, ReactElement, useEffect, useMemo, useRef, useState} from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -22,6 +22,7 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setDropdownVisible} from "../../../../reducers/activity/actions";
 
 interface Props {
+    value: any;
         label: string;
         data: any;
         onSelect: (item: any) => void;
@@ -29,6 +30,7 @@ interface Props {
     }
 
     const CustomDropdown: FC<Props> = ({label, data, onSelect, value, loading}) => {
+
         const dimension = useWindowDimensions()
         const DropdownButton = useRef();
         const dispatch=useDispatch();
@@ -50,9 +52,12 @@ interface Props {
                 openDropdown();
             }
         };
+        const valueMemo = useMemo(()=>{
+            return value
+        }, [value])
         useEffect(() => {
             let isCurrent = true
-            const _selectedIndex = data?.findIndex((item) => item.value == value)
+            const _selectedIndex = data?.findIndex((item) => item.value == valueMemo)
 
             if(isCurrent) setSelectedIndex(_selectedIndex)
             if(_selectedIndex != null && _selectedIndex != undefined ){
@@ -64,7 +69,7 @@ interface Props {
               return () =>{
                   isCurrent = false
               }
-        }, [selectedIndex])
+        }, [selectedIndex, valueMemo])
 
         useEffect(()=>{
             let timer1 = setTimeout(() => {
@@ -147,7 +152,6 @@ interface Props {
                 </Modal>
             );
         };
-
         return (
             <TouchableOpacity
                 ref={DropdownButton}

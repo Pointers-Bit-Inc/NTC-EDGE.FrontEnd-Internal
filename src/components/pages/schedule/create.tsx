@@ -27,7 +27,7 @@ const CreateScheduleScreen = (props) => {
                 <Text>Close</Text>
             </TouchableOpacity>
         </Header>
-        <ScheduleCreateEdit formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
+        <ScheduleCreateEdit id={schedule.id} formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
                             onPress1={handleEndPress} backgroundColor={background} scale={display}
                             translateY={success} onPress2={() => {
             Animated.spring(animation, {

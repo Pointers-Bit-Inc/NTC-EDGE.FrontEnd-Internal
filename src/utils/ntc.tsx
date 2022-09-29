@@ -388,13 +388,15 @@ const toIsoFormat = (date) => {
 
 const formatAMPM = (date) => {
 
-
     let hours = date.getHours();
     let minutes = date.getMinutes();
     let ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
     hours = hours ? hours : 12;
     minutes = minutes.toString().padStart(2, '0');
+    hours = hours.toString().padStart(2, '0');
+
+
     return  [hours, minutes, ampm];
 }
 const isNumber = (v: unknown) => typeof v === 'number' && !Number.isNaN(v);

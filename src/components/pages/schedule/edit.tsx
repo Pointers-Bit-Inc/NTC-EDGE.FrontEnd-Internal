@@ -29,6 +29,9 @@ const EditScheduleScreen = (props) => {
         setFormValue,setOriginalForm
     } = useSchedule(props);
 
+
+
+
     useEffect(()=>{
         let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
         parseSchedule(_originalForm, schedule);
@@ -38,7 +41,6 @@ const EditScheduleScreen = (props) => {
         setFormValue(__originalForm)
 
     }, [])
-
     return <View style={[{flex: 1, backgroundColor: "#fff",}]}>
 
         <Header size={24} title={"Schedule: "}>
@@ -48,7 +50,7 @@ const EditScheduleScreen = (props) => {
         </Header>
 
 
-        <ScheduleCreateEdit formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
+        <ScheduleCreateEdit id={schedule.id} formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
                             onPress1={handleEndPress} backgroundColor={background} scale={display}
                             translateY={success} onPress2={() => {
             Animated.spring(animation, {

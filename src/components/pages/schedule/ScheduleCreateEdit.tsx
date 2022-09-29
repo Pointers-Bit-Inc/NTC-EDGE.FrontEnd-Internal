@@ -16,10 +16,9 @@ import {ampmArray, datesArray, formatAMPM, hoursArray, toIsoFormat} from "../../
 import useSafeState from "../../../hooks/useSafeState";
 import Moment from "moment";
 
-function ScheduleTime(props: { value: any, id: string, onChange: any}) {
+function ScheduleTime(props: {scheduleId: any, value: any, id: string, onChange: any}) {
 
     const dates = useMemo(() =>{
-        console.log(props?.value, "dates")
         return (typeof props!.value == "string" ? (props?.value) : (props?.value?.toISOString()))?.split?.('T')?.[0]?.split?.('-')
     }, [props?.value])
     const year = dates?.[0]
@@ -33,24 +32,33 @@ function ScheduleTime(props: { value: any, id: string, onChange: any}) {
     const [monthValue, setMonthValue] = useSafeState(_month)
     const [dayValue, setDayValue] = useSafeState(parseInt(day).toString())
     const [yearValue, setYearValue] = useSafeState(_year)
+    const [initializeValue, setInitializeValue] = useSafeState(false)
+    const [prevScheduleId, setPrevScheduleId] = useSafeState("")
+    const [prevValue, setPrevValue] = useSafeState("")
     const time = useMemo(() => {
-        const format = formatAMPM(new Date(props?.value))
-        setHourValue(format?.[0])
-        setMinuteValue(format?.[1])
-        setAmpmValue(format?.[2])
+        console.log(props.value, props.scheduleId, prevScheduleId," props.scheduleId",  "props.value")
+       if(!props.value) return
+        const format = formatAMPM(new Date(props?.value?.replace?.(/\.\d+/, "")))
+        if( (prevScheduleId != props.scheduleId ) && (prevValue != props.value ) ){
+            setHourValue(format?.[0])
+            setMinuteValue(format?.[1])
+            setAmpmValue(format?.[2])
+            setInitializeValue(false)
+            setPrevScheduleId(props.scheduleId)
+            setPrevValue(props.value)
+        }
         return format
-    }, [])
+
+    }, [hourValue, minuteValue, ampmValue, props.scheduleId,  props.value, prevScheduleId, prevValue])
 
 
     useEffect(()=>{
-
-
         props.onChange(props.id, toIsoFormat(Moment(`${dates?.[0]}-${dates?.[1]}-${dates?.[2]} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
     }, [minuteValue, hourValue, ampmValue, yearValue, monthValue, dayValue])
 
     return <>
         <View style={{flex: 0.9}}>
-            <CustomDropdown value={hourValue}
+            <CustomDropdown  value={hourValue}
                             label="Select Hour"
                             data={hoursArray}
                             onSelect={({value}) => {
@@ -80,7 +88,15 @@ function ScheduleTime(props: { value: any, id: string, onChange: any}) {
 }
 
 function ScheduleCreateEdit(props: {
-    formElements: ({ stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { data: ({ label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string })[]; stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { stateName: string; id: number; label: string; error: boolean; type: string; value: any })[], onChange: (id: number, text: any, element?: string, _key?: string) => void, onPress: () => void, onPress1: () => void, backgroundColor: Animated.AnimatedInterpolation, scale: Animated.AnimatedInterpolation, translateY: Animated.AnimatedInterpolation, onPress2: () => void, dimensions: ScaledSize, onDateChange: (date, type) => void
+    formElements: ({ stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { data: ({ label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string })[]; stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { stateName: string; id: number; label: string; error: boolean; type: string; value: any })[],
+    onChange: (id: number, text: any, element?: string, _key?: string) => void,
+    onPress: () => void,
+    onPress1: () => void,
+    id: any,
+    backgroundColor: Animated.AnimatedInterpolation,
+    scale: Animated.AnimatedInterpolation,
+    translateY: Animated.AnimatedInterpolation,
+    onPress2: () => void, dimensions: ScaledSize, onDateChange: (date, type) => void
 }) {
 
     return <>
@@ -89,8 +105,6 @@ function ScheduleCreateEdit(props: {
             <FormField
                 formElements={props.formElements}
                 onChange={props.onChange}
-
-                // editable={editable}
             />
 
             <View style={{paddingBottom: 10}}><View>
@@ -98,7 +112,7 @@ function ScheduleCreateEdit(props: {
                     <Text size={12}>Start Time</Text>
                 </View>
                 <View style={{padding: 3, flexDirection: "row", justifyContent: "space-between"}}>
-                    <ScheduleTime onChange={props.onChange} id={3} value={props.formElements?.[2]?.value}/>
+                    <ScheduleTime scheduleId={props.id} onChange={props.onChange} id={3} value={props.formElements?.[2]?.value}/>
 
                 </View>
             </View></View>
@@ -107,8 +121,7 @@ function ScheduleCreateEdit(props: {
                     <Text size={12}>End Time</Text>
                 </View>
                 <View style={{padding: 3, flexDirection: "row", justifyContent: "space-between"}}>
-                    <ScheduleTime onChange={props.onChange} id={4} value={props.formElements?.[3]?.value}/>
-
+                    <ScheduleTime scheduleId={props.id}  onChange={props.onChange} id={4} value={props.formElements?.[3]?.value}/>
                 </View>
             </View></View>
             <View
