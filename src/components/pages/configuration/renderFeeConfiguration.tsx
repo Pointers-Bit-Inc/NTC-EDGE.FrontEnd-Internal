@@ -1,5 +1,5 @@
 import Row from "@pages/activities/application/Row";
-import {FlatList, StyleSheet, Text, View} from "react-native";
+import {FlatList, Platform, StyleSheet, Text, View} from "react-native";
 import React, {memo, useMemo} from "react";
 import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
@@ -179,6 +179,7 @@ const RenderFeeConfiguration = (props) => {
 
     return (
         <FlatList
+            nestedScrollEnabled={true}
             showsVerticalScrollIndicator={false}
             style={styles.group3}
             data={Object.entries(flatten(_.omit(service, props.exclude))).filter(e => {
@@ -188,7 +189,7 @@ const RenderFeeConfiguration = (props) => {
             keyExtractor={(item, index) =>{
                 return `${item?.[0] + index}`
             } }
-            scrollEnabled={false}
+            scrollEnabled={Platform.OS != "web"}
         />
     )
 };

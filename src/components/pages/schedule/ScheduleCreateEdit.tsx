@@ -112,7 +112,7 @@ function ScheduleCreateEdit(props: {
                     <Text size={12}>Start Time</Text>
                 </View>
                 <View style={{padding: 3, flexDirection: "row", justifyContent: "space-between"}}>
-                    <ScheduleTime scheduleId={props.id} onChange={props.onChange} id={3} value={props.formElements?.[2]?.value}/>
+                    <ScheduleTime scheduleId={props.id}  onChange={props.onChange} id={3} value={props.formElements?.[2]?.value}/>
 
                 </View>
             </View></View>
@@ -235,6 +235,8 @@ function ScheduleCreateEdit(props: {
                         startFromMonday={true}
                         allowRangeSelection={true}
                         todayBackgroundColor="#f2e6ff"
+                        selectedStartDate={props.formElements?.[2]?.value}
+                        selectedEndDate={props.formElements?.[3]?.value}
                         selectedDayColor={infoColor}
                         selectedDayTextColor="#FFFFFF"
                         onDateChange={props.onDateChange}

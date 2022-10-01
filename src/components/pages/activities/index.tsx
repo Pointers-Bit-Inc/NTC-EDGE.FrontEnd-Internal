@@ -654,7 +654,7 @@ const ActivitiesPage = (props) => {
     const activityMergeStyle = useMemo(() => [styles1.activity, {
         color: (
             isMobile && !(
-                Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
+                Platform?.isPad || isTablet())) ? "rgba(255,255,255,1)" : primaryColor,
     }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width,])
 
     return (
@@ -673,7 +673,7 @@ const ActivitiesPage = (props) => {
                                     {(
                                             (
                                                 isMobile && !(
-                                                    Platform?.isPad || isTablet())) || dimensions?.width < 768) &&
+                                                    Platform?.isPad || isTablet()))) &&
                                         <TouchableOpacity
                                             onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                                             <HomeMenuIcon height={fontValue(24)} width={fontValue(24)}/>
@@ -682,7 +682,7 @@ const ActivitiesPage = (props) => {
                                     <Text
                                         style={activityMergeStyle}>{(
                                         isMobile && !(
-                                            Platform?.isPad || isTablet())) || dimensions?.width < 768 ? `Activity` : `Feed`}</Text>
+                                            Platform?.isPad || isTablet()))? `Activity` : `Feed`}</Text>
                                     <View style={{flex: 1}}/>
                                     {/*<View style={{paddingHorizontal: 15}}>
                                         <TouchableOpacity onPress={() => {

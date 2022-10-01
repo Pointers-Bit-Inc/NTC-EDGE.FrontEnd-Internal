@@ -1,84 +1,80 @@
-import React, {useEffect, useMemo} from "react";
+import React from "react";
 import Header from "@molecules/header";
-import {Animated, TouchableOpacity, View} from "react-native";
-import {disabledColor, successColor} from "@styles/color";
+import {Image, TouchableOpacity, View} from "react-native";
+import {text} from "@styles/color";
 import Text from "@atoms/text";
 import {styles} from "@pages/activities/styles";
-import ScheduleCreateEdit from "@pages/schedule/ScheduleCreateEdit";
-import useSchedule from "../../../hooks/useSchedule";
-import {setSchedule} from "../../../reducers/schedule/actions";
-import parseSchedule from "@pages/schedule/parseSchedule";
+import {UploadIcon} from "@atoms/icon";
+import useConfiguration from "../../../hooks/useConfiguration";
 
 const EditConfigurationScreen = (props) => {
+
     const {
-        dimensions,
-        animation,
-        background,
-        display,
-        success,
+        onPress,
+        region,
         onClose,
-        formValue,
-        onUpdateForm,
-        handleStartPress,
-        handleEndPress,
-        onUpdateCreateSchedule,
-        onDateChange,
-        updateValid,
-        schedule,
-        originalForm,
-        setFormValue,setOriginalForm
-    } = useSchedule(props);
-
-    useEffect(()=>{
-        let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
-        parseSchedule(_originalForm, schedule);
-        setOriginalForm(_originalForm)
-        let __originalForm = [...JSON.parse(JSON.stringify(originalForm))]
-        parseSchedule(__originalForm, schedule)
-        setFormValue(__originalForm)
-
-    }, [])
-
+    } = useConfiguration(props);
     return <View style={[{flex: 1, backgroundColor: "#fff",}]}>
 
-        <Header size={24} title={"Schedule: "}>
+        <Header size={24} title={"Region: " + region?.label || ""}>
             <TouchableOpacity onPress={onClose}>
                 <Text>Close</Text>
             </TouchableOpacity>
         </Header>
 
-
-        <ScheduleCreateEdit id={schedule.id} formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
-                            onPress1={handleEndPress} backgroundColor={background} scale={display}
-                            translateY={success} onPress2={() => {
-            Animated.spring(animation, {
-                toValue: 0,
-                useNativeDriver: false,
-            }).start();
-        }} dimensions={dimensions} onDateChange={onDateChange}/>
         <View style={{
-
-            margin: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
+            flex: 1,
+            flexDirection: "row"
         }}>
-            {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
+            <View style={{padding: 20, justifyContent: 'space-between', alignItems: 'center',}}>
+                <TouchableOpacity onPress={() => onPress('director')}>
+                    <View style={styles.border}>
+                        <Image resizeMode={"contain"}
+                               source={region?.configuration ? {
+                                   uri: region?.configuration?.director?.signature,
+                               } : require('@assets/avatar.png')}
+                               style={{height: 200, width: 200}}/>
+                    </View>
+
+                    <View style={styles.uploadSignature}>
+                        <UploadIcon color={text.info}/>
+                        <Text>Director Signature</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+            <View style={{padding: 20, justifyContent: 'space-between', alignItems: 'center',}}>
+                <TouchableOpacity onPress={() => onPress('commissioner')}>
+                    <View style={styles.border}>
+                        <Image resizeMode={"stretch"}
+                               source={ region?.configuration ? {
+                                   uri: region?.configuration?.commissioner?.signature,
+                               } : require('@assets/avatar.png')}
+                               style={{height: 200, width: 200, zIndex: 1}}/>
+                    </View>
+                    <View style={styles.uploadSignature}>
+                        <UploadIcon color={text.info}/>
+                        <Text>Commissioner Signature</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </View>
+        {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
 
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-            <TouchableOpacity onPress={() => onUpdateCreateSchedule('patch')} disabled={!updateValid}
-                              style={{
-                                  backgroundColor: updateValid ? successColor : disabledColor,
-                                  paddingVertical: 10,
-                                  paddingHorizontal: 20,
-                                  borderRadius: 10
-                              }}>
+        {/*  <View style={{alignItems: "center"}}>
+                        <TouchableOpacity onPress={() => onUpdateCreateRegion('patch')} disabled={!updateValid}
+                                          style={{
+                                              backgroundColor: updateValid ? successColor : disabledColor,
+                                              paddingVertical: 10,
+                                              paddingHorizontal: 20,
+                                              borderRadius: 10
+                                          }}>
 
-                <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Schedule</Text>
 
-            </TouchableOpacity>
-        </View>
+                        </TouchableOpacity>
+                    </View>*/}
 
 
     </View>

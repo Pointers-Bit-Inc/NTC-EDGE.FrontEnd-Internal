@@ -172,10 +172,7 @@ function useSchedule(props: any) {
             } else if (method == "post") {
                 dispatch(setAddSchedule(res.data))
             }
-
-            if (isMobile && props.navigation.canGoBack()) {
-                props.navigation.goBack()
-            }
+            onClose()
 
             showToast(ToastType.Success, "Success! ")
         }).catch((error) => {
@@ -217,6 +214,7 @@ function useSchedule(props: any) {
         })
     }
     const onDateChange = (date, type) => {
+
         if (type === 'END_DATE') {
             onUpdateForm(4, date, '', 'dateEnd')
 
