@@ -34,7 +34,8 @@ const {
     SET_USER_PROFILE_FORM,
     SET_USER_ORIGINAL_PROFILE_FORM,
     UPDATE_CHANGE_EVENT,
-    SET_DATA
+    SET_DATA,
+    SET_CALENDAR_VISIBLE
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -92,6 +93,10 @@ export default function basket(state = initialState, action = {}) {
         }
         case SET_USER_PROFILE_FORM: {
             state = state.set('userProfileForm', action.payload);
+            return state
+        }
+        case SET_CALENDAR_VISIBLE: {
+            state = state.set('calendarVisible', action.payload);
             return state
         }
         case SET_USER_ORIGINAL_PROFILE_FORM: {

@@ -11,6 +11,7 @@ import role from './role/reducers';
 import layout from "./layout/reducers";
 import schedule from "./schedule/reducers";
 import configuration from "./configuration/reducers";
+import soa from "./soa/reducers";
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
@@ -26,5 +27,6 @@ export default combineReducers({
   meeting,
   role,
   schedule,
-  configuration
+  configuration,
+  soa
 });

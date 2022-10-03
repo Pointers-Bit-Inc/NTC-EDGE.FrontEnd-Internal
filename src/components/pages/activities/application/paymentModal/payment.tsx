@@ -29,12 +29,15 @@ import FileIcon from "@assets/svg/file";
 import Card from "@pages/activities/application/card";
 import useSafeState from "../../../../../hooks/useSafeState";
 import CloseIcon from "@assets/svg/close";
-import {isNumber} from "../../../../../utils/ntc";
+import {isNumber, numberBetween1And100} from "../../../../../utils/ntc";
 import {infoColor} from "@styles/color";
 import {PlusIcon} from "@atoms/icon";
 import LoadingModal from "@pages/activities/loading/loadingModal";
 import {setUserProfileForm} from "../../../../../reducers/application/actions";
 import KeyboardShift from "@molecules/keyboard";
+import DelayInput from "@atoms/debounceInput";
+import {InputField} from "@molecules/form-fields";
+import {setAmnesty} from "../../../../../reducers/soa/actions";
 
 const flatten = require('flat')
 
@@ -280,6 +283,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 const Payment = (_props: any) => {
     const props = useMemo(() => _props, [_props])
     const dispatch = useDispatch();
+    const amnesty = useSelector((state: RootStateOrAny) => state.soa.amnesty);
     const userProfileForm = useSelector((state: RootStateOrAny) => state.application.userProfileForm);
     const userOriginalProfileForm = useSelector((state: RootStateOrAny) => state.application.userOriginalProfileForm);
 
@@ -408,6 +412,30 @@ const Payment = (_props: any) => {
         }
     }
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
+    const [value, setValue] = useState()
+    const handleValidation = (value) => {
+        const pattern  = '^(0|[1-9][0-9]?|100)$'
+        if (!pattern) return true;
+
+        // string pattern, one validation rule
+        if (typeof pattern === 'string') {
+            const condition = new RegExp(pattern, 'g');
+            return condition.test(value);
+        }
+
+        // array patterns, multiple validation rules
+        if (typeof pattern === 'object') {
+            const conditions = pattern.map(rule => new RegExp(rule, 'g'));
+            return conditions.map(condition => condition.test(value));
+        }
+    }
+    const getOnChange =((e) => {
+        const isValid = handleValidation(e?.nativeEvent?.text);
+            if(isValid || (e?.nativeEvent?.text == "")){
+                dispatch(setAmnesty(e?.nativeEvent?.text))
+            }
+
+    })
     return <View style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardShift>
@@ -514,7 +542,6 @@ const Payment = (_props: any) => {
                                                     </View>
                                                     {props.edit && <View style={{}}>
                                                         <TouchableOpacity onPress={() => {
-                                                            console.log(s.id, index)
                                                             closeItem(s.id, index)
                                                         }}
                                                                           style={{paddingHorizontal: 10}}>
@@ -544,31 +571,38 @@ const Payment = (_props: any) => {
                                         Item</Text>
                                 </View></TouchableOpacity>}
                                 <View style={{paddingTop: 15}}>
+
                                     <View
                                         style={{
                                             borderTopWidth: 1,
                                             borderTopColor: "#000",
                                             backgroundColor: "#E0E0E0",
                                             flexDirection: 'row',
-                                            justifyContent: "flex-end",
+                                            justifyContent: !props.edit ? "flex-end" : "space-between",
                                             alignItems: 'center',
                                             paddingVertical: fontValue(5)
                                         }}
                                     >
+                                        {props.edit ? <View style={{  justifyContent: "center", flex: 1, marginHorizontal: 20}}>
+                                            <InputField mainContainerStyle={{marginBottom: 0}} value={amnesty} onChange={getOnChange}  placeholder={"Amnesty"}/>
+                                        </View> : <></>}
+                                        <View style={{marginRight: 30, flexDirection: "row"}}>
+                                            <Text
 
-                                        <Text
+                                                color="#37405B"
+                                                style={{fontSize: fontValue(14), fontFamily: Regular, marginRight: 30}}
+                                            >
+                                                {"Total".toUpperCase()}
+                                            </Text>
+                                            <Text
+                                                style={{fontSize: fontValue(16), fontFamily: Bold}}
+                                                color="#37405B"
+                                            >
+                                                ₱{getTotal()}
+                                            </Text>
+                                        </View>
 
-                                            color="#37405B"
-                                            style={{fontSize: fontValue(14), fontFamily: Regular, marginRight: 30}}
-                                        >
-                                            {"Total".toUpperCase()}
-                                        </Text>
-                                        <Text
-                                            style={{fontSize: fontValue(16), fontFamily: Bold}}
-                                            color="#37405B"
-                                        >
-                                            ₱{getTotal()}
-                                        </Text>
+
                                     </View>
                                 </View>
 

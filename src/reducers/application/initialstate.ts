@@ -21,6 +21,11 @@ const InitialState = Record({
   userOriginalProfileForm: {},
   topBarNav: {width: 0, height: 0, left: 0, top: 0},
   activitySizeComponent: {width: 0, height: 0, left: 0, top: 0},
+
+
+  calendarVisible: false,
+
+
 });
 
 export default InitialState;

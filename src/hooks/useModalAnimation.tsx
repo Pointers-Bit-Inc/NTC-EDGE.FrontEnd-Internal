@@ -1,6 +1,8 @@
-import {useState} from "react";
-import {Animated, Dimensions} from "react-native";
-
+import React, {useState} from 'react';
+import {
+    Animated,
+    Dimensions,
+} from 'react-native';
 function useModalAnimation() {
     const [animation] = useState(() => new Animated.Value(0));
 

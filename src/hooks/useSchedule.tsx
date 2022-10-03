@@ -216,11 +216,18 @@ function useSchedule(props: any) {
     const onDateChange = (date, type) => {
 
         if (type === 'END_DATE') {
-            onUpdateForm(4, date, '', 'dateEnd')
-
+            let _date = date?.toISOString()?.split?.("T")
+            if(_date && formValue?.[3]?.value){
+                _date[1] = formValue?.[3]?.value?.split?.("T")?.[1]
+            }
+            onUpdateForm(4, _date?.join("T") || null, '', 'dateEnd')
         } else {
-            onUpdateForm(4, null, '', 'dateEnd')
-            onUpdateForm(3, date, '', 'dateStart')
+            let _date = date?.toISOString()?.split?.("T")
+            if(_date && formValue?.[2]?.value){
+                _date[1] = formValue?.[2]?.value?.split?.("T")?.[1]
+            }
+            onUpdateForm(4, _date?.join("T") || null, '', 'dateEnd')
+            onUpdateForm(3, _date?.join("T") || null, '', 'dateStart')
         }
     }
 

@@ -84,7 +84,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
       onFocus = () => {},
     onClose = () => {},
     onCheck = () => {},
-                                                                       mainContainerStyle,
+   mainContainerStyle,
       ...otherProps
   }, ref) => {
 
@@ -106,10 +106,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
     }));
 
 
-
-
     return (
-        <View style={[inputStyles.mainContainer, mainContainerStyle,]}>
+        <View style={[inputStyles.mainContainer, mainContainerStyle, ]}>
 
             <View style={[
 

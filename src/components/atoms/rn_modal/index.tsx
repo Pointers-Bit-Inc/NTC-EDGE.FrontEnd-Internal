@@ -1,6 +1,6 @@
+import modalStyle from '@styles/modal';
 import React, {useState} from 'react';
 import {
-    StyleSheet,
     Text,
     View,
     TouchableOpacity,
@@ -37,7 +37,7 @@ export default function App() {
     });
 
     return (
-        <View style={styles.container}>
+        <View style={modalStyle.container}>
             <TouchableOpacity
                 onPress={() => {
                     Animated.spring(animation, {
@@ -50,22 +50,22 @@ export default function App() {
             <Animated.View
                 pointerEvents="box-none"
                 style={[
-                    styles.background,
+                    modalStyle.background,
                     {
                         backgroundColor: background,
                     },
                 ]}>
                 <Animated.View
                     style={[
-                        styles.background,
+                        modalStyle.background,
                         {
                             transform: [{scale: display}, {translateY: success}],
                         },
                     ]}>
-                    <View style={styles.wrap}>
-                        <View style={styles.modalHeader} />
-                        <Text style={styles.headerText}>Hello!</Text>
-                        <Text style={styles.regularText}>
+                    <View style={modalStyle.wrap}>
+                        <View style={modalStyle.modalHeader} />
+                        <Text style={modalStyle.headerText}>Hello!</Text>
+                        <Text style={modalStyle.regularText}>
                             This modal is wonderful ain't it!
                         </Text>
                         <View
@@ -73,17 +73,17 @@ export default function App() {
                                 flexDirection: 'row',
                             }}>
                             <TouchableOpacity
-                                style={[styles.button, styles.buttonCancel]}
+                                style={[modalStyle.button, modalStyle.buttonCancel]}
                                 onPress={() => {
                                     Animated.spring(animation, {
                                         toValue: 0,
                                         useNativeDriver: false,
                                     }).start();
                                 }}>
-                                <Text style={styles.buttonText}>Close</Text>
+                                <Text style={modalStyle.buttonText}>Close</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={styles.button}
+                                style={modalStyle.button}
                                 onPress={() => {
                                     Animated.spring(animation, {
                                         toValue: 2,
@@ -92,7 +92,7 @@ export default function App() {
                                         animation.setValue(0);
                                     });
                                 }}>
-                                <Text style={styles.buttonText}>Save</Text>
+                                <Text style={modalStyle.buttonText}>Save</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -102,60 +102,3 @@ export default function App() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'tomato',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    background: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        right: 0,
-        bottom: 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    wrap: {
-        borderRadius: 8,
-        backgroundColor: '#FFF',
-        padding: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 6.27,
-
-        elevation: 10,
-    },
-    headerText: {
-        textAlign: 'center',
-        fontSize: 24,
-    },
-    regularText: {
-        textAlign: 'center',
-        fontSize: 14,
-        marginTop: 16,
-    },
-    button: {
-        backgroundColor: '#007ffe',
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        borderRadius: 8,
-        marginTop: 16,
-        flex: 1,
-        marginHorizontal: 5,
-    },
-    buttonCancel: {
-        backgroundColor: 'red',
-    },
-    buttonText: {
-        color: '#FFF',
-        fontSize: 14,
-        textAlign: 'center',
-    },
-});

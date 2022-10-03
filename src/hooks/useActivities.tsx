@@ -85,7 +85,8 @@ function convertStatusText(convertedStatus:any[],item:any){
 
 
     const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
-    const visible= useSelector((state:RootStateOrAny)=>state.activity?.visible);
+    const  visible= useSelector((state:RootStateOrAny)=>state.activity?.visible);
+    const   calendarVisible= useSelector((state:RootStateOrAny)=>state.application?.calendarVisible);
     const applicationItem =useSelector((state:RootStateOrAny)=>{
         return state.application?.applicationItem
     });
@@ -585,7 +586,8 @@ function convertStatusText(convertedStatus:any[],item:any){
         pinnedApplications,
         setRefreshing,
         countRefresh,
-        updateModal
+        updateModal,
+        calendarVisible
     };
 }
 

@@ -66,6 +66,7 @@ import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
 import _ from "lodash";
 import {setUpdateIncrement} from "../../../reducers/activity/actions";
+import {setAmnesty} from "../../../reducers/soa/actions";
 
 const flatten = require('flat')
 
@@ -92,6 +93,9 @@ function ActivityModal(props: any) {
         return state.application.userProfileForm
     });
 
+    const amnesty = useSelector((state: RootStateOrAny) => {
+        return state.soa.amnesty
+    });
     const tabName = useSelector((state: RootStateOrAny) => {
         return state.activity.tabName
     });
@@ -364,6 +368,9 @@ function ActivityModal(props: any) {
                 Authorization: "Bearer ".concat(user?.sessionToken)
             }
         }
+
+        console.log(amnesty)
+
         let payload = {
             "id": "string",
             "service": "string",
@@ -388,7 +395,7 @@ function ActivityModal(props: any) {
             "noOfYears": 0,
             "updatedAt": "2022-08-14T07:53:36.858Z",
             "dateOfExpiry": "2022-08-14T07:53:36.858Z",
-            "discount": 0,
+            "discount": parseFloat(amnesty) || 0,
             "numberOfPermitsOrCertsOrApp": 0,
             "classes": "string",
             "fixed": 0,
@@ -420,6 +427,7 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
+
         const _flattenSoa = flatten.unflatten(cleanSoa).soa;
         let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
@@ -470,14 +478,19 @@ function ActivityModal(props: any) {
             }
         }
 
+
+
         const profileFormUnflatten = flatten.unflatten(profileForm)
         if (profileForm?.['service.stationClass']) {
             profileForm['service.stationClass'] = _service?.service?.stationClass
 
         }
+
+
+
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
-
+dispatch(setAmnesty(0))
 
             //hideToast()
             dispatch(setHasChange(false))
@@ -529,7 +542,7 @@ function ActivityModal(props: any) {
             setTitleUpdate("Error")*/
             callback()
         });
-    }, [userProfileForm])
+    }, [userProfileForm, amnesty])
     const visibleAnimated = useRef(new Animated.Value(Number(!edit))).current;
     const getAnimatedStyle = () => {
         Animated.timing(visibleAnimated, {

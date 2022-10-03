@@ -2,6 +2,7 @@ import {createMaterialTopTabNavigator, MaterialTopTabBarProps,} from "@react-nav
 
 import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
+    Dimensions,
     FlatList,
     FlatListProps,
     Platform,
@@ -15,6 +16,7 @@ import {
     View,
     ViewProps,
     ViewStyle,
+   Animated as RNAnimated
 } from "react-native";
 import Animated, {
     interpolate,
@@ -23,6 +25,9 @@ import Animated, {
     useDerivedValue,
     useSharedValue,
 } from "react-native-reanimated";
+
+
+
 import TabBar from "./components/TabBar";
 import useScrollSync from "./hooks/useScrollSync";
 import {Connection} from "./types/Connection";
@@ -56,7 +61,7 @@ import {infoColor, primaryColor} from "@styles/color";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {MeetingNotif} from '@components/molecules/list-item';
 import {
-    setApplicationItem,
+    setApplicationItem, setCalendarVisible,
     setEdit,
     setHasChange,
     setNotPinnedApplication,
@@ -76,11 +81,14 @@ import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
-import {Regular} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import {FlashList} from "@shopify/flash-list";
 import CalendarIcon from "@assets/svg/calendarIcon";
-
-const TAB_BAR_HEIGHT = 48;
+import CalendarView from "@pages/schedule/CalendarView";
+import modalStyle from "@styles/modal";
+import CalendarPicker from 'react-native-calendar-picker';
+import CloseIcon from "@assets/svg/close";
+import hairlineWidth = StyleSheet.hairlineWidth;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
 
@@ -88,7 +96,7 @@ const ActivitiesPage = (props) => {
     const dimensions = useWindowDimensions();
     const Filter = (
         isMobile && !(
-            Platform?.isPad || isTablet())) || dimensions?.width < 768 ? FilterIcon : FilterPressIcon;
+            Platform?.isPad || isTablet()))  ? FilterIcon : FilterPressIcon;
     const {
         isReady,
         user,
@@ -127,8 +135,10 @@ const ActivitiesPage = (props) => {
         containerHeight,
         scrollViewRef, yPos, setYPos,
         countRefresh,
-        updateModal
+        updateModal,
+        calendarVisible
     } = useActivities(props);
+
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
     const applicationItemId = useSelector((state: RootStateOrAny) => state.application.applicationItemId);
 
@@ -657,6 +667,53 @@ const ActivitiesPage = (props) => {
                 Platform?.isPad || isTablet())) ? "rgba(255,255,255,1)" : primaryColor,
     }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width,])
 
+    const [animation] = useState(() => new RNAnimated.Value(0));
+
+    const background = animation.interpolate({
+        inputRange: [0, 0.2, 1.8, 2],
+        outputRange: [
+            'rgba(0,0,0,0)',
+            'rgba(0,0,0,.3)',
+            'rgba(0,0,0,.3)',
+            'rgba(0,0,0,0)',
+        ],
+        extrapolate: 'clamp',
+    });
+
+    const display = animation.interpolate({
+        inputRange: [0.2, 1],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+    });
+
+    const {height} = Dimensions.get('window');
+
+    const success = animation.interpolate({
+        inputRange: [1.1, 2],
+        outputRange: [0, -height],
+        extrapolate: 'clamp',
+    });
+
+    const [selectedEndDate, setSelectedEndDate] = useState()
+    const [selectedStartDate, setSelectedStartDate] = useState()
+
+    const onDateChange = (date, type) => {
+        if (type === 'END_DATE') {
+         setSelectedEndDate(date);
+        } else {
+            setSelectedEndDate(null)
+            setSelectedStartDate(date);
+
+        }
+    }
+
+    const calendarPress = () => {
+        dispatch(setCalendarVisible(true))
+        RNAnimated.spring(animation, {
+            toValue: 1,
+            useNativeDriver: false,
+        }).start();
+    }
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -683,17 +740,13 @@ const ActivitiesPage = (props) => {
                                         style={activityMergeStyle}>{(
                                         isMobile && !(
                                             Platform?.isPad || isTablet()))? `Activity` : `Feed`}</Text>
-                                    <View style={{flex: 1}}/>
-                                    {/*<View style={{paddingHorizontal: 15}}>
-                                        <TouchableOpacity onPress={() => {
-                                            dispatch(setVisible(true))
-                                        }
-
-                                        }>
+                                    <View style={{flex: 1, justifyContent: "center"}}/>
+                                    <View style={{paddingHorizontal: 5}}>
+                                        <TouchableOpacity onPress={calendarPress}>
                                             <CalendarIcon color={(Platform.OS == "web" || Platform.isPad)? "#4E4B66"  :"white"} pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
-                                                          height={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}/>
+                                                          height={fontValue(Platform.OS == "web" || Platform.isPad ? 20 : 23)}/>
                                         </TouchableOpacity>
-                                    </View>*/}
+                                    </View>
 
                                     <TouchableOpacity onPress={() => {
                                         dispatch(setVisible(true))
@@ -709,7 +762,7 @@ const ActivitiesPage = (props) => {
                                             {Platform.OS == "web" || Platform.isPad ?
                                                 <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
                                                             height={fontValue(24)} fill={"#fff"}/> :
-                                                <View style={{paddingLeft: 23}}><RefreshRN/></View>}
+                                                <View style={{paddingLeft: 5}}><RefreshRN/></View>}
                                         </TouchableOpacity>
                                     }
                                 </View>
@@ -753,6 +806,7 @@ const ActivitiesPage = (props) => {
                                 }
 
                             </View>
+
                             <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}
                                            animated={{}} onPress={() => {
 
@@ -761,6 +815,21 @@ const ActivitiesPage = (props) => {
 
                                 props.navigation.navigate(isMobile ? SEARCHMOBILE : SEARCH);
                             }} searchVisible={searchVisible}/>
+                            {calendarVisible ? <View style={styles.calendarView}>
+                                <View style={{padding: 10}}>
+                                    <Text style={{fontSize: 16, fontFamily: Bold}}>Date Filter: </Text>
+                                </View>
+                                <CalendarView onPress={props.onPress}
+                                              isCloseable={true}
+                                              onCloseable={() => {
+                                                  setSelectedStartDate(null)
+                                                  setSelectedEndDate(null)
+                                                  dispatch(setCalendarVisible(!calendarVisible))
+                                              }}
+                                              startDate={selectedStartDate}
+                                              endDate={selectedEndDate}
+                                              onPress1={props.onPress1}/>
+                            </View> : <></>}
                         </View>
 
 
@@ -800,8 +869,70 @@ const ActivitiesPage = (props) => {
                                        visible={modalVisible}
                                        onDismissed={onDismissedModal}/>
                     </View>}
+
                 </View>
+
             </View>
+            <RNAnimated.View
+                pointerEvents="box-none"
+                style={[
+                    {
+                        backgroundColor: background,
+                    },
+                    modalStyle.background,
+
+                ]}>
+                <RNAnimated.View
+                    style={[
+                        modalStyle.background,
+                        {
+                            transform: [{scale: display}, {translateY: success}],
+                        },
+                    ]}>
+                    <View style={modalStyle.wrap}>
+                        <View style={modalStyle.modalHeader} />
+                        <View style={{
+                            padding: 20,
+                            flexDirection: "row",
+                            justifyContent: "flex-end"
+                        }}>
+                            <View>
+                                <TouchableOpacity
+
+                                    onPress={()=>{
+                                        if(!(selectedEndDate && selectedStartDate)){
+                                            dispatch(setCalendarVisible(!calendarVisible))
+                                        }
+
+                                        RNAnimated.spring(animation, {
+                                            toValue: 0,
+                                            useNativeDriver: false,
+                                        }).start();
+                                    }}>
+                                    <CloseIcon/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                        <CalendarPicker
+
+                            width={dimensions.width * 0.7}
+                            height={dimensions.height * 0.8}
+                            headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
+                            startFromMonday={true}
+                            allowRangeSelection={true}
+                            todayBackgroundColor="#f2e6ff"
+                            selectedStartDate={selectedStartDate}
+                            selectedEndDate={selectedEndDate}
+                            selectedDayColor={infoColor}
+                            selectedDayTextColor="#FFFFFF"
+                            onDateChange={onDateChange}
+                        />
+                    </View>
+                </RNAnimated.View>
+            </RNAnimated.View>
+
+
         </>
 
     )
@@ -838,8 +969,27 @@ const styles = StyleSheet.create({
         right: 0,
         position: "absolute",
         zIndex: 2,
-    },
+    }, calendarView: { backgroundColor: "rgba(255,255,255,1)",
+        ...Platform.select({
+            native: {
+                height: undefined,
+                paddingHorizontal: 30,
+                paddingVertical: 10
+            },
+            default: {
+
+                height: undefined,
+                paddingHorizontal: 30,
+                paddingBottom: 21,
+                borderBottomWidth: hairlineWidth,
+                borderBottomColor: "#EFEFEF"
+            }
+        })}
+
 });
+
+
+
 
 export default memo(ActivitiesPage);
 

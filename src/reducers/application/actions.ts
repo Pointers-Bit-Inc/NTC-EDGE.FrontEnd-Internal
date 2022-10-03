@@ -19,7 +19,8 @@ const {
     SET_USER_PROFILE_FORM,
     SET_USER_ORIGINAL_PROFILE_FORM,
     UPDATE_CHANGE_EVENT,
-    SET_DATA
+    SET_DATA,
+    SET_CALENDAR_VISIBLE
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -153,6 +154,13 @@ export function setUserOriginalProfileForm(payload) {
 export function setSelectedYPos(payload) {
     return {
         type: SET_SELECTED_YPOS,
+        payload,
+    };
+}
+
+export function setCalendarVisible(payload) {
+    return {
+        type: SET_CALENDAR_VISIBLE,
         payload,
     };
 }

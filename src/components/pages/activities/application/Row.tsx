@@ -58,13 +58,13 @@ const Row = (props: { visibleText?: string, outlineStyle?: any, containerStyle?:
             {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
             {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo || props.visibleText || ""} </Text>}
         </View> : <>
-            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField  ref={textInput}  containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
+            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField mainContainerStyle={{...{marginBottom: 10}}}   ref={textInput}  containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)
                 setEdit(false)
             }} onBlur={(event) => {
 
                 props.updateForm(props.stateName, value)
-            }} onChange={getOnChange} defaultValue={applicantMemo} value={value} label={props.label}/> : <></>}
+            }} onChange={getOnChange} defaultValue={applicantMemo} value={value} label={props.label} /> : <></>}
         </>
 };
 
