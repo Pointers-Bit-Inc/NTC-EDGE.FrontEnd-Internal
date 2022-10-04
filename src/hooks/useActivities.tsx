@@ -87,6 +87,8 @@ function convertStatusText(convertedStatus:any[],item:any){
     const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
     const  visible= useSelector((state:RootStateOrAny)=>state.activity?.visible);
     const   calendarVisible= useSelector((state:RootStateOrAny)=>state.application?.calendarVisible);
+    const   dateEnd= useSelector((state:RootStateOrAny)=>state.application?.dateEnd);
+    const   dateStart= useSelector((state:RootStateOrAny)=>state.application?.dateStart);
     const applicationItem =useSelector((state:RootStateOrAny)=>{
         return state.application?.applicationItem
     });
@@ -206,6 +208,10 @@ function convertStatusText(convertedStatus:any[],item:any){
         return {
             ...(
                 searchTerm&&{keyword:searchTerm}),
+            ...(
+                dateStart && {dateStart: dateStart}),
+            ...(
+                dateEnd && {dateStart: dateEnd}),
             ...(
                 {
                     pageSize: pinned ? 20 :10,
@@ -587,7 +593,9 @@ function convertStatusText(convertedStatus:any[],item:any){
         setRefreshing,
         countRefresh,
         updateModal,
-        calendarVisible
+        calendarVisible,
+        dateStart,
+        dateEnd
     };
 }
 

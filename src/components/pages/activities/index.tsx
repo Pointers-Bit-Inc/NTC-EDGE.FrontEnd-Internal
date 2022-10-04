@@ -61,7 +61,7 @@ import {infoColor, primaryColor} from "@styles/color";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {MeetingNotif} from '@components/molecules/list-item';
 import {
-    setApplicationItem, setCalendarVisible,
+    setApplicationItem, setCalendarVisible, setDateEnd, setDateStart,
     setEdit,
     setHasChange,
     setNotPinnedApplication,
@@ -89,6 +89,7 @@ import modalStyle from "@styles/modal";
 import CalendarPicker from 'react-native-calendar-picker';
 import CloseIcon from "@assets/svg/close";
 import hairlineWidth = StyleSheet.hairlineWidth;
+import {SuccessButton} from "@atoms/button/successButton";
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
 
@@ -136,7 +137,9 @@ const ActivitiesPage = (props) => {
         scrollViewRef, yPos, setYPos,
         countRefresh,
         updateModal,
-        calendarVisible
+        calendarVisible,
+        dateStart,
+        dateEnd
     } = useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
@@ -694,15 +697,13 @@ const ActivitiesPage = (props) => {
         extrapolate: 'clamp',
     });
 
-    const [selectedEndDate, setSelectedEndDate] = useState()
-    const [selectedStartDate, setSelectedStartDate] = useState()
 
     const onDateChange = (date, type) => {
         if (type === 'END_DATE') {
-         setSelectedEndDate(date);
+         dispatch(setDateEnd(date));
         } else {
-            setSelectedEndDate(null)
-            setSelectedStartDate(date);
+            dispatch(setDateEnd(date));
+            dispatch(setDateStart(date));
 
         }
     }
@@ -822,12 +823,12 @@ const ActivitiesPage = (props) => {
                                 <CalendarView onPress={props.onPress}
                                               isCloseable={true}
                                               onCloseable={() => {
-                                                  setSelectedStartDate(null)
-                                                  setSelectedEndDate(null)
+                                                  dispatch(setDateEnd(null));
+                                                  dispatch(setDateStart(null));
                                                   dispatch(setCalendarVisible(!calendarVisible))
                                               }}
-                                              startDate={selectedStartDate}
-                                              endDate={selectedEndDate}
+                                              startDate={dateStart}
+                                              endDate={dateEnd}
                                               onPress1={props.onPress1}/>
                             </View> : <></>}
                         </View>
@@ -900,7 +901,7 @@ const ActivitiesPage = (props) => {
                                 <TouchableOpacity
 
                                     onPress={()=>{
-                                        if(!(selectedEndDate && selectedStartDate)){
+                                        if(!(dateStart && dateEnd)){
                                             dispatch(setCalendarVisible(!calendarVisible))
                                         }
 
@@ -922,12 +923,16 @@ const ActivitiesPage = (props) => {
                             startFromMonday={true}
                             allowRangeSelection={true}
                             todayBackgroundColor="#f2e6ff"
-                            selectedStartDate={selectedStartDate}
-                            selectedEndDate={selectedEndDate}
+                            selectedStartDate={dateStart}
+                            selectedEndDate={dateEnd}
                             selectedDayColor={infoColor}
                             selectedDayTextColor="#FFFFFF"
                             onDateChange={onDateChange}
                         />
+
+                        <SuccessButton onPress={()=>{
+                            onRefresh()
+                        }} name={"Ok"}/>
                     </View>
                 </RNAnimated.View>
             </RNAnimated.View>

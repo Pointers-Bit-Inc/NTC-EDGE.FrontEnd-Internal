@@ -22,7 +22,8 @@ const InitialState = Record({
   topBarNav: {width: 0, height: 0, left: 0, top: 0},
   activitySizeComponent: {width: 0, height: 0, left: 0, top: 0},
 
-
+  dateStart: null,
+  dateEnd: null,
   calendarVisible: false,
 
 

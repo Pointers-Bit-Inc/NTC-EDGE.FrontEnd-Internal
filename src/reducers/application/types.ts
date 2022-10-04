@@ -22,5 +22,7 @@ export default keyMirror({
   SET_USER_ORIGINAL_PROFILE_FORM: null,
   UPDATE_CHANGE_EVENT: null,
   SET_DATA: null,
-  SET_CALENDAR_VISIBLE: null
+  SET_CALENDAR_VISIBLE: null,
+  SET_DATE_END:null,
+  SET_DATE_START: null
 });

@@ -20,7 +20,9 @@ const {
     SET_USER_ORIGINAL_PROFILE_FORM,
     UPDATE_CHANGE_EVENT,
     SET_DATA,
-    SET_CALENDAR_VISIBLE
+    SET_CALENDAR_VISIBLE,
+    SET_DATE_END,
+    SET_DATE_START
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -161,6 +163,19 @@ export function setSelectedYPos(payload) {
 export function setCalendarVisible(payload) {
     return {
         type: SET_CALENDAR_VISIBLE,
+        payload,
+    };
+}
+export function setDateStart(payload) {
+    return {
+        type: SET_DATE_START,
+        payload,
+    };
+}
+
+export function setDateEnd(payload) {
+    return {
+        type: SET_DATE_END,
         payload,
     };
 }
