@@ -124,7 +124,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
 
                             </View> }
 
-                            <RenderServiceMiscellaneous exclude={['_id', 'name', 'applicationType', 'serviceCode']}
+                            <RenderServiceMiscellaneous exclude={['_id', "about", 'name', 'applicationType', 'serviceCode']}
                                                         service={service}/>
                         </View>
                     </ScrollView>

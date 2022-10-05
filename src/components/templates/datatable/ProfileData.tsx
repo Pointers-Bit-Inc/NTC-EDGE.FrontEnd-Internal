@@ -27,7 +27,7 @@ const ProfileData = () => {
         /></View>
 
                         <Text style={[styles.header, styles.group3]}>Basic Information</Text>
-            <RenderServiceMiscellaneous isTitleVisible={false} exclude={ ['_id', 'role', 'profilePicture', 'updatedAt',  'createdAt'] }
+            <RenderServiceMiscellaneous isTitleVisible={false} exclude={ ["about", '_id', 'role', 'profilePicture', 'updatedAt',  'createdAt'] }
                                         service={data}/>
 
 
