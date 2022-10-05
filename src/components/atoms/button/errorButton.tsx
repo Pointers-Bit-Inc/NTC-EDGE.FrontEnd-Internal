@@ -8,7 +8,7 @@ export function DeclineButton(props: { onPress: () => void, name: string }) {
     const [pressed, setPressed] = useState(false)
     return <Hoverable>
         {isHovered => (
-            <View style={{flex: 1, paddingHorizontal: 6}}>
+
                 <TouchableWithoutFeedback
                     onPressIn={() => setPressed(true)}
                     onPressOut={() => setPressed(false)}
@@ -20,30 +20,26 @@ export function DeclineButton(props: { onPress: () => void, name: string }) {
                             styles.rect24,
                             {
                                 backgroundColor: isHovered ? "#DE7C8D" : "#fff",
-                                height: undefined,
+                                padding: 15,
                                 borderWidth: 2,
                                 borderColor: "rgba(194,0,0,1)",
                             }]
                         }>
 
-                        (
                         <Text
                             style={[styles.endorse, {
 
                                 fontFamily: Bold,
                                 color: isHovered ? "#fff" : "rgba(194,0,0,1)",
                             }]}>{props.name}</Text>
-                        )
 
                     </View>
-                </TouchableWithoutFeedback>
-            </View>)}
+                </TouchableWithoutFeedback> )}
     </Hoverable>;
 }
 
 const styles = StyleSheet.create({
     rect24: {
-
         borderRadius: fontValue(24)
     },
     endorse: {

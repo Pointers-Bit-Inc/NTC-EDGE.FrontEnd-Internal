@@ -405,6 +405,7 @@ const ActivitiesPage = (props) => {
                                                                        return getRenderItem(act, i, index)
                                                                    }
                                                                    }
+                                                                   estimatedItemSize={350}
                                                                    keyExtractor={(item, index) => `_key${index.toString()}`}
                                                                />
                                                            }}/>;
@@ -899,7 +900,7 @@ const ActivitiesPage = (props) => {
 
                         <CalendarPicker
 
-                            width={dimensions.width * 0.3}
+                            width={isMobile? dimensions.width * 0.8 : dimensions.width * 0.3}
                             height={dimensions.height * 0.8}
                             headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
                             startFromMonday={true}
@@ -911,8 +912,8 @@ const ActivitiesPage = (props) => {
                             selectedDayTextColor="#FFFFFF"
                             onDateChange={onDateChange}
                         />
-                        <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                            <View style={{flex: 1}}>
+                        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10}}>
+                            <View style={{flex: 0.9, paddingHorizontal: 10}}>
                                 <DeclineButton onPress={() => {
 
                                     if(!(dateStart && dateEnd)){
@@ -925,7 +926,7 @@ const ActivitiesPage = (props) => {
                                     }).start();
                                 }} name={"Cancel"}/>
                             </View>
-                            <View style={{flex: 1}}>
+                            <View style={{flex: 0.9,  paddingHorizontal: 10}}>
                               <SuccessButton onPress={()=>{
                                   onRefresh()
                                   RNAnimated.spring(animation, {
