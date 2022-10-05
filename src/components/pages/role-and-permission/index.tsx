@@ -18,6 +18,10 @@ import RoleChecklist from "@pages/role-and-permission/RoleCheckList";
 import ApplicationApproved from "@assets/svg/application-approved";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import listEmpty from "@pages/activities/listEmpty";
+import AwesomeAlert from "react-native-awesome-alerts";
+import Plus from "@atoms/icon/plus";
+import AddParticipantsIcon from "@atoms/icon/add-people";
+import {Bold} from "@styles/font";
 
 
 export default function RoleAndPermissionPage(props: any) {
@@ -44,8 +48,11 @@ export default function RoleAndPermissionPage(props: any) {
         success,
         display,
         alertConfirm,
-        alertCancel,
-        listEmptyComponent
+        onDelete,
+        listEmptyComponent,
+        roleId,
+        showDeleteAlert,
+        setShowDeleteAlert
     } = useRoleAndPermission(props.navigation);
 
 
@@ -67,7 +74,13 @@ export default function RoleAndPermissionPage(props: any) {
                             setAccess([])
 
                         }}>
-                            <Text style={{fontSize: fontValue(12)}}>Add a New Role</Text>
+                            <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                                <View style={{marginHorizontal: "5"}}>
+                                    <AddParticipantsIcon />
+                                </View>  <Text style={{fontFamily: Bold, fontSize: fontValue(12)}}>Add a New Role</Text>
+                            </View>
+
+
                         </TouchableOpacity>
                     </Header>
                     <View style={{marginHorizontal: 26,}}>
@@ -245,8 +258,8 @@ export default function RoleAndPermissionPage(props: any) {
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-                    <TouchableOpacity style={{
-                        backgroundColor: successColor,
+                    <TouchableOpacity  disabled={!updateValid} style={{
+                        backgroundColor: updateValid ? successColor : disabledColor,
                         paddingVertical: 10,
                         paddingHorizontal: 20,
                         borderRadius: 10
@@ -262,7 +275,27 @@ export default function RoleAndPermissionPage(props: any) {
 
             }
 
-
+            <AwesomeAlert
+                alertContainerStyle={{zIndex: 2}}
+                show={showDeleteAlert}
+                showProgress={false}
+                title={"Delete"}
+                message="Are you sure you want to delete this item?"
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="No, cancel"
+                confirmText="Yes, delete it"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                  setShowDeleteAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    onDelete(roleId)
+                    setShowDeleteAlert(false)
+                }}
+            />
         </View>
     )
 }

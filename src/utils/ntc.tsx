@@ -107,36 +107,21 @@ const transformText = (text: string) => {
     else if (text === 'rocEctNumber') return 'ROC/ECT No.';
     return text?.replace(/([a-z])([A-Z])/g, '$1 $2')?.split(' ')?.map((word: string) => word?.charAt(0)?.toUpperCase() + word?.substring?.(1))?.join(' ');
 };
-//1234, 12, 13, 14, 15, 16, 17, 18, 19, 21
 const transformToFeePayload = (application: any) => {
     let { service = {}, region = '' } = application;
     let {
         applicationDetails,
         applicationType,
-        station,
-        proposedStation,
-        equipment,
-        proposedEquipment,
+        stationEquipment,
         particulars,
-        stationClass,
         valueAddedServices,
         transmissionType,
         certificate,
         license,
         permit,
-        details
+        details,
+        natureOfService,
     } = service;
-    let equipments = equipment || (proposedEquipment || (particulars || []));
-    station = station?.length > 0
-        ? station
-        : !!station
-            ? Object.keys(station)?.length > 0
-                ? [station]
-                : []
-            : [];
-    let stations = station || (proposedStation || (particulars || []));
-    station = stations?.[0] || {};
-    equipment = equipments?.[0] || {};
 
     let label = applicationType?.label?.toLowerCase();
 
@@ -147,7 +132,12 @@ const transformToFeePayload = (application: any) => {
         else if (_isRenewal) _label = 'renew';
         else if (label?.match('modification') || label?.match('modify')) _label = 'modification';
         else if (label?.match('permit')) {
-            if (label?.match('possess') || label?.match('purchase')) _label = 'purchase/possess';
+            if (label?.match('possess') && label?.match('purchase')) _label = 'purchase/possess';
+            else if (label?.match('possess')) {
+                _label = 'possess';
+                if (label?.match('storage')) _label += 'forstorage';
+            }
+            else if (label?.match('purchase')) _label = 'purchase';
             else if (label?.match('sell') || label?.match('transfer')) _label = 'sell/transfer';
         }
         return _label;
@@ -173,17 +163,6 @@ const transformToFeePayload = (application: any) => {
         _category = _category?.replace(' ', '');
         return _category;
     };
-    let bandwidthFn = () => {
-        let _basis =
-            station?.bandwidth?.bandwidth ||
-            station?.bandwidth?.unit
-                ? station
-                : equipment;
-        return {
-            bandwidth: Number(_basis?.bandwidth?.bandwidth || 0),
-            unit: _basis?.bandwidth?.unit || '',
-        }
-    };
     let frequencyFn = () => {
         /**
          * frequency that is a section
@@ -193,13 +172,13 @@ const transformToFeePayload = (application: any) => {
          * frequency that is a section
          * [{frequency: 1}]
          *
-         * frequency that is inside station
+         * frequency that is inside stationEquipment
          * could be string (pre-filled) or number
          */
-        return service?.frequency || service?.station?.map((s: any) => s?.frequency) || service?.station?.map((s: any) => s?.proposedFrequency);;
+        return service?.frequency || [{frequency: service?.stationEquipment?.stationKind?.split(' • ')?.[1]}];
     };
     let tranmissionFn = () => {
-        let _t = equipment?.transmission?.split(' • ');
+        let _t = stationEquipment?.transmission?.split(' • ');
         return {
             transmission: _t?.[0]?.toLowerCase() || '',
             frequency: _t?.[1]?.toLowerCase()?.replace(' frequency', '')?.replace(' ', '') || '',
@@ -213,7 +192,6 @@ const transformToFeePayload = (application: any) => {
                 if (f?.tx > -1) _frequencies?.push(f?.tx);
                 if (f?.rx > -1) _frequencies?.push(f?.rx);
                 if (f?.frequency > -1) _frequencies?.push(f?.frequency);
-                if (f?.proposedFrequency > -1) _frequencies?.push(f?.proposedFrequency);
             });
         }
         _frequencies = [...new Set(_frequencies)];
@@ -221,16 +199,26 @@ const transformToFeePayload = (application: any) => {
     };
     let classOfStation = (forChannel = false) => {
         let _csObj = {};
-        let _scArr = (stationClass || particulars) || [];
-        if (_scArr?.length > 0) {
-            _scArr?.forEach((c: any) => {
-                let _split = c?.class?.split(' • ');
+
+        if (label?.match('public trunked') && forChannel) {
+            _csObj = {
+                publicTrunked: channelFn()?.length || 0,
+            };
+        }
+        else if (particulars?.length > 0) {
+            particulars?.forEach((c: any) => {
+                let _split = c?.stationClass?.split(' • ');
+                let _equipments = c?.equipments || c?.proposedEquipments;
+                let _unit = Number(_split?.[1] || (_equipments?.length || 0));
+
+                let _class = _split?.[0];
                 _csObj = {
                     ..._csObj,
-                    [_split?.[0]]: Number((forChannel ? (channelFn()?.length || 0) : _split?.[1] || 0)),
-                }
+                    [_class]: forChannel ? (channelFn()?.length || 0) : _csObj.hasOwnProperty(_class) ? _csObj[_class] + _unit : _unit,
+                };
             });
         }
+
         return _csObj;
     };
     let noOfYears = () => {
@@ -245,23 +233,55 @@ const transformToFeePayload = (application: any) => {
         if (_ndx > -1) return _split[_ndx + 1];
         else return '';
     };
-
     let expirationDateFn = () => {
         let { dateOfExpiry = {} } = certificate || (license || (permit || (details || {})));
         let { year, month, day } = dateOfExpiry;
-        let expirationDate = year && month && day ? Moment(new Date()).set({year, month, date: day})?.toISOString() : new Date()?.toISOString();
+        let expirationDate = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
         return expirationDate;
+    };
+    let typeOfEquipmentDeviceFn = () => {
+        let tedObj = {};
+        if (particulars?.length > 0) {
+            particulars?.forEach((c: any) => {
+                let _equipments = c?.equipments || c?.proposedEquipments;
+                let _unit = _equipments?.length || 0;
+
+                let _t = c?.typeOfEquipmentDevice?.toLowerCase();
+                let _class = _t?.match('wdn')
+                    ? 'wdn'
+                    : _t?.match('srd')
+                        ? 'srd'
+                        : _t?.match('rfid') && _t?.match('low')
+                            ? 'rfidlow'
+                            : _t?.match('rfid') && _t?.match('high')
+                                ? 'rfidhigh'
+                                : _t?.match('srrs')
+                                    ? 'srrs'
+                                    : _t?.match('public trunk')
+                                        ? 'publictrunk'
+                                        : 'others';
+                tedObj = {
+                    ...tedObj,
+                    [_class]: tedObj.hasOwnProperty(_class) ? tedObj[_class] + _unit : _unit,
+                };
+            });
+        }
+        return tedObj;
+    };
+    let unitsFn = () => {
+        let _no = 0;
+        let _classOfStation = classOfStation();
+        if (Object.keys(_classOfStation)?.length > 0) Object.keys(_classOfStation)?.map(c => _no += _classOfStation[c]);
+        return _no;
+    };
+    let bandwidthFn = () => {
+        return {
+            bandwidth: stationEquipment?.bandwidth?.bandwidth || 0,
+            unit: stationEquipment?.bandwidth?.unit || '',
+        };
     };
 
     /*
-    let unitsFn = () => {
-      let _unit = 0;
-      Object.keys(stationClass)?.forEach((stn: string) => {
-        let _value = stationClass[stn]?.value;
-        _unit += _value;
-      });
-      return _unit;
-    };
     let stationDetailsFn = () => {
       let radioStationLicense = '';
       let spectrum = '';
@@ -327,13 +347,13 @@ const transformToFeePayload = (application: any) => {
         category: categoryFn(), //
         classes: classFn(), //
         noOfYears: noOfYears(), //
-        units: equipments?.length || 0, //
+        units: unitsFn(), //
         nos: valueAddedServices?.service?.length || 0, //
         noOfCopies: Number(details?.noOfCopies || 0), //
         boundary: boundaryFn(), //
         location: 'HighlyUrbanizedAreas', //region, //
         installedEquipment: installedEquipmentFn(), //
-        power: Number(equipment?.powerOutput || 0), //
+        power: Number(stationEquipment?.powerOutput || 0), //
         transmission: tranmissionFn()?.transmission, //
         frequency: tranmissionFn()?.frequency, //
         bandwidth: bandwidthFn(), //
@@ -341,8 +361,10 @@ const transformToFeePayload = (application: any) => {
         stationClassUnits: classOfStation(), //
         stationClassChannels: classOfStation(true), //
         dateOfExpiry: expirationDateFn(), //
-        stationCount: stations?.length || 0,
+        stationCount: particulars?.length || 0,
         updatedAt: new Date()?.toISOString(),
+        typeOfEquipmentDevice: typeOfEquipmentDeviceFn(),
+        natureOfService: natureOfService?.type || '',
     };
 
     return feePayload;

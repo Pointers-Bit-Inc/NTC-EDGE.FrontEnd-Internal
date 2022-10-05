@@ -40,7 +40,8 @@ function useSchedule(props: any) {
     const [value, setValue] = useState()
     const [createSchedule, setCreateSchedule] = useState(false)
     const [loading, setLoading] = useState(false)
-
+    const [scheduleId, setScheduleId] = useState()
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false)
     function onClose() {
         dispatch(setSchedule({}))
         setCreateSchedule(false)
@@ -196,6 +197,7 @@ function useSchedule(props: any) {
     const onDelete = (id) => {
         axios.delete(BASE_URL + "/schedules/" + id, config).then(() => {
             showToast(ToastType.Success, "Success! ")
+            onClose()
             dispatch(setDeleteSchedule(id))
         }).catch((error) => {
             setLoading(false)
@@ -286,7 +288,10 @@ function useSchedule(props: any) {
                     </View>
                 </View>
                 <View style={{flex: 0.05}}>
-                    <TouchableOpacity onPress={()=>onDelete(item.id)}>
+                    <TouchableOpacity onPress={() => {
+                        setScheduleId(item.id)
+                        setShowDeleteAlert(true)
+                    }}>
                         <CloseIcon/>
                     </TouchableOpacity>
                 </View>
@@ -327,7 +332,11 @@ function useSchedule(props: any) {
         listEmptyComponent,
         originalForm,
         setOriginalForm,
-        onItemPress
+        onItemPress,
+        showDeleteAlert,
+        setShowDeleteAlert,
+        onDelete,
+        scheduleId
     };
 }
 

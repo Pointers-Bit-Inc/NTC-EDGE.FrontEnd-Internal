@@ -20,6 +20,7 @@ const CreateConfigurationScreen = (props) => {
         handleEndPress,
         onUpdateCreateSchedule,
         onDateChange,
+        schedule
     } = useSchedule(props);
     return <View style={[{flex: 1, backgroundColor: "#fff",}]}>
         <Header size={24} title={"Create Schedule"}>

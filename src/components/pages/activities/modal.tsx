@@ -144,7 +144,6 @@ function ActivityModal(props: any) {
     };
     const onChangeApplicationStatus = async (status: string, callback = (err: any, appId?: any) => {
     }, event) => {
-        console.log(event)
         setGrayedOut(true);
         const api = Api(user.sessionToken);
         const applicationId = applicationItem?._id;
@@ -368,9 +367,6 @@ function ActivityModal(props: any) {
                 Authorization: "Bearer ".concat(user?.sessionToken)
             }
         }
-
-        console.log(amnesty)
-
         let payload = {
             "id": "string",
             "service": "string",
@@ -443,12 +439,25 @@ function ActivityModal(props: any) {
 
                 let arr1 = removeEmpty(tabName == "Basic Info" ? diff  : _flattenSoa)
 
-                cleanSoa = {
-                  //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
-                    totalFee: response.data?.totalFee,
-                    soa: _.unionBy(arr1, arr2, 'item')
+                let unionWith = _.unionWith(arr1, arr2, (a, b) => a.item == b.item && a.amount == b.amount);
+                let exclude = [];
+                for (let i = 0; i < unionWith.length; i++) {
+                    let ubItem = unionWith[i].item
+                    let ubAmount = unionWith[i].amount
+                    for (let j = 0; j < arr2.length; j++) {
+                        if((arr2[j].item == ubItem && arr2[j].amount == ubAmount)){
+                            exclude.push(unionWith[i])
+                        }
+                    }
                 }
-                console.log(arr1)
+                const unionBy = _.unionBy(exclude, arr1, "item");
+                console.log(unionBy)
+                cleanSoa = {
+                    //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
+                    totalFee: response.data?.totalFee,
+                    soa: unionBy
+                }
+
 
             }).catch((error) => {
                 dispatch(setEdit(false))
@@ -486,11 +495,16 @@ function ActivityModal(props: any) {
 
         }
 
+        if(amnesty){
+            profileFormUnflatten!.amnesty = amnesty
+        }
+
+
 
 
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
-dispatch(setAmnesty(0))
+
 
             //hideToast()
             dispatch(setHasChange(false))

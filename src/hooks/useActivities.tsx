@@ -17,11 +17,11 @@ import {
     VERIFIED
 } from "../reducers/activity/initialstate";
 import moment from "moment";
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import {BASE_URL} from "../services/config";
-import {Alert,Animated,FlatList,Image,TouchableOpacity,View} from "react-native";
+import {Alert, Animated, FlatList, Image, TouchableOpacity, View} from "react-native";
 import {
-    handleInfiniteLoad,setactivitySizeComponent,setApplicationItem,
+    handleInfiniteLoad, setactivitySizeComponent, setApplicationItem,
     setApplications,
     setFilterRect,
     setNotPinnedApplication,
@@ -40,62 +40,56 @@ import {resetChannel} from "../reducers/channel/actions";
 import {StackActions} from "@react-navigation/native";
 import useOneSignal from "./useOneSignal";
 import useMemoizedFn from "./useMemoizedFn";
+import Axios from "axios";
 
-function convertStatusText(convertedStatus:any[],item:any){
-    let _converted:never[]=[]
-    const _status=convertedStatus.map((converted)=>{
-        _converted=converted.filter((convert)=>{
-            return convert.statusText==item
+function convertStatusText(convertedStatus: any[], item: any) {
+    let _converted: never[] = []
+    const _status = convertedStatus.map((converted) => {
+        _converted = converted.filter((convert) => {
+            return convert.statusText == item
         })
         return _converted
     })
-    const _uniqByStatus=lodash.uniqBy(_converted,'status').map((item)=>item.status)
+    const _uniqByStatus = lodash.uniqBy(_converted, 'status').map((item) => item.status)
     return _uniqByStatus.length ? _uniqByStatus.toString() : [item].toString()
 }
 
- function useActivities(props){
+function useActivities(props) {
 
 
-
-
-
-
-
-
-
-     const updateIncrement = useSelector((state: RootStateOrAny) => {
-         return state.activity.updateIncrement
-     });
+    const updateIncrement = useSelector((state: RootStateOrAny) => {
+        return state.activity.updateIncrement
+    });
     const scrollViewRef = useRef()
     const flatListViewRef = useRef()
     const scrollableTabView = useRef()
     const [yPos, setYPos] = useState(0)
-    const [total,setTotal]=useState(0);
-    const [page,setPage]=useState(0);
-    const [size,setSize]=useState(0);
-    const {user,cashier,director,evaluator,checker,accountant}=useUserRole();
-    const { destroy } = useOneSignal(user);
-    const [updateModal,setUpdateModal]=useState(false);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(0);
+    const {user, cashier, director, evaluator, checker, accountant} = useUserRole();
+    const {destroy} = useOneSignal(user);
+    const [updateModal, setUpdateModal] = useState(false);
     const [onTouch, setOnTouch] = useState(true)
-    const config={
-        headers:{
-            Authorization:"Bearer ".concat(user?.sessionToken)
+    const config = {
+        headers: {
+            Authorization: "Bearer ".concat(user?.sessionToken)
         }
     };
 
 
-    const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
-    const  visible= useSelector((state:RootStateOrAny)=>state.activity?.visible);
-    const   calendarVisible= useSelector((state:RootStateOrAny)=>state.application?.calendarVisible);
-    const   dateEnd= useSelector((state:RootStateOrAny)=>state.application?.dateEnd);
-    const   dateStart= useSelector((state:RootStateOrAny)=>state.application?.dateStart);
-    const applicationItem =useSelector((state:RootStateOrAny)=>{
+    const selectedChangeStatus = useSelector((state: RootStateOrAny) => state.activity?.selectedChangeStatus);
+    const visible = useSelector((state: RootStateOrAny) => state.activity?.visible);
+    const calendarVisible = useSelector((state: RootStateOrAny) => state.application?.calendarVisible);
+    const dateEnd = useSelector((state: RootStateOrAny) => state.application?.dateEnd);
+    const dateStart = useSelector((state: RootStateOrAny) => state.application?.dateStart);
+    const applicationItem = useSelector((state: RootStateOrAny) => {
         return state.application?.applicationItem
     });
-    const pinnedApplications =useSelector((state:RootStateOrAny)=>{
+    const pinnedApplications = useSelector((state: RootStateOrAny) => {
         return state.application?.pinnedApplications
     });
-    const notPinnedApplications =useSelector((state:RootStateOrAny)=>{
+    const notPinnedApplications = useSelector((state: RootStateOrAny) => {
         return state.application?.notPinnedApplications
     });
 
@@ -118,163 +112,170 @@ function convertStatusText(convertedStatus:any[],item:any){
          }
 
      }, [props?.navigation, selectedYPos]);*/
-    const dispatch=useDispatch();
-    const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
+    const dispatch = useDispatch();
+    const {getActiveMeetingList, endMeeting, leaveMeeting} = useSignalr();
 
 
-
-    function getList(list:any,selectedClone){
+    function getList(list: any, selectedClone) {
         return getFilter({
-            list:list,
-            user:user,
-            selectedClone:selectedClone,
-            cashier:cashier,
-            director:director,
-            checker:checker,
-            evaluator:evaluator,
-            accountant:accountant
+            list: list,
+            user: user,
+            selectedClone: selectedClone,
+            cashier: cashier,
+            director: director,
+            checker: checker,
+            evaluator: evaluator,
+            accountant: accountant
         });
     }
 
-    const ispinnedApplications= useMemoizedFn((applications:any)=>{
-        setTotalPages(Math.ceil(applications?.length/10));
-        const selectedClone=selectedChangeStatus?.filter((status:string)=>{
-            return status!=DATE_ADDED
+    const ispinnedApplications = useMemoizedFn((applications: any) => {
+        setTotalPages(Math.ceil(applications?.length / 10));
+        const selectedClone = selectedChangeStatus?.filter((status: string) => {
+            return status != DATE_ADDED
         });
 
 
+        const list = getList(applications, selectedClone);
+        const groups = list?.reduce((groups: any, activity: any) => {
 
-
-        const list=getList(applications,selectedClone);
-        const groups=list?.reduce((groups:any,activity:any)=>{
-
-            if((
-                activity.assignedPersonnel?._id||activity.assignedPersonnel)==user?._id){
+            if ((
+                activity.assignedPersonnel?._id || activity.assignedPersonnel) == user?._id) {
                 //  isPinned++
 
 
             }
 
 
-
-            if(!groups[moment(activity.createdAt).format("YYYY-MM-DD")]){
-                groups[moment(activity.createdAt).format("YYYY-MM-DD")]=[];
+            if (!groups[moment(activity.createdAt).format("YYYY-MM-DD")]) {
+                groups[moment(activity.createdAt).format("YYYY-MM-DD")] = [];
             }
 
             groups[moment(activity.createdAt).format("YYYY-MM-DD")].push(activity);
             return groups;
-        },{});
+        }, {});
 
-        const groupArrays=Object.keys(groups).map((date)=>{
+        const groupArrays = Object.keys(groups).map((date) => {
             return {
                 date,
-                readableHuman:moment([date]).fromNow(),
-                activity:groups[date]
+                readableHuman: moment([date]).fromNow(),
+                activity: groups[date]
             };
         });
 
 
-        return groupArrays.slice(0,currentPage*25);
+        return groupArrays.slice(0, currentPage * 25);
     });
 
-    const [updateUnReadReadApplication,setUpdateUnReadReadApplication]=useState(false);
-    const [searchTerm,setSearchTerm]=useState('');
-    const [countRefresh,setCountRefresh]=useState(0);
-    const [refreshing,setRefreshing]=React.useState(false);
-    const onRefresh=React.useCallback(()=>{
+    const [updateUnReadReadApplication, setUpdateUnReadReadApplication] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [countRefresh, setCountRefresh] = useState(0);
+    const [refreshing, setRefreshing] = React.useState(false);
+    const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        setCountRefresh(countRefresh+1)
-    },[countRefresh]);
+        setCountRefresh(countRefresh + 1)
+    }, [countRefresh]);
 
-    const selectedClone=selectedChangeStatus?.filter((status:string)=>{
-        return status!=DATE_ADDED
+    const selectedClone = selectedChangeStatus?.filter((status: string) => {
+        return status != DATE_ADDED
     });
 
-    const checkDateAdded=selectedChangeStatus?.filter((status:string)=>{
-        return status==DATE_ADDED
+    const checkDateAdded = selectedChangeStatus?.filter((status: string) => {
+        return status == DATE_ADDED
     });
-    const query=(pinned)=>{
 
-        const convertedStatus = notPnApplications.map((item)=>{
-            return item.activity.map((i)=>{
-                const props={activity:i};
-                const status=[CASHIER].indexOf(user?.role?.key)!= -1 ? PaymentStatusText(props?.activity?.paymentStatus) : props?.activity?.status;
-                const getStatus=getActivityStatus({...props,currentUser:user},status);
-                return {statusText:getStatus, status:status}
+    const dateEndMemo = useMemo(() => {
+        return dateEnd?.toISOString()
+    }, [dateEnd?.toISOString()])
+    const dateStartMemo = useMemo(() => {
+        return dateStart?.toISOString()
+    }, [dateStart?.toISOString()])
+    const query = (pinned) => {
+
+        const convertedStatus = notPnApplications.map((item) => {
+            return item.activity.map((i) => {
+                const props = {activity: i};
+                const status = [CASHIER].indexOf(user?.role?.key) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : props?.activity?.status;
+                const getStatus = getActivityStatus({...props, currentUser: user}, status);
+                return {statusText: getStatus, status: status}
             })
         });
 
-
         return {
             ...(
-                searchTerm&&{keyword:searchTerm}),
+                searchTerm && {keyword: searchTerm}),
             ...(
-                dateStart && {dateStart: dateStart}),
+                {dateStart: dateStart?.toISOString()}),
             ...(
-                dateEnd && {dateStart: dateEnd}),
+                {dateEnd: dateEndMemo}),
             ...(
                 {
-                    pageSize: pinned ? 20 :10,
-                    sort:checkDateAdded.length ? "asc" : "desc",
+                    pageSize: pinned ? 20 : 10,
+                    sort: checkDateAdded.length ? "asc" : "desc",
                     region: user?.employeeDetails?.region
                 }),
             ...(
-                selectedClone.length>0&&{
-                    [cashier ? "paymentStatus" : 'status']:selectedClone.map((item:any)=>{
-                        if(cashier){
-                            if(item==VERIFIED){
-                                return [PAID,VERIFIED,APPROVED]
-                            } else if(item==UNVERIFIED){
-                                return [DECLINED,UNVERIFIED]
-                            } else if(item==FORVERIFICATION){
-                                return [PENDING,FORVERIFICATION,FOREVALUATION].toString()
+                selectedClone.length > 0 && {
+                    [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
+                        if (cashier) {
+                            if (item == VERIFIED) {
+                                return [PAID, VERIFIED, APPROVED]
+                            } else if (item == UNVERIFIED) {
+                                return [DECLINED, UNVERIFIED]
+                            } else if (item == FORVERIFICATION) {
+                                return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
                             }
-                        } else if(item==FOREVALUATION){
-                            return [PENDING,FORVERIFICATION,FOREVALUATION].toString()
+                        } else if (item == FOREVALUATION) {
+                            return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
                         }
 
-                        return convertStatusText(convertedStatus,item)
+                        return convertStatusText(convertedStatus, item)
                     }).toString()
                 })
         }
     };
-    let count=0;
-
-    function fnApplications(endpoint){
-        let isCurrent=true;
-
-        setRefreshing(true);
-        dispatch(setApplications({data:[],user:user}))
-        axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:query(ep.pinned)}))).then(
+    let count = 0;
+    const [infiniteLoad, setInfiniteLoad] = useState(false);
+    function fnApplications(endpoint) {
+        let isCurrent = true;
+        setInfiniteLoad(true)
+        setRefreshing(true)
+        dispatch(setApplications({data: [], user: user}))
+        axios.all(endpoint.map((ep) => axios.get(ep.url, {
+            ...config,
+            params: {...{fnApplication: "test"}, ...query(ep.pinned)}
+        }))).then(
             axios.spread((pinned, notPinned) => {
-                if(pinned?.data?.message) Alert.alert(pinned.data.message);
-                if(notPinned?.data?.message) Alert.alert(notPinned.data.message);
-                if(isCurrent) setRefreshing(false);
+                if (pinned?.data?.message) Alert.alert(pinned.data.message);
+                if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                if (isCurrent) setRefreshing(false);
+                setInfiniteLoad(false)
 
-
-                if(count==0){
-                    count=1;
-                    if(count){
+                if (count == 0) {
+                    count = 1;
+                    if (count) {
 
                         notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                         notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
                         notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
-                        dispatch(setApplications({data:[],user:user}))
-                        dispatch(setApplications({data:[...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],user:user}))
+                        dispatch(setApplications({data: [], user: user}))
+                        dispatch(setApplications({
+                            data: [...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],
+                            user: user
+                        }))
 
 
                     }
                 }
-                if(isCurrent) setRefreshing(false);
+                if (isCurrent) setRefreshing(false);
 
             })
-
-        ).catch((err)=>{
+        ).catch((err) => {
             setRefreshing(false);
-            Alert.alert('Alert',err?.message||'Something went wrong.');
-
-            if(err?.request?.status == "401"){
-                const api=Api(user.sessionToken);
+            Alert.alert('Alert', err?.message || 'Something went wrong.');
+            setInfiniteLoad(false)
+            if (err?.request?.status == "401") {
+                const api = Api(user.sessionToken);
                 dispatch(setApplications([]))
                 dispatch(setPinnedApplication([]))
                 dispatch(setNotPinnedApplication([]))
@@ -284,152 +285,186 @@ function convertStatusText(convertedStatus:any[],item:any){
                 dispatch(resetMeeting());
                 dispatch(resetChannel());
                 destroy();
-                setTimeout(()=>{
+                setTimeout(() => {
 
                     props.navigation.dispatch(StackActions.replace('Login'));
-                },500);
+                }, 500);
             }
         })
 
-        return ()=>{
-            isCurrent=false
+        return () => {
+            isCurrent = false
         }
     }
 
-    useEffect(()=>{
-        return fnApplications([{url: BASE_URL+ `/users/${user._id}/assigned-applications`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}])
-    },[countRefresh,searchTerm,selectedChangeStatus.length]);
+
+    useEffect(() => {
+
+        return fnApplications([{
+            url: BASE_URL + `/users/${user._id}/assigned-applications`,
+            pinned: 1
+        }, {url: BASE_URL + `/users/${user._id}/unassigned-applications`, pinned: 0}])
+    }, [countRefresh, searchTerm, selectedChangeStatus.length]);
 
 
-    const [currentPage,setCurrentPage]=useState(1);
-    const [perPage,setPerPage]=useState(25);
-    const [offset,setOffset]=useState((
-        currentPage-1)*perPage);
-    const [totalPages,setTotalPages]=useState(0);
-    const [numberCollapsed,setNumberCollapsed]=useState<{parentIndex:number,child:number[]}[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [perPage, setPerPage] = useState(25);
+    const [offset, setOffset] = useState((
+        currentPage - 1) * perPage);
+    const [totalPages, setTotalPages] = useState(0);
+    const [numberCollapsed, setNumberCollapsed] = useState<{ parentIndex: number, child: number[] }[]>([]);
 
-    const [searchVisible,setSearchVisible]=useState(false);
+    const [searchVisible, setSearchVisible] = useState(false);
 
-    const pnApplications=useMemo(()=>{
+    const pnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(pinnedApplications)
-    },[updateIncrement, updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,pinnedApplications?.length,currentPage]);
+    }, [updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage]);
 
-    const notPnApplications=useMemo(()=>{
+    const notPnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(notPinnedApplications)
-    },[updateIncrement, updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,notPinnedApplications?.length,currentPage]);
+    }, [updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage]);
 
-    const userPress=(index:number)=>{
-        let newArr=[...numberCollapsed];
-        newArr[index].parentIndex=newArr[index].parentIndex ? 0 : 1;
+    const userPress = (index: number) => {
+        let newArr = [...numberCollapsed];
+        newArr[index].parentIndex = newArr[index].parentIndex ? 0 : 1;
         setNumberCollapsed(newArr)
     };
-    const userPressActivityModal=(index:number,i:number)=>{
-        let newArr=[...numberCollapsed];
-        newArr[index].child[i]=newArr[index].child[i] ? 0 : 1;
+    const userPressActivityModal = (index: number, i: number) => {
+        let newArr = [...numberCollapsed];
+        newArr[index].child[i] = newArr[index].child[i] ? 0 : 1;
         setNumberCollapsed(newArr)
     };
-    const [modalVisible,setModalVisible]=useState(false);
-    const [moreModalVisible,setMoreModalVisible]=useState(false);
-    const onDismissed=()=>{
+    const [modalVisible, setModalVisible] = useState(false);
+    const [moreModalVisible, setMoreModalVisible] = useState(false);
+    const onDismissed = () => {
         setModalVisible(false)
     };
 
-    const initialMove=new Animated.Value(-400);
-    const endMove=400;
-    const duration=1000;
-    const [loadingAnimation,setLoadingAnimation]=useState(false);
-    const loadingAnimate=()=>{
+    const initialMove = new Animated.Value(-400);
+    const endMove = 400;
+    const duration = 1000;
+    const [loadingAnimation, setLoadingAnimation] = useState(false);
+    const loadingAnimate = () => {
 
-        Animated.timing(initialMove,{
-            toValue:endMove,
-            duration:duration,
-            useNativeDriver:true,
-        }).start((o)=>{
-            if(o.finished){
+        Animated.timing(initialMove, {
+            toValue: endMove,
+            duration: duration,
+            useNativeDriver: true,
+        }).start((o) => {
+            if (o.finished) {
                 initialMove.setValue(-400);
-                if(loadingAnimation){
+                if (loadingAnimation) {
                     loadingAnimate()
                 }
 
             }
         })
     };
-    const [infiniteLoad,setInfiniteLoad]=useState(false);
-    const [onEndReachedCalledDuringMomentum,setOnEndReachedCalledDuringMomentum]=useState(false);
-    const bottomLoader=()=>{
-        return infiniteLoad ? <Loader/> :  <ListFooter
+
+    const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false);
+    const bottomLoader = () => {
+        return infiniteLoad ? <Loader/> : <ListFooter
             hasError={!infiniteLoad}
-            fetching={ infiniteLoad}
+            fetching={infiniteLoad}
             loadingText="Loading more activities..."
             errorText="Unable to load activities"
             refreshText="Refresh"
             onRefresh={() => handleLoad()}
         />
     };
+    let cancelToken: CancelTokenSource
+     const handleLoad=useCallback(async (page_) => {
+         //Check if there are any previous pending requests
+         setInfiniteLoad(true);
+         setRefreshing(true)
+         if (typeof cancelToken != typeof undefined) {
+             cancelToken.cancel("Operation canceled due to new request.")
+         }
 
-    const handleLoad=useCallback((page_)=>{
+         //Save the cancel token for the current request
+         cancelToken = axios.CancelToken.source()
+        let _page: string;
 
-        let _page:string;
-        setInfiniteLoad(true);
-
-        if((
-            page*size)<total || page_ ){
-            _page="?page="+(
-                (page_ || page)+1);
+        if ((
+            page * size) < total || page_) {
+            _page = "?page=" + (
+                (page_ || page) + 1);
             //013021
-            var endpoint = [{url: BASE_URL+ `/users/${user._id}/assigned-applications${_page}`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
+            var endpoint = [{
+                url: BASE_URL + `/users/${user._id}/assigned-applications${_page}`,
+                pinned: 1
+            }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
-            axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:{...query(ep.pinned)}}))).then(
+            await axios.all(endpoint.map((ep) => axios.get(ep.url, {
+                ...{ cancelToken: cancelToken.token },
+                ...config, params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),} ,...query(ep.pinned)}}))).then(
                 axios.spread((pinned, notPinned) => {
 
 
-
-                    if(pinned?.data?.message) Alert.alert(pinned.data.message);
+                    if (pinned?.data?.message) Alert.alert(pinned.data.message);
                     pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
-                    pinned?.data?.total  ? setTotal(pinned?.data?.total) : setTotal(0);
+                    pinned?.data?.total ? setTotal(pinned?.data?.total) : setTotal(0);
                     pinned?.data?.page ? setPage(pinned?.data?.page) : setPage(0);
 
-                    if(notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                    if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                     notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size   ? setPage(notPinned?.data?.page) : setPage(0);
+                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size ? setPage(notPinned?.data?.page) : setPage(0);
 
                     dispatch(handleInfiniteLoad({
-                        data:getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],selectedChangeStatus),
-                        user:user
+                        data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
+                        user: user
                     }));
                     setInfiniteLoad(false);
-
+                    setRefreshing(false)
                 })
+            ).catch((err) => {
+                if (axios.isCancel(err)) {
+                    console.log('Previous request canceled, new request is send', err.message);
+                } else {
+                    setRefreshing(false)
+                    setInfiniteLoad(false);
+                }
 
-            ).catch((err)=>{
-                Alert.alert('Alert',err?.message||'Something went wrong.');
-                setInfiniteLoad(false);
+                Alert.alert('Alert', err?.message || 'Something went wrong.');
+
                 console.warn(err)
             })
-        } else{
-            _page="?page="+(
-                page+1);
+        } else {
+            setRefreshing(true)
+            _page = "?page=" + (
+                page + 1);
+            axios.get(BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, {
+                cancelToken: cancelToken.token, // <-- 2nd step
+                ...config,
+                params: {...{...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}), ...{"handle": "else"}}, ...query(0)}
+            }).then((response) => {
 
-            axios.get(BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`,{...config,params:query(0)}).then((response)=>{
-
-                if(response?.data?.message) Alert.alert(response.data.message);
-                if(response?.data?.size) setSize(response?.data?.size);
-                if(response?.data?.total) setTotal(response?.data?.total);
-                if(response?.data?.page&&response?.data?.docs.length>1) setPage(response?.data?.page);
+                if (response?.data?.message) Alert.alert(response.data.message);
+                if (response?.data?.size) setSize(response?.data?.size);
+                if (response?.data?.total) setTotal(response?.data?.total);
+                if (response?.data?.page && response?.data?.docs.length > 1) setPage(response?.data?.page);
 
                 setInfiniteLoad(false);
-            }).catch((err)=>{
-                Alert.alert('Alert',err?.message||'Something went wrong.');
-                setInfiniteLoad(false);
+                setRefreshing(false)
+            }).catch((err) => {
+                if (axios.isCancel(err)) {
+                    console.log('Previous request canceled, new request is send', err.message);
+                } else {
+                    setRefreshing(false)
+                    setInfiniteLoad(false);
+                }
+
+                Alert.alert('Alert', err?.message || 'Something went wrong.');
+
                 console.warn(err)
             });
             setInfiniteLoad(false)
         }
 
-    },[size,total,page]);
+    },[size,total,page, dateEnd, dateStart]);
     const unReadReadApplicationFn=(id,dateRead,unReadBtn,callback:(action:any)=>void)=>{
         unreadReadApplication({
             unReadBtn:unReadBtn,
@@ -595,7 +630,8 @@ function convertStatusText(convertedStatus:any[],item:any){
         updateModal,
         calendarVisible,
         dateStart,
-        dateEnd
+        dateEnd,
+        fnApplications
     };
 }
 

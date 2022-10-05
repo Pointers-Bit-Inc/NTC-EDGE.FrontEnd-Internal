@@ -623,7 +623,7 @@ export const styles = StyleSheet.create({
         fontFamily: Bold,
     },
     scheduleButton: {
-        backgroundColor: successColor,
+
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10

@@ -2,6 +2,7 @@ import {createMaterialTopTabNavigator, MaterialTopTabBarProps,} from "@react-nav
 
 import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
+    Animated as RNAnimated,
     Dimensions,
     FlatList,
     FlatListProps,
@@ -15,8 +16,7 @@ import {
     useWindowDimensions,
     View,
     ViewProps,
-    ViewStyle,
-   Animated as RNAnimated
+    ViewStyle
 } from "react-native";
 import Animated, {
     interpolate,
@@ -25,7 +25,6 @@ import Animated, {
     useDerivedValue,
     useSharedValue,
 } from "react-native-reanimated";
-
 
 
 import TabBar from "./components/TabBar";
@@ -61,7 +60,10 @@ import {infoColor, primaryColor} from "@styles/color";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {MeetingNotif} from '@components/molecules/list-item';
 import {
-    setApplicationItem, setCalendarVisible, setDateEnd, setDateStart,
+    setApplicationItem,
+    setCalendarVisible,
+    setDateEnd,
+    setDateStart,
     setEdit,
     setHasChange,
     setNotPinnedApplication,
@@ -88,8 +90,10 @@ import CalendarView from "@pages/schedule/CalendarView";
 import modalStyle from "@styles/modal";
 import CalendarPicker from 'react-native-calendar-picker';
 import CloseIcon from "@assets/svg/close";
-import hairlineWidth = StyleSheet.hairlineWidth;
 import {SuccessButton} from "@atoms/button/successButton";
+import {DeclineButton} from "@atoms/button/errorButton";
+import hairlineWidth = StyleSheet.hairlineWidth;
+
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
 
@@ -99,7 +103,7 @@ const ActivitiesPage = (props) => {
         isMobile && !(
             Platform?.isPad || isTablet()))  ? FilterIcon : FilterPressIcon;
     const {
-        isReady,
+        fnApplications,
         user,
         setUpdateModal,
         config,
@@ -139,7 +143,7 @@ const ActivitiesPage = (props) => {
         updateModal,
         calendarVisible,
         dateStart,
-        dateEnd
+        dateEnd,
     } = useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
@@ -395,9 +399,8 @@ const ActivitiesPage = (props) => {
                                                                    key={index}
                                                                    listKey={(item, index) => `_key${index.toString()}`}
                                                                    showsVerticalScrollIndicator={false}
-                                                                   contentContainerStyle={styles.items}
+
                                                                    data={item?.activity}
-                                                                   estimatedItemSize={300}
                                                                    renderItem={(act, i) => {
                                                                        return getRenderItem(act, i, index)
                                                                    }
@@ -507,8 +510,6 @@ const ActivitiesPage = (props) => {
             ListFooterComponent={refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={allRef}
-            //onScroll={allScrollHandler}
-            estimatedItemSize={300}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
                 //onMomentumScrollBegin();
@@ -700,10 +701,11 @@ const ActivitiesPage = (props) => {
 
     const onDateChange = (date, type) => {
         if (type === 'END_DATE') {
-         dispatch(setDateEnd(date));
-        } else {
             dispatch(setDateEnd(date));
+        } else {
+            dispatch(setDateEnd(null));
             dispatch(setDateStart(date));
+
 
         }
     }
@@ -826,6 +828,7 @@ const ActivitiesPage = (props) => {
                                                   dispatch(setDateEnd(null));
                                                   dispatch(setDateStart(null));
                                                   dispatch(setCalendarVisible(!calendarVisible))
+                                                  onRefresh()
                                               }}
                                               startDate={dateStart}
                                               endDate={dateEnd}
@@ -892,32 +895,11 @@ const ActivitiesPage = (props) => {
                     ]}>
                     <View style={modalStyle.wrap}>
                         <View style={modalStyle.modalHeader} />
-                        <View style={{
-                            padding: 20,
-                            flexDirection: "row",
-                            justifyContent: "flex-end"
-                        }}>
-                            <View>
-                                <TouchableOpacity
 
-                                    onPress={()=>{
-                                        if(!(dateStart && dateEnd)){
-                                            dispatch(setCalendarVisible(!calendarVisible))
-                                        }
-
-                                        RNAnimated.spring(animation, {
-                                            toValue: 0,
-                                            useNativeDriver: false,
-                                        }).start();
-                                    }}>
-                                    <CloseIcon/>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
 
                         <CalendarPicker
 
-                            width={dimensions.width * 0.7}
+                            width={dimensions.width * 0.3}
                             height={dimensions.height * 0.8}
                             headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
                             startFromMonday={true}
@@ -929,10 +911,33 @@ const ActivitiesPage = (props) => {
                             selectedDayTextColor="#FFFFFF"
                             onDateChange={onDateChange}
                         />
+                        <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                            <View style={{flex: 1}}>
+                                <DeclineButton onPress={() => {
 
-                        <SuccessButton onPress={()=>{
-                            onRefresh()
-                        }} name={"Ok"}/>
+                                    if(!(dateStart && dateEnd)){
+                                        dispatch(setCalendarVisible(!calendarVisible))
+                                    }
+
+                                    RNAnimated.spring(animation, {
+                                        toValue: 0,
+                                        useNativeDriver: false,
+                                    }).start();
+                                }} name={"Cancel"}/>
+                            </View>
+                            <View style={{flex: 1}}>
+                              <SuccessButton onPress={()=>{
+                                  onRefresh()
+                                  RNAnimated.spring(animation, {
+                                      toValue: 0,
+                                      useNativeDriver: false,
+                                  }).start();
+
+                              }} name={"Confirm"}/>
+                          </View>
+
+                        </View>
+
                     </View>
                 </RNAnimated.View>
             </RNAnimated.View>

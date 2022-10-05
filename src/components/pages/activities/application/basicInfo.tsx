@@ -717,7 +717,7 @@ const BasicInfo = (_props: any) => {
                                                        stateName={"schedule.dateStart"}
                                                        applicant={userProfileForm?.["schedule.dateStart"]}
                                                        display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart}/>
-                                            <TimeField edit={props.edit} label={"End Time:"}
+                                            <TimeField  edit={props.edit} label={"End Time:"}
                                                 /*show={true}
                                                 */
                                                        hasChanges={props.hasChanges}
@@ -726,7 +726,7 @@ const BasicInfo = (_props: any) => {
                                                        stateName={"schedule.dateEnd"}
                                                        applicant={userProfileForm?.["schedule.dateEnd"]}
                                                        display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
-                                            <Row  /*show={true}
+                                            <Row  id={userProfileForm?.["_id"]}  /*show={true}
                                            */
                                                 updateForm={applicantForm}
                                                 stateName={"schedule.venue"}
@@ -735,6 +735,7 @@ const BasicInfo = (_props: any) => {
                                                 applicant={userProfileForm?.["schedule.venue"]}/>
                                             <Row  /*show={true}
                                           */
+                                                id={userProfileForm?.["_id"]}
                                                 updateForm={applicantForm}
                                                 stateName={"schedule.seatNumber"}
                                                 edit={props.edit}
@@ -761,10 +762,11 @@ const BasicInfo = (_props: any) => {
                                                </View>
                                            </View>
                                         <View style={{paddingVertical: 5}}>
-
                                             <Row  /*show={true}
 
-                                      */        display={userProfileForm?.["note"] || "....."}
+                                      */
+                                                display={userProfileForm?.['note'] || "...."}
+                                                id={userProfileForm?.["_id"] }
                                                 multiline={true}
                                                 containerStyle={ {
                                                     height : undefined ,

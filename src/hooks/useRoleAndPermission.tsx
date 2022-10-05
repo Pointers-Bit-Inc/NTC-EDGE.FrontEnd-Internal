@@ -45,7 +45,7 @@ import listEmpty from "@pages/activities/listEmpty";
 
 const useRoleAndPermission =(navigation) => {
     const {animation, background, display, success} = useModalAnimation();
-
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false)
 
     const dimensions = useWindowDimensions();
     const [value, setValue] = useState();
@@ -94,6 +94,7 @@ const useRoleAndPermission =(navigation) => {
     const onDelete = (id) => {
         axios.delete(BASE_URL + "/roles/" + id, config).then(() => {
             showToast(ToastType.Success, "Success! ")
+            onClose()
             dispatch(setDeleteRole(id))
         }).catch((error) => {
             setLoading(false)
@@ -111,6 +112,7 @@ const useRoleAndPermission =(navigation) => {
 
         })
     }
+    const [roleId, setRoleId] = useState()
     const renderItem = ({item}) => (
         <View style={{padding: 10}}>
             <TouchableOpacity onPress={() => onItemPress(item)}>
@@ -120,7 +122,10 @@ const useRoleAndPermission =(navigation) => {
                             <Text style={{fontSize: fontValue(14), fontFamily: Bold}}>{item.name}</Text>
                         </View>
                         <View>
-                            <TouchableOpacity onPress={() => onDelete(item.id)}>
+                            <TouchableOpacity onPress={() => {
+                                setRoleId(item.id)
+                                setShowDeleteAlert(true)
+                            }}>
                                 <Text style={{fontSize: fontValue(10)}}>Delete</Text>
                             </TouchableOpacity>
 
@@ -464,8 +469,11 @@ const useRoleAndPermission =(navigation) => {
         animation,
         background,
         success,
-        display
-
+        display,
+        roleId,
+        showDeleteAlert,
+        setShowDeleteAlert,
+        onDelete
     };
 }
 

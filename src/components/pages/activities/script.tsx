@@ -10,7 +10,7 @@ import {
     FOREVALUATION,
     FORVERIFICATION,
     PAID,
-    PENDING,
+    PENDING, RETURNED,
     UNVERIFIED,
     VERIFICATION,
     VERIFIED
@@ -32,6 +32,7 @@ import {Regular500} from "@styles/font";
 import {Role, UserApplication} from "@pages/activities/interface";
 import {fontValue} from "@pages/activities/fontValue";
 import moment from "moment";
+import {infoColor} from "@styles/color";
 
 export const capitalize = (str) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
@@ -128,6 +129,9 @@ export const statusColor = (status: string) => {
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
 
         return {color: "#CF0327", fontFamily: Regular500}
+    }else if (status == RETURNED ) {
+
+        return {color: infoColor, fontFamily: Regular500}
     } else {
 
         return {color: "#F79E1B", fontFamily: Regular500}
@@ -142,6 +146,8 @@ export const remarkColor = (status: string) => {
         return "#00AB76"
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
         return "#CF0327"
+    } else if(status == RETURNED ) {
+        return infoColor
     } else {
         return "#F79E1B"
     }

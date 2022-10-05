@@ -14,6 +14,9 @@ import {disabledColor, input, successColor} from "@styles/color";
 import {setSchedule} from "../../../reducers/schedule/actions";
 import ScheduleCreateEdit from "@pages/schedule/ScheduleCreateEdit";
 import useSchedule from "../../../hooks/useSchedule";
+import AwesomeAlert from "react-native-awesome-alerts";
+import Plus from "@atoms/icon/plus";
+import {Bold} from "@styles/font";
 
 const {text, background} = input;
 
@@ -42,7 +45,11 @@ export default function SchedulePage(props: any) {
         updateValid,
         renderListItem,
         schedulesMemo,
-        listEmptyComponent
+        listEmptyComponent,
+        showDeleteAlert,
+        setShowDeleteAlert,
+        onDelete,
+        scheduleId
     } = useSchedule(props);
 
     return (
@@ -66,7 +73,12 @@ export default function SchedulePage(props: any) {
 
 
                         }}>
-                            <Text style={{fontSize: fontValue(12)}}>Add a New Schedule</Text>
+                            <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                                <View style={{paddingHorizontal: "5"}}>
+                                    <Plus size={12}/>
+                                </View> <Text style={{fontFamily: Bold,fontSize: fontValue(12)}}>Add a New Schedule</Text>
+                            </View>
+
                         </TouchableOpacity>
                     </Header>
                     <View style={{marginHorizontal: 26,}}>
@@ -194,7 +206,9 @@ export default function SchedulePage(props: any) {
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-                        <TouchableOpacity onPress={() => onUpdateCreateSchedule('post')} style={styles.scheduleButton}>
+                        <TouchableOpacity onPress={() => onUpdateCreateSchedule('post')} style={[{
+                            backgroundColor: updateValid ? disabledColor : successColor,
+                        }, styles.scheduleButton]}>
 
                             <Text style={[styles.text, {color: "#fff"}]} size={14}>Create Schedule</Text>
 
@@ -203,7 +217,27 @@ export default function SchedulePage(props: any) {
                 </View> : <></>
 
             }
-
+            <AwesomeAlert
+                alertContainerStyle={{zIndex: 2}}
+                show={showDeleteAlert}
+                showProgress={false}
+                title={"Delete"}
+                message="Are you sure you want to delete this item?"
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="No, cancel"
+                confirmText="Yes, delete it"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    setShowDeleteAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    onDelete(scheduleId)
+                    setShowDeleteAlert(false)
+                }}
+            />
         </View>
     )
 }

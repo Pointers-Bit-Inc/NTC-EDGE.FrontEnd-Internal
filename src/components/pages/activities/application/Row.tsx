@@ -27,17 +27,18 @@ const styles = StyleSheet.create({
         textAlign: "left"
     },
 })
-const Row = (props: { visibleText?: string, outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
+const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
     const [value, setValue] = useState()
-    const [initialState, setInitialState] = useState(true)
+    const [prevId, setPrevId] = useState(true)
     const applicantMemo = useMemo(()=>{
-        if(initialState && !value && (props.display || props.applicant)){
-            setValue( props.display || props.applicant)
-            setInitialState(false)
-        }
+            if(props.id != prevId){
+                setValue( props.display || props.applicant)
+                setPrevId(props.id)
+            }
+
         return props.display || props.applicant
-    }, [props.display,  props.applicant])
+    }, [props?.id, value, prevId])
 
 
 
@@ -64,7 +65,7 @@ const Row = (props: { visibleText?: string, outlineStyle?: any, containerStyle?:
             }} onBlur={(event) => {
 
                 props.updateForm(props.stateName, value)
-            }} onChange={getOnChange} defaultValue={applicantMemo} value={value} label={props.label} /> : <></>}
+            }} onChange={getOnChange}   value={value} label={props.label} /> : <></>}
         </>
 };
 

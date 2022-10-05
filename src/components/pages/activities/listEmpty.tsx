@@ -34,7 +34,6 @@ const Loader = (refreshing,searchTerm,size) => {
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
-
     const NoActivityMemo = () => {
         return <><NoActivity/><Text style={styles.noContent}>No Content</Text></>;
     }

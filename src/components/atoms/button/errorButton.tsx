@@ -4,7 +4,7 @@ import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {Hoverable} from "react-native-web-hooks";
 
-export function SuccessButton(props: { onPress: () => void, name: string }) {
+export function DeclineButton(props: { onPress: () => void, name: string }) {
     const [pressed, setPressed] = useState(false)
     return <Hoverable>
         {isHovered => (
@@ -19,10 +19,10 @@ export function SuccessButton(props: { onPress: () => void, name: string }) {
                         style={[
                             styles.rect24,
                             {
-                                borderColor: (pressed) ? "transparent" : isHovered && "#4DFBC5",
+                                backgroundColor: isHovered ? "#DE7C8D" : "#fff",
                                 height: undefined,
-                                borderWidth:  isHovered ? 4 :  undefined,
-                                backgroundColor : (pressed ? "#097352" :  "rgba(0,171,118,1)") ,
+                                borderWidth: 2,
+                                borderColor: "rgba(194,0,0,1)",
                             }]
                         }>
 
@@ -31,7 +31,7 @@ export function SuccessButton(props: { onPress: () => void, name: string }) {
                             style={[styles.endorse, {
 
                                 fontFamily: Bold,
-                                color : "#FCFCFC"
+                                color: isHovered ? "#fff" : "rgba(194,0,0,1)",
                             }]}>{props.name}</Text>
                         )
 

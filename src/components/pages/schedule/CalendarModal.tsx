@@ -1,4 +1,4 @@
-import {Animated, TouchableOpacity, View} from "react-native";
+import {Animated, Platform, TouchableOpacity, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import CloseIcon from "@assets/svg/close";
 import {isMobile} from "@pages/activities/isMobile";
@@ -39,7 +39,7 @@ function CalendarModal(props: { backgroundColor: Animated.AnimatedInterpolation,
 
                 <CalendarPicker
 
-                    width={props.dimensions.width * 0.7}
+                    width={Platform.OS == "web" ? props.dimensions.width * 0.3 : props.dimensions.width * 0.7}
                     height={props.dimensions.height * 0.8}
                     headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
                     startFromMonday={true}

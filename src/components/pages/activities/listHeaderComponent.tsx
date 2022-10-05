@@ -3,9 +3,10 @@ import {FlatList, ScrollView, Text, View} from "react-native";
 import {styles as styles1} from "@pages/activities/styles";
 import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
+import {FlashList} from "@shopify/flash-list";
 function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { date: string; activity: any; readableHuman: string }[], containerHeight: number, onScroll: (event) => void, ref: React.MutableRefObject<undefined>, callbackfn: (item: any, index: number) => any }) {
     const ActivityMemo = useMemo(()=> {
-        return props.pnApplications.map(props.callbackfn)
+        return props.pnApplications
     }, [  props.pnApplications, props.callbackfn])
     return <>
         {!!props.pnApplications?.length && props.containerHeight &&
@@ -26,12 +27,21 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
             }}>
                 <Text>test</Text>
             </TouchableOpacity>*/}
-                {/*<View  style={{maxHeight: fontValue(300)}}>
-                    <FlatList showsVerticalScrollIndicator={false} nestedScrollEnabled={true} style={{flexGrow: 1, maxHeight: fontValue(300)}} data={props.pnApplications} renderItem={({item, index}) => props.callbackfn(item, index)}/>
+                <View  style={{maxHeight: fontValue(300)}}>
+                    <FlashList
+                        showsVerticalScrollIndicator={false}
+                        nestedScrollEnabled={true}
+                        style={{flexGrow: 1, maxHeight: fontValue(300)}}
+                        data={ActivityMemo}
+                        renderItem={({item, index}) =>
+                        props.callbackfn(item, index)}/>
 
-                </View>*/}
+                </View>
 
-                <ScrollView showsVerticalScrollIndicator={false}
+
+
+
+             {/*   <ScrollView showsVerticalScrollIndicator={false}
                             nestedScrollEnabled={true}
                             onScroll={props.onScroll}
                             scrollEventThrottle={16}
@@ -40,7 +50,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
                     {
                         ActivityMemo
                     }
-                </ScrollView>
+                </ScrollView>*/}
 
             </View>}
     </>;
