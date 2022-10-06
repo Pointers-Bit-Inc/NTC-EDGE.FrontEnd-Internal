@@ -340,7 +340,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
                     <TouchableOpacity onPress={() => {
                         dispatch(setFeedVisible(!feedVisible))
                     }}>
-                        <SplitIcon active={feedVisible}  width={18} height={18} color={!feedVisible ? "#2863D6" : "#A0A3BD" }/>
+                        <SplitIcon active={!feedVisible}  width={18} height={18} color={!feedVisible ? "#2863D6" : "#A0A3BD" }/>
                     </TouchableOpacity>
 
                 </View>

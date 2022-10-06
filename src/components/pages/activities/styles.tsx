@@ -58,6 +58,7 @@ export const styles = StyleSheet.create({
         backgroundColor: errorColor,
     },
     buttonText: {
+        fontFamily: Bold,
         color: '#FFF',
         fontSize: 14,
         textAlign: 'center',

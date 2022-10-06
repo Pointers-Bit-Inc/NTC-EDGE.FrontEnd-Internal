@@ -37,7 +37,9 @@ const {
     SET_DATA,
     SET_CALENDAR_VISIBLE,
     SET_DATE_END,
-    SET_DATE_START
+    SET_DATE_START,
+    SET_PREV_DATE_END,
+    SET_PREV_DATE_START
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -107,6 +109,15 @@ export default function basket(state = initialState, action = {}) {
         }
         case SET_DATE_START: {
             state = state.set('dateStart', action.payload);
+            return state
+        }
+
+        case SET_PREV_DATE_END: {
+            state = state.set('prevDateEnd', action.payload);
+            return state
+        }
+        case SET_PREV_DATE_START: {
+            state = state.set('prevDateStart', action.payload);
             return state
         }
         case SET_USER_ORIGINAL_PROFILE_FORM: {

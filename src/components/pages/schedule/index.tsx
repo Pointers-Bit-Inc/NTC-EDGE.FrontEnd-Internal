@@ -5,7 +5,7 @@ import {isTablet} from "react-native-device-info";
 import Text from "@atoms/text"
 import NoActivity from "@assets/svg/noActivity";
 import {fontValue} from "@pages/activities/fontValue";
-import React from "react";
+import React, {useMemo, useState} from "react";
 import Header from "@molecules/header";
 import SearchIcon from "@assets/svg/search";
 import LeftSideWeb from "@atoms/left-side-web";
@@ -17,6 +17,8 @@ import useSchedule from "../../../hooks/useSchedule";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Plus from "@atoms/icon/plus";
 import {Bold} from "@styles/font";
+import {fuzzysearch} from "../../../utils/ntc";
+import moment from "moment";
 
 const {text, background} = input;
 
@@ -51,6 +53,11 @@ export default function SchedulePage(props: any) {
         onDelete,
         scheduleId
     } = useSchedule(props);
+    const [filter, setFilter] = useState(schedulesMemo)
+
+    const filterMemo = useMemo(()=> {
+        return value == "" || value == null  ? schedulesMemo  : filter
+    }, [filter, schedulesMemo])
 
     return (
         <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
@@ -93,6 +100,9 @@ export default function SchedulePage(props: any) {
                             <View style={{flex: 1, paddingRight: 15}}>
                                 <TextInput value={value} onChangeText={text => {
                                     setValue(text)
+                                    text.length == 0 ?  setFilter(schedulesMemo) : setFilter(schedulesMemo.filter((item) => {
+                                        return fuzzysearch(text, item?.region?.label ) || fuzzysearch(text, item?.venue) ||  fuzzysearch(text,moment(item?.dateStart).format('LT')) ||  fuzzysearch(text,moment(item?.dateStart).format('ddd DD MMMM YYYY'))
+                                    }))
                                 }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
                                 <View style={styles.searchIcon}>
                                     <SearchIcon/>
@@ -109,7 +119,7 @@ export default function SchedulePage(props: any) {
                 <View style={{flex: 1}}>
                     <FlatList
                         ListEmptyComponent={listEmptyComponent}
-                        data={schedulesMemo}
+                        data={filterMemo}
                         contentContainerStyle={{padding: 10,}}
                         renderItem={renderListItem}
                         keyExtractor={item => item._id}

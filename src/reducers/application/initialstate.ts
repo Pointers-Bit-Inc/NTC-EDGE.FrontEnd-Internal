@@ -25,7 +25,8 @@ const InitialState = Record({
   dateStart: null,
   dateEnd: null,
   calendarVisible: false,
-
+  prevDateStart: null,
+  prevDateEnd: null
 
 });
 

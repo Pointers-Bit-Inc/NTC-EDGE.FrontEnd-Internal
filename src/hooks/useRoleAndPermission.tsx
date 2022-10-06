@@ -473,7 +473,8 @@ const useRoleAndPermission =(navigation) => {
         roleId,
         showDeleteAlert,
         setShowDeleteAlert,
-        onDelete
+        onDelete,
+        roles
     };
 }
 

@@ -81,6 +81,8 @@ function useActivities(props) {
     const selectedChangeStatus = useSelector((state: RootStateOrAny) => state.activity?.selectedChangeStatus);
     const visible = useSelector((state: RootStateOrAny) => state.activity?.visible);
     const calendarVisible = useSelector((state: RootStateOrAny) => state.application?.calendarVisible);
+    const prevDateEnd = useSelector((state: RootStateOrAny) => state.application?.prevDateEnd);
+    const prevDateStart= useSelector((state: RootStateOrAny) => state.application?.prevDateStart);
     const dateEnd = useSelector((state: RootStateOrAny) => state.application?.dateEnd);
     const dateStart = useSelector((state: RootStateOrAny) => state.application?.dateStart);
     const applicationItem = useSelector((state: RootStateOrAny) => {
@@ -631,7 +633,9 @@ function useActivities(props) {
         calendarVisible,
         dateStart,
         dateEnd,
-        fnApplications
+        fnApplications,
+        prevDateEnd,
+        prevDateStart
     };
 }
 

@@ -57,7 +57,7 @@ const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, contai
     return ((!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) )  ?
         <View style={styles.group2}>
             {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
-            {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo || props.visibleText || ""} </Text>}
+            {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{props.display || props.applicant || applicantMemo || props.visibleText || ""}</Text>}
         </View> : <>
             {((props.edit && props.editable && props.showEdit) || edit) ? <InputField mainContainerStyle={{...{marginBottom: 10}}}   ref={textInput}  containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)

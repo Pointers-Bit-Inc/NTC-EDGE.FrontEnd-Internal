@@ -5,7 +5,7 @@ import {isTablet} from "react-native-device-info";
 import Text from "@atoms/text"
 import NoActivity from "@assets/svg/noActivity";
 import {fontValue} from "@pages/activities/fontValue";
-import React from "react";
+import React, {useMemo, useState} from "react";
 import Header from "@molecules/header";
 import SearchIcon from "@assets/svg/search";
 import LeftSideWeb from "@atoms/left-side-web";
@@ -22,6 +22,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import Plus from "@atoms/icon/plus";
 import AddParticipantsIcon from "@atoms/icon/add-people";
 import {Bold} from "@styles/font";
+import {fuzzysearch, transformText} from "../../../utils/ntc";
 
 
 export default function RoleAndPermissionPage(props: any) {
@@ -51,10 +52,16 @@ export default function RoleAndPermissionPage(props: any) {
         onDelete,
         listEmptyComponent,
         roleId,
+        roles,
         showDeleteAlert,
         setShowDeleteAlert
     } = useRoleAndPermission(props.navigation);
 
+const [filter, setFilter] = useState(rolesMemo)
+
+    const filterMemo = useMemo(()=> {
+       return value == "" || value == null  ? rolesMemo  : filter
+    }, [filter, rolesMemo])
 
     return (
         <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
@@ -93,8 +100,11 @@ export default function RoleAndPermissionPage(props: any) {
                             flexDirection: "row",
                         }}>
                             <View style={{flex: 1, paddingRight: 15}}>
-                                <TextInput value={value} onChangeText={text => {
+                                <TextInput value={value}  onChangeText={text => {
                                     setValue(text)
+                                    text.length == 0 ?  setFilter(rolesMemo) : setFilter(rolesMemo.filter((item) => {
+                                        return fuzzysearch(text, item.name)
+                                    }))
                                 }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
                                 <View style={styles.searchIcon}>
                                     <SearchIcon/>
@@ -111,7 +121,7 @@ export default function RoleAndPermissionPage(props: any) {
                 <View style={{flex: 1}}>
                     <FlatList
                         ListEmptyComponent={listEmptyComponent}
-                        data={rolesMemo}
+                        data={filterMemo}
                         contentContainerStyle={{padding: 10,}}
                         renderItem={renderItem}
                         keyExtractor={item => item._id}
@@ -185,7 +195,7 @@ export default function RoleAndPermissionPage(props: any) {
                     </Animated.View>
                     <Header size={24} title={"Role: " + role?.name}>
                         <TouchableOpacity onPress={onClose}>
-                            <Text>Close</Text>
+                            <Text style={{fontFamily: Bold}}>Close</Text>
                         </TouchableOpacity>
                     </Header>
                     {role?.description ? <Header size={14} title={"Description:" + role?.description}/> : <></>}

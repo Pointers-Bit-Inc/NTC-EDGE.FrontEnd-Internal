@@ -67,7 +67,7 @@ import {
     setEdit,
     setHasChange,
     setNotPinnedApplication,
-    setPinnedApplication,
+    setPinnedApplication, setPrevDateEnd, setPrevDateStart,
     setSelectedYPos
 } from "../../../reducers/application/actions";
 import {renderSwiper} from "@pages/activities/swiper";
@@ -93,6 +93,7 @@ import CloseIcon from "@assets/svg/close";
 import {SuccessButton} from "@atoms/button/successButton";
 import {DeclineButton} from "@atoms/button/errorButton";
 import hairlineWidth = StyleSheet.hairlineWidth;
+import moment from "moment";
 
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
@@ -144,6 +145,8 @@ const ActivitiesPage = (props) => {
         calendarVisible,
         dateStart,
         dateEnd,
+        prevDateStart,
+        prevDateEnd
     } = useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
@@ -702,16 +705,19 @@ const ActivitiesPage = (props) => {
 
     const onDateChange = (date, type) => {
         if (type === 'END_DATE') {
-            dispatch(setDateEnd(date));
+            let _date = date?.set({"hour": 23, "minute": 59})
+            dispatch(setDateEnd(_date));
         } else {
+            let _date = date?.set({"hour": 0, "minute": 0})
             dispatch(setDateEnd(null));
-            dispatch(setDateStart(date));
-
-
+            dispatch(setDateStart(_date));
         }
     }
 
     const calendarPress = () => {
+        dispatch(setPrevDateEnd(dateEnd));
+        dispatch(setPrevDateStart(dateStart));
+
         dispatch(setCalendarVisible(true))
         RNAnimated.spring(animation, {
             toValue: 1,
@@ -823,7 +829,7 @@ const ActivitiesPage = (props) => {
                                 <View style={{padding: 10}}>
                                     <Text style={{fontSize: 16, fontFamily: Bold}}>Date Filter: </Text>
                                 </View>
-                                <CalendarView onPress={props.onPress}
+                                <CalendarView onPress={()=> dispatch(setCalendarVisible(true))}
                                               isCloseable={true}
                                               onCloseable={() => {
                                                   dispatch(setDateEnd(null));
@@ -899,7 +905,8 @@ const ActivitiesPage = (props) => {
 
 
                         <CalendarPicker
-
+                            maxDate={new Date()}
+                            allowBackwardRangeSelect={true}
                             width={isMobile? dimensions.width * 0.8 : dimensions.width * 0.3}
                             height={dimensions.height * 0.8}
                             headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
@@ -919,6 +926,12 @@ const ActivitiesPage = (props) => {
                                     if(!(dateStart && dateEnd)){
                                         dispatch(setCalendarVisible(!calendarVisible))
                                     }
+                                    dispatch(setDateEnd(prevDateEnd));
+                                    dispatch(setDateStart(prevDateStart));
+
+                                    if(!(prevDateEnd && prevDateStart)){
+                                        dispatch(setCalendarVisible(false))
+                                    }
 
                                     RNAnimated.spring(animation, {
                                         toValue: 0,
@@ -927,7 +940,7 @@ const ActivitiesPage = (props) => {
                                 }} name={"Cancel"}/>
                             </View>
                             <View style={{flex: 0.9,  paddingHorizontal: 10}}>
-                              <SuccessButton onPress={()=>{
+                              <SuccessButton disabled={!(dateStart && dateEnd)} onPress={()=>{
                                   onRefresh()
                                   RNAnimated.spring(animation, {
                                       toValue: 0,

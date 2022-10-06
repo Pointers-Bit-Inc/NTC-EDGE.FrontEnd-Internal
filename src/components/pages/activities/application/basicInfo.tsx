@@ -287,7 +287,7 @@ const BasicInfo = (_props: any) => {
         return [CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) || (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ): ((props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ||  (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks))
     }, [props])
     const collapsedTime = useMemo(() => {
-        return moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) ||  (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)) : ((props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time) || (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time)) ).fromNow()
+        return moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) ||  (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)) : ((props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time) || (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time)) )?.format('MMMM Do YYYY, h:mm:ss a')
     }, [props])
     const containerMergeStyle = useMemo(() => [styles.elevation, {width: "90%", marginVertical: 10,}], [])
     const containerMarginMergeStyle = useMemo(() => [styles.container, {marginVertical: 10}], [])
@@ -751,7 +751,7 @@ const BasicInfo = (_props: any) => {
                                                                     updateForm={applicantForm}
                                                                     userProfileForm={userProfileForm}
                                                                     edit={props.edit}
-                                                                    exclude={["about", '_id', 'name', 'applicationType', 'serviceCode']}
+                                                                    exclude={["createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
 
 

@@ -22,7 +22,9 @@ const {
     SET_DATA,
     SET_CALENDAR_VISIBLE,
     SET_DATE_END,
-    SET_DATE_START
+    SET_DATE_START,
+    SET_PREV_DATE_START,
+    SET_PREV_DATE_END
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -176,6 +178,19 @@ export function setDateStart(payload) {
 export function setDateEnd(payload) {
     return {
         type: SET_DATE_END,
+        payload,
+    };
+}
+export function setPrevDateStart(payload) {
+    return {
+        type: SET_PREV_DATE_START,
+        payload,
+    };
+}
+
+export function setPrevDateEnd(payload) {
+    return {
+        type: SET_PREV_DATE_END,
         payload,
     };
 }

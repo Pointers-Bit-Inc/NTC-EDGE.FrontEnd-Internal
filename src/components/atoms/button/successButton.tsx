@@ -4,13 +4,13 @@ import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {Hoverable} from "react-native-web-hooks";
 
-export function SuccessButton(props: { onPress: () => void, name: string }) {
+export function SuccessButton(props: { disabled: boolean,  onPress: () => void, name: string }) {
     const [pressed, setPressed] = useState(false)
     return <Hoverable>
         {isHovered => (
 
                 <TouchableWithoutFeedback
-
+                    disabled={props.disabled}
                     onPressIn={() => setPressed(true)}
                     onPressOut={() => setPressed(false)}
 
@@ -23,7 +23,7 @@ export function SuccessButton(props: { onPress: () => void, name: string }) {
                                 borderColor: (pressed) ? "transparent" : isHovered ?  "#4DFBC5" : "transparent",
                                 padding: 15,
                                 borderWidth:  isHovered ? 4 :  undefined,
-                                backgroundColor : (pressed ? "#097352" :  "rgba(0,171,118,1)") ,
+                                backgroundColor :    props.disabled ? "#C4C4C4" :  (pressed ? "#097352" :  "rgba(0,171,118,1)") ,
                             }]
                         }>
 
