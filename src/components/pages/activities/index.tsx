@@ -745,7 +745,7 @@ const ActivitiesPage = (props) => {
                                         isMobile && !(
                                             Platform?.isPad || isTablet()))? `Activity` : `Feed`}</Text>
                                     <View style={{flex: 1, justifyContent: "center"}}/>
-                                    <View style={{paddingHorizontal: 5}}>
+                                    <View style={{paddingHorizontal: 15}}>
                                         <TouchableOpacity onPress={calendarPress}>
                                             <CalendarIcon color={(Platform.OS == "web" || Platform.isPad)? "#4E4B66"  :"white"} pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
                                                           height={fontValue(Platform.OS == "web" || Platform.isPad ? 20 : 23)}/>
@@ -766,7 +766,7 @@ const ActivitiesPage = (props) => {
                                             {Platform.OS == "web" || Platform.isPad ?
                                                 <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
                                                             height={fontValue(24)} fill={"#fff"}/> :
-                                                <View style={{paddingLeft: 5}}><RefreshRN/></View>}
+                                                <View style={{paddingLeft: 15}}><RefreshRN/></View>}
                                         </TouchableOpacity>
                                     }
                                 </View>
