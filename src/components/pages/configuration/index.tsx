@@ -16,6 +16,8 @@ import Text from "@atoms/text"
 import DebounceInput from "@atoms/debounceInput";
 import DropdownCard from "@organisms/dropdown-card";
 import useConfiguration from "../../../hooks/useConfiguration";
+import * as ImagePicker from "expo-image-picker";
+import {BASE_URL} from "../../../services/config";
 
 
 export default function ConfigurationPage(props: any) {
@@ -40,6 +42,8 @@ export default function ConfigurationPage(props: any) {
         updateApplication,
         applicantFeeForm
     } = useConfiguration(props);
+
+
 
     return (
         <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>

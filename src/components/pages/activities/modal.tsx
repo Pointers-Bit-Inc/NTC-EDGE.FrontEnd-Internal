@@ -65,7 +65,7 @@ import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
 import _ from "lodash";
-import {setUpdateIncrement} from "../../../reducers/activity/actions";
+import {setFeedVisible, setUpdateIncrement} from "../../../reducers/activity/actions";
 import {setAmnesty} from "../../../reducers/soa/actions";
 
 const flatten = require('flat')
@@ -774,8 +774,9 @@ function ActivityModal(props: any) {
                     setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
                     if (getRole(user, [EVALUATOR])) {
                         onApproveDismissed();
-                    }
 
+                    }
+                    dispatch(setFeedVisible(true))
                 }}
                 onChangeRemarks={(_remark: string, _assign) => {
 

@@ -5,6 +5,7 @@ import Text from "@atoms/text";
 import {styles} from "@pages/activities/styles";
 import ScheduleCreateEdit from "@pages/schedule/ScheduleCreateEdit";
 import useSchedule from "../../../hooks/useSchedule";
+import {Bold} from "@styles/font";
 
 const CreateConfigurationScreen = (props) => {
     const {
@@ -25,7 +26,7 @@ const CreateConfigurationScreen = (props) => {
     return <View style={[{flex: 1, backgroundColor: "#fff",}]}>
         <Header size={24} title={"Create Schedule"}>
             <TouchableOpacity onPress={onClose}>
-                <Text>Close</Text>
+                <Text style={{fontFamily: Bold}}>Close</Text>
             </TouchableOpacity>
         </Header>
         <ScheduleCreateEdit id={schedule.id} formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}

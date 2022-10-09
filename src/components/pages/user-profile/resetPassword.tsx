@@ -1,31 +1,18 @@
 import React, {useState} from 'react';
-import {
-    Dimensions,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StyleSheet,
-    TouchableOpacity,
-    View,
-    ScrollView
-} from 'react-native';
+import {Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View} from 'react-native';
 import Text from '@components/atoms/text';
 import {validatePassword,} from 'src/utils/form-validations';
-import {InputField, PasswordField} from '@molecules/form-fields';
+import {PasswordField} from '@molecules/form-fields';
 import Button from '@components/atoms/button';
-import {ArrowLeftIcon} from '@components/atoms/icon';
 import PasswordForm from '@components/organisms/forms/reset-password';
-import {button, defaultColor, errorColor, successColor, text} from 'src/styles/color';
-import InputStyles from 'src/styles/input-style';
+import {button, defaultColor, errorColor, successColor} from 'src/styles/color';
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import AwesomeAlert from "react-native-awesome-alerts";
 import NavBar from '@components/molecules/navbar';
 import Left from '@components/atoms/icon/left';
 import Loading from '@components/atoms/loading';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { Bold } from '@styles/font';
+import {Bold} from '@styles/font';
 import Alert from '@components/atoms/alert';
 import {fontValue} from "@pages/activities/fontValue";
 
@@ -156,7 +143,7 @@ const ResetPassword = ({navigation}: any) => {
                     }
                 });
             }
-            case "resetPassword":{
+            case "resetPassword": {
                 onCheckValidation()
             }
             default:
@@ -195,27 +182,27 @@ const ResetPassword = ({navigation}: any) => {
 
             axios.patch(BASE_URL + `/users/${user._id}/change-password`, params, config).then((response) => {
 
-                    setFormValue({
-                        ...formValue,
-                        ['oldPassword']: {
-                            ...formValue.oldPassword,
-                            value: "",
-                        },
-                        ['password']: {
-                            ...formValue.password,
-                            value: '',
-                            isValid: false,
-                            error: '',
-                            characterLength: false,
-                            upperAndLowerCase: false,
-                            atLeastOneNumber: false,
-                        },
-                        ['confirmPassword']: {
-                            ...formValue.confirmPassword,
-                            value: "",
-                        }
+                setFormValue({
+                    ...formValue,
+                    ['oldPassword']: {
+                        ...formValue.oldPassword,
+                        value: "",
+                    },
+                    ['password']: {
+                        ...formValue.password,
+                        value: '',
+                        isValid: false,
+                        error: '',
+                        characterLength: false,
+                        upperAndLowerCase: false,
+                        atLeastOneNumber: false,
+                    },
+                    ['confirmPassword']: {
+                        ...formValue.confirmPassword,
+                        value: "",
+                    }
 
-                    })
+                })
 
 
                 setAlert({
@@ -226,7 +213,7 @@ const ResetPassword = ({navigation}: any) => {
 
                 setShowAlert(true);
                 setLoading(false);
-            }).catch((err)=>{
+            }).catch((err) => {
                 setAlert({
                     title: err?.title || 'Failure',
                     message: err?.message || 'Your password was not updated.',
@@ -259,7 +246,7 @@ const ResetPassword = ({navigation}: any) => {
             /> */}
             <NavBar
                 title='Change Password'
-                leftIcon={<Left color='#fff' />}
+                leftIcon={<Left color='#fff'/>}
                 onLeft={() => navigation.goBack()}
             />
             {/* <View style={styles.header}>
@@ -280,7 +267,7 @@ const ResetPassword = ({navigation}: any) => {
                     </Text>
                 </TouchableOpacity>
             </View> */}
-            <ScrollView  keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"} style={styles.content}>
+            <ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"} style={styles.content}>
                 <PasswordField
 
                     label={'Old password'}
@@ -307,14 +294,14 @@ const ResetPassword = ({navigation}: any) => {
                 >
                     {
                         loading
-                            ?   <Loading color='#fff' size={10} />
-                            :   <Text
-                                    color="white"
-                                    size={16}
-                                    style={styles.boldText}
-                                >
-                                    Submit
-                                </Text>
+                            ? <Loading color='#fff' size={10}/>
+                            : <Text
+                                color="white"
+                                size={16}
+                                style={styles.boldText}
+                            >
+                                Submit
+                            </Text>
                     }
                 </Button>
             </KeyboardAvoidingView>

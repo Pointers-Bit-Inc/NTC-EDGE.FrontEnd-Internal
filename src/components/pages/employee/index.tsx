@@ -29,10 +29,11 @@ export default function EmployeePage(props:any){
 
             console.log(response.response)
         })
-    }, [roles_select.length == 0])
+    }, [roles_select?.length == 0])
     const rolesSelectMemo = useMemo(() =>{
         return roles_select
     }, [roles_select])
+
     return <DataTable
         navigation={props.navigation}
         name={EMPLOYEES}

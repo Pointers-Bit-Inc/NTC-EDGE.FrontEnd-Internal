@@ -15,7 +15,7 @@ const InitialState = Record({
   filterRect: {width: 0, height: 0, left: 0, top: 0},
   applicationItem: {},
   data: {},
-
+dataId: "",
   applicationItemId: 0,
   userProfileForm: {},
   userOriginalProfileForm: {},

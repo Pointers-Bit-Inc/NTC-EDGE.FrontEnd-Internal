@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         textAlign : "left"
     } ,
 })
-const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit?:string, label: string, applicant?: any }) => {
 
     const [dates, setDates] = useSafeState(typeof props?.applicant == 'string' ?
         props?.applicant?.split('T')?.[0]?.split('-') : (Moment?.isMoment( props?.applicant) ? props?.applicant?.toISOString()?.split?.('T')?.[0]?.split?.('-') :  [(props?.applicant?.year || 1), (props?.applicant?.month || 1), (props?.applicant?.day || 1)]))
@@ -56,8 +56,8 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     let _month = month || '00';
     const datesArray = Array.from(Array(Moment(new Date()).set({year: _year, month: _month}).daysInMonth()), (_, i) => {
         return {
-            label: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
-            value: (i+1).toString().length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
+            label: (i+1).toString()?.length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
+            value: (i+1).toString()?.length == 1 ? "0" +(i+1).toString() : (i+1).toString(),
         }
     });
     const [edit, setEdit] = useSafeState(false)
@@ -67,7 +67,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
     useEffect(()=>{
-        let _day = dayValue.length == 1 ? "0" + dayValue : dayValue
+        let _day = dayValue?.length == 1 ? "0" + dayValue : dayValue
         props.updateForm(props.stateName, `${yearValue}-${monthValue}-${_day}` + (time ? `T${time}` : ""))
     }, [monthValue, dayValue, yearValue])
     const date = useMemo(() =>{
@@ -144,6 +144,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
 DateField.defaultProps = {
     editable: true,
     show: true,
-    showEdit: true
+    showEdit: true,
+    edit: false
 }
 export default DateField

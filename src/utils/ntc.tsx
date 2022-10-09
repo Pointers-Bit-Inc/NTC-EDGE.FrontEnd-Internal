@@ -636,7 +636,23 @@ const permission = {
         "history": false
     },
 }
+
+const toFormData = (f => f(f))(h => f => f(x => h(h)(f)(x)))(f => fd => pk => d => {
+    if (d instanceof Object) {
+        Object.keys(d).forEach(k => {
+            const v = d[k]
+            if (pk) k = `${pk}[${k}]`
+            if (v instanceof Object && !(v instanceof Date) && !(v instanceof File)) {
+                return f(fd)(k)(v)
+            } else {
+                fd.append(k, v)
+            }
+        })
+    }
+    return fd
+})(new FormData())()
 export {
+    toFormData,
     permission ,
     datesArray,hoursArray,ampmArray,monthsArray,
     fuzzysearch,

@@ -39,7 +39,9 @@ const {
     SET_DATE_END,
     SET_DATE_START,
     SET_PREV_DATE_END,
-    SET_PREV_DATE_START
+    SET_PREV_DATE_START,
+    SET_DATA_ID,
+    SET_DELETE_DATA
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -81,6 +83,12 @@ export default function basket(state = initialState, action = {}) {
             state = state.set('hasChange', action.payload);
             return state
         }
+        case SET_DATA_ID: {
+            state = state.set('dataId', action.payload);
+            return state
+        }
+
+
         case SET_EDIT: {
             state = state.set('edit', action.payload);
             return state

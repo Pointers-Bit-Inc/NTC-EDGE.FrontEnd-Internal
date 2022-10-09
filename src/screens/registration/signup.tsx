@@ -219,8 +219,8 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
       return onChangeText('permitType', formValue.permitType.value);
     } else if (!formValue.firstName.isValid) {
       return onChangeText('firstname', formValue.firstName.value);
-    } else if (!formValue.middleName:.isValid) {
-      return onChangeText('middleName:', formValue.middleName:.value);
+    } else if (!formValue.middleName.isValid) {
+      return onChangeText('middleName:', formValue.middleName.value);
     } else if (!formValue.lastName.isValid) {
       return onChangeText('lastname', formValue.lastName.value);
     } else if (!formValue.phone.isValid) {

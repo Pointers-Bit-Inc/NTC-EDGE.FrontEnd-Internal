@@ -14,6 +14,7 @@ const ProfileData = () => {
     const data = useSelector((state: RootStateOrAny) => {
         return state.application.data
     });
+
     return <ScrollView>
         <View style={[styles.elevation, {padding: 20}]}>
         <View style={{alignItems: "center", justifyContent: "center", paddingVertical: 15 }}>
@@ -27,7 +28,7 @@ const ProfileData = () => {
         /></View>
 
                         <Text style={[styles.header, styles.group3]}>Basic Information</Text>
-            <RenderServiceMiscellaneous isTitleVisible={false} exclude={ ["createdAt","applicationTypes", "about", '_id', 'role', 'profilePicture', 'updatedAt',  'createdAt'] }
+            <RenderServiceMiscellaneous isTitleVisible={false} exclude={ ["sessionToken", "createdAt","applicationTypes", "about", '_id', 'role', 'profilePicture', 'updatedAt',  'createdAt'] }
                                         service={data}/>
 
 

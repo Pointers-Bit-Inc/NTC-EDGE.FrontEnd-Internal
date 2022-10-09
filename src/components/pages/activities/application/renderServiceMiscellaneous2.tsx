@@ -91,7 +91,7 @@ function Separator({index}){
 
 const RenderServiceMiscellaneous=(props)=>{
     let service=JSON.parse(JSON.stringify(props.service||{}));
-
+    let serviceId = service._id
 
     const flatten=(obj)=>{
         var result={};
@@ -167,7 +167,7 @@ const RenderServiceMiscellaneous=(props)=>{
                                     if (value)  props.updateForm("service." + keys, value)
                                 } }/>
             </View>:  <Row
-                id={props?.userProfileForm?.["_id"]}
+                id={props?.userProfileForm?.["_id"] || serviceId}
                 updateApplication={props?.updateApplication}
                 updateForm={props.updateForm}
                 stateName={"service." + keys}

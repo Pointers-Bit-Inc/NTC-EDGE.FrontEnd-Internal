@@ -24,7 +24,9 @@ const {
     SET_DATE_END,
     SET_DATE_START,
     SET_PREV_DATE_START,
-    SET_PREV_DATE_END
+    SET_PREV_DATE_END,
+    SET_DATA_ID,
+    SET_DELETE_DATA
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -54,6 +56,19 @@ export function setEdit(payload) {
 export function setData(payload) {
     return {
         type: SET_DATA,
+        payload,
+    };
+}
+export function setDataId(payload) {
+    return {
+        type: SET_DATA_ID,
+        payload,
+    };
+}
+
+export function setDeleteData(payload) {
+    return {
+        type: SET_DELETE_DATA,
         payload,
     };
 }

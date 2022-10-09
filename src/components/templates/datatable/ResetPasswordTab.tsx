@@ -1,17 +1,13 @@
 import {ActivityIndicator, TouchableOpacity, View} from "react-native";
-import Row from "@pages/activities/application/Row";
 import React, {memo, useState} from "react";
 import styles from "@styles/applications/basicInfo"
-import {generatePassword, transformText} from "../../../utils/ntc";
-import _ from "lodash";
-import NavBar from "@molecules/navbar";
-import ProfileImage from "@components/atoms/image/profile";
+import {generatePassword} from "../../../utils/ntc";
 import {fontValue} from "@pages/activities/fontValue";
 import {RootStateOrAny, useSelector} from "react-redux";
 import Text from '@atoms/text'
 import {Bold} from "@styles/font";
 import * as Clipboard from 'expo-clipboard';
-import {disabledColor, infoColor, successColor} from "@styles/color";
+import {disabledColor, infoColor} from "@styles/color";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import Alert from "@atoms/alert";
@@ -19,6 +15,7 @@ import {InputField} from "@molecules/form-fields";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import CheckIcon from "@assets/svg/check";
+
 const ResetPasswordTab = () => {
 
     const data = useSelector((state: RootStateOrAny) => {

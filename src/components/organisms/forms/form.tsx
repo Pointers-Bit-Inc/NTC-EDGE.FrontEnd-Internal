@@ -8,9 +8,9 @@ import {Ionicons} from "@expo/vector-icons";
 import {input,outline,text} from "@styles/color";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import inputStyles from "@styles/input-style";
-import TimePicker from "@molecules/timeinput";
-import TimeField from "@pages/activities/application/timefield";
-
+import CalendarPicker from 'react-native-calendar-picker';
+import DateField from "@pages/activities/application/datefield";
+import moment from "moment";
 const FormField=({
                      color,
                      formElements,
@@ -33,19 +33,13 @@ const FormField=({
         };
         switch(type){
             case 'image':
-                return otherProps.value ? <Image
+                return <Image
                     {...styleProps}
                     key={id}
                     {...otherProps}
-                    source={{uri:otherProps.value}}
+                    source={{uri: element?.tempBlob}}
                     resizeMode={"cover"}
-                /> : <Image
-                           key={id}
-                           {...styleProps}
-                           {...otherProps}
-                           source={require('../../../../assets/favicon.png')}
-                           resizeMode={"cover"}
-                       />;
+                />
             case "text":
                 return <Text key={id} {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
@@ -71,7 +65,7 @@ const FormField=({
                                        mapRef?.[mapRef.findIndex(e=>e?.id==id)+1]?.ref?.current?.focus();
                                        onChange(id,event.nativeEvent.text,'input',element?.stateName);
                                        handleEvent ? handleEvent(layoutRef?.find((layout)=>layout?.["id"]==id)?.layout) : null
-                                   }}/> : null;
+                                   }}/> : <></>;
             case "select":
                 return <View style={{paddingBottom: 22}}>
                     <CustomDropdown key={id}
@@ -98,24 +92,25 @@ const FormField=({
                 </View>;
 
             case 'password':
-                return <InputField  {...styleProps} {...otherProps}
+                return !element.hidden ? <InputField  {...styleProps} {...otherProps}
                                     onEndEditing={(e:any)=>{
                                         onChange(id,e.nativeEvent.text,'password')
                                     }
                                     }
                                     key={id}
                                     onChangeText={(text:string)=>onChange(id,text,'password')}
-                                    onSubmitEditing={(event:any)=>onChange(id,event.nativeEvent.text,'password')}/>;
+                                    onSubmitEditing={(event:any)=>onChange(id,event.nativeEvent.text,'password')}/> : <></>;
             case "date":
 
                 return (
                     <View>
-                        <Text style={{color:text.default}}>{otherProps.label}</Text>
-                        <DateTimePicker style={{width:'100%'}}
-                                        onChange={(event:any,selectedDate:any)=>{
-                                            onChange(id,selectedDate)
-                                        }}
-                                        key={id} {...styleProps} {...otherProps}  />
+                        <DateField label={"Date:"}
+                                   edit={true}
+                                   updateForm={(stateName, value) =>  onChange(id, value )}
+                                   stateName={"schedule.dateStart"}
+                                   applicant={element?.value}
+                                   display={moment(element?.value).isValid() ? moment(element?.value).format('ddd DD MMMM YYYY') :element?.value}/>
+
                     </View>
                 );
             case "radiobutton":

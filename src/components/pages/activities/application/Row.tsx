@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     },
 })
 const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
+    console.log(props.applicant)
     const [edit, setEdit] = useSafeState(false)
     const [value, setValue] = useState()
     const [prevId, setPrevId] = useState(true)
@@ -45,6 +46,7 @@ const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, contai
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
     const SUPPORTED_FORMATS = ["jpg", "jpeg", "png"];
     function get_url_extension(url: string) {
+        console.log(url?.split?.(/[#?]/)?.[0]?.split?.('.')?.pop()?.trim())
         return url?.split?.(/[#?]/)?.[0]?.split?.('.')?.pop()?.trim();
     }
 
@@ -57,8 +59,10 @@ const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, contai
     return ((!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) )  ?
         <View style={styles.group2}>
             {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
-            {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{props.display || props.applicant || applicantMemo || props.visibleText || ""}</Text>}
-        </View> : <>
+            <View style={{flex: 1, flexWrap: "wrap" }}>
+                {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{props.display || props.applicant || applicantMemo || props.visibleText || ""}</Text>}
+            </View>
+             </View> : <>
             {((props.edit && props.editable && props.showEdit) || edit) ? <InputField mainContainerStyle={{...{marginBottom: 10}}}   ref={textInput}  containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)
                 setEdit(false)

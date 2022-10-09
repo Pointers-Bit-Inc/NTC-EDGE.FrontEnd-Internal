@@ -7,7 +7,8 @@ function parseSchedule(_originalForm: any[], item) {
             if (_originalForm[i].stateName == key) {
                 if (_.isObject(value)) {
                     recursionObject(value, (val, key) => {
-                        if (key == _originalForm[i].subStateName) {
+                        console.log(val, "value", key, "key")
+                        if (key == _originalForm[i]?.subStateName) {
                             _originalForm[i].value = val
                         }
                     })

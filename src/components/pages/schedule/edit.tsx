@@ -8,6 +8,7 @@ import ScheduleCreateEdit from "@pages/schedule/ScheduleCreateEdit";
 import useSchedule from "../../../hooks/useSchedule";
 import {setSchedule} from "../../../reducers/schedule/actions";
 import parseSchedule from "@pages/schedule/parseSchedule";
+import {Bold} from "@styles/font";
 
 const EditScheduleScreen = (props) => {
     const {
@@ -45,7 +46,7 @@ const EditScheduleScreen = (props) => {
 
         <Header size={24} title={"Schedule: "}>
             <TouchableOpacity onPress={onClose}>
-                <Text>Close</Text>
+                <Text style={{fontFamily: Bold}}>Close</Text>
             </TouchableOpacity>
         </Header>
 

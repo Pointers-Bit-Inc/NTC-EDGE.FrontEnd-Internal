@@ -26,5 +26,7 @@ export default keyMirror({
   SET_DATE_END:null,
   SET_DATE_START: null,
   SET_PREV_DATE_END: null,
-  SET_PREV_DATE_START: null
+  SET_PREV_DATE_START: null,
+  SET_DATA_ID: null,
+  SET_DELETE_DATA: null
 });

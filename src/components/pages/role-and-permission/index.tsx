@@ -285,27 +285,27 @@ const [filter, setFilter] = useState(rolesMemo)
 
             }
 
-            <AwesomeAlert
-                alertContainerStyle={{zIndex: 2}}
-                show={showDeleteAlert}
-                showProgress={false}
-                title={"Delete"}
-                message="Are you sure you want to delete this item?"
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                showConfirmButton={true}
-                cancelText="No, cancel"
-                confirmText="Yes, delete it"
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                  setShowDeleteAlert(false)
-                }}
-                onConfirmPressed={() => {
-                    onDelete(roleId)
-                    setShowDeleteAlert(false)
-                }}
-            />
+                <AwesomeAlert
+                    alertContainerStyle={{zIndex: 2}}
+                    show={showDeleteAlert}
+                    showProgress={false}
+                    title={"Delete"}
+                    message="Are you sure you want to delete this item?"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="No, cancel"
+                    confirmText="Yes, delete it"
+                    confirmButtonColor="#DD6B55"
+                    onCancelPressed={() => {
+                      setShowDeleteAlert(false)
+                    }}
+                    onConfirmPressed={() => {
+                        onDelete(roleId)
+                        setShowDeleteAlert(false)
+                    }}
+                />
         </View>
     )
 }
