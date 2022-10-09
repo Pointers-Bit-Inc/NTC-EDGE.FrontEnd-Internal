@@ -635,7 +635,8 @@ function useActivities(props) {
         dateEnd,
         fnApplications,
         prevDateEnd,
-        prevDateStart
+        prevDateStart,
+        total
     };
 }
 

@@ -15,9 +15,10 @@ import {InputField} from "@molecules/form-fields";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import CheckIcon from "@assets/svg/check";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const ResetPasswordTab = () => {
-
+    const [showAlert, setShowAlert] = useState(false)
     const data = useSelector((state: RootStateOrAny) => {
         return state.application.data
     });
@@ -79,7 +80,7 @@ const ResetPasswordTab = () => {
                 <Text  style={{fontSize: fontValue(14), paddingBottom: fontValue(6)}}>{`The user\n'${data?.email}' will be assigned a temporary password that must be changed on the next sign in. To display the temporary password, click 'Reset Password'`}</Text>
                 <View style={{ alignItems: "flex-start",  justifyContent: "flex-start"}}>
 
-                    <TouchableOpacity disabled={disabled} onPress={resetPassword}>
+                    <TouchableOpacity disabled={disabled} onPress={() => setShowAlert(true)}>
                         <View style={{flexDirection: "row", alignItems: "center", borderRadius: 6, justifyContent: "center", backgroundColor: disabled ? disabledColor:  infoColor, padding: fontValue(10), }}>
                             <Text style={{ color: "#fff", fontFamily: Bold, fontSize: fontValue(14)}}>{disabled ? 'Resetting Password...' :'Reset Password'}</Text>
                             {disabled ? <ActivityIndicator color={"#fff"}/> : <></>}
@@ -115,6 +116,29 @@ const ResetPasswordTab = () => {
 
         <InputField  value={temporaryPassword}  />
     </View>}/>
+
+        <AwesomeAlert
+            alertContainerStyle={{zIndex: 2}}
+            show={showAlert}
+            showProgress={false}
+            title={"Reset password?"}
+            message="Are you sure you want to reset the password for this item?"
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={true}
+            showConfirmButton={true}
+            cancelText="No, cancel"
+            confirmText="Yes, Reset it"
+            confirmButtonColor="#DD6B55"
+            onCancelPressed={() => {
+                setShowAlert(false)
+            }}
+            onConfirmPressed={() => {
+                resetPassword()
+                setShowAlert(false)
+            }}
+        />
+
     </>
 }
 

@@ -800,7 +800,7 @@ const DataTable = (props) => {
                             </MenuOption> : <></>}
                             {props?.permissionDelete ? <MenuOption value={'delete'}>
                                 <View>
-                                    <Text>{'Delete'}</Text>
+                                    <Text style={{color: errorColor}}>{'Delete'}</Text>
                                 </View>
                             </MenuOption> : <></>}
                         </MenuOptions>
@@ -822,7 +822,9 @@ const DataTable = (props) => {
                     if (newArr[index].hasOwnProperty("value")) {
                         newArr[index].value = ''
                     }
-
+                    if (newArr[index].hasOwnProperty("tempBlob")) {
+                        newArr[index].tempBlob = ''
+                    }
                 }
             }
 

@@ -42,7 +42,7 @@ const Loader = (refreshing,searchTerm,size) => {
 
         <View  style={[{justifyContent: "center", alignItems: "center",   width: "100%"  }]}>
 
-            {refreshing  ? <Placeholder renderItem={() => <Skeleton/>} keyExtractor={item => item}/>  : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
+            {refreshing ? <Placeholder renderItem={() => <Skeleton/>} keyExtractor={item => item}/>  : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
                     style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
 
                 : (size || size?.length) ? <></> : <NoActivityMemo/>}

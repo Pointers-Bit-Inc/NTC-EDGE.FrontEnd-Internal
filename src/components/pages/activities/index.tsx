@@ -488,7 +488,7 @@ const ActivitiesPage = (props) => {
         }
     }
 
-    const listEmptyComponent = useMemoizedFn(() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+    const listEmptyComponent = useMemoizedFn(() => listEmpty(refreshing , searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length));
 
