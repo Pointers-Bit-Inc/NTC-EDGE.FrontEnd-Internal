@@ -23,7 +23,7 @@ export default function EmployeePage(props:any){
                 Authorization: "Bearer ".concat(sessionToken)
             }
         }).then((response) => {
-            dispatch(setRolesSelect(response.data))
+            dispatch(setRolesSelect(response.data.filter(a => a.value != "user" )))
             setLoading(false);
         }).catch((response) => {
 

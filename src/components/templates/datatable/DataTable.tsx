@@ -181,7 +181,7 @@ const style = StyleSheet.create({
     subtitle: {paddingVertical: 10, paddingHorizontal: 10, fontSize: 18, fontFamily: Bold, color: infoColor}
 
 });
-import {useFocusEffect, } from '@react-navigation/native';
+import {useFocusEffect,} from '@react-navigation/native';
 
 const DataTable = (props) => {
 
@@ -553,12 +553,12 @@ const DataTable = (props) => {
         }
     };
 
-    const checkIsDisabled=()=>{
-        var valid=false;
+    const checkIsDisabled = () => {
+        var valid = false;
 
-        userProfileForm?.forEach((up:any)=>{
-            if((!up?.value||up?.error) && ((props.name == EMPLOYEES && ["region" ].indexOf(up.subStateName) != -1 ) || (["role", "dateOfBirth",  "firstName", "middleName",  "email",  "lastName" ].indexOf(up.stateName) != -1) ) ){
-                valid=true;
+        userProfileForm?.forEach((up: any) => {
+            if ((!up?.value || up?.error) && ((props.name == EMPLOYEES && ["region"].indexOf(up.subStateName) != -1) || (["role", "dateOfBirth", "firstName", "middleName", "email", "lastName"].indexOf(up.stateName) != -1))) {
+                valid = true;
             }
         });
         return valid;
@@ -647,9 +647,10 @@ const DataTable = (props) => {
         fetchCallback()
     }, []);
     const [selectedId, setSelectedId] = useState(0)
+
     function onDelete(id) {
         let _docs = [...docs]
-        let exist = _docs?.findIndex((doc) => doc._id ==id)
+        let exist = _docs?.findIndex((doc) => doc._id == id)
         setSelectedId(id)
         axios.delete(BASE_URL + `/users/${id}`, config).then((response) => {
             setSelectedId(null)
@@ -671,9 +672,15 @@ const DataTable = (props) => {
 
         })
     }
+
     const [showDeleteAlert, setShowDeleteAlert] = useSafeState(false)
     const renderItems = ({item}) => {
-        return <View style={{backgroundColor: item._id == selectedId ? errorColor : "white"  , paddingLeft: 24, borderTopWidth: 1, borderTopColor: "#f0f0f0"}}>
+        return <View style={{
+            backgroundColor: item._id == selectedId ? errorColor : "white",
+            paddingLeft: 24,
+            borderTopWidth: 1,
+            borderTopColor: "#f0f0f0"
+        }}>
 
             <TouchableOpacity style={style.rowStyle} onPress={() => {
                 dispatch(setData(item))
@@ -734,14 +741,14 @@ const DataTable = (props) => {
                                 for (const props in item) {
                                     if (_.isObject(item?.[props])) {
                                         recursionObject(item?.[props], (val, key) => {
-                                            if (key ==  newArr[index]?.subStateName) {
+                                            if (key == newArr[index]?.subStateName) {
                                                 newArr[index].value = val
                                             }
                                         })
                                     } else {
 
                                         if (newArr[index]['stateName'] === props && props === 'role') {
-                                            console.log( item?.[props]?.key)
+                                            console.log(item?.[props]?.key)
                                             newArr[index]['value'] = item?.[props]?.key;
                                         } else if (newArr[index]['stateName'] === props) {
                                             newArr[index]['value'] = item[props];
@@ -759,7 +766,7 @@ const DataTable = (props) => {
                         } else if (value == "delete") {
 
                             dispatch(setDataId(item._id))
-                           setShowDeleteAlert(true)
+                            setShowDeleteAlert(true)
                         }
 
                     }}>
@@ -854,31 +861,33 @@ const DataTable = (props) => {
                 subStateName[up.subStateName] = up?.value
             }
 
-            return updatedUser = {...updatedUser, [up?.stateName]: (up.subStateName && up.stateName != "role") ? {...subStateName} : up?.value};
+            return updatedUser = {
+                ...updatedUser,
+                [up?.stateName]: (up.subStateName && up.stateName != "role") ? {...subStateName} : up?.value
+            };
         });
 
 
         updatedUser.password = generatePassword()
         setLoading(true);
         axios[updatedUser?._id ? "patch" : "post"](BASE_URL + (updatedUser?._id ? `/users/` + updatedUser?._id || "" : `/internal/users/`), updatedUser, config).then(async (response) => {
-
+            let newArr = [...docs];
             cleanForm();
             showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
             if (updatedUser?._id) {
-                let newArr = [...docs];
+
                 let index = newArr?.findIndex(app => app?._id == response.data.doc._id);
                 newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
-
                 setDocs(newArr)
             } else {
-
-                setDocs(docs => [response.data, ...docs])
+                newArr.unshift(response.data)
+                setDocs(newArr)
             }
             setModalClose(false)
             setLoading(false);
             let _signature = userProfileForm[signatureIndex]
             let tempBlob = userProfileForm?.[signatureIndex]?.tempBlob
-            if(tempBlob){
+            if (tempBlob) {
                 await fetch(tempBlob)
                     .then(res => {
                         return res?.blob()
@@ -906,30 +915,29 @@ const DataTable = (props) => {
                             .then(res => {
 
                                 return res?.json()
-                            }).
-                        then(res => {
+                            }).then(res => {
                             const _id = updatedUser._id ? response?.data?.doc?._id : response?.data?._id
-                            let newArr = [...docs];
+
                             let index = newArr?.findIndex(app => {
+
                                 return app?._id == _id
                             });
 
+                            console.log(index)
 
-                            if(index >= 0 ){
-                                if (_id) {
-                                    if( newArr[index]["employeeDetails"]?.hasOwnProperty("signature") ){
-                                        newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
-                                    }
-                                    newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
-                                    setDocs(newArr)
-                                } else {
-
-                                    if( newArr[index]["employeeDetails"]?.hasOwnProperty("signature") ){
-                                        newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
-                                    }
-                                    newArr[index] = {...newArr[index], ...removeEmpty(response.data)};
-                                    setDocs(docs => [newArr, ...docs])
+                            if (_id && index >= 0) {
+                                if (newArr[index]["employeeDetails"]?.hasOwnProperty("signature")) {
+                                    newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
                                 }
+                                newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
+
+                                setDocs(newArr)
+                            } else {
+                                var newObj = response.data
+                                if (newObj["employeeDetails"]?.hasOwnProperty("signature")) {
+                                    newObj["employeeDetails"]["signature"] = res?.doc?.signature
+                                }
+                                setDocs(docs => [newObj, ...docs])
                             }
                         })
                     })
@@ -1006,6 +1014,7 @@ const DataTable = (props) => {
     const tabBarOptions = tabBarOption();
 
     const [uploadSignatureLoading, setUploadSignatureLoading] = useState(false)
+
     async function onPressSignature(stateName, subStateName) {
         setUploadSignatureLoading(true)
         let picker = await ImagePicker.launchImageLibraryAsync({
@@ -1049,7 +1058,7 @@ const DataTable = (props) => {
                 }
             }
             setUploadSignatureLoading(false)
-        }else{
+        } else {
             setUploadSignatureLoading(false)
         }
     }
@@ -1063,7 +1072,7 @@ const DataTable = (props) => {
                             isMobile && !(
                                 Platform?.isPad || isTablet())) || dimensions?.width < 768 || (
                             (
-                                Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : (!(state == 'view' || state == "")  ? "100%" : "60%"),
+                                Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : (!(state == 'view' || state == "") ? "100%" : "60%"),
                     flexGrow: 0,
                     flexShrink: 0,
                     backgroundColor: "#FFFFFF"
@@ -1376,7 +1385,8 @@ const DataTable = (props) => {
                                 <TouchableOpacity onPress={() => onPressSignature("employeeDetails", 'signature')}>
                                     <View style={styles.uploadSignature}>
                                         <View style={{paddingRight: 10}}>
-                                            {uploadSignatureLoading ? <ActivityIndicator/> : <UploadQrCode color={text.info}/>}
+                                            {uploadSignatureLoading ? <ActivityIndicator/> :
+                                                <UploadQrCode color={text.info}/>}
                                         </View>
                                         <Text style={{fontFamily: Bold}}>Employee Signature</Text>
                                     </View>
@@ -1391,7 +1401,7 @@ const DataTable = (props) => {
                                     padding: 12,
                                     justifyContent: "center",
                                     alignItems: "center",
-                                    backgroundColor: checkIsDisabled()  ? disabledColor :primaryColor
+                                    backgroundColor: checkIsDisabled() ? disabledColor : primaryColor
                                 }}>
                                     {loading ? <ActivityIndicator color={"#fff"}/> :
                                         <Text style={{

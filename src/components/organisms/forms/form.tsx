@@ -37,7 +37,7 @@ const FormField=({
                     {...styleProps}
                     key={id}
                     {...otherProps}
-                    source={{uri: element?.tempBlob}}
+                    source={{uri:element?.tempBlob ||  element?.value }}
                     resizeMode={"cover"}
                 />
             case "text":
