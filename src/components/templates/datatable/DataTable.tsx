@@ -371,7 +371,11 @@ const DataTable = (props) => {
             key: 13,
             required: true,
             label: 'Nationality',
-            type: 'input',
+            type: 'select',
+            data: [
+                {label: 'Filipino', value: 'Filipino'},
+                {label: 'Others', value: 'Others', hasSpecification: true}
+            ],
             placeholder: 'Nationality',
             value: 'Filipino',
             error: false,
