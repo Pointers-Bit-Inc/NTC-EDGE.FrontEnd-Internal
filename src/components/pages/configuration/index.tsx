@@ -158,7 +158,8 @@ export default function ConfigurationPage(props: any) {
 
                     <View style={{
                         flex: 1,
-                        flexDirection: "row"
+                        flexDirection: "row",
+                        justifyContent: "center"
                     }}>
                         <View style={{padding: 20, justifyContent: 'space-between', alignItems: 'center',}}>
                             <TouchableOpacity onPress={() => onPress('director')}>
@@ -176,21 +177,7 @@ export default function ConfigurationPage(props: any) {
                                 </View>
                             </TouchableOpacity>
                         </View>
-                        <View style={{padding: 20, justifyContent: 'space-between', alignItems: 'center',}}>
-                            <TouchableOpacity onPress={() => onPress('commissioner')}>
-                                <View style={styles.border}>
-                                    <Image resizeMode={"contain"}
-                                           source={region?.configuration ? {
-                                               uri: region?.configuration?.commissioner?.signature,
-                                           } : require('@assets/avatar.png')}
-                                           style={{height: 200, width: 200, zIndex: 1}}/>
-                                </View>
-                                <View style={styles.uploadSignature}>
-                                    <UploadIcon color={text.info}/>
-                                    <Text>Commissioner Signature</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+
                     </View>
                     {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
 

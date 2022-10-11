@@ -60,6 +60,7 @@ function useActivities(props) {
     const updateIncrement = useSelector((state: RootStateOrAny) => {
         return state.activity.updateIncrement
     });
+    const [infiniteLoad, setInfiniteLoad] = useState(false);
     const scrollViewRef = useRef()
     const flatListViewRef = useRef()
     const scrollableTabView = useRef()
@@ -176,7 +177,7 @@ function useActivities(props) {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setCountRefresh(countRefresh + 1)
-    }, [countRefresh]);
+    }, [countRefresh, refreshing]);
 
     const selectedClone = selectedChangeStatus?.filter((status: string) => {
         return status != DATE_ADDED
@@ -237,7 +238,7 @@ function useActivities(props) {
         }
     };
     let count = 0;
-    const [infiniteLoad, setInfiniteLoad] = useState(false);
+
     function fnApplications(endpoint) {
         let isCurrent = true;
         setInfiniteLoad(true)
@@ -250,8 +251,6 @@ function useActivities(props) {
             axios.spread((pinned, notPinned) => {
                 if (pinned?.data?.message) Alert.alert(pinned.data.message);
                 if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
-                if (isCurrent) setRefreshing(false);
-                setInfiniteLoad(false)
 
                 if (count == 0) {
                     count = 1;
@@ -269,10 +268,15 @@ function useActivities(props) {
 
                     }
                 }
-                if (isCurrent) setRefreshing(false);
+                console.log(pinned.statusText && notPinned.statusText)
+                if(pinned.statusText && notPinned.statusText){
+                    setRefreshing(false);
+                    setInfiniteLoad(false)
+                }
 
             })
         ).catch((err) => {
+            console.log("fnApplications", "refreshing, infinite")
             setRefreshing(false);
             Alert.alert('Alert', err?.message || 'Something went wrong.');
             setInfiniteLoad(false)
@@ -306,7 +310,7 @@ function useActivities(props) {
             url: BASE_URL + `/users/${user._id}/assigned-applications`,
             pinned: 1
         }, {url: BASE_URL + `/users/${user._id}/unassigned-applications`, pinned: 0}])
-    }, [countRefresh, searchTerm, selectedChangeStatus.length]);
+    }, [countRefresh, searchTerm, selectedChangeStatus.length, ]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -367,7 +371,7 @@ function useActivities(props) {
 
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false);
     const bottomLoader = () => {
-        return infiniteLoad ? <Loader/> : <ListFooter
+        return infiniteLoad || refreshing ? <Loader/> : <ListFooter
             hasError={!infiniteLoad}
             fetching={infiniteLoad}
             loadingText="Loading more activities..."
@@ -379,16 +383,17 @@ function useActivities(props) {
     let cancelToken: CancelTokenSource
      const handleLoad=useCallback(async (page_) => {
          //Check if there are any previous pending requests
-         setInfiniteLoad(true);
-         setRefreshing(true)
+
          if (typeof cancelToken != typeof undefined) {
              cancelToken.cancel("Operation canceled due to new request.")
+
          }
 
          //Save the cancel token for the current request
          cancelToken = axios.CancelToken.source()
         let _page: string;
-
+         setInfiniteLoad(true);
+         setRefreshing(true)
         if ((
             page * size) < total || page_) {
             _page = "?page=" + (
@@ -405,6 +410,8 @@ function useActivities(props) {
                 axios.spread((pinned, notPinned) => {
 
 
+
+
                     if (pinned?.data?.message) Alert.alert(pinned.data.message);
                     pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
                     pinned?.data?.total ? setTotal(pinned?.data?.total) : setTotal(0);
@@ -419,13 +426,21 @@ function useActivities(props) {
                         data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
                         user: user
                     }));
-                    setInfiniteLoad(false);
-                    setRefreshing(false)
+                    console.log(pinned.statusText || notPinned.statusText)
+                    if(pinned.statusText && notPinned.statusText){
+                        console.log("handle refreshing, infinite")
+                        setRefreshing(false);
+                        setInfiniteLoad(false)
+                    }
+
                 })
             ).catch((err) => {
                 if (axios.isCancel(err)) {
                     console.log('Previous request canceled, new request is send', err.message);
+                    setRefreshing(true)
+                    setInfiniteLoad(true);
                 } else {
+                    console.log("handle refreshing, infinite")
                     setRefreshing(false)
                     setInfiniteLoad(false);
                 }
@@ -436,25 +451,51 @@ function useActivities(props) {
             })
         } else {
             setRefreshing(true)
+            setInfiniteLoad(true)
             _page = "?page=" + (
                 page + 1);
-            axios.get(BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, {
-                cancelToken: cancelToken.token, // <-- 2nd step
-                ...config,
-                params: {...{...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}), ...{"handle": "else"}}, ...query(0)}
-            }).then((response) => {
+            var endpoint = [{
+                url: BASE_URL + `/users/${user._id}/assigned-applications${_page}`,
+                pinned: 1
+            }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
-                if (response?.data?.message) Alert.alert(response.data.message);
-                if (response?.data?.size) setSize(response?.data?.size);
-                if (response?.data?.total) setTotal(response?.data?.total);
-                if (response?.data?.page && response?.data?.docs.length > 1) setPage(response?.data?.page);
+            await axios.all(endpoint.map((ep) => axios.get(ep.url, {
+                ...{ cancelToken: cancelToken.token },
+                ...config, params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),} ,...query(ep.pinned)}}))).then(
+                axios.spread((pinned, notPinned) => {
 
-                setInfiniteLoad(false);
-                setRefreshing(false)
-            }).catch((err) => {
+
+
+
+                    if (pinned?.data?.message) Alert.alert(pinned.data.message);
+                    pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
+                    pinned?.data?.total ? setTotal(pinned?.data?.total) : setTotal(0);
+                    pinned?.data?.page ? setPage(pinned?.data?.page) : setPage(0);
+
+                    if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                    notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
+                    notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
+                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size ? setPage(notPinned?.data?.page) : setPage(0);
+
+                    dispatch(handleInfiniteLoad({
+                        data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
+                        user: user
+                    }));
+                    console.log(pinned.statusText || notPinned.statusText)
+                    if(pinned.statusText && notPinned.statusText){
+                        console.log("handle refreshing, infinite")
+                        setRefreshing(false);
+                        setInfiniteLoad(false)
+                    }
+
+                })
+            ).catch((err) => {
                 if (axios.isCancel(err)) {
                     console.log('Previous request canceled, new request is send', err.message);
+                    setRefreshing(true)
+                    setInfiniteLoad(true);
                 } else {
+                    console.log("handle refreshing, infinite")
                     setRefreshing(false)
                     setInfiniteLoad(false);
                 }
@@ -462,11 +503,11 @@ function useActivities(props) {
                 Alert.alert('Alert', err?.message || 'Something went wrong.');
 
                 console.warn(err)
-            });
-            setInfiniteLoad(false)
+            })
+
         }
 
-    },[size,total,page, dateEnd, dateStart]);
+    },[size,total,page, dateEnd, dateStart, infiniteLoad, refreshing]);
     const unReadReadApplicationFn=(id,dateRead,unReadBtn,callback:(action:any)=>void)=>{
         unreadReadApplication({
             unReadBtn:unReadBtn,
@@ -636,7 +677,8 @@ function useActivities(props) {
         fnApplications,
         prevDateEnd,
         prevDateStart,
-        total
+        total,
+        infiniteLoad
     };
 }
 

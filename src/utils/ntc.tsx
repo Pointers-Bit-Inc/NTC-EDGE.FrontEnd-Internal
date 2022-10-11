@@ -637,22 +637,32 @@ const permission = {
     },
 }
 
-const toFormData = (f => f(f))(h => f => f(x => h(h)(f)(x)))(f => fd => pk => d => {
-    if (d instanceof Object) {
-        Object.keys(d).forEach(k => {
-            const v = d[k]
-            if (pk) k = `${pk}[${k}]`
-            if (v instanceof Object && !(v instanceof Date) && !(v instanceof File)) {
-                return f(fd)(k)(v)
-            } else {
-                fd.append(k, v)
-            }
-        })
-    }
-    return fd
-})(new FormData())()
+const _bandwidthUnits = [
+    {label: 'KHz', value: 'KHz'},
+    {label: 'MHz', value: 'MHz'},
+    {label: 'GHz', value: 'GHz'}
+]
+const _employementStatus = [
+    {label: 'Employed', value: 'Employed'},
+    {label: 'Unemployed', value: 'Unemployed'}
+]
+const _employementType = [
+    {label: 'Local', value: 'Local'},
+    {label: 'Foreign', value: 'Foreign'}
+]
+const _classOfStation =[
+    {label: 'RT', value: 'RT'},
+    {label: 'FX', value: 'FX'},
+    {label: 'FB', value: 'FB'},
+    {label: 'ML', value: 'ML'},
+    {label: 'P', value: 'P'},
+    {label: 'Others', value: 'Others'},
+]
 export {
-    toFormData,
+    _classOfStation,
+    _employementType,
+    _employementStatus,
+    _bandwidthUnits,
     permission ,
     datesArray,hoursArray,ampmArray,monthsArray,
     fuzzysearch,

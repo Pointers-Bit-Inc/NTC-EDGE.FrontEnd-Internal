@@ -11,7 +11,7 @@ import {
     useWindowDimensions,
     View
 } from "react-native";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import Highlighter from "@pages/activities/search/highlighter";
@@ -185,7 +185,7 @@ import {useFocusEffect,} from '@react-navigation/native';
 
 const DataTable = (props) => {
 
-
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const dispatch = useDispatch();
     const dimensions = useWindowDimensions();
     const [value, setValue] = useState('');
@@ -218,7 +218,7 @@ const DataTable = (props) => {
             label: 'Role',
             type: 'select',
             placeholder: 'Role',
-            value: '',
+            value: user.employeeDetails?.region || '',
             error: false,
             description: false,
             hasValidation: true
@@ -306,15 +306,107 @@ const DataTable = (props) => {
             description: false,
             hasValidation: true
         },
-
+        {
+            label: "Address",
+            type: 'text',
+            style: style.subtitle,
+        },
         {
             stateName: 'address',
+            subStateName: 'street',
             id: 7,
             key: 7,
             required: true,
-            label: 'Address',
+            label: 'Street',
             type: 'input',
-            placeholder: 'Address',
+            placeholder: 'Street',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'address',
+            subStateName: 'unit',
+            id: 21,
+            key: 21,
+            required: true,
+            label: 'Unit',
+            type: 'input',
+            placeholder: 'Unit',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'address',
+            subStateName: 'barangay',
+            id: 22,
+            key: 22,
+            required: true,
+            label: 'Barangay',
+            type: 'input',
+            placeholder: 'Barangay',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'address',
+            subStateName: 'region',
+            id: 25,
+            key: 25,
+            data: regionList,
+            required: true,
+            label: 'Region',
+            type: "select",
+            placeholder: 'Region',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'address',
+            subStateName: 'province',
+            id: 24,
+            key: 24,
+            required: true,
+            label: 'Province',
+            type: 'select',
+            data: [],
+            placeholder: 'Province',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'address',
+            subStateName: 'city',
+            id: 23,
+            key: 23,
+            data: [],
+            required: true,
+            label: 'City',
+            type: 'select',
+            placeholder: 'City',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'address',
+            subStateName: 'zipCode',
+            id: 26,
+            key: 26,
+            required: true,
+            label: 'Zipcode',
+            type: "input",
+            placeholder: 'Zipcode',
             value: '',
             error: false,
             description: false,
@@ -547,8 +639,59 @@ const DataTable = (props) => {
     }, [props.filter])
 
     const [userProfileForm, setUserProfileForm] = useState(originalForm);
+    const citiesIndexMemo = useMemo(()=>{
+        return userProfileForm.findIndex(u => u.subStateName == "city" && u.stateName == "address" )
+    }, [])
+
+    const provincesIndexMemo = useMemo(()=>{
+        return userProfileForm.findIndex(u => u.subStateName == "province" && u.stateName == "address" )
+    }, [])
+
+    const regionIndexMemo = useMemo(()=>{
+        return userProfileForm.findIndex(u => u.subStateName == "region" && u.stateName == "address" )
+    }, [])
+
+
+    const citiesMemo = useMemo(()=>{
+        var cities = [];
+
+        if( !userProfileForm?.[provincesIndexMemo]?.["value"] ) return []
+
+        axios.get(BASE_URL + "/cities?province=" + userProfileForm?.[provincesIndexMemo]?.["value"] ).then(res =>{
+            cities = res.data
+            var _userProfileForm = [...userProfileForm]
+            if(_userProfileForm[citiesIndexMemo].hasOwnProperty("data")){
+                console.log(res.data)
+                _userProfileForm[citiesIndexMemo].data = res.data.map(city => {
+                  return {value: city.provinceCode, label: city.name}
+                })
+                setUserProfileForm(userProfileForm)
+            }
+
+        })
+        return cities
+    }, [userProfileForm[provincesIndexMemo]?.["value"]])
+    const provincesMemo = useMemo(()=>{
+        var provinces = [];
+
+        if( !userProfileForm?.[regionIndexMemo]?.["value"] ) return []
+
+        axios.get(BASE_URL + "/provinces?region=" + userProfileForm?.[regionIndexMemo]?.["value"] ).then(res =>{
+            provinces = res.data
+            var _userProfileForm = [...userProfileForm]
+            if(_userProfileForm[provincesIndexMemo].hasOwnProperty("data")){
+                _userProfileForm[provincesIndexMemo].data = res.data.map(city => {
+                    return {value: city.provinceCode, label: city.name}
+                })
+                setUserProfileForm(userProfileForm)
+            }
+
+        })
+        return provinces
+    }, [userProfileForm[regionIndexMemo]?.["value"]])
+
     const [state, setState] = useState('add');
-    const user = useSelector((state: RootStateOrAny) => state.user);
+
     const dataId = useSelector((state: RootStateOrAny) => state.application.dataId);
     const {showToast, hideToast} = useToast();
     const config = {
@@ -863,7 +1006,7 @@ const DataTable = (props) => {
 
         userProfileForm?.forEach(async (up: any) => {
             if (!up?.stateName) return
-            if (up.hasOwnProperty("subStateName") && up.stateName != "role") {
+            if (up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName ) {
                 subStateName[up.subStateName] = up?.value
             }
 
@@ -873,8 +1016,10 @@ const DataTable = (props) => {
             };
         });
 
+        if(state != "edit"){
+            updatedUser.password = generatePassword()
+        }
 
-        updatedUser.password = generatePassword()
         setLoading(true);
         axios[updatedUser?._id ? "patch" : "post"](BASE_URL + (updatedUser?._id ? `/users/` + updatedUser?._id || "" : `/internal/users/`), updatedUser, config).then(async (response) => {
             let newArr = [...docs];

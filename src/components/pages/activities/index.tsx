@@ -146,7 +146,8 @@ const ActivitiesPage = (props) => {
         dateStart,
         dateEnd,
         prevDateStart,
-        prevDateEnd
+        prevDateEnd,
+        infiniteLoad
     } = useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
@@ -511,7 +512,7 @@ const ActivitiesPage = (props) => {
             contentContainerStyle={{flex: 1,}}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={refreshing ? <View/> : bottomLoader}
+            ListFooterComponent={!refreshing  ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={allRef}
             onEndReachedThreshold={0.5}
@@ -520,7 +521,7 @@ const ActivitiesPage = (props) => {
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [notPnApplications, pnApplications, refreshing]
+        [notPnApplications, pnApplications, refreshing, infiniteLoad]
     );
 
 
@@ -541,7 +542,7 @@ const ActivitiesPage = (props) => {
             contentContainerStyle={{flex: 1,}}
             data={pnApplications}
             keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={refreshing ? <View/> : bottomLoader}
+            ListFooterComponent={!refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={pendingRef}
             refreshing={true}
@@ -553,7 +554,7 @@ const ActivitiesPage = (props) => {
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [pnApplications, refreshing]
+        [pnApplications, refreshing, infiniteLoad]
     );
 
     const renderHistory = useCallback(
@@ -574,7 +575,7 @@ const ActivitiesPage = (props) => {
             contentContainerStyle={{flex: 1,}}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={refreshing ? <View/> : bottomLoader}
+            ListFooterComponent={!refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={historyRef}
             refreshing={true}
@@ -585,7 +586,7 @@ const ActivitiesPage = (props) => {
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [notPnApplications, refreshing]
+        [notPnApplications, refreshing, infiniteLoad]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
