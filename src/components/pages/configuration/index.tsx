@@ -16,9 +16,6 @@ import Text from "@atoms/text"
 import DebounceInput from "@atoms/debounceInput";
 import DropdownCard from "@organisms/dropdown-card";
 import useConfiguration from "../../../hooks/useConfiguration";
-import * as ImagePicker from "expo-image-picker";
-import {BASE_URL} from "../../../services/config";
-
 
 export default function ConfigurationPage(props: any) {
     const {
@@ -111,7 +108,19 @@ export default function ConfigurationPage(props: any) {
                                                         service={fee.fees}/>
                             </DropdownCard> : <></>
                         }
+                        {!lodash.isEmpty(regionsMemo) ? <DropdownCard
+                            style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>
+                            <Text style={{fontWeight: 'bold'}} color={"#113196"}
+                                  size={16}>Other</Text>
+                        </>}>
+                            <FlatList
 
+                                data={regionsMemo}
+                                contentContainerStyle={{padding: 10,}}
+                                renderItem={renderListItem}
+                                keyExtractor={item => item._id}
+                            />
+                        </DropdownCard> : <></>}
 
                         {!lodash.isEmpty(regionsMemo) ? <DropdownCard
                             style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>

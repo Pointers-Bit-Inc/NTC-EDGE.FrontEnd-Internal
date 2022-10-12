@@ -267,18 +267,18 @@ function useActivities(props) {
 
 
                     }
-                }
-                console.log(pinned.statusText && notPinned.statusText)
-                if(pinned.statusText && notPinned.statusText){
-                    setRefreshing(false);
+                }setRefreshing(false);
                     setInfiniteLoad(false)
-                }
 
             })
         ).catch((err) => {
             console.log("fnApplications", "refreshing, infinite")
             setRefreshing(false);
-            Alert.alert('Alert', err?.message || 'Something went wrong.');
+            if(err?.message != "Operation canceled due to new request."){
+                Alert.alert('Alert', err?.message || 'Something went wrong.');
+
+            }
+
             setInfiniteLoad(false)
             if (err?.request?.status == "401") {
                 const api = Api(user.sessionToken);
@@ -426,26 +426,23 @@ function useActivities(props) {
                         data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
                         user: user
                     }));
-                    console.log(pinned.statusText || notPinned.statusText)
-                    if(pinned.statusText && notPinned.statusText){
-                        console.log("handle refreshing, infinite")
+
                         setRefreshing(false);
                         setInfiniteLoad(false)
-                    }
 
                 })
             ).catch((err) => {
                 if (axios.isCancel(err)) {
-                    console.log('Previous request canceled, new request is send', err.message);
-                    setRefreshing(true)
-                    setInfiniteLoad(true);
+
                 } else {
-                    console.log("handle refreshing, infinite")
+
                     setRefreshing(false)
                     setInfiniteLoad(false);
                 }
+                if(err?.message != "Operation canceled due to new request."){
+                    Alert.alert('Alert', err?.message || 'Something went wrong.');
 
-                Alert.alert('Alert', err?.message || 'Something went wrong.');
+                }
 
                 console.warn(err)
             })
@@ -482,16 +479,14 @@ function useActivities(props) {
                         user: user
                     }));
                     console.log(pinned.statusText || notPinned.statusText)
-                    if(pinned.statusText && notPinned.statusText){
-                        console.log("handle refreshing, infinite")
+
                         setRefreshing(false);
                         setInfiniteLoad(false)
-                    }
 
                 })
             ).catch((err) => {
                 if (axios.isCancel(err)) {
-                    console.log('Previous request canceled, new request is send', err.message);
+
                     setRefreshing(true)
                     setInfiniteLoad(true);
                 } else {
@@ -499,8 +494,10 @@ function useActivities(props) {
                     setRefreshing(false)
                     setInfiniteLoad(false);
                 }
+                if(err?.message != "Operation canceled due to new request."){
+                    Alert.alert('Alert', err?.message || 'Something went wrong.');
 
-                Alert.alert('Alert', err?.message || 'Something went wrong.');
+                }
 
                 console.warn(err)
             })

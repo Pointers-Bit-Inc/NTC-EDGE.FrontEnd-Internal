@@ -178,6 +178,16 @@ function useConfiguration(props: any) {
             console.log(response.response)
         })
     }
+    const fetchCommissioner = () => {
+        setLoading(true);
+        axios.get(BASE_URL + "/regions/commissioner", config).then((response) => {
+            dispatch(setRegions(response.data))
+            setLoading(false);
+        }).catch((response) => {
+
+            console.log(response.response)
+        })
+    }
     const regionsMemo = useMemo(() => {
         return regions
     }, [regions])
