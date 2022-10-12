@@ -673,7 +673,7 @@ function ActivityModal(props: any) {
                         style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
                     {editModalVisible ? edit ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
-                            console.log("edit updateApplication")
+
                             updateApplication(() => {
                             }).then(r => {})
 

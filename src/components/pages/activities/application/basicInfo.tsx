@@ -187,10 +187,7 @@ const BasicInfo = (_props: any) => {
     const applicantForm = (stateName, value) => {
         console.log("applicantForm", )
         let newForm = {...userProfileForm}
-
         newForm[stateName] =value
-
-
        dispatch(setUserProfileForm(newForm))
     }
     const user = useSelector((state: RootStateOrAny) => state.user);
