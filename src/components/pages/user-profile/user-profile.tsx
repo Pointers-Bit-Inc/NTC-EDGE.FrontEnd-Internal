@@ -108,7 +108,7 @@ const UserProfileScreen=({navigation}:any)=>{
             value:user?.contactNumber||'',
             error:false,
         },
-        {
+       /* {
             stateName:'address',
             id:10,
             key:10,
@@ -118,7 +118,7 @@ const UserProfileScreen=({navigation}:any)=>{
             placeholder:'Address',
             value:user?.address||'',
             error:false,
-        },
+        },*/
 
     ];
     const [userProfileForm,setUserProfileForm]=useState(originalForm);

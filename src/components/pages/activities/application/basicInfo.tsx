@@ -185,6 +185,7 @@ const BasicInfo = (_props: any) => {
 
 
     const applicantForm = (stateName, value) => {
+        console.log("applicantForm", )
         let newForm = {...userProfileForm}
 
         newForm[stateName] =value
@@ -199,7 +200,6 @@ const BasicInfo = (_props: any) => {
     const hasChanges = () => {
 
         var hasChanges = false;
-
         for (const [key, value] of Object.entries(userOriginalProfileForm)) {
 
             if (userOriginalProfileForm?.[key] != userProfileForm?.[key]) {
@@ -765,6 +765,7 @@ const BasicInfo = (_props: any) => {
                                             <Row  /*show={true}
 
                                       */
+
                                                 display={userProfileForm?.['note'] || "...."}
                                                 id={userProfileForm?.["_id"] }
                                                 multiline={true}

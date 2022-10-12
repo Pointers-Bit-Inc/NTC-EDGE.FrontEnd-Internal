@@ -504,7 +504,7 @@ const ActivitiesPage = (props) => {
                     onRefresh={onRefresh}
                 />
             }
-            refreshing={true}
+            showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
@@ -536,6 +536,7 @@ const ActivitiesPage = (props) => {
                     onRefresh={onRefresh}
                 />
             }
+            showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
@@ -545,7 +546,6 @@ const ActivitiesPage = (props) => {
             ListFooterComponent={!refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={pendingRef}
-            refreshing={true}
             // onScroll={pendingScrollHandler}
             estimatedItemSize={300}
             onEndReachedThreshold={0.5}
@@ -570,15 +570,16 @@ const ActivitiesPage = (props) => {
             }
             estimatedItemSize={300}
             showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
             contentContainerStyle={{flex: 1,}}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
+
             ListFooterComponent={!refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={historyRef}
-            refreshing={true}
             //onScroll={historyScrollHandler}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
@@ -885,7 +886,8 @@ const ActivitiesPage = (props) => {
                 </View>
 
             </View>
-            <RNAnimated.View
+
+            {calendarVisible ? <RNAnimated.View
                 pointerEvents="box-none"
                 style={[
                     {
@@ -941,21 +943,21 @@ const ActivitiesPage = (props) => {
                                 }} name={"Cancel"}/>
                             </View>
                             <View style={{flex: 0.9,  paddingHorizontal: 10}}>
-                              <SuccessButton disabled={!(dateStart && dateEnd)} onPress={()=>{
-                                  onRefresh()
-                                  RNAnimated.spring(animation, {
-                                      toValue: 0,
-                                      useNativeDriver: false,
-                                  }).start();
+                                <SuccessButton disabled={!(dateStart && dateEnd)} onPress={()=>{
+                                    onRefresh()
+                                    RNAnimated.spring(animation, {
+                                        toValue: 0,
+                                        useNativeDriver: false,
+                                    }).start();
 
-                              }} name={"Confirm"}/>
-                          </View>
+                                }} name={"Confirm"}/>
+                            </View>
 
                         </View>
 
                     </View>
                 </RNAnimated.View>
-            </RNAnimated.View>
+            </RNAnimated.View> : <></>}
 
 
         </>

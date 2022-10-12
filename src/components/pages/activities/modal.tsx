@@ -72,6 +72,7 @@ const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
+
     const _props = useMemo(() => (Platform.OS == "web"  ? props : props?.route?.params), [props])
     const dispatch = useDispatch();
     const applicationItem = useSelector((state: RootStateOrAny) => {
@@ -237,6 +238,7 @@ function ActivityModal(props: any) {
     };
 
     const hasChanges = (bool: boolean) => {
+
         dispatch(setHasChange(bool))
     }
 
@@ -671,8 +673,10 @@ function ActivityModal(props: any) {
                         style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
                     {editModalVisible ? edit ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
+                            console.log("edit updateApplication")
                             updateApplication(() => {
-                            })
+                            }).then(r => {})
+
                         }
                         }>
                             {loading ? <ActivityIndicator color={infoColor}/> :

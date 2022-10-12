@@ -372,6 +372,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
                 {props.edit ? <TouchableOpacity onPress={() => {
                         props.updateApplication(() => {
                         })
+                        console.log("edit updateApplication")
                     }
                     }>
                         {props.loading ? <ActivityIndicator color={infoColor}/> :

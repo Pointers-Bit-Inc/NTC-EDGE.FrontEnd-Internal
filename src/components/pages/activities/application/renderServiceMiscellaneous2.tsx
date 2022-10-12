@@ -73,7 +73,7 @@ function Title(props: { nextValue, index, value }) {
 
         arr.push(props.value)
 
-        return <>{title?.toUpperCase() && !!arr?.join("")?.toString() ? <View style={{paddingVertical: 5}}>
+        return <>{title?.toUpperCase() && !!arr?.join("")?.toString()?.trim() ? <View style={{paddingVertical: 5}}>
             <View style={styles.rect}>
                 <Text style={styles.file}>{title?.toUpperCase()}</Text>
             </View>
@@ -97,7 +97,6 @@ const RenderServiceMiscellaneous = (props) => {
     let service = JSON.parse(JSON.stringify(props.service || {}));
     let serviceId = service._id
     let formCode = service?.applicationType?.formCode
-    console.log(formCode)
     const flatten = (obj) => {
         var result = {};
         (
@@ -154,7 +153,6 @@ const RenderServiceMiscellaneous = (props) => {
 
         }
 
-        console.log(keys?.split?.("."))
 
         return (<View>
 
