@@ -13,7 +13,9 @@ interface Props {
   label?: ReactNode;
   children?: ReactNode;
   onToggle?: any;
-  isCollapse?: any
+  isCollapse?: any;
+  isChevronVisible?: any;
+  onPress?:any;
 };
 
 const DropdownCard: FC<Props> = ({
@@ -22,17 +24,20 @@ const DropdownCard: FC<Props> = ({
   label = <View />,
   children,
   onToggle = () => {},
-    isCollapse = true
+    isCollapse = true,
+    isChevronVisible = true,
+    onPress = () => {}
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(isCollapse);
   return (
     <View style={[styles.container, style]}>
-      <View style={[styles.headerContainer, headerContainer]} >
+      <TouchableOpacity onPress={onPress}>
+        <View style={[styles.headerContainer, headerContainer]} >
         <View style={styles.headerLabelContainer}>
           {label}
         </View>
 
-          <TouchableOpacity onPress={() => {
+        {isChevronVisible ? <TouchableOpacity onPress={() => {
             setIsCollapsed(!isCollapsed);
             onToggle(!isCollapsed);
           }}>
@@ -41,9 +46,10 @@ const DropdownCard: FC<Props> = ({
                   ? <ChevronDown size={20} color={defaultColor} />
                   : <ChevronUp size={20} color={defaultColor} />
             }
-          </TouchableOpacity>
+          </TouchableOpacity> : <></>}
 
       </View>
+      </TouchableOpacity>
       {
         !!children &&
         <Collapsible collapsed={isCollapsed}>

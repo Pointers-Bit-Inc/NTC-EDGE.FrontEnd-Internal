@@ -3,6 +3,8 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import React, {createRef, useCallback, useEffect, useMemo, useState} from "react";
 import {useToast} from "./useToast";
 import {
+    setCommissioner,
+    setCommissionner,
     setFee,
     setFeeFlatten,
     setFeeOriginalFlatten,
@@ -19,13 +21,16 @@ import {styles} from "@pages/activities/styles";
 import RegionIcon from "@assets/svg/regionIcon";
 import Text from "@atoms/text";
 import CloseIcon from "@assets/svg/close";
-import {isDiff} from "../utils/ntc";
-import {validateText} from "../utils/form-validations";
+import {isDiff, regionList} from "../utils/ntc";
+import {validateEmail, validatePassword, validatePhone, validateText} from "../utils/form-validations";
 import useMemoizedFn from "./useMemoizedFn";
 import listEmpty from "@pages/activities/listEmpty";
 import _ from "lodash"
+import {setRolesSelect} from "../reducers/role/actions";
 const flatten = require('flat')
 function useConfiguration(props: any) {
+
+
     const dimensions = useWindowDimensions();
     const dispatch = useDispatch();
     const [value, setValue] = useState();
@@ -34,6 +39,7 @@ function useConfiguration(props: any) {
     const sessionToken = useSelector((state: RootStateOrAny) => state.user.sessionToken);
     const [createRegion, setCreateRegion] = useState(false)
     const fee = useSelector((state: RootStateOrAny) => state.configuration.fee);
+    const commissioner = useSelector((state: RootStateOrAny) => state.configuration.commissioner);
     const {showToast, hideToast} = useToast();
     const feeFlatten = useSelector((state: RootStateOrAny) => state.configuration.feeFlatten);
     const feeOriginalFlatten = useSelector((state: RootStateOrAny) => state.configuration.feeOriginalFlatten);
@@ -84,6 +90,8 @@ function useConfiguration(props: any) {
             }
         });
     }
+
+
     const [originalForm, setOriginalForm] = useState([
         {
             id: 1,
@@ -102,7 +110,93 @@ function useConfiguration(props: any) {
             type: '',
         },
     ]);
-
+    const commissionerOriginalForm = [
+        {
+            stateName: 'firstName',
+            id: 1,
+            key: 1,
+            required: true,
+            label: 'First Name',
+            type: 'input',
+            placeholder: 'First Name',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'middleName',
+            id: 2,
+            key: 2,
+            required: true,
+            label: 'Middle Name',
+            type: 'input',
+            placeholder: 'Middle Name',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'lastName',
+            id: 3,
+            key: 3,
+            required: true,
+            label: 'Last Name',
+            type: 'input',
+            placeholder: 'Last Name',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'email',
+            id: 4,
+            key: 4,
+            required: true,
+            label: 'Email',
+            type: 'input',
+            placeholder: 'Email',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'suffix',
+            id: 5,
+            key: 5,
+            required: true,
+            label: 'Suffix',
+            type: 'input',
+            placeholder: 'Suffix',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+        {
+            stateName: 'signature',
+            mime: "",
+            tempBlob: "",
+            file: "",
+            mimeResult: "",
+            _mimeType: "",
+            id: 20,
+            key: 20,
+            style: {height: 200, width: 200, zIndex: 1, borderWidth: 1, borderStyle: "dotted"},
+            type: "image",
+            required: true,
+            label: 'signature',
+            placeholder: 'signature',
+            value: '',
+            error: false,
+            description: false,
+            hasValidation: true
+        },
+    ];
+    const [commissionerForm, setCommissionerForm ] = useState(commissionerOriginalForm)
     async function onPress(position) {
         let picker = await ImagePicker.launchImageLibraryAsync({
             presentationStyle: 0
@@ -179,9 +273,10 @@ function useConfiguration(props: any) {
         })
     }
     const fetchCommissioner = () => {
+        console.log("commissioner")
         setLoading(true);
         axios.get(BASE_URL + "/regions/commissioner", config).then((response) => {
-            dispatch(setRegions(response.data))
+            dispatch(setCommissioner(response.data))
             setLoading(false);
         }).catch((response) => {
 
@@ -191,11 +286,12 @@ function useConfiguration(props: any) {
     const regionsMemo = useMemo(() => {
         return regions
     }, [regions])
-
     useEffect(() => {
         return fetchConfigurations()
-    }, [regions.length == 0])
-
+    }, [])
+    useEffect(() => {
+        return fetchCommissioner()
+    }, [])
     function onDelete(id) {
 
     }
@@ -257,14 +353,14 @@ function useConfiguration(props: any) {
 
     const onUpdateForm = (id: number, text: any, element?: string, _key?: string) => {
 
-        const index = formValue?.findIndex(app => app?.id == id);
-        let newArr = [...formValue];
+        const index = commissionerForm?.findIndex(app => app?.id == id);
+        let newArr = [...commissionerForm];
         newArr[index]['value'] = text;
         if (typeof text == "string") {
             newArr[index]['error'] = !validateText(text);
         }
 
-        setFormValue(newArr)
+        setCommissionerForm(newArr)
     };
     const inputRef = createRef();
     const onClose = () => {
@@ -307,6 +403,8 @@ function useConfiguration(props: any) {
         newForm[stateName] = _.toNumber(value) || value || 0
         dispatch(setFeeFlatten(Object.assign(feeFlatten, newForm)))
     }
+
+    const [commissionerVisible, setCommissionerVisible] = useState(false)
     const listEmptyComponent = useMemoizedFn(() => listEmpty(!loading, "", fee.length));
     return {
         dimensions,
@@ -327,7 +425,13 @@ function useConfiguration(props: any) {
         edit,
         setEdit,
         updateApplication,
-        applicantFeeForm
+        applicantFeeForm,
+        commissioner,
+        commissionerVisible,
+        setCommissionerVisible,
+        commissionerOriginalForm,
+        commissionerForm,
+        onUpdateForm
     };
 }
 

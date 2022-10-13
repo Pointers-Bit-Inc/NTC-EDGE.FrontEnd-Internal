@@ -284,7 +284,7 @@ const BasicInfo = (_props: any) => {
         return [CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) || (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ): ((props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ||  (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks))
     }, [props])
     const collapsedTime = useMemo(() => {
-        return moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) ||  (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)) : ((props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time) || (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time)) )?.format('MMMM Do YYYY, h:mm:ss a')
+        return moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) ||  (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)) : ((props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time) || (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time)) )?.format('MMMM D YYYY, h:mm:ss a')
     }, [props])
     const containerMergeStyle = useMemo(() => [styles.elevation, {width: "90%", marginVertical: 10,}], [])
     const containerMarginMergeStyle = useMemo(() => [styles.container, {marginVertical: 10}], [])
@@ -307,12 +307,22 @@ const BasicInfo = (_props: any) => {
                    <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
 
                        <View style={[styles.group, {paddingBottom: 10}]}>
-                           <View style={styles.rect}>
-                               <Text style={styles.header}>REMARKS</Text>
+                           <View style={[styles.rect, {alignItems: "center", flexDirection: "row", justifyContent: "space-between"}]}>
+                               <View>
+                                   <Text style={styles.header}>REMARKS</Text>
+                               </View>
+                               <View style={{flex: 1,}}>
+                                   <IsMorePress onPress={() => {
+                                       isMoreRemark()
+                                       props.setIsMore((bool) => !bool)
+                                   }} loading={loading} more={props.isMore}/>
+                               </View>
+
                            </View>
+
                        </View>
-                       <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                           <View style={{flexDirection: "row", alignItems: "center",}}>
+                       {props.isMore ? <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                           <View style={{flex: 1, flexDirection: "row", alignItems: "center",}}>
                                <View style={{paddingRight: 10}}>
                                    <Text style={[{
                                        fontSize: fontValue(10),
@@ -352,11 +362,14 @@ const BasicInfo = (_props: any) => {
                                    </CustomText>
                                </View>
                            </View>
-                           <Text style={{
-                               color: "#606A80",
-                               fontSize: fontValue(10)
-                           }}>{collapsedTime}</Text>
-                       </View>
+                           <View style={{flex: 0.6, flexWrap: "nowrap"}}>
+                               <Text style={{
+                                   color: "#606A80",
+                                   fontSize: fontValue(10)
+                               }}>{collapsedTime}</Text>
+                           </View>
+
+                       </View> : <></>}
 
                        <CollapseText expandStyle={{color: "#565961"}}
                                      textContainerStyle={{}}
@@ -377,6 +390,12 @@ const BasicInfo = (_props: any) => {
                         <View style={styles.rect}>
                             <Text style={styles.header}>REMARKS</Text>
                         </View>
+                        <View style={{flex: 1}}>
+                            <IsMorePress onPress={() => {
+                                isMoreRemark()
+                                props.setIsMore((bool) => !bool)
+                            }} loading={loading} more={props.isMore}/>
+                        </View>
                     </View>
 
                     <FlatList
@@ -391,6 +410,7 @@ const BasicInfo = (_props: any) => {
                                     justifyContent: "space-between"
                                 }}>
                                     <View style={{
+                                        flex: 1,
                                         flexDirection: "row",
                                         alignItems: "center",
                                     }}>
@@ -434,10 +454,14 @@ const BasicInfo = (_props: any) => {
                                             </CustomText>
                                         </View>
                                     </View>
-                                    <Text style={{
-                                        color: "#606A80",
-                                        fontSize: fontValue(10)
-                                    }}>{moment(item?.time).fromNow()}</Text>
+
+                                    <View style={{flex: 1, flexWrap: "wrap"}}>
+                                          <Text style={{
+                                              color: "#606A80",
+                                              fontSize: fontValue(10)
+                                          }}>{moment(item?.time).fromNow()}</Text>
+                                      </View>
+
                                 </View>
 
                                 <CollapseText expandStyle={{color: "#565961"}}

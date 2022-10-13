@@ -7,7 +7,8 @@ const InitialState = Record({
   fee: {},
   feeFlatten: {},
   feeOriginalFlatten: {},
-  hasChangeFee: false
+  hasChangeFee: false,
+  commissioner: {}
 });
 
 export default InitialState;

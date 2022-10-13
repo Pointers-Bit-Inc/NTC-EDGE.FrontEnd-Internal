@@ -16,6 +16,9 @@ import Text from "@atoms/text"
 import DebounceInput from "@atoms/debounceInput";
 import DropdownCard from "@organisms/dropdown-card";
 import useConfiguration from "../../../hooks/useConfiguration";
+import FormField from "@organisms/forms/form";
+import UploadQrCode from "@assets/svg/uploadQrCode";
+import {Bold} from "@styles/font";
 
 export default function ConfigurationPage(props: any) {
     const {
@@ -37,9 +40,14 @@ export default function ConfigurationPage(props: any) {
         edit,
         setEdit,
         updateApplication,
-        applicantFeeForm
+        applicantFeeForm,
+        commissioner,
+        commissionerVisible,
+        setCommissionerVisible,
+        commissionerForm,
+        onUpdateForm,
+        commissionerOriginalForm
     } = useConfiguration(props);
-
 
 
     return (
@@ -122,18 +130,14 @@ export default function ConfigurationPage(props: any) {
                             />
                         </DropdownCard> : <></>}
 
-                        {!lodash.isEmpty(regionsMemo) ? <DropdownCard
+                        {!lodash.isEmpty(commissioner) ? <DropdownCard onPress={()=>{
+                            setCommissionerVisible(true)
+                        }} isChevronVisible={false}
                             style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>
                             <Text style={{fontWeight: 'bold'}} color={"#113196"}
-                                  size={16}>Other</Text>
+                                  size={16}>Commissioner</Text>
                         </>}>
-                            <FlatList
 
-                                data={regionsMemo}
-                                contentContainerStyle={{padding: 10,}}
-                                renderItem={renderListItem}
-                                keyExtractor={item => item._id}
-                            />
                         </DropdownCard> : <></>}
 
 
@@ -146,7 +150,7 @@ export default function ConfigurationPage(props: any) {
                 !(
                     (
                         isMobile && !(
-                            Platform?.isPad || isTablet()))) && (!createRegion) && lodash.isEmpty(region) && dimensions?.width > 768 &&
+                            Platform?.isPad || isTablet()))) && (!commissionerVisible) && (!createRegion) && lodash.isEmpty(region) && dimensions?.width > 768 &&
                 <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
                     <NoActivity/>
@@ -210,7 +214,43 @@ export default function ConfigurationPage(props: any) {
                 </View> : <></>
             }
 
+            {(commissionerVisible && !isMobile) ?
+                <View style={[{flex: 1, backgroundColor: "#fff",}]}>
+                    <Header size={24} title={"Commissioner"}>
+                        <TouchableOpacity onPress={()=>{
+                            setCommissionerVisible(false)
+                        }}>
+                            <Text>Close</Text>
+                        </TouchableOpacity>
+                    </Header>
+                    <View style={{flex: 1}}>
+                        <FormField
+                            formElements={commissionerForm}
+                            onChange={onUpdateForm}
+                            onSubmit={onPress}
 
+                        />
+
+
+
+                    <TouchableOpacity onPress={() => {}}>
+                        <View style={styles.uploadSignature}>
+                            <View style={{paddingRight: 10}}>
+
+                                    <UploadQrCode color={text.info}/>
+                            </View>
+                            <Text style={{fontFamily: Bold}}>Commissioner Signature</Text>
+                        </View>
+                    </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {}} style={styles.scheduleButton}>
+
+                            <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Commissioner</Text>
+
+                        </TouchableOpacity>
+                    </View>
+                </View> : <></>
+
+            }
             {(createRegion && lodash.isEmpty(region) && !isMobile) ?
                 <View style={[{flex: 1, backgroundColor: "#fff",}]}>
                     <Header size={24} title={"Create Region"}>

@@ -1,6 +1,6 @@
 const {  SET_FEE_FLATTEN,
   SET_FEE_ORIGINAL_FLATTEN,
-  SET_HAS_CHANGE_FEE,
+  SET_HAS_CHANGE_FEE,SET_COMMISSION,
   SET_FEE, SET_REGIONS, SET_REGION, SET_EDIT_CONFIGURATION, SET_CONFIGURATIONS, SET_CONFIGURATION, SET_DELETE_CONFIGURATION , SET_ADD_CONFIGURATION, SET_COMMISSIONER} = require('./types').default;
 
 export function setConfigurations(payload) {
@@ -24,7 +24,7 @@ export function setRegions(payload) {
   };
 }
 
-export function setCommissionner(payload) {
+export function setCommissioner(payload) {
   return {
     type: SET_COMMISSIONER,
     payload,

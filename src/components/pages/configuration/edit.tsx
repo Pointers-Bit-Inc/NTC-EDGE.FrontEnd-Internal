@@ -42,21 +42,7 @@ const EditConfigurationScreen = (props) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            <View style={{padding: 20, justifyContent: 'space-between', alignItems: 'center',}}>
-                <TouchableOpacity onPress={() => onPress('commissioner')}>
-                    <View style={styles.border}>
-                        <Image resizeMode={"stretch"}
-                               source={ region?.configuration ? {
-                                   uri: region?.configuration?.commissioner?.signature,
-                               } : require('@assets/avatar.png')}
-                               style={{height: 200, width: 200, zIndex: 1}}/>
-                    </View>
-                    <View style={styles.uploadSignature}>
-                        <UploadIcon color={text.info}/>
-                        <Text>Commissioner Signature</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
+
         </View>
         {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
 

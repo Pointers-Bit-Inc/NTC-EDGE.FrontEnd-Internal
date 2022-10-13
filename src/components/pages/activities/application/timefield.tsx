@@ -69,7 +69,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
 
     useEffect(()=>{
 
-
+        if(!props?.edit) return
         props.updateForm(props.stateName, toIsoFormat(Moment(`${year}-${month}-${day} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
     }, [minuteValue, hourValue, ampmValue])
 

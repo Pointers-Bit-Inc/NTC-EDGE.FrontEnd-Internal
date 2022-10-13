@@ -9,7 +9,8 @@ const {
     SET_FEE,
     SET_FEE_FLATTEN,
     SET_FEE_ORIGINAL_FLATTEN,
-    SET_REGION
+    SET_REGION,
+    SET_COMMISSIONER
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -75,6 +76,10 @@ export default function basket(state = initialState, action = {}) {
             let configurations = [...state.configurations]
             configurations.push(action?.payload)
             state = state.set('configurations', configurations);
+        }
+        case SET_COMMISSIONER: {
+            state = state.set('commissioner', action.payload);
+            return state
         }
         default:
             return state;

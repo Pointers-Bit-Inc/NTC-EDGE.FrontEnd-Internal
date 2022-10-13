@@ -72,7 +72,6 @@ function Title(props: { nextValue, index, value }) {
         arr = []
 
         arr.push(props.value)
-
         return <>{title?.toUpperCase() && !!arr?.join("")?.toString()?.trim() ? <View style={{paddingVertical: 5}}>
             <View style={styles.rect}>
                 <Text style={styles.file}>{title?.toUpperCase()}</Text>
@@ -97,6 +96,7 @@ const RenderServiceMiscellaneous = (props) => {
     let service = JSON.parse(JSON.stringify(props.service || {}));
     let serviceId = service._id
     let formCode = service?.applicationType?.formCode
+    console.log(formCode)
     const flatten = (obj) => {
         var result = {};
         (
@@ -112,7 +112,10 @@ const RenderServiceMiscellaneous = (props) => {
                                 if (e[i]?.hasOwnProperty('year')) {
                                     e[i] = moment(e[i])?.format('LL')
                                 }
-                                await f(e[i], p + i);
+                                if(i != "userId"){
+                                    await f(e[i], p + i);
+                                }
+
                             });
                         }
                         break;
@@ -221,18 +224,6 @@ const RenderServiceMiscellaneous = (props) => {
                                                         {label: 'RT', value: 'RT'},
                                                         {label: 'P', value: 'P'},
                                                         {label: 'ML', value: 'ML'},
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                :(keys?.split?.(".").length >= 3 && formCode === 'ntc1-09-ASL' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={[
-                                                        {label: 'FA', value: 'FA'},
-                                                        {label: 'MA', value: 'MA'},
                                                     ]}
                                                     onSelect={({value}) => {
                                                         if (value) props.updateForm("service." + keys, value)

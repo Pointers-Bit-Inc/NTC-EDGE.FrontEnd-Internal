@@ -18,6 +18,7 @@ export default function EmployeePage(props:any){
     const permissionName = 'employeePermission'
     useEffect(()=>{
         setLoading(true)
+        if(roles_select?.length != 0) return
         axios.get(BASE_URL + "/roles/select?page=" + page, {
             headers: {
                 Authorization: "Bearer ".concat(sessionToken)

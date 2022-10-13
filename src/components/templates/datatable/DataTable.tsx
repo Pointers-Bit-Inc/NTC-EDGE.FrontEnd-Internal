@@ -1015,7 +1015,6 @@ const DataTable = (props) => {
                 [up?.stateName]: (up.subStateName && up.stateName != "role") ? {...subStateName} : up?.value
             };
         });
-
         if(state != "edit"){
             updatedUser.password = generatePassword()
         }
@@ -1023,12 +1022,14 @@ const DataTable = (props) => {
         setLoading(true);
         axios[updatedUser?._id ? "patch" : "post"](BASE_URL + (updatedUser?._id ? `/users/` + updatedUser?._id || "" : `/internal/users/`), updatedUser, config).then(async (response) => {
             let newArr = [...docs];
-            cleanForm();
+
             showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
+
             if (updatedUser?._id) {
 
                 let index = newArr?.findIndex(app => app?._id == response.data.doc._id);
                 newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
+
                 setDocs(newArr)
             } else {
                 newArr.unshift(response.data)
@@ -1038,6 +1039,8 @@ const DataTable = (props) => {
             setLoading(false);
             let _signature = userProfileForm[signatureIndex]
             let tempBlob = userProfileForm?.[signatureIndex]?.tempBlob
+
+
             if (tempBlob) {
                 await fetch(tempBlob)
                     .then(res => {
@@ -1074,27 +1077,26 @@ const DataTable = (props) => {
                                 return app?._id == _id
                             });
 
-                            console.log(index)
 
                             if (_id && index >= 0) {
-                                if (newArr[index]["employeeDetails"]?.hasOwnProperty("signature")) {
+                                console.log("update->", newArr[index]["employeeDetails"]?.hasOwnProperty("signature"))
+
                                     newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
-                                }
+
                                 newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
 
                                 setDocs(newArr)
                             } else {
                                 var newObj = response.data
-                                if (newObj["employeeDetails"]?.hasOwnProperty("signature")) {
+
                                     newObj["employeeDetails"]["signature"] = res?.doc?.signature
-                                }
                                 setDocs(docs => [newObj, ...docs])
                             }
                         })
                     })
             }
 
-
+            cleanForm();
         }).catch((err) => {
             setLoading(false);
             var _err = err;

@@ -481,12 +481,8 @@ const ActivitiesPage = (props) => {
         </>
     ), [countRefresh, updateModal, user._id, refreshing]);
     const onEndReached = () => {
-        if (!onEndReachedCalledDuringMomentum || !(
-            isMobile && !(
-                Platform?.isPad || isTablet()))) {
-            handleLoad();
+        handleLoad();
             setOnEndReachedCalledDuringMomentum(true);
-        }
     }
 
     const listEmptyComponent = useMemoizedFn(() => listEmpty(refreshing , searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
