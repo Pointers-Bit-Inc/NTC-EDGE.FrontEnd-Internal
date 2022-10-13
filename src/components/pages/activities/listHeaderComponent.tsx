@@ -1,5 +1,5 @@
 import React, {memo, useMemo} from "react";
-import {FlatList, ScrollView, Text, View} from "react-native";
+import {FlatList, Platform, ScrollView, Text, View} from "react-native";
 import {styles as styles1} from "@pages/activities/styles";
 import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -27,16 +27,24 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
             }}>
                 <Text>test</Text>
             </TouchableOpacity>*/}
-                <View  style={{maxHeight: fontValue(300)}}>
-                    <FlashList
+                {Platform.OS == "web" ? <View  style={{maxHeight: fontValue(300)}}>
+                    <FlatList
                         showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
-                        style={{flexGrow: 1, maxHeight: fontValue(300)}}
+                        style={{flex: 1, flexGrow: 1, maxHeight: fontValue(300)}}
                         data={ActivityMemo}
                         renderItem={({item, index}) =>
                         props.callbackfn(item, index)}/>
 
-                </View>
+                </View> : <ScrollView showsVerticalScrollIndicator={false}
+                                      nestedScrollEnabled={true}
+                                      onScroll={props.onScroll}
+                                      scrollEventThrottle={16}
+                                      ref={props.ref}
+                                      style={{maxHeight: fontValue(300)}}>
+                    {ActivityMemo.map((item, index) =>  props.callbackfn(item, index))}
+
+                </ScrollView>}
 
 
 

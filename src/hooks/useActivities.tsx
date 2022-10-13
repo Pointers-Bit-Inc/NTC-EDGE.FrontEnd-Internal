@@ -268,7 +268,7 @@ function useActivities(props) {
 
                     }
                 }setRefreshing(false);
-                    setInfiniteLoad(false)
+                setInfiniteLoad(false)
 
             })
         ).catch((err) => {
@@ -381,19 +381,19 @@ function useActivities(props) {
         />
     };
     let cancelToken: CancelTokenSource
-     const handleLoad=useCallback(async (page_) => {
-         //Check if there are any previous pending requests
+    const handleLoad=useCallback(async (page_) => {
+        //Check if there are any previous pending requests
 
-         if (typeof cancelToken != typeof undefined) {
-             cancelToken.cancel("Operation canceled due to new request.")
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.cancel("Operation canceled due to new request.")
 
-         }
+        }
 
-         //Save the cancel token for the current request
-         cancelToken = axios.CancelToken.source()
+        //Save the cancel token for the current request
+        cancelToken = axios.CancelToken.source()
         let _page: string;
-         setInfiniteLoad(true);
-         setRefreshing(true)
+        setInfiniteLoad(true);
+       // setRefreshing(true)
         if ((
             page * size) < total || page_) {
             _page = "?page=" + (
@@ -427,8 +427,8 @@ function useActivities(props) {
                         user: user
                     }));
 
-                        setRefreshing(false);
-                        setInfiniteLoad(false)
+                   // setRefreshing(false);
+                    setInfiniteLoad(false)
 
                 })
             ).catch((err) => {
@@ -436,7 +436,7 @@ function useActivities(props) {
 
                 } else {
 
-                    setRefreshing(false)
+                   // setRefreshing(false)
                     setInfiniteLoad(false);
                 }
                 if(err?.message != "Operation canceled due to new request."){
@@ -447,7 +447,7 @@ function useActivities(props) {
                 console.warn(err)
             })
         } else {
-            setRefreshing(true)
+            //setRefreshing(true)
             setInfiniteLoad(true)
             _page = "?page=" + (
                 page + 1);
@@ -480,18 +480,18 @@ function useActivities(props) {
                     }));
                     console.log(pinned.statusText || notPinned.statusText)
 
-                        setRefreshing(false);
-                        setInfiniteLoad(false)
+                   // setRefreshing(false);
+                    setInfiniteLoad(false)
 
                 })
             ).catch((err) => {
                 if (axios.isCancel(err)) {
 
-                    setRefreshing(true)
+                   // setRefreshing(true)
                     setInfiniteLoad(true);
                 } else {
                     console.log("handle refreshing, infinite")
-                    setRefreshing(false)
+                  //  setRefreshing(false)
                     setInfiniteLoad(false);
                 }
                 if(err?.message != "Operation canceled due to new request."){

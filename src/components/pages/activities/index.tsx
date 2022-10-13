@@ -397,7 +397,7 @@ const ActivitiesPage = (props) => {
 
                                                            }} ref={scrollViewRef}
                                                            callbackfn={(item: any, index: number) => {
-                                                               return item?.activity && <FlashList
+                                                               return item?.activity && <FlatList
                                                                    scrollEventThrottle={16}
                                                                    refreshing={true}
                                                                    key={index}
@@ -409,7 +409,6 @@ const ActivitiesPage = (props) => {
                                                                        return getRenderItem(act, i, index)
                                                                    }
                                                                    }
-                                                                   estimatedItemSize={350}
                                                                    keyExtractor={(item, index) => `_key${index.toString()}`}
                                                                />
                                                            }}/>;
@@ -482,7 +481,7 @@ const ActivitiesPage = (props) => {
     ), [countRefresh, updateModal, user._id, refreshing]);
     const onEndReached = () => {
         handleLoad();
-            setOnEndReachedCalledDuringMomentum(true);
+        setOnEndReachedCalledDuringMomentum(true);
     }
 
     const listEmptyComponent = useMemoizedFn(() => listEmpty(refreshing , searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
@@ -490,7 +489,7 @@ const ActivitiesPage = (props) => {
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length));
 
     const renderAllActivities = useCallback(
-        () => <FlashList
+        () => <FlatList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -500,15 +499,15 @@ const ActivitiesPage = (props) => {
                     onRefresh={onRefresh}
                 />
             }
+
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
             ListHeaderComponent={listHeaderComponent()}
-            contentContainerStyle={{flex: 1,}}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={!refreshing  ? <View/> : bottomLoader}
+            ListFooterComponent={!(refreshing || infiniteLoad ) ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={allRef}
             onEndReachedThreshold={0.5}
@@ -522,7 +521,7 @@ const ActivitiesPage = (props) => {
 
 
     const renderPending = useCallback(
-        () => <FlashList
+        () => <FlatList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -539,7 +538,7 @@ const ActivitiesPage = (props) => {
             contentContainerStyle={{flex: 1,}}
             data={pnApplications}
             keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={!refreshing ? <View/> : bottomLoader}
+            ListFooterComponent={!(refreshing || infiniteLoad )  ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={pendingRef}
             // onScroll={pendingScrollHandler}
@@ -554,7 +553,7 @@ const ActivitiesPage = (props) => {
     );
 
     const renderHistory = useCallback(
-        () => <FlashList
+        () => <FlatList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -573,7 +572,7 @@ const ActivitiesPage = (props) => {
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
 
-            ListFooterComponent={!refreshing ? <View/> : bottomLoader}
+            ListFooterComponent={!(refreshing || infiniteLoad )  ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={historyRef}
             //onScroll={historyScrollHandler}
