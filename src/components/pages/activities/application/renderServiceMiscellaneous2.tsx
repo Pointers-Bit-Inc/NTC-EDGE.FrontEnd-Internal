@@ -63,16 +63,23 @@ let no = null;
 let arr = []
 
 function Title(props: { nextValue, index, value }) {
-    if (!((
+
+
+    console.log(title, transformText(props.nextValue), transformText(props.index), !((
         title === transformText(props.nextValue)) || (
-        title === transformText(props.index)))) {
+        title === transformText(props.index))), props.nextValue, props.index, props.value)
+
+
+    if ( !((
+        title == transformText(props.nextValue)) || (
+        title == transformText(props.index)))) {
 
         title = transformText(props.nextValue || props.index);
-
+        console.log(title, "title")
         arr = []
-
         arr.push(props.value)
-        return <>{title?.toUpperCase() && !!arr?.join("")?.toString()?.trim() ? <View style={{paddingVertical: 5}}>
+        console.log(arr, "arr", title?.toUpperCase(), "uppercase", title?.toUpperCase() && !!arr?.join("")?.toString())
+        return <>{title?.toUpperCase() && !!arr?.join("")?.toString() ? <View style={{paddingVertical: 5}}>
             <View style={styles.rect}>
                 <Text style={styles.file}>{title?.toUpperCase()}</Text>
             </View>
@@ -93,6 +100,9 @@ function Separator({index}) {
 }
 
 const RenderServiceMiscellaneous = (props) => {
+    title = ""
+    no = null
+    arr = []
     let service = JSON.parse(JSON.stringify(props.service || {}));
     let serviceId = service._id
     let formCode = service?.applicationType?.formCode
@@ -115,7 +125,6 @@ const RenderServiceMiscellaneous = (props) => {
                                 if (i != "userId") {
                                     await f(e[i], p + i);
                                 }
-
                             });
                         }
                         break;
