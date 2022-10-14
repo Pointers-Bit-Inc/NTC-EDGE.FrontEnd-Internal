@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start"
     }, detailInput: {
         fontSize: fontValue(14), fontFamily: Regular500, color: "#121212", flex: 1,
-
+        flexWrap: "wrap",
         textAlign: "left"
     },
 })
@@ -62,7 +62,7 @@ const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, contai
     return ((!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) )  ?
         <View style={styles.group2}>
             {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
-            <View style={{flex: 1, flexWrap: "wrap" }}>
+            <View style={{flex: 1, }}>
                 {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{props.display || props.applicant || applicantMemo || props.visibleText || ""}</Text>}
             </View>
              </View> : <>

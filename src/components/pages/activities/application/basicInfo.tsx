@@ -201,7 +201,7 @@ const BasicInfo = (_props: any) => {
 
             if (userOriginalProfileForm?.[key] != userProfileForm?.[key]) {
                 hasChanges = true
-
+                console.log(userOriginalProfileForm?.[key] , userProfileForm?.[key])
                 props.hasChanges(hasChanges)
                 return
             } else {
