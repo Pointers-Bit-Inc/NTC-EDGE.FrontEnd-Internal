@@ -193,7 +193,8 @@ interface Props {
         buttonText: {
             flex: 1,
             fontSize: fontValue(12),
-            color: "#6E7191",
+            //color: "#6E7191",
+            color: "#15142a",
              fontFamily: Regular  ,
             paddingHorizontal: 20,
             textAlign: 'left',

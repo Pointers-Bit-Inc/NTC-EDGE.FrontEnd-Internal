@@ -283,7 +283,7 @@ function useSchedule(props: any) {
                         <View style={styles?.scheduleInnerSeparator}/>
                         <View style={[styles?.scheduleRow, {flex: 1}]}>
                             <ClockIcon/>
-                            <Text style={styles?.scheduleText}>{moment(item?.dateStart).format('LT')}</Text>
+                            <Text style={styles?.scheduleText}>{moment(item?.dateStart).format('LT')} - {moment(item?.dateEnd).format('LT')}</Text>
                         </View>
                     </View>
                 </View>
