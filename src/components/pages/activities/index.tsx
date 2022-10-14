@@ -712,8 +712,14 @@ const ActivitiesPage = (props) => {
     const calendarPress = () => {
         dispatch(setPrevDateEnd(dateEnd));
         dispatch(setPrevDateStart(dateStart));
-
+        if(!(dateEnd && dateStart)){
+            let _dateEnd = moment()?.set({"hour": 23, "minute": 59})
+            let _dateStart = moment()?.set({"hour": 0, "minute": 0})
+            dispatch(setDateEnd(_dateEnd));
+            dispatch(setDateStart(_dateStart));
+        }
         dispatch(setCalendarVisible(true))
+
         RNAnimated.spring(animation, {
             toValue: 1,
             useNativeDriver: false,
@@ -908,7 +914,7 @@ const ActivitiesPage = (props) => {
                             headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
                             startFromMonday={true}
                             allowRangeSelection={true}
-                            todayBackgroundColor={infoColor}
+
                             selectedStartDate={dateStart}
                             selectedEndDate={dateEnd}
                             selectedDayColor={infoColor}
