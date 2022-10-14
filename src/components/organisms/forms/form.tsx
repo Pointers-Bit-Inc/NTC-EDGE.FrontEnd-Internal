@@ -11,6 +11,7 @@ import inputStyles from "@styles/input-style";
 import CalendarPicker from 'react-native-calendar-picker';
 import DateField from "@pages/activities/application/datefield";
 import moment from "moment";
+import {Regular500} from "@styles/font";
 const FormField=({
                      color,
                      formElements,
@@ -70,7 +71,9 @@ const FormField=({
                                    }}/> : <></>;
             case "select":
                 return <View style={{paddingBottom: 22}}>
-                    <CustomDropdown key={id}
+                    <CustomDropdown
+                        required={element?.required}
+                        key={id}
                                     value={element?.value}
                                     label={element?.label || "Select Item"}
                                     data={ element.data }
@@ -106,6 +109,10 @@ const FormField=({
 
                 return (
                     <View>
+                        <View style={{padding: 10}}>
+                            <Text style={{fontSize: 12,fontFamily: Regular500}}>{element.label}</Text>
+                        </View>
+
                         <DateField label={"Date:"}
                                    edit={true}
                                    updateForm={(stateName, value) =>  onChange(id, value )}

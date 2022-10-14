@@ -44,8 +44,6 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [time, setTime]= useSafeState(typeof props?.applicant == 'string' ? props?.applicant?.split('T')?.[1] : null)
 
 
-
-
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
@@ -67,6 +65,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
     useEffect(()=>{
+        if(!props?.edit) return
         let _day = dayValue?.length == 1 ? "0" + dayValue : dayValue
         props.updateForm(props.stateName, `${yearValue}-${monthValue}-${_day}` + (time ? `T${time}` : ""))
     }, [monthValue, dayValue, yearValue])
@@ -88,7 +87,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                 <View style={{padding: 3,flexDirection: "row", justifyContent: "space-between"}}>
                     <View style={{flex: 0.9}}>
                         <CustomDropdown value={monthValue}
-                                        label="Select Item"
+                                        label="Month"
                                         data={monthsArray}
                                         onSelect={({value}) => {
                                             if (value) {
@@ -98,7 +97,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                     </View>
                     <View style={{flex:0.7, paddingHorizontal: 5}}>
                         <CustomDropdown value={dayValue}
-                                        label="Select Item"
+                                        label="Day"
                                         data={datesArray}
                                         onSelect={({value}) => {
                                             if (value) setDayValue(value)
@@ -106,7 +105,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                     </View>
                     <View style={{flex:0.8}}>
                         <CustomDropdown value={yearValue}
-                                        label="Select Item"
+                                        label="Year"
                                         data={yearList()}
                                         onSelect={({value}) => {
                                             if (value) {

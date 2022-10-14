@@ -141,7 +141,8 @@ containerStyle
                                 {required && (
                                     <Text style={[inputStyles.requiredText,
                                         !!requiredColor && {
-                                            color:  isFocused ? requiredColor : "#808196"
+                                            //color:  isFocused ? requiredColor : "#808196"
+                                            color:  requiredColor
                                         },
                                         !editable && {color: disabledColor}]}>
                                         {'*'}
@@ -164,7 +165,8 @@ containerStyle
 
                         ref={inputRef}
                         style={[inputStyles.inputText , !editable && {color: disabledColor}, inputStyle]}
-                        placeholder={placeholder || label}
+                        placeholder={(placeholder || label) + (!!requiredColor ? "*" : "") }
+
                         placeholderTextColor={!editable ? disabledColor : (!!error ? input.text?.errorColor : defaultColor)}
                         secureTextEntry={secureTextEntry}
                         onFocus={onFocusFN}

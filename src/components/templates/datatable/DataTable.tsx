@@ -212,8 +212,10 @@ const DataTable = (props) => {
             stateName: 'role',
             id: 6,
             key: 6,
+
             subStateName: 'key',
             required: true,
+            requiredColor: errorColor,
             data: props.filter,
             label: 'Role',
             type: 'select',
@@ -246,6 +248,7 @@ const DataTable = (props) => {
             id: 1,
             key: 1,
             required: true,
+            requiredColor: errorColor,
             label: 'First Name',
             type: 'input',
             placeholder: 'First Name',
@@ -259,6 +262,7 @@ const DataTable = (props) => {
             id: 2,
             key: 2,
             required: true,
+            requiredColor: errorColor,
             label: 'Middle Name',
             type: 'input',
             placeholder: 'Middle Name',
@@ -272,6 +276,7 @@ const DataTable = (props) => {
             id: 3,
             key: 3,
             required: true,
+            requiredColor: errorColor,
             label: 'Last Name',
             type: 'input',
             placeholder: 'Last Name',
@@ -285,6 +290,7 @@ const DataTable = (props) => {
             id: 4,
             key: 4,
             required: true,
+            requiredColor: errorColor,
             label: 'Email',
             type: 'input',
             placeholder: 'Email',
@@ -298,6 +304,7 @@ const DataTable = (props) => {
             id: 5,
             key: 5,
             required: true,
+            requiredColor: errorColor,
             label: 'Suffix',
             type: 'input',
             placeholder: 'Suffix',
@@ -312,11 +319,13 @@ const DataTable = (props) => {
             style: style.subtitle,
         },
         {
-            stateName: 'address',
+            stateNameMain: 'address',
+            stateName: 'applicant',
             subStateName: 'street',
             id: 7,
             key: 7,
             required: true,
+            requiredColor: errorColor,
             label: 'Street',
             type: 'input',
             placeholder: 'Street',
@@ -326,11 +335,13 @@ const DataTable = (props) => {
             hasValidation: true
         },
         {
-            stateName: 'address',
+            stateNameMain: 'address',
+            stateName: 'applicant',
             subStateName: 'unit',
             id: 21,
             key: 21,
             required: true,
+            requiredColor: errorColor,
             label: 'Unit',
             type: 'input',
             placeholder: 'Unit',
@@ -340,11 +351,13 @@ const DataTable = (props) => {
             hasValidation: true
         },
         {
-            stateName: 'address',
+            stateNameMain: 'address',
+            stateName: 'applicant',
             subStateName: 'barangay',
             id: 22,
             key: 22,
             required: true,
+            requiredColor: errorColor,
             label: 'Barangay',
             type: 'input',
             placeholder: 'Barangay',
@@ -354,12 +367,14 @@ const DataTable = (props) => {
             hasValidation: true
         },
         {
-            stateName: 'address',
+            stateNameMain: 'address',
+            stateName: 'applicant',
             subStateName: 'region',
             id: 25,
             key: 25,
             data: regionList,
             required: true,
+            requiredColor: errorColor,
             label: 'Region',
             type: "select",
             placeholder: 'Region',
@@ -369,11 +384,13 @@ const DataTable = (props) => {
             hasValidation: true
         },
         {
-            stateName: 'address',
+            stateNameMain: 'address',
+            stateName: 'applicant',
             subStateName: 'province',
             id: 24,
             key: 24,
             required: true,
+            requiredColor: errorColor,
             label: 'Province',
             type: 'select',
             data: [],
@@ -384,12 +401,14 @@ const DataTable = (props) => {
             hasValidation: true
         },
         {
-            stateName: 'address',
+            stateNameMain: 'address',
+            stateName: 'applicant',
             subStateName: 'city',
             id: 23,
             key: 23,
             data: [],
             required: true,
+            requiredColor: errorColor,
             label: 'City',
             type: 'select',
             placeholder: 'City',
@@ -399,11 +418,13 @@ const DataTable = (props) => {
             hasValidation: true
         },
         {
-            stateName: 'address',
+            stateNameMain: 'address',
+            stateName: 'applicant',
             subStateName: 'zipCode',
             id: 26,
             key: 26,
             required: true,
+            requiredColor: errorColor,
             label: 'Zipcode',
             type: "input",
             placeholder: 'Zipcode',
@@ -417,6 +438,7 @@ const DataTable = (props) => {
             id: 8,
             key: 8,
             required: true,
+            requiredColor: errorColor,
             label: 'Contact Number',
             type: 'input',
             placeholder: 'Contact Number',
@@ -431,6 +453,7 @@ const DataTable = (props) => {
             id: 9,
             key: 9,
             required: true,
+            requiredColor: errorColor,
             label: 'Date of Birth',
             type: 'date',
             placeholder: 'Date of Birth',
@@ -445,6 +468,7 @@ const DataTable = (props) => {
             id: 10,
             key: 10,
             required: true,
+            requiredColor: errorColor,
             data: [
                 {value: "male", label: 'Male',},
                 {value: "female", label: 'Female',},
@@ -462,6 +486,7 @@ const DataTable = (props) => {
             id: 13,
             key: 13,
             required: true,
+            requiredColor: errorColor,
             label: 'Nationality',
             type: 'select',
             data: [
@@ -479,6 +504,7 @@ const DataTable = (props) => {
             id: 14,
             key: 14,
             required: true,
+            requiredColor: errorColor,
             data: [
                 {value: "individual", label: 'Individual',},
                 {value: "company", label: 'Company',},
@@ -502,6 +528,7 @@ const DataTable = (props) => {
             id: 15,
             key: 15,
             required: true,
+            requiredColor: errorColor,
             label: 'Region',
             data: regionList,
             type: 'select',
@@ -517,6 +544,7 @@ const DataTable = (props) => {
             id: 16,
             key: 16,
             required: true,
+            requiredColor: errorColor,
             label: 'Level',
             type: 'input',
 
@@ -532,6 +560,7 @@ const DataTable = (props) => {
             id: 17,
             key: 17,
             required: true,
+            requiredColor: errorColor,
             label: 'Title',
             type: 'input',
             placeholder: 'Title',
@@ -546,6 +575,7 @@ const DataTable = (props) => {
             id: 18,
             key: 18,
             required: true,
+            requiredColor: errorColor,
             label: 'Division',
             type: 'input',
             placeholder: 'Division',
@@ -560,6 +590,7 @@ const DataTable = (props) => {
             id: 19,
             key: 19,
             required: true,
+            requiredColor: errorColor,
             label: 'Position',
             type: 'input',
             placeholder: 'Position',
@@ -574,6 +605,7 @@ const DataTable = (props) => {
             id: 20,
             key: 20,
             required: true,
+            requiredColor: errorColor,
             label: 'Designation',
             type: 'input',
             placeholder: 'Designation',
@@ -596,6 +628,7 @@ const DataTable = (props) => {
             style: { height: 200, width: 200, zIndex: 1, borderWidth: 1, borderStyle: "dotted"},
             type: "image",
             required: true,
+            requiredColor: errorColor,
             label: 'signature',
             placeholder: 'signature',
             value: '',
@@ -614,6 +647,7 @@ const DataTable = (props) => {
             id: 12,
             key: 12,
             required: true,
+            requiredColor: errorColor,
             label: 'Password',
             type: 'password',
 
@@ -641,15 +675,15 @@ const DataTable = (props) => {
 
     const [userProfileForm, setUserProfileForm] = useState(originalForm);
     const citiesIndexMemo = useMemo(()=>{
-        return userProfileForm.findIndex(u => u.subStateName == "city" && u.stateName == "address" )
+        return userProfileForm.findIndex(u => u.subStateName == "city" && u.stateNameMain == "address" )
     }, [])
 
     const provincesIndexMemo = useMemo(()=>{
-        return userProfileForm.findIndex(u => u.subStateName == "province" && u.stateName == "address" )
+        return userProfileForm.findIndex(u => u.subStateName == "province" && u.stateNameMain == "address" )
     }, [])
 
     const regionIndexMemo = useMemo(()=>{
-        return userProfileForm.findIndex(u => u.subStateName == "region" && u.stateName == "address" )
+        return userProfileForm.findIndex(u => u.subStateName == "region" && u.stateNameMain == "address" )
     }, [])
 
 
@@ -1002,18 +1036,31 @@ const DataTable = (props) => {
         setUserProfileForm(newArr);
     };
     const onPress = async (id?: number, type?: string | number) => {
-        var updatedUser = {password: ""}, subStateName = {};
+        var updatedUser = {password: ""}, subStateName = {}, prevSubStateName = null;
         let signatureIndex = userProfileForm?.findIndex(app => app?.stateName == "employeeDetails" && app.subStateName == "signature");
 
-        userProfileForm?.forEach(async (up: any) => {
-            if (!up?.stateName) return
-            if (up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName ) {
-                subStateName[up.subStateName] = up?.value
-            }
+        userProfileForm?.forEach(async (up) => {
 
+            if (!up?.stateName) return
+            if (!up.hasOwnProperty("stateNameMain") && up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName ) {
+                if(up.stateName != prevSubStateName ){
+                    prevSubStateName = up.stateName
+                    subStateName = {}
+                }
+                subStateName[up.subStateName] = up?.value
+            }else if(up.stateNameMain){
+                if(prevSubStateName != up.stateNameMain){
+                    prevSubStateName = up.stateNameMain
+                    subStateName = {}
+                }
+                subStateName[up.stateNameMain] = {
+                    ...subStateName[up.stateNameMain],
+                    [up.subStateName]: up?.value
+                }
+            }
             return updatedUser = {
                 ...updatedUser,
-                [up?.stateName]: (up.subStateName && up.stateName != "role") ? {...subStateName} : up?.value
+                [up?.stateName]: ((up.stateNameMain || up.subStateName) && up.stateName != "role") ? {...subStateName} : up?.value
             };
         });
         if(state != "edit"){

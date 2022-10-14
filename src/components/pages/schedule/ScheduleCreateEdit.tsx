@@ -52,7 +52,7 @@ function ScheduleTime(props: { scheduleId: any, value: any, id: string, onChange
     return <>
         <View style={{flex: 0.9}}>
             <CustomDropdown value={hourValue}
-                            label="Select Hour"
+                            label="Hour"
                             data={hoursArray}
                             onSelect={({value}) => {
                                 if (value) setHourValue(value)
@@ -60,7 +60,7 @@ function ScheduleTime(props: { scheduleId: any, value: any, id: string, onChange
         </View>
         <View style={{flex: 0.7, paddingHorizontal: 5}}>
             <CustomDropdown value={minuteValue}
-                            label="Select Minute"
+                            label="Minute"
                             data={datesArray}
                             onSelect={({value}) => {
                                 if (value) setMinuteValue(value)
@@ -68,7 +68,7 @@ function ScheduleTime(props: { scheduleId: any, value: any, id: string, onChange
         </View>
         <View style={{flex: 0.7}}>
             <CustomDropdown value={ampmValue}
-                            label="Select AM/PM"
+                            label="AM/PM"
                             data={ampmArray}
                             onSelect={({value}) => {
                                 if (value) {

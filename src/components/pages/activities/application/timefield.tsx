@@ -81,7 +81,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
             <View style={{padding: 3,flexDirection: "row", justifyContent: "space-between"}}>
                 <View style={{flex: 0.9}}>
                     <CustomDropdown value={hourValue}
-                                    label="Select Hour"
+                                    label="Hour"
                                     data={hoursArray}
                                     onSelect={({value}) => {
                                         if (value) setHourValue(value)
@@ -89,7 +89,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                 </View>
                 <View style={{flex:0.7, paddingHorizontal: 5}}>
                     <CustomDropdown value={minuteValue}
-                                    label="Select Minute"
+                                    label="Minute"
                                     data={datesArray}
                                     onSelect={({value}) => {
                                         if (value) setMinuteValue(value)
@@ -97,7 +97,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                 </View>
                 <View style={{flex:0.7}}>
                     <CustomDropdown value={ampmValue}
-                                    label="Select AM/PM"
+                                    label="AM/PM"
                                     data={ampmArray}
                                     onSelect={({value}) => {
                                         if (value) {

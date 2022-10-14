@@ -17,11 +17,12 @@ import {useOrientation} from "../../../../hooks/useOrientation";
 import {Regular,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
-import {outline} from "@styles/color";
+import {errorColor, outline, text} from "@styles/color";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setDropdownVisible} from "../../../../reducers/activity/actions";
 
 interface Props {
+    required: boolean,
     value: any;
         label: string;
         data: any;
@@ -29,7 +30,7 @@ interface Props {
         loading: false
     }
 
-    const CustomDropdown: FC<Props> = ({label, data, onSelect, value, loading}) => {
+    const CustomDropdown: FC<Props> = ({required, label, data, onSelect, value, loading}) => {
 
         const dimension = useWindowDimensions()
         const DropdownButton = useRef();
@@ -163,15 +164,40 @@ interface Props {
                 onPress={toggleDropdown}
             >
                 {renderDropdown()}
-                <Text style={[styles.buttonText]}>
-                    {(!!selected && selected?.label) || label}
-                </Text>
-                <CaretDownIcon width={fontValue(24)} height={fontValue(24)}style={{
-                    paddingHorizontal: fontValue(20),
-                    transform: [{
-                        rotate: visible ? "0deg" : "180deg"
-                    }]
-                }}/>
+                <View style={{flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                    { Platform.OS == "web" ?
+                        <View>
+                            {(!!selected && selected?.label) ? <Text style={[styles.buttonText, {color: text.default,}]}>
+
+                                {label} {(required ? <Text style={{color: errorColor}}>*</Text> : "")}
+                            </Text> : null}
+                            <View style={{flexDirection: "row"}}>
+                                <Text style={[styles.buttonText]}>
+
+                                    {(!!selected && selected?.label) || label}
+                                    <Text>{((!selected?.label) && required ? <Text style={{color: errorColor}}>*</Text> : "")}</Text>
+                                </Text>
+
+                            </View>
+
+                        </View>  : <Text style={[styles.buttonText]}>
+
+                            {(!!selected && selected?.label) || label}
+                            <Text>{((!selected?.label) && required ? <Text style={{color: errorColor}}>*</Text> : "")}</Text>
+                        </Text>
+                    }
+
+                    <View>
+                        <CaretDownIcon width={fontValue(24)} height={fontValue(24)} style={{
+                            paddingHorizontal: fontValue(20),
+                            transform: [{
+                                rotate: visible ? "0deg" : "180deg"
+                            }]
+                        }}/>
+                    </View>
+
+                </View>
+
             </TouchableOpacity>
         );
     };
