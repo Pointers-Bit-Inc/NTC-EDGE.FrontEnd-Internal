@@ -232,6 +232,7 @@ export default function SchedulePage(props: any) {
                 show={showDeleteAlert}
                 showProgress={false}
                 title={"Delete"}
+                titleStyle={{fontFamily: Bold}}
                 message="Are you sure you want to delete this item?"
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}

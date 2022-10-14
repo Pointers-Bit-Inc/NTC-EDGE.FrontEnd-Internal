@@ -103,7 +103,8 @@ const [filter, setFilter] = useState(rolesMemo)
                                 <TextInput value={value}  onChangeText={text => {
                                     setValue(text)
                                     text.length == 0 ?  setFilter(rolesMemo) : setFilter(rolesMemo.filter((item) => {
-                                        return fuzzysearch(text, item.name)
+                                       // return fuzzysearch(text, item.name)
+                                        return item.name.toLowerCase().indexOf(text.toLowerCase())>-1;
                                     }))
                                 }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
                                 <View style={styles.searchIcon}>
@@ -290,6 +291,7 @@ const [filter, setFilter] = useState(rolesMemo)
                     show={showDeleteAlert}
                     showProgress={false}
                     title={"Delete"}
+                    titleStyle={{fontFamily: Bold}}
                     message="Are you sure you want to delete this item?"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}

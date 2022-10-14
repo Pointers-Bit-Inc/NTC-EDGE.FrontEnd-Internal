@@ -112,7 +112,7 @@ const RenderServiceMiscellaneous = (props) => {
                                 if (e[i]?.hasOwnProperty('year')) {
                                     e[i] = moment(e[i])?.format('LL')
                                 }
-                                if(i != "userId"){
+                                if (i != "userId") {
                                     await f(e[i], p + i);
                                 }
 
@@ -156,7 +156,6 @@ const RenderServiceMiscellaneous = (props) => {
 
         }
 
-
         return (<View>
 
             {props?.isTitleVisible ? <Title nextValue={nextValue} index={index} value={value}/> : <></>}
@@ -195,7 +194,26 @@ const RenderServiceMiscellaneous = (props) => {
                                                 if (value) props.updateForm("service." + keys, value)
                                             }}/>
                         </View>
-                        : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
+                        : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
+                            <View style={{paddingBottom: 10}}>
+                                <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
+                                                label="Select Class of Station"
+                                                data={[
+                                                    {label: 'RT', value: 'RT'},
+                                                    {label: 'FX', value: 'FX'},
+                                                    {label: 'FB', value: 'FB'},
+                                                    {label: 'ML', value: 'ML'},
+                                                    {label: 'BC', value: 'BC'},
+                                                    {label: 'FC', value: 'FC'},
+                                                    {label: 'FA', value: 'FA'},
+                                                    {label: 'MA', value: 'MA'},
+                                                    {label: 'TC', value: 'TC'},
+                                                    {label: 'Others', value: 'Others'},
+                                                ]}
+                                                onSelect={({value}) => {
+                                                    if (value) props.updateForm("service." + keys, value)
+                                                }}/>
+                            </View> : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11-RSL' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
                                 <View style={{paddingBottom: 10}}>
                                     <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
                                                     label="Select Class of Station"
@@ -204,191 +222,225 @@ const RenderServiceMiscellaneous = (props) => {
                                                         {label: 'FX', value: 'FX'},
                                                         {label: 'FB', value: 'FB'},
                                                         {label: 'ML', value: 'ML'},
-                                                        {label: 'BC', value: 'BC'},
-                                                        {label: 'FC', value: 'FC'},
-                                                        {label: 'FA', value: 'FA'},
-                                                        {label: 'MA', value: 'MA'},
-                                                        {label: 'TC', value: 'TC'},
+                                                        {label: 'P', value: 'P'},
                                                         {label: 'Others', value: 'Others'},
                                                     ]}
                                                     onSelect={({value}) => {
                                                         if (value) props.updateForm("service." + keys, value)
                                                     }}/>
-                                </View>: (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11-public-trunked' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={[
-                                                        {label: 'FX', value: 'FX'},
-                                                        {label: 'FB', value: 'FB'},
-                                                        {label: 'RT', value: 'RT'},
-                                                        {label: 'P', value: 'P'},
-                                                        {label: 'ML', value: 'ML'},
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                :(keys?.split?.(".").length >= 3 && formCode === 'ntc1-09-ASL' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={[
-                                                        {label: 'FA', value: 'FA'},
-                                                        {label: 'MA', value: 'MA'},
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                :(keys?.split?.(".").length >= 3 && formCode === 'ntc1-09-MS-pur' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={[
-                                                        {label: 'Other', value: 'Other'},
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                :(keys?.split?.(".").length >= 3 && formCode === 'ntc1-11-vsat' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={[
-                                                        {label: 'TC', value: 'TC'},
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                :(keys?.split?.(".").length >= 3 && formCode === 'ntc1-11-bwa' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={[
-                                                        {label: 'FB', value: 'FB'},
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                :(keys?.split?.(".").length >= 3 && formCode === 'ntc1-09-PTEs' &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={[
-                                                        {label: 'FB', value: 'FB'},
-                                                        {label: 'FX', value: 'FX'},
-                                                        {label: 'P', value: 'P'},
-                                                        {label: 'ML', value: 'ML'},
-                                                        {label: 'RT', value: 'RT'},
-                                                        {label: 'VSAT', value: 'VSAT'},
-                                                        {label: 'P', value: 'P'},
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                : (keys?.split?.(".").length >= 3 && formCode == "ntc1-03-and-09" &&  keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select Class of Station"
-                                                    data={classOfStation}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                :  (["ntc1-09-MS-pos", "ntc1-09-MS-pur"].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
-                                <View style={{paddingBottom: 10}}>
-                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                    label="Select type"
-                                                    data={[
-                                                        {
-                                                            value: 'Maritime Service',
-                                                            label: 'Maritime Service',
-                                                        },
-                                                    ]}
-                                                    onSelect={({value}) => {
-                                                        if (value) props.updateForm("service." + keys, value)
-                                                    }}/>
-                                </View>
-                                : (["ntc1-09-PTEs", "ntc1-11-bts"].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                </View> : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11-public-trunked' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
                                     <View style={{paddingBottom: 10}}>
                                         <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                        label="Select type"
+                                                        label="Select Class of Station"
                                                         data={[
-                                                            {
-                                                                value: 'CP (Public Correspondence)',
-                                                                label: 'CP (Public Correspondence)',
-                                                            },
+                                                            {label: 'FX', value: 'FX'},
+                                                            {label: 'FB', value: 'FB'},
+                                                            {label: 'RT', value: 'RT'},
+                                                            {label: 'P', value: 'P'},
+                                                            {label: 'ML', value: 'ML'},
                                                         ]}
                                                         onSelect={({value}) => {
                                                             if (value) props.updateForm("service." + keys, value)
                                                         }}/>
                                     </View>
-                                    : (["ntc1-11",
-                                        'ntc1-11-ASL',
-                                        'ntc1-11-and-09',
-                                        'ntc1-11-RSL',
-                                        'ntc1-11-microwave',
-                                        'ntc1-11-vsat',
-                                        "ntc1-11-public-trunked",
-                                        "ntc1-11-bwa",
-                                        "ntc1-11-wdn",
-                                        "ntc1-11-coastal",
-                                        "ntc1-14"
-                                    ].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                    : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-09-ASL' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
                                         <View style={{paddingBottom: 10}}>
                                             <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                            label="Select type"
+                                                            label="Select Class of Station"
                                                             data={[
-                                                                {
-                                                                    value: 'CV (Private)',
-                                                                    label: 'CV (Private)',
-                                                                },
-                                                                {
-                                                                    value: 'CO (Government)',
-                                                                    label: 'CO (Government)',
-                                                                },
-                                                                {
-                                                                    value: 'CP (Public Correspondence)',
-                                                                    label: 'CP (Public Correspondence)',
-                                                                },
+                                                                {label: 'FA', value: 'FA'},
+                                                                {label: 'MA', value: 'MA'},
                                                             ]}
                                                             onSelect={({value}) => {
                                                                 if (value) props.updateForm("service." + keys, value)
                                                             }}/>
                                         </View>
-                                        : (["ntc1-09-ASL", "ntc1-09-ASL-pur"
-                                        ].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                        : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-09-MS-pur' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
                                             <View style={{paddingBottom: 10}}>
                                                 <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
-                                                                label="Select type"
+                                                                label="Select Class of Station"
                                                                 data={[
-                                                                    {
-                                                                        value: 'CV (Private)',
-                                                                        label: 'CV (Private)',
-                                                                    },
-                                                                    {
-                                                                        value: 'CO (Government)',
-                                                                        label: 'CO (Government)',
-                                                                    },
+                                                                    {label: 'Other', value: 'Other'},
                                                                 ]}
                                                                 onSelect={({value}) => {
                                                                     if (value) props.updateForm("service." + keys, value)
                                                                 }}/>
                                             </View>
-                                            : <Row
-                                                id={props?.userProfileForm?.["_id"] || serviceId}
-                                                updateApplication={props?.updateApplication}
-                                                updateForm={props.updateForm}
-                                                stateName={"service." + keys}
-                                                edit={props.edit}
-                                                label={prevValue ? `${transformText(keys?.split?.(".")?.[keys?.split?.(".")?.length - 1])}:` : ""}
-                                                display={value}
-                                                applicant={props?.userProfileForm?.["service." + keys]}/>
+                                            : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11-vsat' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
+                                                <View style={{paddingBottom: 10}}>
+                                                    <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
+                                                                    label="Select Class of Station"
+                                                                    data={[
+                                                                        {label: 'TC', value: 'TC'},
+                                                                    ]}
+                                                                    onSelect={({value}) => {
+                                                                        if (value) props.updateForm("service." + keys, value)
+                                                                    }}/>
+                                                </View>
+                                                : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11-bwa' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
+                                                    <View style={{paddingBottom: 10}}>
+                                                        <CustomDropdown
+                                                            value={props?.userProfileForm?.["service." + keys]}
+                                                            label="Select Class of Station"
+                                                            data={[
+                                                                {label: 'FB', value: 'FB'},
+                                                            ]}
+                                                            onSelect={({value}) => {
+                                                                if (value) props.updateForm("service." + keys, value)
+                                                            }}/>
+                                                    </View>
+                                                    : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-09-PTEs' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
+                                                        <View style={{paddingBottom: 10}}>
+                                                            <CustomDropdown
+                                                                value={props?.userProfileForm?.["service." + keys]}
+                                                                label="Select Class of Station"
+                                                                data={[
+                                                                    {label: 'FB', value: 'FB'},
+                                                                    {label: 'FX', value: 'FX'},
+                                                                    {label: 'P', value: 'P'},
+                                                                    {label: 'ML', value: 'ML'},
+                                                                    {label: 'RT', value: 'RT'},
+                                                                    {label: 'VSAT', value: 'VSAT'},
+                                                                    {label: 'P', value: 'P'},
+                                                                ]}
+                                                                onSelect={({value}) => {
+                                                                    if (value) props.updateForm("service." + keys, value)
+                                                                }}/>
+                                                        </View>
+                                                        : (keys?.split?.(".").length >= 3 && formCode == "ntc1-03-and-09" && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
+                                                            <View style={{paddingBottom: 10}}>
+                                                                <CustomDropdown
+                                                                    value={props?.userProfileForm?.["service." + keys]}
+                                                                    label="Select Class of Station"
+                                                                    data={classOfStation}
+                                                                    onSelect={({value}) => {
+                                                                        if (value) props.updateForm("service." + keys, value)
+                                                                    }}/>
+                                                            </View>
+                                                            : (["ntc1-09-MS-pos", "ntc1-09-MS-pur"].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                                <View style={{paddingBottom: 10}}>
+                                                                    <CustomDropdown
+                                                                        value={props?.userProfileForm?.["service." + keys]}
+                                                                        label="Select type"
+                                                                        data={[
+                                                                            {
+                                                                                value: 'Maritime Service',
+                                                                                label: 'Maritime Service',
+                                                                            },
+                                                                        ]}
+                                                                        onSelect={({value}) => {
+                                                                            if (value) props.updateForm("service." + keys, value)
+                                                                        }}/>
+                                                                </View>
+                                                                : (["ntc1-09-PTEs", "ntc1-11-bts"].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                                    <View style={{paddingBottom: 10}}>
+                                                                        <CustomDropdown
+                                                                            value={props?.userProfileForm?.["service." + keys]}
+                                                                            label="Select type"
+                                                                            data={[
+                                                                                {
+                                                                                    value: 'CP (Public Correspondence)',
+                                                                                    label: 'CP (Public Correspondence)',
+                                                                                },
+                                                                            ]}
+                                                                            onSelect={({value}) => {
+                                                                                if (value) props.updateForm("service." + keys, value)
+                                                                            }}/>
+                                                                    </View>
+
+                                                                    : (["ntc1-11",
+                                                                        'ntc1-11-ASL',
+                                                                        'ntc1-11-and-09',
+                                                                        'ntc1-11-RSL',
+                                                                        'ntc1-11-microwave',
+                                                                        'ntc1-11-vsat',
+                                                                        "ntc1-11-public-trunked",
+                                                                        "ntc1-11-bwa",
+                                                                        "ntc1-11-wdn",
+                                                                        "ntc1-11-coastal",
+                                                                        "ntc1-14"
+                                                                    ].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                                        <View style={{paddingBottom: 10}}>
+                                                                            <CustomDropdown
+                                                                                value={props?.userProfileForm?.["service." + keys]}
+                                                                                label="Select type"
+                                                                                data={[
+                                                                                    {
+                                                                                        value: 'CV (Private)',
+                                                                                        label: 'CV (Private)',
+                                                                                    },
+                                                                                    {
+                                                                                        value: 'CO (Government)',
+                                                                                        label: 'CO (Government)',
+                                                                                    },
+                                                                                    {
+                                                                                        value: 'CP (Public Correspondence)',
+                                                                                        label: 'CP (Public Correspondence)',
+                                                                                    },
+                                                                                ]}
+                                                                                onSelect={({value}) => {
+                                                                                    if (value) props.updateForm("service." + keys, value)
+                                                                                }}/>
+                                                                        </View>
+                                                                        : (["ntc1-11",
+                                                                            'ntc1-11-ASL',
+                                                                            'ntc1-11-and-09',
+                                                                            'ntc1-11-RSL',
+                                                                            'ntc1-11-microwave',
+                                                                            'ntc1-11-vsat',
+                                                                            "ntc1-11-public-trunked",
+                                                                            "ntc1-11-bwa",
+                                                                            "ntc1-11-wdn",
+                                                                            "ntc1-11-coastal",
+                                                                            "ntc1-14"
+                                                                        ].indexOf(formCode) && keys?.split?.(".")?.[0] == "transmissionType" && keys?.split?.(".")?.[1] == "transmissionType" && props.edit) ?
+                                                                            <View style={{paddingBottom: 10}}>
+                                                                                <CustomDropdown
+                                                                                    value={props?.userProfileForm?.["service." + keys]}
+                                                                                    label="Select type"
+                                                                                    data={[
+                                                                                        {
+                                                                                            value: 'Simplex',
+                                                                                            label: 'Simplex',
+                                                                                        },
+                                                                                        {
+                                                                                            value: 'Duplex',
+                                                                                            label: 'Duplex',
+                                                                                        },
+                                                                                    ]}
+                                                                                    onSelect={({value}) => {
+                                                                                        if (value) props.updateForm("service." + keys, value)
+                                                                                    }}/>
+                                                                            </View>
+                                                                            : (["ntc1-09-ASL", "ntc1-09-ASL-pur"
+                                                                            ].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                                                <View style={{paddingBottom: 10}}>
+                                                                                    <CustomDropdown
+                                                                                        value={props?.userProfileForm?.["service." + keys]}
+                                                                                        label="Select type"
+                                                                                        data={[
+                                                                                            {
+                                                                                                value: 'CV (Private)',
+                                                                                                label: 'CV (Private)',
+                                                                                            },
+                                                                                            {
+                                                                                                value: 'CO (Government)',
+                                                                                                label: 'CO (Government)',
+                                                                                            },
+                                                                                        ]}
+                                                                                        onSelect={({value}) => {
+                                                                                            if (value) props.updateForm("service." + keys, value)
+                                                                                        }}/>
+                                                                                </View>
+                                                                                : <Row
+                                                                                    id={props?.userProfileForm?.["_id"] || serviceId}
+                                                                                    updateApplication={props?.updateApplication}
+                                                                                    updateForm={props.updateForm}
+                                                                                    stateName={"service." + keys}
+                                                                                    edit={props.edit}
+                                                                                    label={prevValue ? `${transformText(keys?.split?.(".")?.[keys?.split?.(".")?.length - 1])}:` : ""}
+                                                                                    display={value}
+                                                                                    applicant={props?.userProfileForm?.["service." + keys]}/>
             }
         </View>)
 

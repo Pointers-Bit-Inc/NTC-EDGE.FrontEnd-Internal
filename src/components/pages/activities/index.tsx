@@ -535,7 +535,6 @@ const ActivitiesPage = (props) => {
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
-            contentContainerStyle={{flex: 1,}}
             data={pnApplications}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={!(refreshing || infiniteLoad )  ? <View/> : bottomLoader}
@@ -568,7 +567,6 @@ const ActivitiesPage = (props) => {
             showsHorizontalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
-            contentContainerStyle={{flex: 1,}}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
 
@@ -910,7 +908,7 @@ const ActivitiesPage = (props) => {
                             headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
                             startFromMonday={true}
                             allowRangeSelection={true}
-                            todayBackgroundColor="#f2e6ff"
+                            todayBackgroundColor={infoColor}
                             selectedStartDate={dateStart}
                             selectedEndDate={dateEnd}
                             selectedDayColor={infoColor}

@@ -1575,6 +1575,7 @@ const DataTable = (props) => {
                 alertContainerStyle={{zIndex: 2}}
                 show={showDeleteAlert}
                 showProgress={false}
+                titleStyle={{fontFamily: Bold}}
                 title={"Delete"}
                 message="Are you sure you want to delete this item?"
                 closeOnTouchOutside={true}

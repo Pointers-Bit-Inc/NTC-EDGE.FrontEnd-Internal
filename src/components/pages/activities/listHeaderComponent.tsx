@@ -27,24 +27,18 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
             }}>
                 <Text>test</Text>
             </TouchableOpacity>*/}
-                {Platform.OS == "web" ? <View  style={{maxHeight: fontValue(300)}}>
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        nestedScrollEnabled={true}
-                        style={{flex: 1, flexGrow: 1, maxHeight: fontValue(300)}}
-                        data={ActivityMemo}
-                        renderItem={({item, index}) =>
-                        props.callbackfn(item, index)}/>
+                {<View  style={{maxHeight: fontValue(300)}}>
+                    <ScrollView showsVerticalScrollIndicator={false}
+                                nestedScrollEnabled={true}
+                                onScroll={props.onScroll}
+                                scrollEventThrottle={16}
+                                ref={props.ref}
+                                style={{maxHeight: fontValue(300)}}>
+                        {ActivityMemo.map((item, index) =>  props.callbackfn(item, index))}
 
-                </View> : <ScrollView showsVerticalScrollIndicator={false}
-                                      nestedScrollEnabled={true}
-                                      onScroll={props.onScroll}
-                                      scrollEventThrottle={16}
-                                      ref={props.ref}
-                                      style={{maxHeight: fontValue(300)}}>
-                    {ActivityMemo.map((item, index) =>  props.callbackfn(item, index))}
+                    </ScrollView>
 
-                </ScrollView>}
+                </View> }
 
 
 
