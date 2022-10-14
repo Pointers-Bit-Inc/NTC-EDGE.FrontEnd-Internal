@@ -203,7 +203,20 @@ const RenderServiceMiscellaneous = (props) => {
                                                 if (value) props.updateForm("service." + keys, value)
                                             }}/>
                         </View>
-                        : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
+                        : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-18-RCE' && keys?.split?.(".")?.[0] == "business" && keys?.split?.(".")?.[2] == "typeOfEntity" && props.edit) ?
+                            <View style={{paddingBottom: 10}}>
+                                <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
+                                                label="Type of Entity"
+                                                data={[
+                                                    {label: 'Corporation', value: 'Corporation'},
+                                                    {label: 'Single Proprietorship', value: 'Single Proprietorship'},
+                                                    {label: 'Partnership', value: 'Partnership'},
+                                                    {label: 'Others', value: 'Others', hasSpecification: true}
+                                                ]}
+                                                onSelect={({value}) => {
+                                                    if (value) props.updateForm("service." + keys, value)
+                                                }}/>
+                            </View> : (keys?.split?.(".").length >= 3 && formCode === 'ntc1-11' && keys?.split?.(".")?.[0] == "particulars" && keys?.split?.(".")?.[2] == "stationClass" && props.edit) ?
                             <View style={{paddingBottom: 10}}>
                                 <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
                                                 label="Select Class of Station"

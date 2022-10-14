@@ -21,12 +21,13 @@ import {styles} from "@pages/activities/styles";
 import RegionIcon from "@assets/svg/regionIcon";
 import Text from "@atoms/text";
 import CloseIcon from "@assets/svg/close";
-import {isDiff, regionList} from "../utils/ntc";
+import {generatePassword, isDiff, regionList} from "../utils/ntc";
 import {validateEmail, validatePassword, validatePhone, validateText} from "../utils/form-validations";
 import useMemoizedFn from "./useMemoizedFn";
 import listEmpty from "@pages/activities/listEmpty";
 import _ from "lodash"
 import {setRolesSelect} from "../reducers/role/actions";
+import {removeEmpty} from "@pages/activities/script";
 const flatten = require('flat')
 function useConfiguration(props: any) {
 
@@ -261,6 +262,56 @@ function useConfiguration(props: any) {
             Authorization: "Bearer ".concat(sessionToken)
         }
     }
+    const [uploadSignatureLoading, setUploadSignatureLoading] = useState(false)
+    async function onPressSignature(stateName) {
+        setUploadSignatureLoading(true)
+        let picker = await ImagePicker.launchImageLibraryAsync({
+            presentationStyle: 0
+        });
+
+        if (!picker.cancelled) {
+            let uri = picker?.uri;
+            let index = commissionerForm?.findIndex(app => app?.stateName == stateName);
+
+            let split = uri?.split('/');
+            let name = split?.[split?.length - 1];
+            let mimeType = name?.split('.')?.[1] || picker?.type;
+            let _file = {
+                name,
+                mimeType,
+                uri,
+            };
+            let base64 = _file?.uri;
+            let mime = isMobile ? _file?.mimeType : base64?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+            let mimeResult: any = null;
+            if (mime && mime.length) {
+                mimeResult = isMobile ? mime : mime[1];
+            }
+            let _mimeType = isMobile ? mime : mimeResult?.split("/")?.[1];
+            if (index >= 0) {
+                let _userProfileFormElement = commissionerForm[index];
+                if (_userProfileFormElement.hasOwnProperty("tempBlob")) {
+                    _userProfileFormElement.tempBlob = _file?.uri
+                }
+                if (_userProfileFormElement.hasOwnProperty("mime")) {
+                    _userProfileFormElement.mime = mime
+                }
+                if (_userProfileFormElement.hasOwnProperty("file")) {
+                    _userProfileFormElement.file = _file
+                }
+                if (_userProfileFormElement.hasOwnProperty("mimeResult")) {
+                    _userProfileFormElement.mimeResult = mimeResult
+                }
+                if (_userProfileFormElement.hasOwnProperty("_mimeType")) {
+                    _userProfileFormElement._mimeType = _mimeType
+                }
+            }
+            setUploadSignatureLoading(false)
+        } else {
+            setUploadSignatureLoading(false)
+        }
+    }
+
     const region = useSelector((state: RootStateOrAny) => state.configuration.region);
     const fetchConfigurations = () => {
         setLoading(true);
@@ -403,9 +454,157 @@ function useConfiguration(props: any) {
         newForm[stateName] = _.toNumber(value) || value || 0
         dispatch(setFeeFlatten(Object.assign(feeFlatten, newForm)))
     }
+    const cleanForm = () => {
+        let newArr = [...commissionerForm];
+        commissionerForm.map((e, index) => {
+            if (e.hasOwnProperty("type")) {
+                if (e?.type != "select") {
+                    if (newArr[index].hasOwnProperty("value")) {
+                        newArr[index].value = ''
+                    }
+                    if (newArr[index].hasOwnProperty("tempBlob")) {
+                        newArr[index].tempBlob = ''
+                    }
+                }
+            }
 
+            if (newArr[index].hasOwnProperty("error")) {
+                newArr[index].error = false;
+            }
+            if (newArr[index].hasOwnProperty("description")) {
+                newArr[index].description = false;
+            }
+            if (newArr[index].hasOwnProperty("hasValidation")) {
+                newArr[index].hasValidation = false;
+            }
+        });
+        setCommissionerForm(newArr);
+    };
     const [commissionerVisible, setCommissionerVisible] = useState(false)
     const listEmptyComponent = useMemoizedFn(() => listEmpty(!loading, "", fee.length));
+    const onPressCommissioner = async (id?: number, type?: string | number) => {
+        var updatedUser = {password: ""}, subStateName = {};
+        let signatureIndex = commissionerForm?.findIndex(app => app?.stateName == "employeeDetails" && app.subStateName == "signature");
+
+        commissionerForm?.forEach(async (up: any) => {
+            if (!up?.stateName) return
+            if (up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName ) {
+                subStateName[up.subStateName] = up?.value
+            }
+
+            return updatedUser = {
+                ...updatedUser,
+                [up?.stateName]: (up.subStateName && up.stateName != "role") ? {...subStateName} : up?.value
+            };
+        });
+
+
+        setLoading(true);
+        axios[updatedUser?._id ? "patch" : "post"](BASE_URL + (updatedUser?._id ? `/users/` + updatedUser?._id || "" : `/internal/users/`), updatedUser, config).then(async (response) => {
+
+            showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
+
+
+            setLoading(false);
+            let _signature = commissionerForm[signatureIndex]
+            let tempBlob = commissionerForm?.[signatureIndex]?.tempBlob
+
+
+            if (tempBlob) {
+                await fetch(tempBlob)
+                    .then(res => {
+                        return res?.blob()
+                    })
+                    .then(blob => {
+
+                        const fd = new FormData();
+                        const file = isMobile ? {
+                            name: _signature.file?.name,
+                            type: 'application/octet-stream',
+                            uri: _signature.file?.uri,
+                        } : new File([blob], (
+                            _signature.file?.name + "." + _signature._mimeType || _signature.file?.mimeType));
+
+                        fd.append('profilePicture', file, (
+                            _signature.file?.name + "." + _signature._mimeType || _signature.file?.mimeType));
+                        const _id = updatedUser._id ? response?.data?.doc?._id : response?.data?._id
+                        const API_URL = `${BASE_URL}/users/${_id}/upload-employee-signature`;
+
+                        fetch(API_URL, {
+                            method: 'POST', body: fd, headers: {
+                                'Authorization': `Bearer ${user?.sessionToken}`,
+                            }
+                        })
+                            .then(res => {
+
+                                return res?.json()
+                            }).then(res => {
+                            const _id = updatedUser._id ? response?.data?.doc?._id : response?.data?._id
+
+                            let index = newArr?.findIndex(app => {
+
+                                return app?._id == _id
+                            });
+
+
+                            if (_id && index >= 0) {
+                                console.log("update->", newArr[index]["employeeDetails"]?.hasOwnProperty("signature"))
+
+                                newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
+
+                                newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
+
+                                setDocs(newArr)
+                            } else {
+                                var newObj = response.data
+
+                                newObj["employeeDetails"]["signature"] = res?.doc?.signature
+                                setDocs(docs => [newObj, ...docs])
+                            }
+                        })
+                    })
+            }
+
+            cleanForm();
+        }).catch((err) => {
+            setLoading(false);
+            var _err = err;
+            console.log(_err?.response?.data?.message, "_err?.response?.data?.message")
+            if (_err?.response?.data?.message) {
+                showToast(ToastType.Error, _err?.response?.data?.message)
+            }
+            if (err.response.data.error == 'The email address already exists. Please select another email address.') {
+                _err = {
+                    response: {
+                        data: {
+                            errors: {
+                                Email: [err.response.data.error]
+                            }
+                        }
+                    }
+                }
+            }
+            let newArr = [...commissionerForm];
+            commissionerForm.map(e => {
+                for (const error in _err?.response?.data?.errors) {
+                    if (e.stateName?.toLowerCase() == error?.toLowerCase()) {
+                        let index = newArr?.findIndex(app => app?.id == e?.id);
+                        newArr[index]['error'] = true;
+                        newArr[index]['description'] = _err?.response?.data?.errors?.[error].toString();
+                        newArr[index]['hasValidation'] = true;
+                    }
+                }
+            });
+
+            if (_err?.response?.data?.title) {
+                showToast(ToastType.Error, _err?.response?.data?.title)
+            }
+
+            setUserProfileForm(newArr);
+
+
+        });
+    };
     return {
         dimensions,
         value,
@@ -431,7 +630,9 @@ function useConfiguration(props: any) {
         setCommissionerVisible,
         commissionerOriginalForm,
         commissionerForm,
-        onUpdateForm
+        onUpdateForm,
+        onPressSignature,
+        onPressCommissioner
     };
 }
 

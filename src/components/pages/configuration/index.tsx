@@ -46,7 +46,9 @@ export default function ConfigurationPage(props: any) {
         setCommissionerVisible,
         commissionerForm,
         onUpdateForm,
-        commissionerOriginalForm
+        commissionerOriginalForm,
+        onPressSignature,
+        onPressCommissioner
     } = useConfiguration(props);
 
 
@@ -233,7 +235,7 @@ export default function ConfigurationPage(props: any) {
 
 
 
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity onPress={() => onPressSignature( 'signature')}>
                         <View style={styles.uploadSignature}>
                             <View style={{paddingRight: 10}}>
 
@@ -242,7 +244,7 @@ export default function ConfigurationPage(props: any) {
                             <Text style={{fontFamily: Bold}}>Commissioner Signature</Text>
                         </View>
                     </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {}} style={styles.scheduleButton}>
+                        <TouchableOpacity onPress={() => { onPressCommissioner() }} style={styles.scheduleButton}>
 
                             <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Commissioner</Text>
 

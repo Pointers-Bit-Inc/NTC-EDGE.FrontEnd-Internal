@@ -592,7 +592,8 @@ const DataTable = (props) => {
             _mimeType: "",
             id: 20,
             key: 20,
-            style: {height: 200, width: 200, zIndex: 1, borderWidth: 1, borderStyle: "dotted"},
+            containerStyle: {alignItems: "center"},
+            style: { height: 200, width: 200, zIndex: 1, borderWidth: 1, borderStyle: "dotted"},
             type: "image",
             required: true,
             label: 'signature',
@@ -1534,16 +1535,18 @@ const DataTable = (props) => {
                                         }
                                     }}
                                 />
-
-                                <TouchableOpacity onPress={() => onPressSignature("employeeDetails", 'signature')}>
-                                    <View style={styles.uploadSignature}>
-                                        <View style={{paddingRight: 10}}>
-                                            {uploadSignatureLoading ? <ActivityIndicator/> :
-                                                <UploadQrCode color={text.info}/>}
+                                <View style={{alignItems: "center"}}>
+                                    <TouchableOpacity onPress={() => onPressSignature("employeeDetails", 'signature')}>
+                                        <View style={styles.uploadSignature}>
+                                            <View style={{paddingRight: 10}}>
+                                                {uploadSignatureLoading ? <ActivityIndicator/> :
+                                                    <UploadQrCode color={text.info}/>}
+                                            </View>
+                                            <Text style={{fontFamily: Bold}}>Employee Signature</Text>
                                         </View>
-                                        <Text style={{fontFamily: Bold}}>Employee Signature</Text>
-                                    </View>
-                                </TouchableOpacity>
+                                    </TouchableOpacity>
+                                </View>
+
 
 
                             </ScrollView>

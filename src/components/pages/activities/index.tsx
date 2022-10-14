@@ -487,6 +487,8 @@ const ActivitiesPage = (props) => {
     const listEmptyComponent = useMemoizedFn(() => listEmpty(refreshing , searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length));
+    const listEmptyUnassigned = useMemoizedFn(() => listEmpty(refreshing , searchTerm, notPnApplications.length));
+    const listEmptyAssigned = useMemoizedFn(() => listEmpty(refreshing , searchTerm, pnApplications.length));
 
     const renderAllActivities = useCallback(
         () => <FlatList
@@ -534,7 +536,7 @@ const ActivitiesPage = (props) => {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
-            ListEmptyComponent={listEmptyComponent}
+            ListEmptyComponent={listEmptyAssigned}
             data={pnApplications}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={!(refreshing || infiniteLoad )  ? <View/> : bottomLoader}
@@ -562,11 +564,11 @@ const ActivitiesPage = (props) => {
                     onRefresh={onRefresh}
                 />
             }
-            estimatedItemSize={300}
+            //estimatedItemSize={300}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             nestedScrollEnabled={true}
-            ListEmptyComponent={listEmptyComponent}
+            ListEmptyComponent={listEmptyUnassigned}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
 

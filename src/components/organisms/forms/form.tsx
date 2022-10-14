@@ -33,13 +33,15 @@ const FormField=({
         };
         switch(type){
             case 'image':
-                return <Image
-                    {...styleProps}
-                    key={id}
-                    {...otherProps}
-                    source={{uri:element?.tempBlob ||  element?.value }}
-                    resizeMode={"cover"}
-                />
+                return <View style={element.containerStyle}>
+                    <Image
+                        {...styleProps}
+                        key={id}
+                        {...otherProps}
+                        source={{uri:element?.tempBlob ||  element?.value }}
+                        resizeMode={"cover"}
+                    />
+                </View>
             case "text":
                 return <Text key={id} {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
