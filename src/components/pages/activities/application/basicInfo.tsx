@@ -311,12 +311,13 @@ const BasicInfo = (_props: any) => {
                                <View>
                                    <Text style={styles.header}>REMARKS</Text>
                                </View>
-                               <View style={{flex: 1,}}>
+                               {!props.isMore ? <View style={{flex: 1,}}>
                                    <IsMorePress onPress={() => {
                                        isMoreRemark()
+
                                        props.setIsMore((bool) => !bool)
                                    }} loading={loading} more={props.isMore}/>
-                               </View>
+                               </View> : <></>}
 
                            </View>
 
@@ -377,6 +378,7 @@ const BasicInfo = (_props: any) => {
                                      text={collapsedText}/>
                        <IsMorePress onPress={() => {
                            isMoreRemark()
+                           console.log(props.isMore)
                            props.setIsMore((bool) => !bool)
                        }} loading={loading} more={props.isMore}/>
                    </View>
@@ -393,6 +395,7 @@ const BasicInfo = (_props: any) => {
                         <View style={{flex: 1}}>
                             <IsMorePress onPress={() => {
                                 isMoreRemark()
+                                console.log(props.isMore)
                                 props.setIsMore((bool) => !bool)
                             }} loading={loading} more={props.isMore}/>
                         </View>
@@ -480,7 +483,9 @@ const BasicInfo = (_props: any) => {
                         }
                         keyExtractor={(item, index) => index}
                     />
-                    <IsMorePress onPress={() => props.setIsMore((bool) => !bool)} more={props.isMore} loading={loading}/>
+                    <IsMorePress onPress={() => {
+                        props.setIsMore((bool) => !bool)
+                    }} more={props.isMore} loading={loading}/>
                 </View>
                 </ContainerRemarkStyle> : <></>);
     })

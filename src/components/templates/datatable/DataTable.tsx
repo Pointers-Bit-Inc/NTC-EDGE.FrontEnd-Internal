@@ -317,6 +317,8 @@ const DataTable = (props) => {
             label: "Address",
             type: 'text',
             style: style.subtitle,
+            id: 29,
+            key: 29
         },
         {
             stateNameMain: 'address',
@@ -520,11 +522,15 @@ const DataTable = (props) => {
         {
             label: "Employee Details",
             type: 'text',
+            filter: EMPLOYEES,
             style: style.subtitle,
+            id: 28,
+            key: 28
         },
         {
             stateName: 'employeeDetails',
             subStateName: 'region',
+            filter: EMPLOYEES,
             id: 15,
             key: 15,
             required: true,
@@ -542,6 +548,7 @@ const DataTable = (props) => {
             stateName: 'employeeDetails',
             subStateName: 'level',
             id: 16,
+            filter: EMPLOYEES,
             key: 16,
             required: true,
             requiredColor: errorColor,
@@ -558,6 +565,7 @@ const DataTable = (props) => {
             stateName: 'employeeDetails',
             subStateName: 'title',
             id: 17,
+            filter: EMPLOYEES,
             key: 17,
             required: true,
             requiredColor: errorColor,
@@ -574,6 +582,7 @@ const DataTable = (props) => {
             subStateName: 'division',
             id: 18,
             key: 18,
+            filter: EMPLOYEES,
             required: true,
             requiredColor: errorColor,
             label: 'Division',
@@ -589,6 +598,7 @@ const DataTable = (props) => {
             subStateName: 'position',
             id: 19,
             key: 19,
+            filter: EMPLOYEES,
             required: true,
             requiredColor: errorColor,
             label: 'Position',
@@ -604,6 +614,7 @@ const DataTable = (props) => {
             subStateName: 'designation',
             id: 20,
             key: 20,
+            filter: EMPLOYEES,
             required: true,
             requiredColor: errorColor,
             label: 'Designation',
@@ -618,12 +629,13 @@ const DataTable = (props) => {
             stateName: 'employeeDetails',
             subStateName: 'signature',
             mime: "",
+            filter: EMPLOYEES,
             tempBlob: "",
             file: "",
             mimeResult: "",
             _mimeType: "",
-            id: 20,
-            key: 20,
+            id: 21,
+            key: 21,
             containerStyle: {alignItems: "center"},
             style: { height: 200, width: 200, zIndex: 1, borderWidth: 1, borderStyle: "dotted"},
             type: "image",
@@ -640,6 +652,7 @@ const DataTable = (props) => {
 
             stateName: 'profilePicture',
             id: 11,
+            key: 11,
             file: {},
         },
         {
@@ -673,7 +686,7 @@ const DataTable = (props) => {
 
     }, [props.filter])
 
-    const [userProfileForm, setUserProfileForm] = useState(originalForm);
+    const [userProfileForm, setUserProfileForm] = useState(originalForm.filter(u => u.hasOwnProperty("filter") ? u.filter == props.name  : true));
     const citiesIndexMemo = useMemo(()=>{
         return userProfileForm.findIndex(u => u.subStateName == "city" && u.stateNameMain == "address" )
     }, [])
@@ -1582,7 +1595,8 @@ const DataTable = (props) => {
                                         }
                                     }}
                                 />
-                                <View style={{alignItems: "center"}}>
+
+                                {props.name == EMPLOYEES ? <View style={{alignItems: "center"}}>
                                     <TouchableOpacity onPress={() => onPressSignature("employeeDetails", 'signature')}>
                                         <View style={styles.uploadSignature}>
                                             <View style={{paddingRight: 10}}>
@@ -1592,7 +1606,7 @@ const DataTable = (props) => {
                                             <Text style={{fontFamily: Bold}}>Employee Signature</Text>
                                         </View>
                                     </TouchableOpacity>
-                                </View>
+                                </View> : <></>}
 
 
 

@@ -12,6 +12,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 import DateField from "@pages/activities/application/datefield";
 import moment from "moment";
 import {Regular500} from "@styles/font";
+import {uniqueId} from "lodash";
 const FormField=({
                      color,
                      formElements,
@@ -26,7 +27,7 @@ const FormField=({
         const {type,pickerData,...otherProps}=element;
         const buttonElement=()=>{
 
-            return <Button onPress={()=>onSubmit(id,type)} key={id}   {...styleProps} {...otherProps}>
+            return <Button onPress={()=>onSubmit(id,type)}    {...styleProps} {...otherProps}>
                 <Text fontSize={16} color={'white'}>
                     {otherProps.label}
                 </Text>
@@ -37,16 +38,16 @@ const FormField=({
                 return <View style={element.containerStyle}>
                     <Image
                         {...styleProps}
-                        key={id}
+
                         {...otherProps}
                         source={{uri:element?.tempBlob ||  element?.value }}
                         resizeMode={"cover"}
                     />
                 </View>
             case "text":
-                return <Text key={id} {...styleProps} {...otherProps} >{otherProps.label}</Text>;
+                return <Text  {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
-                return !element.hidden ? <InputField key={id}  {...styleProps} {...otherProps}
+                return !element.hidden ? <InputField   {...styleProps} {...otherProps}
                                    onEndEditing={(e:any)=>{
                                        onChange(id,e.nativeEvent.text,'input')
                                    }
@@ -73,7 +74,7 @@ const FormField=({
                 return <View style={{paddingBottom: 22}}>
                     <CustomDropdown
                         required={element?.required}
-                        key={id}
+
                                     value={element?.value}
                                     label={element?.label || "Select Item"}
                                     data={ element.data }
@@ -102,7 +103,7 @@ const FormField=({
                                         onChange(id,e.nativeEvent.text,'password')
                                     }
                                     }
-                                    key={id}
+
                                     onChangeText={(text:string)=>onChange(id,text,'password')}
                                     onSubmitEditing={(event:any)=>onChange(id,event.nativeEvent.text,'password')}/> : <></>;
             case "date":
@@ -114,6 +115,7 @@ const FormField=({
                         </View>
 
                         <DateField label={"Date:"}
+
                                    edit={true}
                                    updateForm={(stateName, value) =>  onChange(id, value )}
                                    stateName={"schedule.dateStart"}
@@ -127,9 +129,9 @@ const FormField=({
                     <View style={radioButton.typeContainer}>
                         <Text color={text.default} size={14}>Gender</Text>
                         {
-                            pickerData.map((item:any)=>(
+                            pickerData.map((item:any, index)=>(
                                 <TouchableOpacity
-                                    key={item.value}
+                                    key={index}
                                     onPress={()=>onChange(id,item.value)}
                                 >
                                     <View style={radioButton.buttonContainer}>
@@ -159,7 +161,7 @@ const FormField=({
                     Icon={()=>{
                         return <Ionicons name="chevron-down-outline" size={24} color="gray"/>;
                     }}
-                    key={id}
+
                     label={otherProps.label}
                     placeholder={{
                         label:otherProps.label,
@@ -191,22 +193,19 @@ const FormField=({
             {formElements.map((element:any,key:number)=>{
 
                 return element.type!='submit'&&element.type?(
-                    <Fragment key={element.id + key}>
                         <View onLayout={(event)=>{
                             const layout=event.nativeEvent.layout;
 
                             setLayoutRef([...layoutRef,{layout,id:element.id}])
 
-                        }} key={element.id}>
+                        }}>
                             {renderElements(
                                 element.id,
                                 element,
                                 // inputColor,
-                                otherProps
+                                otherProps,
                             )}
                         </View>
-                    </Fragment>
-
                 ) : null;
             })}
         </>

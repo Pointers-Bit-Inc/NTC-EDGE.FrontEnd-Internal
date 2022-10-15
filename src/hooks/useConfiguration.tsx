@@ -28,6 +28,7 @@ import listEmpty from "@pages/activities/listEmpty";
 import _ from "lodash"
 import {setRolesSelect} from "../reducers/role/actions";
 import {removeEmpty} from "@pages/activities/script";
+import useSafeState from "./useSafeState";
 const flatten = require('flat')
 function useConfiguration(props: any) {
 
@@ -111,9 +112,12 @@ function useConfiguration(props: any) {
             type: '',
         },
     ]);
-    const commissionerOriginalForm = [
+    const [commissionerOriginalForm, setCommissionerOriginalForm] = useSafeState([
+
         {
-            stateName: 'firstName',
+            stateName: 'configuration',
+            stateNameMain: 'commissioner',
+            subStateName: 'firstName',
             id: 1,
             key: 1,
             required: true,
@@ -126,7 +130,9 @@ function useConfiguration(props: any) {
             hasValidation: true
         },
         {
-            stateName: 'middleName',
+            stateName: 'configuration',
+            stateNameMain: 'commissioner',
+            subStateName: 'middleName',
             id: 2,
             key: 2,
             required: true,
@@ -139,7 +145,9 @@ function useConfiguration(props: any) {
             hasValidation: true
         },
         {
-            stateName: 'lastName',
+            stateName: 'configuration',
+            stateNameMain: 'commissioner',
+            subStateName: 'lastName',
             id: 3,
             key: 3,
             required: true,
@@ -152,7 +160,9 @@ function useConfiguration(props: any) {
             hasValidation: true
         },
         {
-            stateName: 'email',
+            stateName: 'configuration',
+            stateNameMain: 'commissioner',
+            subStateName: 'email',
             id: 4,
             key: 4,
             required: true,
@@ -165,7 +175,9 @@ function useConfiguration(props: any) {
             hasValidation: true
         },
         {
-            stateName: 'suffix',
+            stateName: 'configuration',
+            stateNameMain: 'commissioner',
+            subStateName: 'suffix',
             id: 5,
             key: 5,
             required: true,
@@ -178,14 +190,17 @@ function useConfiguration(props: any) {
             hasValidation: true
         },
         {
-            stateName: 'signature',
+            stateName: 'configuration',
+            stateNameMain: 'commissioner',
+            subStateName: 'signature',
             mime: "",
             tempBlob: "",
             file: "",
             mimeResult: "",
             _mimeType: "",
-            id: 20,
-            key: 20,
+            id: 6,
+            key: 6,
+            containerStyle: {alignItems: "center", },
             style: {height: 200, width: 200, zIndex: 1, borderWidth: 1, borderStyle: "dotted"},
             type: "image",
             required: true,
@@ -196,7 +211,7 @@ function useConfiguration(props: any) {
             description: false,
             hasValidation: true
         },
-    ];
+    ]);
     const [commissionerForm, setCommissionerForm ] = useState(commissionerOriginalForm)
     async function onPress(position) {
         let picker = await ImagePicker.launchImageLibraryAsync({
@@ -271,7 +286,7 @@ function useConfiguration(props: any) {
 
         if (!picker.cancelled) {
             let uri = picker?.uri;
-            let index = commissionerForm?.findIndex(app => app?.stateName == stateName);
+            let index = commissionerForm?.findIndex(app => app?.subStateName == stateName);
 
             let split = uri?.split('/');
             let name = split?.[split?.length - 1];
@@ -324,14 +339,26 @@ function useConfiguration(props: any) {
         })
     }
     const fetchCommissioner = () => {
-        console.log("commissioner")
         setLoading(true);
         axios.get(BASE_URL + "/regions/commissioner", config).then((response) => {
             dispatch(setCommissioner(response.data))
+            var _commissionerForm = [...commissionerForm]
+            _commissionerForm.map((e, index) => {
+
+                if (e.hasOwnProperty("stateNameMain") &&
+                    e.hasOwnProperty("stateName") &&
+                    e.hasOwnProperty("subStateName")) {
+                   e.value = response.data[e.stateName][e.stateNameMain][e.subStateName]
+                }
+                return e
+            });
+           setCommissionerOriginalForm(JSON.parse(JSON.stringify(_commissionerForm)))
+            setCommissionerForm(_commissionerForm)
+
             setLoading(false);
         }).catch((response) => {
 
-            console.log(response.response)
+            console.log(response)
         })
     }
     const regionsMemo = useMemo(() => {
@@ -409,6 +436,7 @@ function useConfiguration(props: any) {
         newArr[index]['value'] = text;
         if (typeof text == "string") {
             newArr[index]['error'] = !validateText(text);
+            newArr[index]['hasValidation'] = !validateText(text);
         }
 
         setCommissionerForm(newArr)
@@ -483,89 +511,81 @@ function useConfiguration(props: any) {
     const [commissionerVisible, setCommissionerVisible] = useState(false)
     const listEmptyComponent = useMemoizedFn(() => listEmpty(!loading, "", fee.length));
     const onPressCommissioner = async (id?: number, type?: string | number) => {
-        var updatedUser = {password: ""}, subStateName = {};
-        let signatureIndex = commissionerForm?.findIndex(app => app?.stateName == "employeeDetails" && app.subStateName == "signature");
-
-        commissionerForm?.forEach(async (up: any) => {
+        var updatedUser = {...commissioner, password: ""}, subStateName = {}, prevSubStateName = null;;
+        updatedUser._id = id
+        let signatureIndex = commissionerForm?.findIndex(app => app?.subStateName == "signature");
+        commissionerForm?.forEach(async (up) => {
             if (!up?.stateName) return
-            if (up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName ) {
+            if (!up.hasOwnProperty("stateNameMain") && up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName ) {
+                if(up.stateName != prevSubStateName ){
+                    prevSubStateName = up.stateName
+                    subStateName = {}
+                }
                 subStateName[up.subStateName] = up?.value
+            }else if(up.stateNameMain){
+                if(prevSubStateName != up.stateNameMain){
+                    prevSubStateName = up.stateNameMain
+                    subStateName = {}
+                }
+                subStateName[up.stateNameMain] = {
+                    ...subStateName[up.stateNameMain],
+                    [up.subStateName]: up?.value
+                }
             }
-
             return updatedUser = {
                 ...updatedUser,
-                [up?.stateName]: (up.subStateName && up.stateName != "role") ? {...subStateName} : up?.value
+                [up?.stateName]: ((up.stateNameMain || up.subStateName) && up.stateName != "role") ? {...subStateName} : up?.value
             };
         });
 
-
         setLoading(true);
-        axios[updatedUser?._id ? "patch" : "post"](BASE_URL + (updatedUser?._id ? `/users/` + updatedUser?._id || "" : `/internal/users/`), updatedUser, config).then(async (response) => {
 
+
+
+        let _signature = commissionerForm[signatureIndex]
+        let tempBlob = commissionerForm?.[signatureIndex]?.tempBlob
+
+
+        if (tempBlob) {
+            await fetch(tempBlob)
+                .then(res => {
+                    return res?.blob()
+                })
+                .then(blob => {
+                    const fd = new FormData();
+                    const file = isMobile ? {
+                        name: _signature.file?.name,
+                        type: 'application/octet-stream',
+                        uri: _signature.file?.uri,
+                    } : new File([blob], (
+                        _signature.file?.name + "." + _signature._mimeType || _signature.file?.mimeType));
+
+                    fd.append('profilePicture', file, (
+                        _signature.file?.name + "." + _signature._mimeType || _signature.file?.mimeType));
+
+                    const API_URL = `${BASE_URL}/regions/${id}/commissioner/upload-signature`;
+
+                    fetch(API_URL, {
+                        method: 'POST', body: fd, headers: {
+                            'Authorization': `Bearer ${sessionToken}`,
+                        }
+                    })
+                        .then(res => {
+
+                            return res?.json()
+                        }).then(res => {
+                        if(commissionerForm[signatureIndex].hasOwnProperty("value")){
+                            commissionerForm[signatureIndex]["value"] =  res?.doc?.signature
+                        }
+                    })
+                })
+        }
+
+
+
+        axios[ "patch"](BASE_URL + (`/regions/` + updatedUser?._id ), updatedUser, config).then(async (response) => {
             showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
-
-
             setLoading(false);
-            let _signature = commissionerForm[signatureIndex]
-            let tempBlob = commissionerForm?.[signatureIndex]?.tempBlob
-
-
-            if (tempBlob) {
-                await fetch(tempBlob)
-                    .then(res => {
-                        return res?.blob()
-                    })
-                    .then(blob => {
-
-                        const fd = new FormData();
-                        const file = isMobile ? {
-                            name: _signature.file?.name,
-                            type: 'application/octet-stream',
-                            uri: _signature.file?.uri,
-                        } : new File([blob], (
-                            _signature.file?.name + "." + _signature._mimeType || _signature.file?.mimeType));
-
-                        fd.append('profilePicture', file, (
-                            _signature.file?.name + "." + _signature._mimeType || _signature.file?.mimeType));
-                        const _id = updatedUser._id ? response?.data?.doc?._id : response?.data?._id
-                        const API_URL = `${BASE_URL}/users/${_id}/upload-employee-signature`;
-
-                        fetch(API_URL, {
-                            method: 'POST', body: fd, headers: {
-                                'Authorization': `Bearer ${user?.sessionToken}`,
-                            }
-                        })
-                            .then(res => {
-
-                                return res?.json()
-                            }).then(res => {
-                            const _id = updatedUser._id ? response?.data?.doc?._id : response?.data?._id
-
-                            let index = newArr?.findIndex(app => {
-
-                                return app?._id == _id
-                            });
-
-
-                            if (_id && index >= 0) {
-                                console.log("update->", newArr[index]["employeeDetails"]?.hasOwnProperty("signature"))
-
-                                newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
-
-                                newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
-
-                                setDocs(newArr)
-                            } else {
-                                var newObj = response.data
-
-                                newObj["employeeDetails"]["signature"] = res?.doc?.signature
-                                setDocs(docs => [newObj, ...docs])
-                            }
-                        })
-                    })
-            }
-
-            cleanForm();
         }).catch((err) => {
             setLoading(false);
             var _err = err;
@@ -587,7 +607,10 @@ function useConfiguration(props: any) {
             let newArr = [...commissionerForm];
             commissionerForm.map(e => {
                 for (const error in _err?.response?.data?.errors) {
-                    if (e.stateName?.toLowerCase() == error?.toLowerCase()) {
+
+                    if (e.stateName?.toLowerCase() == error?.toLowerCase() ||
+                        `${e.stateName?.toLowerCase()}.${e.subStateName?.toLowerCase()}` == error?.toLowerCase() ||
+                        `${e.stateName?.toLowerCase()}.${e.stateNameMain?.toLowerCase()}.${e.subStateName?.toLowerCase()}` == error?.toLowerCase()) {
                         let index = newArr?.findIndex(app => app?.id == e?.id);
                         newArr[index]['error'] = true;
                         newArr[index]['description'] = _err?.response?.data?.errors?.[error].toString();
@@ -600,11 +623,13 @@ function useConfiguration(props: any) {
                 showToast(ToastType.Error, _err?.response?.data?.title)
             }
 
-            setUserProfileForm(newArr);
 
 
         });
     };
+    const commissionUpdateValid = useMemo(() => {
+        return isDiff(_.map(commissionerForm, 'value'), _.map(commissionerOriginalForm, 'value'));
+    }, [commissionerForm, commissionerOriginalForm])
     return {
         dimensions,
         value,
@@ -632,7 +657,9 @@ function useConfiguration(props: any) {
         commissionerForm,
         onUpdateForm,
         onPressSignature,
-        onPressCommissioner
+        onPressCommissioner,
+        updateValid,
+        commissionUpdateValid
     };
 }
 

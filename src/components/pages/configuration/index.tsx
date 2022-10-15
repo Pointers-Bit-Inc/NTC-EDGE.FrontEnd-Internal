@@ -9,7 +9,7 @@ import LeftSideWeb from "@atoms/left-side-web";
 import Header from "@molecules/header";
 import SearchIcon from "@assets/svg/search";
 import {UploadIcon} from "@atoms/icon";
-import {defaultColor, text} from "@styles/color";
+import {defaultColor, disabledColor, successColor, text} from "@styles/color";
 import lodash from "lodash";
 import RenderFeeConfiguration from "@pages/configuration/renderFeeConfiguration";
 import Text from "@atoms/text"
@@ -48,7 +48,8 @@ export default function ConfigurationPage(props: any) {
         onUpdateForm,
         commissionerOriginalForm,
         onPressSignature,
-        onPressCommissioner
+        onPressCommissioner,
+        commissionUpdateValid
     } = useConfiguration(props);
 
 
@@ -148,6 +149,7 @@ export default function ConfigurationPage(props: any) {
 
                 </View>
             </LeftSideWeb>
+
             {
                 !(
                     (
@@ -225,26 +227,31 @@ export default function ConfigurationPage(props: any) {
                             <Text>Close</Text>
                         </TouchableOpacity>
                     </Header>
-                    <View style={{flex: 1}}>
+                    <ScrollView style={{padding: 15}}  >
                         <FormField
                             formElements={commissionerForm}
                             onChange={onUpdateForm}
                             onSubmit={onPress}
 
                         />
+                        <View style={{alignItems: "center"}}>
+                            <TouchableOpacity onPress={() => onPressSignature( 'signature')}>
+                                <View style={styles.uploadSignature}>
+                                    <View style={{paddingRight: 10}}>
 
-
-
-                    <TouchableOpacity onPress={() => onPressSignature( 'signature')}>
-                        <View style={styles.uploadSignature}>
-                            <View style={{paddingRight: 10}}>
-
-                                    <UploadQrCode color={text.info}/>
-                            </View>
-                            <Text style={{fontFamily: Bold}}>Commissioner Signature</Text>
+                                        <UploadQrCode color={text.info}/>
+                                    </View>
+                                    <Text style={{fontFamily: Bold}}>Commissioner Signature</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                    </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { onPressCommissioner() }} style={styles.scheduleButton}>
+
+
+
+                    </ScrollView>
+                    <View style={{paddingVertical: 15}}>
+
+                        <TouchableOpacity disabled={!commissionUpdateValid}  onPress={() => { onPressCommissioner(commissioner.id) }} style={[styles.scheduleButton, {alignItems: "center", backgroundColor: commissionUpdateValid ? successColor : disabledColor}]}>
 
                             <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Commissioner</Text>
 
