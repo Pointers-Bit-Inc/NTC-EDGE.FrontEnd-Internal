@@ -301,7 +301,7 @@ const BasicInfo = (_props: any) => {
     })
     const [isRemarkMore, setIsRemarkMore] = useState(false)
     const RemarkFn = useMemoizedFn(() => {
-        return true || (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
+        return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
 
                <ContainerRemarkStyle>
                    <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
