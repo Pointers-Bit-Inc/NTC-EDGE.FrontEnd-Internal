@@ -135,7 +135,7 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
     </View>;
 }
 
-function IsMorePress(props: { loading: any, onPress: () => void, more: boolean }) {
+function IsMorePress(props: { loading: any, onPress: () => void, more: boolean, isRemark: boolean }) {
 
     return <TouchableOpacity onPress={props.onPress}>
         <View style={{flex: 1, justifyContent: "flex-end", flexDirection: "row", alignItems: "center"}}>
@@ -145,7 +145,7 @@ function IsMorePress(props: { loading: any, onPress: () => void, more: boolean }
                 fontSize: fontValue(12),
                 color: "#2863D6",
                 paddingRight: fontValue(10)
-            }}>{props.more ? "See less" : "See More"}</Text>
+            }}>{props.more && !props.isRemark ? "See less" : "See More"}</Text>
             {props.more ? <ChevronUp color={"#2863D6"}/> : <ChevronDown color={"#2863D6"}/>}</>}
         </View>
     </TouchableOpacity>;
@@ -299,9 +299,9 @@ const BasicInfo = (_props: any) => {
             </View>
         </View>}</>
     })
-
+    const [isRemarkMore, setIsRemarkMore] = useState(false)
     const RemarkFn = useMemoizedFn(() => {
-        return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
+        return true || (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
 
                <ContainerRemarkStyle>
                    <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
@@ -311,10 +311,10 @@ const BasicInfo = (_props: any) => {
                                <View>
                                    <Text style={styles.header}>REMARKS</Text>
                                </View>
-                               {!props.isMore ? <View style={{flex: 1,}}>
-                                   <IsMorePress onPress={() => {
+                               {isRemarkMore ? <View style={{flex: 1,}}>
+                                   <IsMorePress isRemark={isRemarkMore} onPress={() => {
                                        isMoreRemark()
-
+                                       setIsRemarkMore(bool => !bool)
                                        props.setIsMore((bool) => !bool)
                                    }} loading={loading} more={props.isMore}/>
                                </View> : <></>}
@@ -322,7 +322,7 @@ const BasicInfo = (_props: any) => {
                            </View>
 
                        </View>
-                       {props.isMore ? <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                       {props.isMore && !isRemarkMore ? <><View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
                            <View style={{flex: 1, flexDirection: "row", alignItems: "center",}}>
                                <View style={{paddingRight: 10}}>
                                    <Text style={[{
@@ -370,17 +370,19 @@ const BasicInfo = (_props: any) => {
                                }}>{collapsedTime}</Text>
                            </View>
 
-                       </View> : <></>}
+                       </View>
+                           <CollapseText expandStyle={{color: "#565961"}}
+                                         textContainerStyle={{}}
+                                         textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
+                                         text={collapsedText}/>
+                           <IsMorePress isRemark={isRemarkMore} onPress={() => {
+                               isMoreRemark()
+                               setIsRemarkMore(bool => !bool)
+                               props.setIsMore((bool) => !bool)
+                           }} loading={loading} more={props.isMore}/>
+                       </> : <></>}
 
-                       <CollapseText expandStyle={{color: "#565961"}}
-                                     textContainerStyle={{}}
-                                     textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
-                                     text={collapsedText}/>
-                       <IsMorePress onPress={() => {
-                           isMoreRemark()
-                           console.log(props.isMore)
-                           props.setIsMore((bool) => !bool)
-                       }} loading={loading} more={props.isMore}/>
+
                    </View>
                </ContainerRemarkStyle>
 
@@ -393,15 +395,15 @@ const BasicInfo = (_props: any) => {
                             <Text style={styles.header}>REMARKS</Text>
                         </View>
                         <View style={{flex: 1}}>
-                            <IsMorePress onPress={() => {
+                            <IsMorePress isRemark={isRemarkMore} onPress={() => {
                                 isMoreRemark()
-                                console.log(props.isMore)
+                                setIsRemarkMore(bool => !bool)
                                 props.setIsMore((bool) => !bool)
                             }} loading={loading} more={props.isMore}/>
                         </View>
                     </View>
 
-                    <FlatList
+                    {!isRemarkMore  ?  <FlatList
                         data={historyArrayMemo}
                         renderItem={({item, index}) => {
 
@@ -478,14 +480,17 @@ const BasicInfo = (_props: any) => {
                                                   fontWeight: "500"
                                               }]}
                                               text={item?.remarks}/>
+                                <IsMorePress isRemark={isRemarkMore} onPress={() => {
+                                    isMoreRemark()
+                                    setIsRemarkMore(bool => !bool)
+                                    props.setIsMore((bool) => !bool)
+                                }} more={props.isMore} loading={loading}/>
                             </>
                         }
                         }
                         keyExtractor={(item, index) => index}
-                    />
-                    <IsMorePress onPress={() => {
-                        props.setIsMore((bool) => !bool)
-                    }} more={props.isMore} loading={loading}/>
+                    /> : <></>}
+
                 </View>
                 </ContainerRemarkStyle> : <></>);
     })

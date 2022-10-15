@@ -134,7 +134,12 @@ export default function ConfigurationPage(props: any) {
                         </DropdownCard> : <></>}
 
                         {!lodash.isEmpty(commissioner) ? <DropdownCard onPress={()=>{
-                            setCommissionerVisible(true)
+                            if (isMobile) {
+                                props.navigation.push('CommissionerConfigurationScreen')
+                            } else {
+                                setCommissionerVisible(true)
+                            }
+
                         }} isChevronVisible={false}
                             style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>
                             <Text style={{fontWeight: 'bold'}} color={"#113196"}

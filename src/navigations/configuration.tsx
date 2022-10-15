@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ConfigurationPage from "@pages/configuration/index";
-import CreateRoleAndPermissionScreen from "@pages/role-and-permission/create";
-import EditRoleAndPermissionScreen from "@pages/role-and-permission/edit";
 import CreateConfigurationScreen from "@pages/configuration/create";
+import CommissionerConfigurationScreen from "@pages/configuration/commissioner";
 import EditConfigurationScreen from "@pages/configuration/edit";
 type RootStackParamList = {
     ConfigurationScreen: undefined;
     CreateConfigurationScreen: undefined;
     EditConfigurationScreen: undefined;
+    CommissionerConfigurationScreen: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -24,6 +24,7 @@ const ConfigurationNavigator = ({ navigation, route }) => {
         >
             <Stack.Screen name={"ConfigurationScreen"}  component={ConfigurationPage} />
             <Stack.Screen name={"CreateConfigurationScreen"}  component={CreateConfigurationScreen} />
+            <Stack.Screen name={"CommissionerConfigurationScreen"}  component={EditConfigurationScreen} />
             <Stack.Screen name={"EditConfigurationScreen"}  component={EditConfigurationScreen} />
         </Stack.Navigator>
     );
