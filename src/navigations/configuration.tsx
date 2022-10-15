@@ -24,7 +24,7 @@ const ConfigurationNavigator = ({ navigation, route }) => {
         >
             <Stack.Screen name={"ConfigurationScreen"}  component={ConfigurationPage} />
             <Stack.Screen name={"CreateConfigurationScreen"}  component={CreateConfigurationScreen} />
-            <Stack.Screen name={"CommissionerConfigurationScreen"}  component={EditConfigurationScreen} />
+            <Stack.Screen name={"CommissionerConfigurationScreen"}  component={CommissionerConfigurationScreen} />
             <Stack.Screen name={"EditConfigurationScreen"}  component={EditConfigurationScreen} />
         </Stack.Navigator>
     );

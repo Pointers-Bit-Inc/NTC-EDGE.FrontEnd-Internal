@@ -10,6 +10,7 @@ import FormField from "@organisms/forms/form";
 import UploadQrCode from "@assets/svg/uploadQrCode";
 import {disabledColor, successColor, text} from "@styles/color";
 import useConfiguration from "../../../hooks/useConfiguration";
+import {isMobile} from "@pages/activities/isMobile";
 
 const CommissionerConfigurationScreen = (props) => {
     const {
@@ -25,6 +26,7 @@ const CommissionerConfigurationScreen = (props) => {
    return  <View style={[{flex: 1, backgroundColor: "#fff",}]}>
         <Header size={24} title={"Commissioner"}>
             <TouchableOpacity onPress={()=>{
+                if (props.navigation.canGoBack() && isMobile) props.navigation.goBack()
                 setCommissionerVisible(false)
             }}>
                 <Text>Close</Text>
