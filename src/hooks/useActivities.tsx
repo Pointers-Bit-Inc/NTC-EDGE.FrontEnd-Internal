@@ -68,6 +68,9 @@ function useActivities(props) {
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(0);
+    const [pinnedTotal, setPinnedTotal] = useState(0);
+    const [pinnedPage, setPinnedPage] = useState(0);
+    const [pinnedSize, setPinnedSize] = useState(0);
     const {user, cashier, director, evaluator, checker, accountant} = useUserRole();
     const {destroy} = useOneSignal(user);
     const [updateModal, setUpdateModal] = useState(false);
@@ -239,6 +242,10 @@ function useActivities(props) {
     };
     let count = 0;
 
+
+
+
+
     function fnApplications(endpoint) {
         let isCurrent = true;
         setInfiniteLoad(true)
@@ -255,6 +262,9 @@ function useActivities(props) {
                 if (count == 0) {
                     count = 1;
                     if (count) {
+                        pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
+                        pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
+                        pinned?.data?.page ? setPinnedPage(pinned?.data?.page) : setPinnedPage(0);
 
                         notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                         notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
@@ -392,15 +402,18 @@ function useActivities(props) {
         //Save the cancel token for the current request
         cancelToken = axios.CancelToken.source()
         let _page: string;
+        let _pinnedPage: string;
         setInfiniteLoad(true);
        // setRefreshing(true)
         if ((
             page * size) < total || page_) {
             _page = "?page=" + (
                 (page_ || page) + 1);
+            _pinnedPage = "?page=" + (
+                (pinnedPage) + 1);
             //013021
             var endpoint = [{
-                url: BASE_URL + `/users/${user._id}/assigned-applications${_page}`,
+                url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
                 pinned: 1
             }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
@@ -413,14 +426,18 @@ function useActivities(props) {
 
 
                     if (pinned?.data?.message) Alert.alert(pinned.data.message);
-                    pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
-                    pinned?.data?.total ? setTotal(pinned?.data?.total) : setTotal(0);
-                    pinned?.data?.page ? setPage(pinned?.data?.page) : setPage(0);
+                    pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
+                    pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
+                    if(pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size){
+                        setPinnedPage(pinnedPage + 1 )
+                    }else{
+                        setPinnedPage(0)
+                    };
 
                     if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                     notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size ? setPage(notPinned?.data?.page) : setPage(0);
+                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size ? setPage(page + 1) : setPage(0);
 
                     dispatch(handleInfiniteLoad({
                         data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
@@ -451,8 +468,10 @@ function useActivities(props) {
             setInfiniteLoad(true)
             _page = "?page=" + (
                 page + 1);
+            _pinnedPage = "?page=" + (
+                (pinnedPage) + 1);
             var endpoint = [{
-                url: BASE_URL + `/users/${user._id}/assigned-applications${_page}`,
+                url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
                 pinned: 1
             }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
@@ -464,10 +483,12 @@ function useActivities(props) {
 
 
 
+
                     if (pinned?.data?.message) Alert.alert(pinned.data.message);
-                    pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
-                    pinned?.data?.total ? setTotal(pinned?.data?.total) : setTotal(0);
-                    pinned?.data?.page ? setPage(pinned?.data?.page) : setPage(0);
+                    pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
+                    pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
+                    pinned?.data?.page ? setPinnedPage(pinned?.data?.page) : setPinnedPage(0);
+                    pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size ? setPinnedPage(pinnedPage + 1 ) : setPinnedPage(0);
 
                     if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
