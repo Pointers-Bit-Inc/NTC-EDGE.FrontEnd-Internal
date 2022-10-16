@@ -673,6 +673,8 @@ const DataTable = (props) => {
         },
     ];
 
+
+    const [userProfileForm, setUserProfileForm] = useState(originalForm.filter(u => u.hasOwnProperty("filter") ? u.filter == props.name  : true));
     useEffect(() => {
         let _userProfileForm = [...userProfileForm]
         let roleId = 6
@@ -681,12 +683,11 @@ const DataTable = (props) => {
         if (_userProfileForm[index].hasOwnProperty('data')) {
             _userProfileForm[index].data = props.filter
         }
-
+        console.log( props.filter)
         setUserProfileForm(_userProfileForm)
 
     }, [props.filter])
 
-    const [userProfileForm, setUserProfileForm] = useState(originalForm.filter(u => u.hasOwnProperty("filter") ? u.filter == props.name  : true));
     const citiesIndexMemo = useMemo(()=>{
         return userProfileForm.findIndex(u => u.subStateName == "city" && u.stateNameMain == "address" )
     }, [])

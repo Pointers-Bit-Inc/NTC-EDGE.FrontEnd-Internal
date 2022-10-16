@@ -73,7 +73,7 @@ const [filter, setFilter] = useState(rolesMemo)
 
                             dispatch(setRole([]))
                             if (isMobile) {
-                                props.navigation.push('CreateRoleAndPermissionScreen')
+                                props?.navigation?.push('CreateRoleAndPermissionScreen')
                             } else {
                                 setCreateRole(true)
                             }
@@ -82,9 +82,10 @@ const [filter, setFilter] = useState(rolesMemo)
 
                         }}>
                             <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                                <View style={{marginHorizontal: "5"}}>
-                                    <AddParticipantsIcon />
-                                </View>  <Text style={{fontFamily: Bold, fontSize: fontValue(12)}}>Add a New Role</Text>
+                                <View style={{marginHorizontal: 5}}>
+                                    <AddParticipantsIcon/>
+                                </View>
+                                <Text style={{fontFamily: Bold, fontSize: fontValue(12)}}>Add a New Role</Text>
                             </View>
 
 
@@ -104,7 +105,7 @@ const [filter, setFilter] = useState(rolesMemo)
                                     setValue(text)
                                     text.length == 0 ?  setFilter(rolesMemo) : setFilter(rolesMemo.filter((item) => {
                                        // return fuzzysearch(text, item.name)
-                                        return item.name.toLowerCase().indexOf(text.toLowerCase())>-1;
+                                        return item?.name?.toLowerCase()?.indexOf?.(text?.toLowerCase())>-1;
                                     }))
                                 }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
                                 <View style={styles.searchIcon}>

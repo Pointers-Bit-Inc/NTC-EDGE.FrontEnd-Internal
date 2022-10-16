@@ -75,6 +75,7 @@ interface Props {
         useEffect(()=>{
             let timer1 = setTimeout(() => {
                 DropdownButton?.current?.measure((_fx:number,_fy:number,_w:number,h:number,_px:number,py:number)=>{
+
                     setDropdownWidth(_w);
                     setDropdownLeft(_px);
                     setDropdownTop((h + py) - (Platform.OS === 'ios' ? 0 : (StatusBar?.currentHeight || 0)));

@@ -81,9 +81,10 @@ export default function SchedulePage(props: any) {
 
                         }}>
                             <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                                <View style={{paddingHorizontal: "5"}}>
+                                <View style={{paddingHorizontal: 5}}>
                                     <Plus size={12}/>
-                                </View> <Text style={{fontFamily: Bold,fontSize: fontValue(12)}}>Add a New Schedule</Text>
+                                </View>
+                                <Text style={{fontFamily: Bold,fontSize: fontValue(12)}}>Add a New Schedule</Text>
                             </View>
 
                         </TouchableOpacity>
