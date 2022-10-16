@@ -314,7 +314,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
                                         {tabIcon(route.title, focused)}
                                     </View>
                                 }
-                                <Text style={{
+                                <Text numberOfLines={Platform.OS == "windows" ? 1 : undefined} style={{
                                     color: focused ? infoColor : "#606A80",
                                     fontFamily: Regular, // focused ? Bold : Regular
                                     fontSize: fontValue(14)
