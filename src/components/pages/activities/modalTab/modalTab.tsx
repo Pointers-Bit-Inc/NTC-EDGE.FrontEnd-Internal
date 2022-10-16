@@ -118,7 +118,7 @@ const ModalTab = props => {
 
     const routes = useMemo(() => {
         return tabs.filter((tab, _index) => {
-            return !(service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
+            return !(service?.applicationType?.isDirectProcess == true && service?.serviceCode == "service-22" && tab?.id === 4)
         }).map((__tab, __index) => {
             if (__tab.title == 'SOA & Payment') {
                 setPaymentIndex(__index)
