@@ -243,15 +243,23 @@ function useActivities(props) {
     let count = 0;
 
 
-
+    const cancelToken = useRef<CancelTokenSource>()
 
 
     function fnApplications(endpoint) {
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         let isCurrent = true;
         setInfiniteLoad(true)
         setRefreshing(true)
         dispatch(setApplications({data: [], user: user}))
         axios.all(endpoint.map((ep) => axios.get(ep.url, {
+            ...{ cancelToken: cancelToken.current?.token },
             ...config,
             params: {...{fnApplication: "test"}, ...query(ep.pinned)}
         }))).then(
@@ -396,7 +404,6 @@ function useActivities(props) {
             onRefresh={() => handleLoad()}
         />
     };
-    const cancelToken = useRef<CancelTokenSource>()
     const handleLoad=useCallback(async (page_) => {
         if (typeof cancelToken != typeof undefined) {
             cancelToken.current?.cancel("Operation canceled due to new request.")

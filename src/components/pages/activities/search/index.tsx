@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Alert,BackHandler,Text,TouchableOpacity,View} from "react-native";
 import HistoryIcon from "@assets/svg/historyIcon";
 import CloseIcon from "@assets/svg/close";
@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from "lodash";
 import {SearchActivity} from "@pages/activities/search/searchActivity";
 import {styles} from '@pages/activities/search/styles'
-import axios from "axios";
+import axios, {CancelTokenSource} from "axios";
 import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import {ACTIVITIESLIST,DATE_ADDED} from "../../../../reducers/activity/initialstate";
@@ -119,8 +119,13 @@ function Search(props:any){
         })
 
     },1000),[]);
+    const cancelToken = useRef<CancelTokenSource>()
     const handleLoad=async(text:string)=>{
-
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+        }
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         let _page:number;
         if(!text.trim()) return;
         try{
@@ -131,6 +136,7 @@ function Search(props:any){
                 _page=page+1;
                 setIsHandleLoad(false);
                 await axios.get(BASE_URL+`/applications`,{
+                    ...{ cancelToken: cancelToken.current?.token },
                     ...config,params:{
                         keyword:defaultSanitize(text),
                         page:_page,
@@ -171,6 +177,7 @@ function Search(props:any){
                 _page=page+1;
                 setIsHandleLoad(true);
                 await axios.get(BASE_URL+`/applications`,{
+                    ...{ cancelToken: cancelToken.current?.token },
                     ...config,params:{
                         keyword:defaultSanitize(text),
                         page:_page,
@@ -207,10 +214,18 @@ function Search(props:any){
             callback(true);
             return
         }
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         try{
             setIsHandleLoad(false);
             const _page=page+1;
             await axios.get(BASE_URL+`/applications`,{
+                ...{ cancelToken: cancelToken.current?.token },
                 ...config,params:{
                     keyword:defaultSanitize(text),
                     region: user?.employeeDetails?.region
