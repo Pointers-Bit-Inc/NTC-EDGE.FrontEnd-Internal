@@ -164,7 +164,6 @@ const RenderServiceMiscellaneous = (props) => {
             nextValue = keys?.split?.(".")?.[keys?.split?.(".")?.length - 2] || keys?.split?.(".")?.[0];
 
         }
-
         return (<View>
 
             {props?.isTitleVisible ? <Title nextValue={nextValue} index={index} value={value}/> : <></>}
@@ -339,7 +338,7 @@ const RenderServiceMiscellaneous = (props) => {
                                                                         if (value) props.updateForm("service." + keys, value)
                                                                     }}/>
                                                             </View>
-                                                            : (["ntc1-09-MS-pos", "ntc1-09-MS-pur"].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                            : (["ntc1-09-MS-pos", "ntc1-09-MS-pur"] .indexOf(formCode) != -1 && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
                                                                 <View style={{paddingBottom: 10}}>
                                                                     <CustomDropdown
                                                                         value={props?.userProfileForm?.["service." + keys]}
@@ -354,7 +353,7 @@ const RenderServiceMiscellaneous = (props) => {
                                                                             if (value) props.updateForm("service." + keys, value)
                                                                         }}/>
                                                                 </View>
-                                                                : (["ntc1-09-PTEs", "ntc1-11-bts"].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                                : (["ntc1-09-PTEs", "ntc1-11-bts"] .indexOf(formCode) != -1 && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
                                                                     <View style={{paddingBottom: 10}}>
                                                                         <CustomDropdown
                                                                             value={props?.userProfileForm?.["service." + keys]}
@@ -381,7 +380,7 @@ const RenderServiceMiscellaneous = (props) => {
                                                                         "ntc1-11-wdn",
                                                                         "ntc1-11-coastal",
                                                                         "ntc1-14"
-                                                                    ].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                                    ] .indexOf(formCode) != -1 && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
                                                                         <View style={{paddingBottom: 10}}>
                                                                             <CustomDropdown
                                                                                 value={props?.userProfileForm?.["service." + keys]}
@@ -415,7 +414,7 @@ const RenderServiceMiscellaneous = (props) => {
                                                                             "ntc1-11-wdn",
                                                                             "ntc1-11-coastal",
                                                                             "ntc1-14"
-                                                                        ].indexOf(formCode) && keys?.split?.(".")?.[0] == "transmissionType" && keys?.split?.(".")?.[1] == "transmissionType" && props.edit) ?
+                                                                        ] .indexOf(formCode) != -1 && keys?.split?.(".")?.[0] == "transmissionType" && keys?.split?.(".")?.[1] == "transmissionType" && props.edit) ?
                                                                             <View style={{paddingBottom: 10}}>
                                                                                 <CustomDropdown
                                                                                     value={props?.userProfileForm?.["service." + keys]}
@@ -435,7 +434,7 @@ const RenderServiceMiscellaneous = (props) => {
                                                                                     }}/>
                                                                             </View>
                                                                             : (["ntc1-09-ASL", "ntc1-09-ASL-pur"
-                                                                            ].indexOf(formCode) && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
+                                                                            ] .indexOf(formCode) != -1 && keys?.split?.(".")?.[0] == "natureOfService" && keys?.split?.(".")?.[1] == "type" && props.edit) ?
                                                                                 <View style={{paddingBottom: 10}}>
                                                                                     <CustomDropdown
                                                                                         value={props?.userProfileForm?.["service." + keys]}
@@ -454,7 +453,40 @@ const RenderServiceMiscellaneous = (props) => {
                                                                                             if (value) props.updateForm("service." + keys, value)
                                                                                         }}/>
                                                                                 </View>
-                                                                                : <Row
+                                                                                :  (["ntc1-25-sms"
+                                                                                    ] .indexOf(formCode) != -1 && keys?.split?.(".")?.[0] == "natureOfComplaint" && keys?.split?.(".")?.[1] == "complaint" && props.edit) ?
+                                                                                        <View style={{paddingBottom: 10}}>
+                                                                                            <CustomDropdown
+                                                                                                value={props?.userProfileForm?.["service." + keys]}
+                                                                                                label="Select Complaint"
+                                                                                                data={[
+                                                                                                    {label: 'Spam', value: 'Spam'},
+                                                                                                    {label: 'Scam', value: 'Scam'},
+                                                                                                    {label: 'Threat', value: 'Threat'},
+                                                                                                    {label: 'Others', value: 'Others', hasSpecification: true}
+                                                                                                ]}
+                                                                                                onSelect={({value}) => {
+                                                                                                    if (value) props.updateForm("service." + keys, value)
+                                                                                                }}/>
+                                                                                        </View>
+                                                                                        :(["ntc1-25-telco"
+                                                                                    ] .indexOf(formCode) != -1 && keys?.split?.(".")?.[0] == "natureOfComplaint" && keys?.split?.(".")?.[1] == "complaint" && props.edit) ?
+                                                                                        <View style={{paddingBottom: 10}}>
+                                                                                            <CustomDropdown
+                                                                                                value={props?.userProfileForm?.["service." + keys]}
+                                                                                                label="Select Complaint"
+                                                                                                data={[
+                                                                                                    {label: 'Billing Complaint', value: 'Billing Complaint'},
+                                                                                                    {label: 'Fair Use', value: 'Fair Use'},
+                                                                                                    {label: 'Poor Service (Technical Service/Customer Service)', value: 'Poor Service (Technical Service/Customer Service)'},
+                                                                                                    {label: 'Denial of Subscription Plan', value: 'Denial of Subscription Plan'},
+                                                                                                    {label: 'Others', value: 'Others', hasSpecification: true}
+                                                                                                ]}
+                                                                                                onSelect={({value}) => {
+                                                                                                    if (value) props.updateForm("service." + keys, value)
+                                                                                                }}/>
+                                                                                        </View>
+                                                                                        :  <Row
                                                                                     id={props?.userProfileForm?.["_id"] || serviceId}
                                                                                     updateApplication={props?.updateApplication}
                                                                                     updateForm={props.updateForm}
