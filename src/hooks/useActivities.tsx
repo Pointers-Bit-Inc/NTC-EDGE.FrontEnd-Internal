@@ -273,15 +273,15 @@ function useActivities(props) {
                         if (pinned?.data?.message) Alert.alert(pinned.data.message);
                         pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
                         pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
-                        if(pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size){
+                        if((pinned?.data?.page * pinned?.data?.size) < pinned?.data?.total){
                             setPinnedPage(pinnedPage + 1 )
                         }
 
                         if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                         notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                         notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                        if(notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size){
-                            setPage(page + 1)
+                        if((notPinned?.data?.page * notPinned?.data?.size) < notPinned?.data?.total){
+                            setPage(notPinned + 1 )
                         }
                         dispatch(setApplications({data: [], user: user}))
                         dispatch(setApplications({
@@ -401,10 +401,20 @@ function useActivities(props) {
             loadingText="Loading more activities..."
             errorText="Unable to load activities"
             refreshText="Refresh"
-            onRefresh={() => handleLoad()}
+            onRefresh={() => {
+                console.log("onRefresh")
+                handleLoad(null, true )
+            }}
         />
     };
-    const handleLoad=useCallback(async (page_) => {
+    const [hasMore, setHasMore] = useState(true);
+    const [pinnedHasMore, setPinnedHasMore] = useState(true);
+    const handleLoad=useCallback(async (page_, onPress = false) => {
+        console.log(hasMore , pinnedHasMore, hasMore && pinnedHasMore)
+        if(!(hasMore || pinnedHasMore) && !onPress ) {
+            console.log(hasMore, pinnedHasMore, !(hasMore && pinnedHasMore),  "hasMore")
+            return
+        }
         if (typeof cancelToken != typeof undefined) {
             cancelToken.current?.cancel("Operation canceled due to new request.")
 
@@ -416,8 +426,7 @@ function useActivities(props) {
         let _pinnedPage: string;
         setInfiniteLoad(true);
        // setRefreshing(true)
-        if ((
-            page * size) < total || page_) {
+        if (((page * size) < total || page_) || ((pinnedPage * pinnedSize) < pinnedTotal)  ) {
             _page = "?page=" + (
                 (page_ || page) + 1);
             _pinnedPage = "?page=" + (
@@ -439,17 +448,22 @@ function useActivities(props) {
                     if (pinned?.data?.message) Alert.alert(pinned.data.message);
                     pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
                     pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
-                    if(pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size){
+                    if((pinned?.data?.page * pinned?.data?.size) < pinned?.data?.total){
                         setPinnedPage(pinnedPage + 1 )
+                        setPinnedHasMore(true)
+                    }else{
+                        setPinnedHasMore(false)
                     }
 
                     if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                     notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                    if(notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size){
-                        setPage(page + 1)
+                    if((notPinned?.data?.page * notPinned?.data?.size) < notPinned?.data?.total){
+                        setPage(page + 1 )
+                        setHasMore(true)
+                    }else{
+                        setHasMore(false)
                     }
-
                     dispatch(handleInfiniteLoad({
                         data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
                         user: user
@@ -474,73 +488,78 @@ function useActivities(props) {
 
                 console.warn(err)
             })
-        } else {
-            //setRefreshing(true)
-            setInfiniteLoad(true)
-            _page = "?page=" + (
-                page + 1);
-            _pinnedPage = "?page=" + (
-                (pinnedPage) + 1);
-            var endpoint = [{
-                url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
-                pinned: 1
-            }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
+        }else
+    {
+        //setRefreshing(true)
+        setInfiniteLoad(true)
+        _page = "?page=" + (
+            page + 1);
+        _pinnedPage = "?page=" + (
+            (pinnedPage) + 1);
+        var endpoint = [{
+            url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
+            pinned: 1
+        }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
-            await axios.all(endpoint.map((ep) => axios.get(ep.url, {
-                ...{ cancelToken: cancelToken.current?.token },
-                ...config, params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),} ,...query(ep.pinned)}}))).then(
-                axios.spread((pinned, notPinned) => {
+        await axios.all(endpoint.map((ep) => axios.get(ep.url, {
+            ...{cancelToken: cancelToken.current?.token},
+            ...config,
+            params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),}, ...query(ep.pinned)}
+        }))).then(
+            axios.spread((pinned, notPinned) => {
 
 
+                if (pinned?.data?.message) Alert.alert(pinned.data.message);
+                pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
+                pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
 
-
-
-                    if (pinned?.data?.message) Alert.alert(pinned.data.message);
-                    pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
-                    pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
-                    pinned?.data?.page ? setPinnedPage(pinned?.data?.page) : setPinnedPage(0);
-                    if(pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size){
-                        setPinnedPage(pinnedPage + 1 )
-                    }
-
-                    if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
-                    notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
-                    notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                    if(notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size){
-                        setPage(page + 1 )
-                    };
-
-                    dispatch(handleInfiniteLoad({
-                        data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
-                        user: user
-                    }));
-                    console.log(pinned.statusText || notPinned.statusText)
-
-                   // setRefreshing(false);
-                    setInfiniteLoad(false)
-
-                })
-            ).catch((err) => {
-                if (axios.isCancel(err)) {
-
-                   // setRefreshing(true)
-                    setInfiniteLoad(true);
-                } else {
-                    console.log("handle refreshing, infinite")
-                  //  setRefreshing(false)
-                    setInfiniteLoad(false);
-                }
-                if(err?.message != "Operation canceled due to new request."){
-                    Alert.alert('Alert', err?.message || 'Something went wrong.');
-
+                if((pinned?.data?.page * pinned?.data?.size) < pinned?.data?.total){
+                    setPinnedPage(pinnedPage + 1 )
+                    setPinnedHasMore(true)
+                }else{
+                    setPinnedHasMore(false)
                 }
 
-                console.warn(err)
+                if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
+                notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
+                if((notPinned?.data?.page * notPinned?.data?.size) < notPinned?.data?.total){
+                    setPage(page + 1 )
+                    setHasMore(true)
+                }else{
+                    setHasMore(false)
+                }
+
+                dispatch(handleInfiniteLoad({
+                    data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
+                    user: user
+                }));
+                console.log(pinned.statusText || notPinned.statusText)
+
+                // setRefreshing(false);
+                setInfiniteLoad(false)
+
             })
+        ).catch((err) => {
+            if (axios.isCancel(err)) {
 
-        }
+                // setRefreshing(true)
+                setInfiniteLoad(true);
+            } else {
+                console.log("handle refreshing, infinite")
+                //  setRefreshing(false)
+                setInfiniteLoad(false);
+            }
+            if (err?.message != "Operation canceled due to new request.") {
+                Alert.alert('Alert', err?.message || 'Something went wrong.');
 
-    },[size,total,page, dateEnd, dateStart, infiniteLoad, refreshing]);
+            }
+
+            console.warn(err)
+        })
+    }
+
+    },[size,total,page, dateEnd, dateStart, infiniteLoad, refreshing, hasMore ,pinnedHasMore]);
     const unReadReadApplicationFn=(id,dateRead,unReadBtn,callback:(action:any)=>void)=>{
         unreadReadApplication({
             unReadBtn:unReadBtn,

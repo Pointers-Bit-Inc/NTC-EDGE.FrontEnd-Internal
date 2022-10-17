@@ -113,7 +113,7 @@ const ModalTab = props => {
     }, [props.details._id]);
     const layout = useWindowDimensions();
 
-    const [index, setIndex] = React.useState(user?.role?.key == ACCOUNTANT ? 2 : 0);
+    const [index, setIndex] = React.useState(user?.role?.key == ACCOUNTANT && service?.serviceCode != "service-22"  ? 2 : 0);
 
 
     const routes = useMemo(() => {
@@ -132,13 +132,12 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
-console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT), "pay")
         if (paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
-            console.log(paymentIndex, "SOA & Payment")
+
             dispatch(setTabName("SOA & Payment"))
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex == index && !editModalVisible && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
-            console.log(basicInfoIndex)
+
             dispatch(setTabName('Basic Info'))
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex != index && paymentIndex != index && editModalVisible) {

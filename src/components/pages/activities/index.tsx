@@ -509,7 +509,7 @@ const ActivitiesPage = (props) => {
             ListHeaderComponent={listHeaderComponent()}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={!(refreshing || infiniteLoad ) ? <View/> : bottomLoader}
+            ListFooterComponent={bottomLoader}
             onEndReached={onEndReached}
             ref={allRef}
             onEndReachedThreshold={0.5}
@@ -539,7 +539,7 @@ const ActivitiesPage = (props) => {
             ListEmptyComponent={listEmptyAssigned}
             data={pnApplications}
             keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={!(refreshing || infiniteLoad )  ? <View/> : bottomLoader}
+            ListFooterComponent={bottomLoader}
             onEndReached={onEndReached}
             ref={pendingRef}
             // onScroll={pendingScrollHandler}
@@ -572,7 +572,7 @@ const ActivitiesPage = (props) => {
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
 
-            ListFooterComponent={!(refreshing || infiniteLoad )  ? <View/> : bottomLoader}
+            ListFooterComponent={bottomLoader}
             onEndReached={onEndReached}
             ref={historyRef}
             //onScroll={historyScrollHandler}
