@@ -262,13 +262,19 @@ function useActivities(props) {
                 if (count == 0) {
                     count = 1;
                     if (count) {
+                        if (pinned?.data?.message) Alert.alert(pinned.data.message);
                         pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
                         pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
-                        pinned?.data?.page ? setPinnedPage(pinned?.data?.page) : setPinnedPage(0);
+                        if(pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size){
+                            setPinnedPage(pinnedPage + 1 )
+                        }
 
+                        if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                         notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                         notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                        notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
+                        if(notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size){
+                            setPage(page + 1)
+                        }
                         dispatch(setApplications({data: [], user: user}))
                         dispatch(setApplications({
                             data: [...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],
@@ -390,17 +396,15 @@ function useActivities(props) {
             onRefresh={() => handleLoad()}
         />
     };
-    let cancelToken: CancelTokenSource
+    const cancelToken = useRef<CancelTokenSource>()
     const handleLoad=useCallback(async (page_) => {
-        //Check if there are any previous pending requests
-
         if (typeof cancelToken != typeof undefined) {
-            cancelToken.cancel("Operation canceled due to new request.")
+            cancelToken.current?.cancel("Operation canceled due to new request.")
 
         }
 
         //Save the cancel token for the current request
-        cancelToken = axios.CancelToken.source()
+        cancelToken.current = axios.CancelToken.source()
         let _page: string;
         let _pinnedPage: string;
         setInfiniteLoad(true);
@@ -418,7 +422,7 @@ function useActivities(props) {
             }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
             await axios.all(endpoint.map((ep) => axios.get(ep.url, {
-                ...{ cancelToken: cancelToken.token },
+                ...{ cancelToken: cancelToken.current?.token },
                 ...config, params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),} ,...query(ep.pinned)}}))).then(
                 axios.spread((pinned, notPinned) => {
 
@@ -430,14 +434,14 @@ function useActivities(props) {
                     pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
                     if(pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size){
                         setPinnedPage(pinnedPage + 1 )
-                    }else{
-                        setPinnedPage(0)
-                    };
+                    }
 
                     if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                     notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size ? setPage(page + 1) : setPage(0);
+                    if(notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size){
+                        setPage(page + 1)
+                    }
 
                     dispatch(handleInfiniteLoad({
                         data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
@@ -476,7 +480,7 @@ function useActivities(props) {
             }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
             await axios.all(endpoint.map((ep) => axios.get(ep.url, {
-                ...{ cancelToken: cancelToken.token },
+                ...{ cancelToken: cancelToken.current?.token },
                 ...config, params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),} ,...query(ep.pinned)}}))).then(
                 axios.spread((pinned, notPinned) => {
 
@@ -488,12 +492,16 @@ function useActivities(props) {
                     pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
                     pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
                     pinned?.data?.page ? setPinnedPage(pinned?.data?.page) : setPinnedPage(0);
-                    pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size ? setPinnedPage(pinnedPage + 1 ) : setPinnedPage(0);
+                    if(pinned?.data?.page && pinned?.data?.docs.length >= pinned?.data?.size){
+                        setPinnedPage(pinnedPage + 1 )
+                    }
 
                     if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                     notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size ? setPage(notPinned?.data?.page) : setPage(0);
+                    if(notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size){
+                        setPage(page + 1 )
+                    };
 
                     dispatch(handleInfiniteLoad({
                         data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
