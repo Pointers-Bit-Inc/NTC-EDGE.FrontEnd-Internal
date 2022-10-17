@@ -1,17 +1,17 @@
 import {TouchableOpacity, useWindowDimensions, View} from "react-native";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import React, {createRef, useCallback, useEffect, useMemo, useState} from "react";
+import React, {createRef, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useToast} from "./useToast";
 import {
     setCommissioner,
-    setCommissionner,
     setFee,
     setFeeFlatten,
     setFeeOriginalFlatten,
-    setHasChangeFee, setRegion,
+    setHasChangeFee,
+    setRegion,
     setRegions
 } from "../reducers/configuration/actions";
-import axios from "axios";
+import axios, {CancelTokenSource} from "axios";
 import {BASE_URL} from "../services/config";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import * as ImagePicker from "expo-image-picker";
@@ -21,18 +21,18 @@ import {styles} from "@pages/activities/styles";
 import RegionIcon from "@assets/svg/regionIcon";
 import Text from "@atoms/text";
 import CloseIcon from "@assets/svg/close";
-import {generatePassword, isDiff, regionList} from "../utils/ntc";
-import {validateEmail, validatePassword, validatePhone, validateText} from "../utils/form-validations";
+import {isDiff} from "../utils/ntc";
+import {validateText} from "../utils/form-validations";
 import useMemoizedFn from "./useMemoizedFn";
 import listEmpty from "@pages/activities/listEmpty";
 import _ from "lodash"
-import {setRolesSelect} from "../reducers/role/actions";
-import {removeEmpty} from "@pages/activities/script";
 import useSafeState from "./useSafeState";
+
 const flatten = require('flat')
+
 function useConfiguration(props: any) {
 
-
+    const cancelToken = useRef<CancelTokenSource>()
     const dimensions = useWindowDimensions();
     const dispatch = useDispatch();
     const [value, setValue] = useState();
@@ -68,12 +68,23 @@ function useConfiguration(props: any) {
     useEffect(() => {
         return fetchFee()
     }, [_.isEmpty(fee)])
+    let config = {
+        headers: {
+            Authorization: "Bearer ".concat(sessionToken)
+        }
+    }
     const fetchFee = () => {
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         setLoading(true);
         axios.get(BASE_URL + "/fees", {
-            headers: {
-                Authorization: "Bearer ".concat(sessionToken)
-            }
+            ...{cancelToken: cancelToken.current?.token},
+            ...config
         }).then((response) => {
             const _flatten = flatten.flatten({...{fees: response.data.fees}})
             dispatch(setFee(response.data))
@@ -200,7 +211,7 @@ function useConfiguration(props: any) {
             _mimeType: "",
             id: 6,
             key: 6,
-            containerStyle: {alignItems: "center", },
+            containerStyle: {alignItems: "center",},
             style: {height: 200, width: 200, zIndex: 1, borderWidth: 1, borderStyle: "dotted"},
             type: "image",
             required: true,
@@ -212,7 +223,8 @@ function useConfiguration(props: any) {
             hasValidation: true
         },
     ]);
-    const [commissionerForm, setCommissionerForm ] = useState(commissionerOriginalForm)
+    const [commissionerForm, setCommissionerForm] = useState(commissionerOriginalForm)
+
     async function onPress(position) {
         let picker = await ImagePicker.launchImageLibraryAsync({
             presentationStyle: 0
@@ -272,12 +284,9 @@ function useConfiguration(props: any) {
 
     const [formValue, setFormValue] = useState(originalForm);
     const regions = useSelector((state: RootStateOrAny) => state.configuration.regions);
-    let config = {
-        headers: {
-            Authorization: "Bearer ".concat(sessionToken)
-        }
-    }
+
     const [uploadSignatureLoading, setUploadSignatureLoading] = useState(false)
+
     async function onPressSignature(stateName) {
         setUploadSignatureLoading(true)
         let picker = await ImagePicker.launchImageLibraryAsync({
@@ -329,8 +338,18 @@ function useConfiguration(props: any) {
 
     const region = useSelector((state: RootStateOrAny) => state.configuration.region);
     const fetchConfigurations = () => {
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         setLoading(true);
-        axios.get(BASE_URL + "/regions?page=" + page, config).then((response) => {
+        axios.get(BASE_URL + "/regions?page=" + page, {
+            ...{cancelToken: cancelToken.current?.token},
+            ...config
+        }).then((response) => {
             dispatch(setRegions(response.data))
             setLoading(false);
         }).catch((response) => {
@@ -338,9 +357,20 @@ function useConfiguration(props: any) {
             console.log(response.response)
         })
     }
+
     const fetchCommissioner = () => {
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         setLoading(true);
-        axios.get(BASE_URL + "/regions/commissioner", config).then((response) => {
+        axios.get(BASE_URL + "/regions/commissioner", {
+            ...{cancelToken: cancelToken.current?.token},
+            ...config
+        }).then((response) => {
             dispatch(setCommissioner(response.data))
             var _commissionerForm = [...commissionerForm]
             _commissionerForm.map((e, index) => {
@@ -348,11 +378,11 @@ function useConfiguration(props: any) {
                 if (e.hasOwnProperty("stateNameMain") &&
                     e.hasOwnProperty("stateName") &&
                     e.hasOwnProperty("subStateName")) {
-                   e.value = response.data[e.stateName][e.stateNameMain][e.subStateName]
+                    e.value = response.data[e.stateName][e.stateNameMain][e.subStateName]
                 }
                 return e
             });
-           setCommissionerOriginalForm(JSON.parse(JSON.stringify(_commissionerForm)))
+            setCommissionerOriginalForm(JSON.parse(JSON.stringify(_commissionerForm)))
             setCommissionerForm(_commissionerForm)
 
             setLoading(false);
@@ -370,6 +400,7 @@ function useConfiguration(props: any) {
     useEffect(() => {
         return fetchCommissioner()
     }, [])
+
     function onDelete(id) {
 
     }
@@ -511,19 +542,20 @@ function useConfiguration(props: any) {
     const [commissionerVisible, setCommissionerVisible] = useState(false)
     const listEmptyComponent = useMemoizedFn(() => listEmpty(!loading, "", fee.length));
     const onPressCommissioner = async (id?: number, type?: string | number) => {
-        var updatedUser = {...commissioner, password: ""}, subStateName = {}, prevSubStateName = null;;
+        var updatedUser = {...commissioner, password: ""}, subStateName = {}, prevSubStateName = null;
+
         updatedUser._id = id
         let signatureIndex = commissionerForm?.findIndex(app => app?.subStateName == "signature");
         commissionerForm?.forEach(async (up) => {
             if (!up?.stateName) return
-            if (!up.hasOwnProperty("stateNameMain") && up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName ) {
-                if(up.stateName != prevSubStateName ){
+            if (!up.hasOwnProperty("stateNameMain") && up.hasOwnProperty("subStateName") && up.stateName != "role" && up.subStateName) {
+                if (up.stateName != prevSubStateName) {
                     prevSubStateName = up.stateName
                     subStateName = {}
                 }
                 subStateName[up.subStateName] = up?.value
-            }else if(up.stateNameMain){
-                if(prevSubStateName != up.stateNameMain){
+            } else if (up.stateNameMain) {
+                if (prevSubStateName != up.stateNameMain) {
                     prevSubStateName = up.stateNameMain
                     subStateName = {}
                 }
@@ -539,7 +571,6 @@ function useConfiguration(props: any) {
         });
 
         setLoading(true);
-
 
 
         let _signature = commissionerForm[signatureIndex]
@@ -574,16 +605,15 @@ function useConfiguration(props: any) {
 
                             return res?.json()
                         }).then(res => {
-                        if(commissionerForm[signatureIndex].hasOwnProperty("value")){
-                            commissionerForm[signatureIndex]["value"] =  res?.doc?.signature
+                        if (commissionerForm[signatureIndex].hasOwnProperty("value")) {
+                            commissionerForm[signatureIndex]["value"] = res?.doc?.signature
                         }
                     })
                 })
         }
 
 
-
-        axios[ "patch"](BASE_URL + (`/regions/` + updatedUser?._id ), updatedUser, config).then(async (response) => {
+        axios["patch"](BASE_URL + (`/regions/` + updatedUser?._id), updatedUser, config).then(async (response) => {
             showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
             setLoading(false);
         }).catch((err) => {
@@ -622,7 +652,6 @@ function useConfiguration(props: any) {
             if (_err?.response?.data?.title) {
                 showToast(ToastType.Error, _err?.response?.data?.title)
             }
-
 
 
         });

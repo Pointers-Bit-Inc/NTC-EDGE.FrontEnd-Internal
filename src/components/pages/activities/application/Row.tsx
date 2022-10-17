@@ -69,7 +69,7 @@ const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, contai
             {((props.edit && props.editable && props.showEdit) || edit) ? <InputField mainContainerStyle={{...{marginBottom: 10}}}   ref={textInput}  containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline} onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, value)
                 setEdit(false)
-            }} onBlur={(event) => {
+            }}  onBlur={(event) => {
                 props.updateForm(props.stateName, value)
             }} onChange={getOnChange} value={value} label={props.label} /> : <></>}
         </>
