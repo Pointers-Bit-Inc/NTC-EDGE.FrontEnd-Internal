@@ -284,7 +284,7 @@ const ModalTab = props => {
 
         const width = getTabWidth(index) - 24
         return <TabBarIndicator   {...indicatorProps}  width={width}
-                                style={indicatorStyle}
+                                  style={indicatorStyle}
         />;
     }
 
@@ -305,28 +305,28 @@ const ModalTab = props => {
     const feedVisible = useSelector((state: RootStateOrAny) => state.activity.feedVisible);
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar
-                    renderLabel={({route, focused}) => {
-                        return (
-                            <View style={{flexDirection: "row", alignItems: "center"}}>
-                                { isMobile ? <></> :
-                                    <View style={{paddingRight: 10}}>
-                                        {tabIcon(route.title, focused)}
-                                    </View>
-                                }
-                                <Text numberOfLines={Platform.OS == "windows" ? 1 : undefined} style={{
-                                    color: focused ? infoColor : "#606A80",
-                                    fontFamily: Regular, // focused ? Bold : Regular
-                                    fontSize: fontValue(14)
-                                }}>{route.title}</Text>
+            renderLabel={({route, focused}) => {
+                return (
+                    <View style={{flexDirection: "row", alignItems: "center"}}>
+                        { isMobile ? <></> :
+                            <View style={{paddingRight: 10}}>
+                                {tabIcon(route.title, focused)}
                             </View>
-                        );
-                    }}
-                    {...tabProp}
-                    renderIndicator={renderIndicator}
-                    tabStyle={{width: fontValue(180)}}
-                    scrollEnabled={true}
-                    style={[{backgroundColor: 'white'}, isMobile ? {} :{shadowOpacity: 0.0, }]}
-                />  :  <View style={{
+                        }
+                        <Text numberOfLines={Platform.OS == "windows" ? 1 : undefined} style={{
+                            color: focused ? infoColor : "#606A80",
+                            fontFamily: Regular, // focused ? Bold : Regular
+                            fontSize: fontValue(14)
+                        }}>{route.title}</Text>
+                    </View>
+                );
+            }}
+            {...tabProp}
+            renderIndicator={renderIndicator}
+            tabStyle={{width: fontValue(180)}}
+            scrollEnabled={true}
+            style={[{backgroundColor: 'white'}, isMobile ? {} :{shadowOpacity: 0.0, }]}
+        />  :  <View style={{
             borderBottomWidth: 1,
             flexDirection: "row",
             alignItems: "center",
@@ -396,7 +396,7 @@ const ModalTab = props => {
             </View>
 
         </View>
-}
+    }
 
     return <TabView
 

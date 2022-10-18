@@ -45,10 +45,11 @@ import {setResetFilterStatus} from "../reducers/activity/actions";
 import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import useOneSignal from "../hooks/useOneSignal";
-import {ACTIVITYITEM} from "../reducers/activity/initialstate";
+import {ACTIVITYITEM, EDITAPPLICATION} from "../reducers/activity/initialstate";
 import ActivityModal from "@pages/activities/modal";
 import ChooseNewPassword from "@screens/ChooseNewPassword";
 import * as Linking from 'expo-linking';
+import EditApplication from "@pages/activities/application/editApplication";
 const prefix = Linking.createURL('/');
 type RootStackParamList = {
     App: undefined;
@@ -74,6 +75,7 @@ type RootStackParamList = {
     SearchActivities: undefined;
     Dashboard: undefined;
     ActivityItem: undefined;
+    EditApplication: undefined;
     UserEdit: undefined;
     ChooseNewPassword: undefined;
 };
@@ -234,6 +236,8 @@ const RootNavigator = () => {
                 <Stack.Screen name="NewChat" component={ NewChat }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
                 <Stack.Screen name={ACTIVITYITEM} component={ActivityModal} />
+                <Stack.Screen name={EDITAPPLICATION} component={EditApplication} />
+
 
             </Stack.Navigator>
             <FloatingVideoComponent />
