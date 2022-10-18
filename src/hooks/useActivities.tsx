@@ -409,9 +409,10 @@ function useActivities(props) {
     };
     const [hasMore, setHasMore] = useState(true);
     const [pinnedHasMore, setPinnedHasMore] = useState(true);
+    const [isError, setIsError] = useState(false);
     const handleLoad=useCallback(async (page_, onPress = false) => {
         console.log(hasMore , pinnedHasMore, hasMore && pinnedHasMore)
-        if(!(hasMore || pinnedHasMore) && !onPress ) {
+        if(!(hasMore || pinnedHasMore ) || isError && !onPress ) {
             console.log(hasMore, pinnedHasMore, !(hasMore && pinnedHasMore),  "hasMore")
             return
         }
@@ -481,7 +482,7 @@ function useActivities(props) {
                 if (axios.isCancel(err)) {
 
                 } else {
-
+                    setIsError(true)
                    // setRefreshing(false)
                     setInfiniteLoad(false);
                 }
@@ -550,6 +551,7 @@ function useActivities(props) {
                 // setRefreshing(true)
                 setInfiniteLoad(true);
             } else {
+                setIsError(true)
                 console.log("handle refreshing, infinite")
                 //  setRefreshing(false)
                 setInfiniteLoad(false);

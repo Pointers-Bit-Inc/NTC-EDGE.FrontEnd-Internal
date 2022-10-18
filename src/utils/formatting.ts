@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import dayjs from 'dayjs';
 import IParticipants from 'src/interfaces/IParticipants';
-
+import moment from 'moment';
 const getInitial = (value:any) => {
   return value.match(/(\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("").toUpperCase()
 }
@@ -228,6 +228,12 @@ const updateObjectsInArr = function(initialArr, newArr) {
 
   return finalUpdatedArr
 }
+export const extractDate = (date: any, d: any) => {
+  if (!date) return '';
+  let _d = (`0${(moment(date)?.subtract(d === 'month' ? 1 : 0, 'months')?.get(d) + (d === 'month' ? 1 : 0))}`)?.slice(d === 'year' ? -4 : -2);
+  if (d === 'month' && _d === '12') _d = '00';
+  return isNaN(Number(_d)) ? '' : _d;
+};
 
 export {
   updateObjectsInArr,

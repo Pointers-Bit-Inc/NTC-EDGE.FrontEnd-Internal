@@ -30,15 +30,41 @@ const validatePassword = (text:string, type: any = '') => {
 const validatePhone = (text:string) => {
   const regex = /((^(\+)(\d){12}$)|(^\d{11}$))/;
   return regex.test(text);
-}
+};
 
 const validateText = (text:string) => {
-  return !!text?.replace(/ /g, '');
-}
+  return !!text.replace(/ /g, '');
+};
 
+const validateNumber = (text:string) => {
+  return !isNaN(Number(text)) && Number(text) > -1;
+};
+
+const validateDate = (text:string) => {
+  return Number(text) >= 1 && Number(text) <= 31;
+};
+
+const validateYear = (text:string) => {
+  return Number(text) >= 1000 && Number(text) <= Moment().year();
+};
+
+const validateZipCode = (text:string) => {
+  return Number(text) >= 1000 && Number(text) <= 9999;
+};
+
+const validateIMEI = (text:string) => {
+  const regex = /((^\d{15}$))/;
+  return regex.test(text);
+};
 export {
+
   validateEmail,
   validatePassword,
   validatePhone,
   validateText,
+  validateNumber,
+  validateDate,
+  validateYear,
+  validateZipCode,
+  validateIMEI,
 }
