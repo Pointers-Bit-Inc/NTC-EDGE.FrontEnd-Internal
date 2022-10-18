@@ -33,6 +33,8 @@ const flatten = require('flat')
 function useConfiguration(props: any) {
 
     const cancelToken = useRef<CancelTokenSource>()
+    const cancelConfigurationsToken = useRef<CancelTokenSource>()
+    const cancelFeeToken = useRef<CancelTokenSource>()
     const dimensions = useWindowDimensions();
     const dispatch = useDispatch();
     const [value, setValue] = useState();
@@ -74,16 +76,16 @@ function useConfiguration(props: any) {
         }
     }
     const fetchFee = () => {
-        if (typeof cancelToken != typeof undefined) {
-            cancelToken.current?.cancel("Operation canceled due to new request.")
+        if (typeof cancelFeeToken != typeof undefined) {
+            cancelFeeToken.current?.cancel("Operation canceled due to new request.")
 
         }
 
         //Save the cancel token for the current request
-        cancelToken.current = axios.CancelToken.source()
+        cancelFeeToken.current = axios.CancelToken.source()
         setLoading(true);
         axios.get(BASE_URL + "/fees", {
-            ...{cancelToken: cancelToken.current?.token},
+            ...{cancelToken: cancelFeeToken.current?.token},
             ...config
         }).then((response) => {
             const _flatten = flatten.flatten({...{fees: response.data.fees}})
@@ -338,16 +340,16 @@ function useConfiguration(props: any) {
 
     const region = useSelector((state: RootStateOrAny) => state.configuration.region);
     const fetchConfigurations = () => {
-        if (typeof cancelToken != typeof undefined) {
-            cancelToken.current?.cancel("Operation canceled due to new request.")
+        if (typeof cancelConfigurationsToken != typeof undefined) {
+            cancelConfigurationsToken.current?.cancel("Operation canceled due to new request.")
 
         }
 
         //Save the cancel token for the current request
-        cancelToken.current = axios.CancelToken.source()
+        cancelConfigurationsToken.current = axios.CancelToken.source()
         setLoading(true);
         axios.get(BASE_URL + "/regions?page=" + page, {
-            ...{cancelToken: cancelToken.current?.token},
+            ...{cancelToken: cancelConfigurationsToken.current?.token},
             ...config
         }).then((response) => {
             dispatch(setRegions(response.data))
@@ -387,8 +389,14 @@ function useConfiguration(props: any) {
 
             setLoading(false);
         }).catch((response) => {
+            if (axios.isCancel(response)) {
 
-            console.log(response)
+                // setRefreshing(true)
+                setLoading(false);
+            }else {
+                //  setRefreshing(false)
+                setLoading(false);
+            }
         })
     }
     const regionsMemo = useMemo(() => {

@@ -1,6 +1,16 @@
 import * as React from 'react';
 import {useEffect,useMemo,useState} from 'react';
-import {Dimensions,Linking,Platform,StyleSheet,Text,TouchableOpacity,useWindowDimensions,View} from 'react-native';
+import {
+    Dimensions,
+    Linking,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from 'react-native';
 import {createDrawerNavigator,} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -315,7 +325,7 @@ export default function TabBar({navigation,route}){
         <>
             {(
                  isMobile&& !(
-                     Platform?.isPad||isTablet())) ? <Tab.Navigator tabBar={(props)=><ActivityTab  {...props} />}>
+                    Platform?.isPad||isTablet())) ? <Tab.Navigator   tabBar={(props)=><ActivityTab  {...props} />}>
                  <Tab.Screen options={({route})=>(
                      {
                          headerShown:false,

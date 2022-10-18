@@ -401,9 +401,9 @@ const ActivitiesPage = (props) => {
                                                                    scrollEventThrottle={16}
                                                                    refreshing={true}
                                                                    key={index}
+                                                                   nestedScrollEnabled={true}
                                                                    listKey={(item, index) => `_key${index.toString()}`}
                                                                    showsVerticalScrollIndicator={false}
-
                                                                    data={item?.activity}
                                                                    renderItem={(act, i) => {
                                                                        return getRenderItem(act, i, index)
@@ -702,7 +702,7 @@ const ActivitiesPage = (props) => {
 
     const onDateChange = (date, type) => {
         if (type === 'END_DATE') {
-            let _date = date?.set({"hour": 23, "minute": 59})
+            let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
             dispatch(setDateEnd(_date));
         } else {
             let _date = date?.set({"hour": 0, "minute": 0})
@@ -715,7 +715,7 @@ const ActivitiesPage = (props) => {
         dispatch(setPrevDateEnd(dateEnd));
         dispatch(setPrevDateStart(dateStart));
         if(!(dateEnd && dateStart)){
-            let _dateEnd = moment()?.set({"hour": 23, "minute": 59})
+            let _dateEnd = moment()?.set({"hour": 23, "minute": 59, "second": 59})
             let _dateStart = moment()?.set({"hour": 0, "minute": 0})
             dispatch(setDateEnd(_dateEnd));
             dispatch(setDateStart(_dateStart));

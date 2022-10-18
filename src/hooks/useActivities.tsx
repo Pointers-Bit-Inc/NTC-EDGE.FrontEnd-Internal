@@ -281,7 +281,7 @@ function useActivities(props) {
                         notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                         notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
                         if((notPinned?.data?.page * notPinned?.data?.size) < notPinned?.data?.total){
-                            setPage(notPinned + 1 )
+                            setPage(page + 1 )
                         }
                         dispatch(setApplications({data: [], user: user}))
                         dispatch(setApplications({
@@ -432,6 +432,7 @@ function useActivities(props) {
             _pinnedPage = "?page=" + (
                 (pinnedPage) + 1);
             //013021
+            console.log("pinnedPage", _pinnedPage, "pinned", _page, "_pinned", pinnedPage,  "page", page)
             var endpoint = [{
                 url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
                 pinned: 1
@@ -449,9 +450,11 @@ function useActivities(props) {
                     pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
                     pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
                     if((pinned?.data?.page * pinned?.data?.size) < pinned?.data?.total){
+                       console.log(pinnedPage)
                         setPinnedPage(pinnedPage + 1 )
                         setPinnedHasMore(true)
                     }else{
+
                         setPinnedHasMore(false)
                     }
 
@@ -459,6 +462,7 @@ function useActivities(props) {
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                     notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
                     if((notPinned?.data?.page * notPinned?.data?.size) < notPinned?.data?.total){
+                        console.log(page, "inside page")
                         setPage(page + 1 )
                         setHasMore(true)
                     }else{
@@ -500,7 +504,7 @@ function useActivities(props) {
             url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
             pinned: 1
         }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
-
+        console.log("pinnedPage", _pinnedPage, "pinned", _page, "else")
         await axios.all(endpoint.map((ep) => axios.get(ep.url, {
             ...{cancelToken: cancelToken.current?.token},
             ...config,
