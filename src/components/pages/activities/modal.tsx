@@ -37,7 +37,7 @@ import {
     setApplicationItem,
     setEdit,
     setHasChange,
-    setRightLayoutComponent,
+    setRightLayoutComponent, setSceneIndex,
     setUserOriginalProfileForm,
     setUserProfileForm,
     updateApplicationStatus,
@@ -67,6 +67,8 @@ import ChevronLeft from "@assets/svg/chevron-left";
 import _ from "lodash";
 import {setFeedVisible, setUpdateIncrement} from "../../../reducers/activity/actions";
 import {setAmnesty} from "../../../reducers/soa/actions";
+import {SceneMap, TabView} from "react-native-tab-view";
+import ServiceFormPage from "@pages/form";
 
 const flatten = require('flat')
 
@@ -88,6 +90,10 @@ function ActivityModal(props: any) {
         }
 
         return _applicationItem
+    });
+
+    const sceneIndex = useSelector((state: RootStateOrAny) => {
+        return state.application.sceneIndex
     });
 
     const userProfileForm = useSelector((state: RootStateOrAny) => {
@@ -592,6 +598,399 @@ function ActivityModal(props: any) {
         return promise;
     };
 
+
+
+
+    const renderScene = ({ route, jumpTo }) => {
+        switch (route.key) {
+            case 'application':
+                return  <>
+                    <CustomAlert
+                        showClose={showClose}
+                        type={approvalIcon ? APPROVED : ""}
+                        onDismissed={() => {
+                            setShowAlert(false);
+                            setApprovalIcon(false);
+                            setShowClose(false)
+                            goBackAsync()
+                        }}
+                        onLoading={alertLoading}
+                        onCancelPressed={() => {
+                            setShowAlert(false);
+                            if (approvalIcon) {
+                                setApprovalIcon(false);
+                                setShowClose(false)
+                            }
+                        }}
+                        onConfirmPressed={() => {
+                            let status = "";
+                            if ([CASHIER, DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
+                                status = APPROVED
+                            } else {
+                                status = DECLINED
+                            }
+                            // setShowAlert(false)
+                            setAlertLoading(true);
+                            onChangeApplicationStatus(status, (err) => {
+                                setAlertLoading(false);
+                                if (!err) {
+                                    setApprovalIcon(true);
+                                    setTitle("Application Approved");
+                                    setMessage("Application has been approved.");
+                                } else {
+                                    setApprovalIcon(false);
+                                    setTitle("Alert");
+                                    setMessage(err?.message || 'Something went wrong.');
+                                }
+                                setShowClose(true)
+                            }, {remarks: remarks, cashier: assignId})
+                        }}
+                        show={showAlert} title={title}
+                        message={message}/>
+                    <View onLayout={onActivityModalScreenComponent} style={{flex: 1, backgroundColor: "#FFF"}}>
+                        {(
+                            isMobile || (Platform?.isPad)) && <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+
+                            borderBottomColor: "#F0F0F0",
+                            justifyContent: "space-evenly",
+                            padding: 15,
+                            paddingTop: 40,
+                        }}>
+
+                            {edit ? <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
+                                    <View style={{marginHorizontal: 10}}><ChevronLeft width={fontValue(24)} height={fontValue(24)}
+                                                                                      color="#606A80"/></View>
+                                </TouchableOpacity> :
+                                <TouchableOpacity hitSlop={hitSlop} onPress={() => {
+                                    handleBackButtonClick()
+                                }}>
+                                    <View style={{marginHorizontal: 10}}><CloseIcon width={fontValue(16)} height={fontValue(16)}
+                                                                                    color="#606A80"/></View>
+                                </TouchableOpacity>}
+                            <Text
+                                style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
+
+                            {editModalVisible ? edit ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
+
+                                    updateApplication(() => {
+                                    }).then(r => {})
+
+                                }
+                                }>
+                                    {loading ? <ActivityIndicator color={infoColor}/> :
+                                        <Text style={{
+                                            marginHorizontal: 10,
+                                            fontFamily: Regular,
+                                            fontSize: fontValue(16),
+                                            color: infoColor
+                                        }}>Save</Text>}
+                                    {/* <EditIcon color="#606A80"/>*/}
+                                </TouchableOpacity>
+
+                                : <TouchableOpacity hitSlop={hitSlop} onPress={()=>{
+                                    dispatch(setSceneIndex(1))
+                                }
+                                }>
+
+                                    <Text style={{
+                                        marginHorizontal: 10,
+                                        fontFamily: Regular,
+                                        fontSize: fontValue(16),
+                                        color: infoColor
+                                    }}>Edit</Text>
+                                    {/* <EditIcon color="#606A80"/>*/}
+                                </TouchableOpacity> : <Text style={{
+                                marginHorizontal: 10,
+                                fontFamily: Regular,
+                                fontSize: fontValue(16),
+                                opacity: 0
+                            }}>Edit</Text>
+                            }
+
+                        </View>}
+
+
+                        <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert}
+                                  updateApplication={updateApplication} editBtn={editBtn}
+                                  setEdit={setEdit}
+                                  hasChanges={hasChanges} edit={edit} dismissed={() => {
+                            goBackAsync()
+                        }} details={applicationItem} status={status}/>
+
+                        {Platform.OS != "web" ? <Toast/> : <></>}
+                        {!edit ?
+                            <View style={[{
+                                paddingHorizontal: !isMobile ? 64 : 0,
+                                borderTopColor: 'rgba(0, 0, 0, 0.1)',
+                                borderTopWidth: 1, backgroundColor: "white"
+                            }]}>
+                                <View style={!(
+                                    isMobile) && {
+                                    width: dimensions?.width <= 768 ? "100%" : "60%",
+                                    alignSelf: "flex-end"
+                                }}>
+                                    <View style={styles.footer}>
+                                        {getRole(user, [DIRECTOR, EVALUATOR, CASHIER, ACCOUNTANT]) &&
+                                            <View style={styles.groupButton}>
+                                                <ApprovedButton
+                                                    user={user}
+                                                    currentLoading={currentLoading}
+                                                    allButton={allButton}
+                                                    onPress={() => {
+                                                        if (getRole(user, [EVALUATOR])) {
+                                                            setShowAlert1(true)
+                                                            setApproveVisible(true)
+                                                        } else {
+                                                            setApproveVisible(true)
+                                                        }
+                                                    }}/>
+
+                                                {<DeclineButton
+                                                    currentLoading={currentLoading}
+                                                    allButton={allButton}
+                                                    onPress={() => {
+                                                        setVisible(true)
+                                                    }}/>}
+
+                                            </View>}
+                                        {getRole(user, [EVALUATOR]) && applicationItem?.service?.serviceCode !== "service-22" &&
+                                            <EndorsedButton
+                                                currentLoading={currentLoading}
+                                                allButton={allButton}
+                                                onPress={() => {
+                                                    setEndorseVisible(true)
+                                                }}/>}
+                                    </View>
+                                </View>
+                            </View> : <></>
+                        }
+                    </View>
+
+                    <Approval
+                        showAlert={showAlert1}
+                        setShowAlert={setShowAlert1}
+                        size={activityModalScreenComponent}
+                        onModalDismissed={(event?: any) => {
+                            if (event == "cancel") {
+                                //cancelTokenSource?.cancel();
+                            }
+                            setStatus(prevStatus);
+                            setRemarks(prevRemarks);
+                            setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
+                            if (getRole(user, [EVALUATOR])) {
+                                onApproveDismissed();
+
+                            }
+                            dispatch(setFeedVisible(true))
+                        }}
+                        onChangeRemarks={(_remark: string, _assign) => {
+
+                            setPrevStatus(status);
+                            setPrevRemarks(remarks);
+                            setPrevAssignId(assignId);
+                            if (getRole(user, [CASHIER, DIRECTOR, ACCOUNTANT])) {
+                                setRemarks(_remark);
+                                setAssignId(_assign)
+                            }
+                            setShowAlert1(true)
+
+                        }}
+
+
+                        visible={approveVisible}
+                        confirm={(event: any, callback: (res, callback) => {}) => {
+                            setRemarks(event.remark);
+                            setAssignId(event.cashier)
+                            let status = "";
+
+                            if (getRole(user, [DIRECTOR, EVALUATOR])) {
+                                if (applicationItem?.service?.serviceCode == "service-22") {
+                                    status = APPROVED
+                                } else {
+                                    status = FORAPPROVAL
+                                }
+
+                            } else if (getRole(user, [ACCOUNTANT])) {
+                                status = APPROVED
+                            } else if (getRole(user, [CASHIER])) {
+                                status = PAID
+                            }
+                            onChangeApplicationStatus(status, (err, appId) => {
+
+                                if (!err) {
+
+                                    callback(true, (bool) => {
+
+                                    })
+                                } else {
+
+                                    callback(false, (bool) => {
+
+                                    })
+                                }
+
+                            }, event)
+
+
+                        }}
+                        onExit={() => {
+
+                            onApproveDismissed();
+                            goBackAsync()
+
+                        }}
+                        onDismissed={(event?: any, callback?: (bool) => {}) => {
+                            if (event == APPROVED) {
+                                onApproveDismissed();
+
+                            }
+                            if (callback) {
+                                callback(true)
+                            }
+                        }}
+                    />
+                    <Disapproval
+                        size={activityModalScreenComponent}
+                        user={applicationItem?.applicant?.user}
+                        remarks={setRemarks}
+                        onChangeApplicationStatus={(event: any, callback: (bool, appId) => {}) => {
+
+                            onChangeApplicationStatus(DECLINED, (err, id) => {
+
+                                if (!err) {
+                                    callback(true, (response) => {
+
+                                    })
+                                } else {
+                                    callback(false, (response) => {
+
+                                    })
+                                }
+                            }, event)
+                        }
+                        }
+                        visible={visible}
+                        onExit={() => {
+                            onDismissed();
+                            goBackAsync()
+                        }}
+                        onDismissed={() => {
+
+                            onDismissed()
+
+                        }}
+                    />
+                    <Endorsed
+                        size={activityModalScreenComponent}
+                        assignedPersonnel={applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel}
+                        onModalDismissed={() => {
+                            setRemarks(prevRemarks);
+                            setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
+                        }}
+                        remarks={(event: any) => {
+                            setPrevRemarks(remarks);
+                            setPrevAssignId(assignId);
+                            setRemarks(event.remarks);
+                            setAssignId(event.endorseId)
+                        }}
+                        onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
+                            onChangeApplicationStatus(event.status, (err, id) => {
+                                console.log(!err, err);
+                                if (!err) {
+                                    callback(true, (response) => {
+
+                                    })
+                                } else {
+                                    callback(false, (response) => {
+
+                                    })
+                                }
+
+                            }, event);
+                        }}
+                        visible={endorseVisible}
+                        onExit={() => {
+
+                            onEndorseDismissed();
+                            goBackAsync().then(() => {
+                                console.log(1)
+                                _props.onDismissed(true);
+                            })
+                        }}
+                        onDismissed={() => {
+
+                            onEndorseDismissed()
+                        }}
+                    />
+
+                    <Alert
+                        visible={discardAlert}
+                        title={'Discard Changes'}
+                        message={'Any unsaved changes will not be saved. Continue?'}
+                        confirmText='OK'
+                        cancelText={"Cancel"}
+                        onConfirm={() => {
+                            setAssignId("");
+                            setStatus("");
+                            goBackAsync()
+                            setChange(false)
+                            setDiscardAlert(false)
+                        }
+                        }
+                        onCancel={() => setDiscardAlert(false)}
+                    />
+                    <CustomAlert
+                        showClose={true}
+                        onDismissed={() => {
+                            setShowAlert2(false)
+                        }
+                        }
+                        onCancelPressed={() => {
+                        }
+                        }
+
+                        show={showAlert2}
+                        title={titleUpdate}
+                        message={messageUpdate}
+                        confirmText='OK'
+                        onConfirmPress={() => {
+                            setShowAlert2(false)
+                        }
+                        }
+                    />
+                    <Alert
+                        visible={editAlert}
+                        title={'Edit Changes'}
+                        message={'Any unsaved changes will not be saved. Continue?'}
+                        confirmText='OK'
+                        cancelText={"Cancel"}
+                        onConfirm={() => {
+                            dispatch(setHasChange(false))
+                            dispatch(setEdit((bool) => !bool))
+                            setEditAlert(false)
+                            const myPromise = new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    dispatch(setUserProfileForm(userOriginalProfileForm))
+                                }, 300);
+                            });
+
+
+                        }
+                        }
+                        onCancel={() => setEditAlert(false)}
+                    />
+                </>;
+            case 'edit':
+                return <ServiceFormPage/>
+        }
+    };
+    const [routes] = React.useState([
+        { key: 'application', title: 'First' },
+        { key: 'edit', title: 'Second' },
+    ]);
+
     return (
         <>
             <View  style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
@@ -605,379 +1004,18 @@ function ActivityModal(props: any) {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
             } : {position: "absolute",}}>
             </View>
-            <CustomAlert
-                showClose={showClose}
-                type={approvalIcon ? APPROVED : ""}
-                onDismissed={() => {
-                    setShowAlert(false);
-                    setApprovalIcon(false);
-                    setShowClose(false)
-                    goBackAsync()
-                }}
-                onLoading={alertLoading}
-                onCancelPressed={() => {
-                    setShowAlert(false);
-                    if (approvalIcon) {
-                        setApprovalIcon(false);
-                        setShowClose(false)
-                    }
-                }}
-                onConfirmPressed={() => {
-                    let status = "";
-                    if ([CASHIER, DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
-                        status = APPROVED
-                    } else {
-                        status = DECLINED
-                    }
-                    // setShowAlert(false)
-                    setAlertLoading(true);
-                    onChangeApplicationStatus(status, (err) => {
-                        setAlertLoading(false);
-                        if (!err) {
-                            setApprovalIcon(true);
-                            setTitle("Application Approved");
-                            setMessage("Application has been approved.");
-                        } else {
-                            setApprovalIcon(false);
-                            setTitle("Alert");
-                            setMessage(err?.message || 'Something went wrong.');
-                        }
-                        setShowClose(true)
-                    }, {remarks: remarks, cashier: assignId})
-                }}
-                show={showAlert} title={title}
-                message={message}/>
-            <View onLayout={onActivityModalScreenComponent} style={{flex: 1, backgroundColor: "#FFF"}}>
-                {(
-                    isMobile || (Platform?.isPad)) && <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
 
-                    borderBottomColor: "#F0F0F0",
-                    justifyContent: "space-evenly",
-                    padding: 15,
-                    paddingTop: 40,
-                }}>
-
-                    {edit ? <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
-                            <View style={{marginHorizontal: 10}}><ChevronLeft width={fontValue(24)} height={fontValue(24)}
-                                                                              color="#606A80"/></View>
-                        </TouchableOpacity> :
-                        <TouchableOpacity hitSlop={hitSlop} onPress={() => {
-                            handleBackButtonClick()
-                        }}>
-                            <View style={{marginHorizontal: 10}}><CloseIcon width={fontValue(16)} height={fontValue(16)}
-                                                                            color="#606A80"/></View>
-                        </TouchableOpacity>}
-                    <Text
-                        style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
-
-                    {editModalVisible ? edit ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
-
-                            updateApplication(() => {
-                            }).then(r => {})
-
-                        }
-                        }>
-                            {loading ? <ActivityIndicator color={infoColor}/> :
-                                <Text style={{
-                                    marginHorizontal: 10,
-                                    fontFamily: Regular,
-                                    fontSize: fontValue(16),
-                                    color: infoColor
-                                }}>Save</Text>}
-                            {/* <EditIcon color="#606A80"/>*/}
-                        </TouchableOpacity>
-
-                        : <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
-
-                            <Text style={{
-                                marginHorizontal: 10,
-                                fontFamily: Regular,
-                                fontSize: fontValue(16),
-                                color: infoColor
-                            }}>Edit</Text>
-                            {/* <EditIcon color="#606A80"/>*/}
-                        </TouchableOpacity> : <Text style={{
-                        marginHorizontal: 10,
-                        fontFamily: Regular,
-                        fontSize: fontValue(16),
-                        opacity: 0
-                    }}>Edit</Text>
-                    }
-
-                </View>}
-
-
-                <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert}
-                          updateApplication={updateApplication} editBtn={editBtn}
-                          setEdit={setEdit}
-                          hasChanges={hasChanges} edit={edit} dismissed={() => {
-                    goBackAsync()
-                }} details={applicationItem} status={status}/>
-
-                {Platform.OS != "web" ? <Toast/> : <></>}
-                {!edit ?
-                    <View style={[{
-                        paddingHorizontal: !isMobile ? 64 : 0,
-                        borderTopColor: 'rgba(0, 0, 0, 0.1)',
-                        borderTopWidth: 1, backgroundColor: "white"
-                    }]}>
-                        <View style={!(
-                            isMobile) && {
-                            width: dimensions?.width <= 768 ? "100%" : "60%",
-                            alignSelf: "flex-end"
-                        }}>
-                            <View style={styles.footer}>
-                                {getRole(user, [DIRECTOR, EVALUATOR, CASHIER, ACCOUNTANT]) &&
-                                    <View style={styles.groupButton}>
-                                        <ApprovedButton
-                                            user={user}
-                                            currentLoading={currentLoading}
-                                            allButton={allButton}
-                                            onPress={() => {
-                                                if (getRole(user, [EVALUATOR])) {
-                                                    setShowAlert1(true)
-                                                    setApproveVisible(true)
-                                                } else {
-                                                    setApproveVisible(true)
-                                                }
-                                            }}/>
-
-                                        {<DeclineButton
-                                            currentLoading={currentLoading}
-                                            allButton={allButton}
-                                            onPress={() => {
-                                                setVisible(true)
-                                            }}/>}
-
-                                    </View>}
-                                {getRole(user, [EVALUATOR]) && applicationItem?.service?.serviceCode !== "service-22" &&
-                                    <EndorsedButton
-                                        currentLoading={currentLoading}
-                                        allButton={allButton}
-                                        onPress={() => {
-                                            setEndorseVisible(true)
-                                        }}/>}
-                            </View>
-                        </View>
-                    </View> : <></>
-                }
-            </View>
-
-            <Approval
-                showAlert={showAlert1}
-                setShowAlert={setShowAlert1}
-                size={activityModalScreenComponent}
-                onModalDismissed={(event?: any) => {
-                    if (event == "cancel") {
-                        //cancelTokenSource?.cancel();
-                    }
-                    setStatus(prevStatus);
-                    setRemarks(prevRemarks);
-                    setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
-                    if (getRole(user, [EVALUATOR])) {
-                        onApproveDismissed();
-
-                    }
-                    dispatch(setFeedVisible(true))
-                }}
-                onChangeRemarks={(_remark: string, _assign) => {
-
-                    setPrevStatus(status);
-                    setPrevRemarks(remarks);
-                    setPrevAssignId(assignId);
-                    if (getRole(user, [CASHIER, DIRECTOR, ACCOUNTANT])) {
-                        setRemarks(_remark);
-                        setAssignId(_assign)
-                    }
-                    setShowAlert1(true)
-
-                }}
-
-
-                visible={approveVisible}
-                confirm={(event: any, callback: (res, callback) => {}) => {
-                    setRemarks(event.remark);
-                    setAssignId(event.cashier)
-                    let status = "";
-
-                    if (getRole(user, [DIRECTOR, EVALUATOR])) {
-                        if (applicationItem?.service?.serviceCode == "service-22") {
-                            status = APPROVED
-                        } else {
-                            status = FORAPPROVAL
-                        }
-
-                    } else if (getRole(user, [ACCOUNTANT])) {
-                        status = APPROVED
-                    } else if (getRole(user, [CASHIER])) {
-                        status = PAID
-                    }
-                    onChangeApplicationStatus(status, (err, appId) => {
-
-                        if (!err) {
-
-                            callback(true, (bool) => {
-
-                            })
-                        } else {
-
-                            callback(false, (bool) => {
-
-                            })
-                        }
-
-                    }, event)
-
-
-                }}
-                onExit={() => {
-
-                    onApproveDismissed();
-                    goBackAsync()
-
-                }}
-                onDismissed={(event?: any, callback?: (bool) => {}) => {
-                    if (event == APPROVED) {
-                        onApproveDismissed();
-
-                    }
-                    if (callback) {
-                        callback(true)
-                    }
-                }}
-            />
-            <Disapproval
-                size={activityModalScreenComponent}
-                user={applicationItem?.applicant?.user}
-                remarks={setRemarks}
-                onChangeApplicationStatus={(event: any, callback: (bool, appId) => {}) => {
-
-                    onChangeApplicationStatus(DECLINED, (err, id) => {
-
-                        if (!err) {
-                            callback(true, (response) => {
-
-                            })
-                        } else {
-                            callback(false, (response) => {
-
-                            })
-                        }
-                    }, event)
-                }
-                }
-                visible={visible}
-                onExit={() => {
-                    onDismissed();
-                    goBackAsync()
-                }}
-                onDismissed={() => {
-
-                    onDismissed()
-
-                }}
-            />
-            <Endorsed
-                size={activityModalScreenComponent}
-                assignedPersonnel={applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel}
-                onModalDismissed={() => {
-                    setRemarks(prevRemarks);
-                    setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
-                }}
-                remarks={(event: any) => {
-                    setPrevRemarks(remarks);
-                    setPrevAssignId(assignId);
-                    setRemarks(event.remarks);
-                    setAssignId(event.endorseId)
-                }}
-                onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
-                    onChangeApplicationStatus(event.status, (err, id) => {
-                        console.log(!err, err);
-                        if (!err) {
-                            callback(true, (response) => {
-
-                            })
-                        } else {
-                            callback(false, (response) => {
-
-                            })
-                        }
-
-                    }, event);
-                }}
-                visible={endorseVisible}
-                onExit={() => {
-
-                    onEndorseDismissed();
-                    goBackAsync().then(() => {
-                        console.log(1)
-                        _props.onDismissed(true);
-                    })
-                }}
-                onDismissed={() => {
-
-                    onEndorseDismissed()
-                }}
+            <TabView
+                swipeEnabled={false}
+                renderTabBar={() => null}
+                navigationState={{ index: sceneIndex, routes }}
+                renderScene={renderScene}
+                onIndexChange={(index) =>dispatch(setSceneIndex(index))}
+                initialLayout={{ width: dimensions.width }}
             />
 
-            <Alert
-                visible={discardAlert}
-                title={'Discard Changes'}
-                message={'Any unsaved changes will not be saved. Continue?'}
-                confirmText='OK'
-                cancelText={"Cancel"}
-                onConfirm={() => {
-                    setAssignId("");
-                    setStatus("");
-                    goBackAsync()
-                    setChange(false)
-                    setDiscardAlert(false)
-                }
-                }
-                onCancel={() => setDiscardAlert(false)}
-            />
-            <CustomAlert
-                showClose={true}
-                onDismissed={() => {
-                    setShowAlert2(false)
-                }
-                }
-                onCancelPressed={() => {
-                }
-                }
-
-                show={showAlert2}
-                title={titleUpdate}
-                message={messageUpdate}
-                confirmText='OK'
-                onConfirmPress={() => {
-                    setShowAlert2(false)
-                }
-                }
-            />
-            <Alert
-                visible={editAlert}
-                title={'Edit Changes'}
-                message={'Any unsaved changes will not be saved. Continue?'}
-                confirmText='OK'
-                cancelText={"Cancel"}
-                onConfirm={() => {
-                    dispatch(setHasChange(false))
-                    dispatch(setEdit((bool) => !bool))
-                    setEditAlert(false)
-                    const myPromise = new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            dispatch(setUserProfileForm(userOriginalProfileForm))
-                        }, 300);
-                    });
 
 
-                }
-                }
-                onCancel={() => setEditAlert(false)}
-            />
         </>
     );
 }

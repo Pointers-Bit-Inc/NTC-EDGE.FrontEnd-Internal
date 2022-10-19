@@ -302,12 +302,12 @@ const Payment = (_props: any) => {
     };
 
 
-    const [soa, setSoa] = useSafeState(props?.soa.map(((s, index) => {
+    const [soa, setSoa] = useSafeState(props?.soa?.map(((s, index) => {
         return {...s, ...{error: false, isEdit: false, id: index}}
     })) || [])
 
     useEffect(() => {
-        setSoa(props?.soa.map(((s, index) => {
+        setSoa(props?.soa?.map(((s, index) => {
             return {...s, ...{error: false, isEdit: false, id: index}}
         })) || [])
     }, [props.soa, props.edit])
@@ -315,7 +315,7 @@ const Payment = (_props: any) => {
     const getTotal = () => {
         let total = 0;
         soa?.map(s => total += isNumber(parseFloat(s.amount)) ? parseFloat(s.amount) : 0);
-        return props.totalFee.toFixed(2);
+        return props.totalFee?.toFixed(2);
     };
     const largestNumber = (array) => {
         if (!array.length) return 1

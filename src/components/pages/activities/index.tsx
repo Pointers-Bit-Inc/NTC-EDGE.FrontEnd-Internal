@@ -413,7 +413,7 @@ const ActivitiesPage = (props) => {
                                                                />
                                                            }}/>;
 
-    const renderItem = useCallback(({item, index}) => (
+    const  renderItem = useCallback(({item, index}) => (
         <>
             <ApplicationList
                 key={index}

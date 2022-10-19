@@ -26,9 +26,41 @@ const {
     SET_PREV_DATE_START,
     SET_PREV_DATE_END,
     SET_DATA_ID,
-    SET_DELETE_DATA
+    SET_DELETE_DATA,
+    SET_SCENE_INDEX,
+    SET_PROVINCES,
+    FETCH_CITIES,
+    FETCHING_CITIES,
+    SET_CITIES,
+    FETCH_PROVINCES,
+    FETCHING_PROVINCES,
+    FETCH_SCHEDULES,
+    FETCHING_SCHEDULES,
+    SET_SCHEDULES,
+    FETCH_REGIONS,
+    FETCHING_REGIONS,
+    SET_REGIONS
 } = require('./types').default;
+export function fetchSchedules(payload: any) {
+    return {
+        type: FETCH_SCHEDULES,
+        payload,
+    }
+};
 
+export function setFetchingSchedules(payload: boolean) {
+    return {
+        type: FETCHING_SCHEDULES,
+        payload,
+    }
+};
+
+export function setSchedules(payload: any) {
+    return {
+        type: SET_SCHEDULES,
+        payload,
+    }
+};
 export function setPinnedApplication(payload) {
     return {
         type: SET_PINNED_APPLICATION,
@@ -65,6 +97,73 @@ export function setDataId(payload) {
         payload,
     };
 }
+export function setSceneIndex(payload) {
+    return {
+        type: SET_SCENE_INDEX,
+        payload,
+    };
+}
+export function fetchProvinces(payload: any) {
+    return {
+        type: FETCH_PROVINCES,
+        payload,
+    }
+};
+
+export function setFetchingProvinces(payload: boolean) {
+    return {
+        type: FETCHING_PROVINCES,
+        payload,
+    }
+};
+export function fetchRegions() {
+    return {
+        type: FETCH_REGIONS,
+    }
+};
+
+export function setFetchingRegions(payload: boolean) {
+    return {
+        type: FETCHING_REGIONS,
+        payload,
+    }
+};
+
+export function setRegions(payload: any) {
+    return {
+        type: SET_REGIONS,
+        payload,
+    }
+};
+
+export function setProvinces(payload: any) {
+    return {
+        type: SET_PROVINCES,
+        payload,
+    }
+};
+
+export function fetchCities(payload: any) {
+    return {
+        type: FETCH_CITIES,
+        payload,
+    }
+};
+
+export function setFetchingCities(payload: boolean) {
+    return {
+        type: FETCHING_CITIES,
+        payload,
+    }
+};
+
+export function setCities(payload: any) {
+    return {
+        type: SET_CITIES,
+        payload,
+    }
+};
+
 
 export function setDeleteData(payload) {
     return {

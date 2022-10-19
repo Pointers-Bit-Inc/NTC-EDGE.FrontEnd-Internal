@@ -294,7 +294,7 @@ export const excludeStatus = (props: any, personnel: UserApplication) => getStat
 
 export function getStatusText(props: any, personnel: UserApplication | undefined) {
 
-    return (props?.service.serviceCode == 'service-22' && props?.status == FORAPPROVAL) ? APPROVED : getRole(props.user, [EVALUATOR, DIRECTOR]) && getStatus(props, personnel) == FORAPPROVAL && (
+    return (props?.service?.serviceCode == 'service-22' && props?.status == FORAPPROVAL) ? APPROVED : getRole(props.user, [EVALUATOR, DIRECTOR]) && getStatus(props, personnel) == FORAPPROVAL && (
         !!props?.approvalHistory?.[0]?.userId || !!props?.approvalHistory?.userId) && (
         props?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.approvalHistory?.status !== FOREVALUATION) && (
         props?.approvalHistory?.[0]?.status !== PENDING && props?.approvalHistory?.status !== PENDING) && (

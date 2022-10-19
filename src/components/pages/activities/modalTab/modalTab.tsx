@@ -21,7 +21,7 @@ import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {setEditModalVisible, setFeedVisible, setTabName} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
-import {setEdit} from "../../../../reducers/application/actions";
+import {setEdit, setSceneIndex} from "../../../../reducers/application/actions";
 import {Route, TabBar, TabBarIndicator, TabView} from "react-native-tab-view";
 import {Regular, Regular500} from "@styles/font";
 import {GetTabWidth} from "react-native-tab-view/lib/typescript/TabBarIndicator";
@@ -381,7 +381,10 @@ const ModalTab = props => {
 
                     : editModalVisible ?
 
-                        <TouchableOpacity onPress={props.editBtn}>
+                        <TouchableOpacity onPress={()=>{
+                        dispatch(setSceneIndex(1))
+                        }
+                        }>
                             <Text style={styles.action}>Edit</Text>
                         </TouchableOpacity> : <View style={{opacity: "0%"}}> <Text style={styles.action}>Edit</Text></View>}
                 <View style={{paddingVertical: 29.5, paddingHorizontal: 10}}>

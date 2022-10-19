@@ -41,7 +41,13 @@ const {
     SET_PREV_DATE_END,
     SET_PREV_DATE_START,
     SET_DATA_ID,
-    SET_DELETE_DATA
+    SET_SCENE_INDEX,
+    SET_PROVINCES,
+    FETCHING_PROVINCES,
+    FETCHING_CITIES,
+    SET_CITIES,
+    FETCHING_SCHEDULES,
+    SET_SCHEDULES
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -63,13 +69,45 @@ export default function basket(state = initialState, action = {}) {
             state = state.set('selectedYPos', action.payload);
             return state
         }
-
+            case SET_SCENE_INDEX:{
+                state = state.set('sceneIndex', action.payload);
+                return state
+            }
         case SET_DATA: {
 
             state = state.set('data', action.payload);
             return state
         }
+        case FETCHING_SCHEDULES: {
+            state = state.set('fetchingSchedules', action.payload);
+            return state
 
+        }
+        case SET_SCHEDULES: {
+            state = state.set('schedules', action.payload);
+            return state
+
+        }
+        case FETCHING_PROVINCES: {
+            state = state.set('fetchingProvinces', action.payload);
+            return state
+
+        }
+        case SET_PROVINCES: {
+            state = state.set('provinces', action.payload);
+            return state
+
+        }
+        case FETCHING_CITIES: {
+            state = state.set('fetchingCities', action.payload);
+            return state
+
+        }
+        case SET_CITIES: {
+            state = state.set('cities', action.payload);
+            return state
+
+        }
         case SET_RIGHT_LAYOUT_COMPONENT: {
 
             state = state.set('rightLayoutComponent', action.payload);

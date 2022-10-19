@@ -28,5 +28,18 @@ export default keyMirror({
   SET_PREV_DATE_END: null,
   SET_PREV_DATE_START: null,
   SET_DATA_ID: null,
-  SET_DELETE_DATA: null
+  SET_DELETE_DATA: null,
+  SET_SCENE_INDEX: null,
+  SET_PROVINCES: null,
+  FETCHING_PROVINCES: null,
+  FETCHING_CITIES: null,
+  SET_CITIES: null,
+  FETCH_SCHEDULES: null,
+  FETCHING_SCHEDULES: null,
+  SET_SCHEDULES: null,
+  FETCH_PROVINCES:null,
+  FETCH_CITIES: null,
+  FETCH_REGIONS: null,
+  FETCHING_REGIONS: null,
+  SET_REGIONS: null
 });

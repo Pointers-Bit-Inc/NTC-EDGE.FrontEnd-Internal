@@ -1,3 +1,4 @@
+import Moment from 'moment';
 const validateEmail = (text:string) => {
   const regex = /^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/;
   return regex.test(text);
@@ -36,9 +37,34 @@ const validateText = (text:string) => {
   return !!text?.replace(/ /g, '');
 }
 
+const validateNumber = (text:string) => {
+  return !isNaN(Number(text)) && Number(text) > -1;
+};
+
+const validateDate = (text:string) => {
+  return Number(text) >= 1 && Number(text) <= 31;
+};
+
+const validateYear = (text:string) => {
+  return Number(text) >= 1000 && Number(text) <= Moment().year();
+};
+
+const validateZipCode = (text:string) => {
+  return Number(text) >= 1000 && Number(text) <= 9999;
+};
+
+const validateIMEI = (text:string) => {
+  const regex = /((^\d{15}$))/;
+  return regex.test(text);
+};
 export {
   validateEmail,
   validatePassword,
   validatePhone,
   validateText,
+  validateNumber,
+  validateDate,
+  validateYear,
+  validateZipCode,
+  validateIMEI,
 }
