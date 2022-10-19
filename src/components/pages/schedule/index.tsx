@@ -102,7 +102,10 @@ export default function SchedulePage(props: any) {
                                 <TextInput value={value} onChangeText={text => {
                                     setValue(text)
                                     text.length == 0 ?  setFilter(schedulesMemo) : setFilter(schedulesMemo.filter((item) => {
-                                        return fuzzysearch(text, item?.region?.label ) || fuzzysearch(text, item?.venue) ||  fuzzysearch(text,moment(item?.dateStart).format('LT')) ||  fuzzysearch(text,moment(item?.dateStart).format('ddd DD MMMM YYYY'))
+                                        return fuzzysearch(text, item?.region?.label ) ||
+                                            fuzzysearch(text, item?.venue) ||
+                                            fuzzysearch(text,moment(item?.dateStart).format('LT')) ||
+                                            fuzzysearch(text,moment(item?.dateStart).format('ddd DD MMMM YYYY'))
                                     }))
                                 }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
                                 <View style={styles.searchIcon}>

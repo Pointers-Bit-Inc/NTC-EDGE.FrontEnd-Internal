@@ -1285,16 +1285,13 @@ const ServiceFormPage = () =>{
         }
     };
     return <View style={{flex: 1}}>
-        <NTCAlert
-            alertContainerStyle={{zIndex: 999}}
-            visible={udaAlert?.active}
-            title={udaAlert?.title || 'Alert'}
-            message={udaAlert?.message}
-            confirmText='OK'
-            onConfirm={udaAlert?.onConfirm}
-        />
-        <Requirements requirements={requirements} onUpload={onUpload} onRemove={onRemove} disabled={isUploading()}/>
 
+
+
+    {/*
+    <Requirements requirements={requirements} onUpload={onUpload} onRemove={onRemove} disabled={isUploading()}/>
+    <ServicesForm form={form} onChangeValue={onFormUpdate} onAdd={_onAdd} onRemove={_onRemove} onUseDifferentAddress={onUseDifferentAddress} useDifferentAddress={useDifferentAddress} />
+*/}
     </View>
 
 }

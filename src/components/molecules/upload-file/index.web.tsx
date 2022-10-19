@@ -21,6 +21,7 @@ import { NTCPreview } from '../../../utils/ntc';
 import styles from './styles';
 import {isMobile} from '../../../utils/formatting';
 import {RootStateOrAny,useSelector} from 'react-redux';
+import Close from "@atoms/icon/close";
 
 interface Props {
 	onUpload?: any;

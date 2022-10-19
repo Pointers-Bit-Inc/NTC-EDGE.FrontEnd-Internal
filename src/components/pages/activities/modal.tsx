@@ -69,6 +69,7 @@ import {setFeedVisible, setUpdateIncrement} from "../../../reducers/activity/act
 import {setAmnesty} from "../../../reducers/soa/actions";
 import {SceneMap, TabView} from "react-native-tab-view";
 import ServiceFormPage from "@pages/form";
+import Bottom from "@atoms/button/bottom";
 
 const flatten = require('flat')
 
@@ -600,10 +601,11 @@ function ActivityModal(props: any) {
 
 
 
-
+    let buttonLabel;
     const renderScene = ({ route, jumpTo }) => {
         switch (route.key) {
             case 'application':
+
                 return  <>
                     <CustomAlert
                         showClose={showClose}
@@ -764,7 +766,9 @@ function ActivityModal(props: any) {
                                                 }}/>}
                                     </View>
                                 </View>
-                            </View> : <></>
+                            </View> : <>
+
+                            </>
                         }
                     </View>
 

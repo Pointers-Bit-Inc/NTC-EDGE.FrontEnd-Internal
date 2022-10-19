@@ -1,42 +1,47 @@
-import { StyleSheet } from 'react-native';
-import { primaryColor, disabledColor, defaultColor } from '@styles/color';
+import {Dimensions,Platform,StyleSheet} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const { width , height } = Dimensions.get('window');
 
 export default StyleSheet.create({
   mainContainer: {
     flex: 1,
-  },
-  titleStyle: {
-    color: primaryColor,
-    fontWeight: 'bold',
+    ...Platform.select({
+      web:{
+        width:"100%",
+      }
+    })
+
   },
   iconStyle: {
-    color: defaultColor,
+    color: '#fff',
+    fontSize: RFValue(15),
   },
   progressContainer: {
+
     paddingVertical: 15,
     backgroundColor: '#fff',
   },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
+  completedBr: {
+    height: height * .09,
     backgroundColor: '#fff',
-    padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-    shadowOffset: { width: 0, height: -3 },
   },
-  buttonEnabled: {
-    backgroundColor: primaryColor,
-    borderRadius: 10,
-	},
-	buttonDisabled: {
-    backgroundColor: disabledColor,
-    borderRadius: 10,
-	},
-	buttonTxt: {
-		color: '#fff',
-	},
+  title:{
+    borderBottomWidth: 1,
+    borderBottomColor: "#EFEFEF",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    height: 74,
+
+    paddingVertical: 24,
+    paddingRight:width * 0.04,
+    paddingLeft: width * 0.048,
+  },
+
+  genAppView: {
+    backgroundColor: 'red',
+  }
+
 });

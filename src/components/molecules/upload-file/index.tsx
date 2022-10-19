@@ -17,6 +17,7 @@ import styles from './styles';
 import Camera from "@atoms/icon/camera";
 import Upload from "@atoms/icon/upload";
 import FileAdd from "@atoms/icon/file-add";
+import Close from "@atoms/icon/close";
 
 interface Props {
   onUpload?: any;
