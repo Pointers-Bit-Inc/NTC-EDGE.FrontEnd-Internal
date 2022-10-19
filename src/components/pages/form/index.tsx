@@ -3,13 +3,36 @@ import {NTCServices as NTCServicesList } from '@utils/ntc';
 import {validateNumber, validateText} from "../../../utils/form-validations";
 import {generateForm, JSONfn} from "../../../utils/formatting";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {fetchCities, fetchProvinces, fetchRegions, fetchSchedules} from "../../../reducers/application/actions";
+import {
+    fetchCities,
+    fetchProvinces,
+    fetchRegions,
+    fetchSchedules,
+    uploadRequirement
+} from "../../../reducers/application/actions";
 import ServicesForm from "@pages/form/ServicesForm";
 import NTCServicesConfig from 'src/ntc-services-config';
 import moment from "moment";
-import {BackHandler, View} from "react-native";
+import {BackHandler, Platform, View} from "react-native";
 import NTCAlert from '@atoms/alert';
+import {isMobile} from "@pages/activities/isMobile";
+import Requirements from "@templates/application-steps/requirements";
+
 const ServiceFormPage = () =>{
+
+
+
+
+    const onUpload = (file: any) => {
+        let index = file?.index;
+        if (index > -1) {
+            let _requirements = [...requirements];
+            let _files = _requirements?.[index]?.files || [];
+            _files.push(file);
+            _requirements[index].files = _files;
+            onUploadFile(_requirements[index]);
+        }
+    };
     const [origAdd, setOrigAdd] = useState({});
     const currentYear = moment()?.get('year')?.toString();
     const applicationItem = useSelector((state: RootStateOrAny) => {
@@ -22,10 +45,12 @@ const ServiceFormPage = () =>{
     const provinces = useSelector((state: RootStateOrAny) => state.application?.provinces);
     const fetchingProvinces = useSelector((state: RootStateOrAny) => state.application?.fetchingProvinces);
     const cities = useSelector((state: RootStateOrAny) => state.application?.cities);
+    const schedules = useSelector((state: RootStateOrAny) => state.application?.schedules);
+    const uploadingRequirement = useSelector((state: RootStateOrAny) => state.application?.uploadingRequirement);
     const fetchingCities = useSelector((state: RootStateOrAny) => state.application?.fetchingCities);
 
     const [service, setService] = useState( applicationItem?.service);
-    const [applicationItemType, setApplicationType] = useState(applicationItem?.service?.applicationType || {});
+    const [applicationType, setApplicationType] = useState(applicationItem?.service?.applicationType || {});
     const [renew, setRenew] = useState({});
     const formCode = applicationItem?.service?.applicationType?.formCode
     let applicant = {
@@ -88,14 +113,10 @@ const ServiceFormPage = () =>{
     const [backPressed, setBackPressed] = useState(false);
 
 
-
     useEffect(() => {
-        console.log(applicationItem?.region)
         if (!!applicationItem?.region) {
             let r = {regionCode: applicationItem.region};
-            console.log(r)
             if (service?.serviceCode === 'service-1') dispatch(fetchSchedules(r));
-
             dispatch(fetchProvinces(r));
 
             if (!AT.element) AT.element = applicationItem?.service?.applicationType?.element;
@@ -673,7 +694,7 @@ const ServiceFormPage = () =>{
     const [useDifferentAddress, setUseDifferentAddress] = useState(false);
     const [alternateRequirements, setAlternateRequirements] = useState([]);
     const onUseDifferentAddress = () => setUseDifferentAddress(!useDifferentAddress);
-
+    const requirements = alternateRequirements?.length > 0 ? alternateRequirements : (applicationType?.requirements || []);
 
 
 
@@ -1199,6 +1220,70 @@ const ServiceFormPage = () =>{
     useEffect(() => {
        setItemsOnForm('address', 'city', fetchingCities, cities);
     }, [cities, fetchingCities]);
+    const onUploadFile = async(requirement:any)=>{
+        let createFormData=async(payload:any)=>{
+            const {key,files}=payload;
+            const file=files?.[files?.length-1];
+            const data=new FormData();
+
+            let f:any={
+                name:file?.name,
+                type:file?.mimeType,
+                uri:file?.uri,
+            }
+            if(isMobile){
+
+                data.append('file',f);
+                data.append('key',key);
+                return data;
+            }
+            Platform.select({
+                web:await fetch(f?.uri).then(res=>{
+                    return res?.blob()
+                }).then(blob=>{
+                    var mime=f?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
+                    var attachmentMime=mime[1]?.split('/')?.[1]
+                    if(mime&&mime.length){
+                        f=new File([blob],f?.name+(
+                            attachmentMime.length<5 ? '.'+attachmentMime : ''));
+                    }
+                })
+            })
+            data.append('file',f);
+            data.append('key',key);
+            return data;
+        };
+        let formData=await createFormData(requirement);
+        dispatch(uploadRequirement({
+            formData,
+            requirements,
+        }));
+    };
+    const isUploading = () => {
+        if (uploadingRequirement) return uploadingRequirement;
+        let uploading = false;
+        requirements.map((r: any) => {
+            r?.files?.forEach((f: any) => {
+                if (f?.uploading) {
+                    uploading = true;
+                    return;
+                }
+            });
+        });
+        return uploading;
+    };
+    const onRemove = (index: number, _index: number) => {
+        if (index >= 0 && _index >= 0) {
+            let _requirements = [...requirements];
+            let _files = _requirements?.[index]?.files || [];
+            _files.splice(_index, 1);
+            _requirements[index].files = _files;
+            setApplicationType({
+                ...applicationType,
+                requirements: _requirements,
+            });
+        }
+    };
     return <View style={{flex: 1}}>
         <NTCAlert
             alertContainerStyle={{zIndex: 999}}
@@ -1208,8 +1293,7 @@ const ServiceFormPage = () =>{
             confirmText='OK'
             onConfirm={udaAlert?.onConfirm}
         />
-
-        <ServicesForm form={form} onChangeValue={onFormUpdate} onAdd={_onAdd} onRemove={_onRemove} onUseDifferentAddress={onUseDifferentAddress} useDifferentAddress={useDifferentAddress} />
+        <Requirements requirements={requirements} onUpload={onUpload} onRemove={onRemove} disabled={isUploading()}/>
 
     </View>
 

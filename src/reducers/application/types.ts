@@ -41,5 +41,7 @@ export default keyMirror({
   FETCH_CITIES: null,
   FETCH_REGIONS: null,
   FETCHING_REGIONS: null,
-  SET_REGIONS: null
+  SET_REGIONS: null,
+  UPLOADING_REQUIREMENT: null,
+  UPLOAD_REQUIREMENT: null
 });

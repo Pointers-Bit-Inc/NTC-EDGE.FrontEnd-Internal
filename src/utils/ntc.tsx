@@ -1,4 +1,43 @@
 import Moment from "moment";
+
+const NTCPreview = (filename: string) => {
+    const split = filename?.split('.');
+    const ext = split?.[split?.length - 1];
+    let pdf = require('@assets/preview/pdf.png');
+    let docs = require('@assets/preview/docs.png');
+    let excel = require('@assets/preview/excel.png');
+    let slides = require('@assets/preview/slides.png');
+    let file = require('@assets/preview/file.png');
+    if (ext === 'pdf') return pdf;
+    else if (
+        ext === 'doc' ||
+        ext === 'docx' ||
+        ext === 'dotx'
+    ) return docs;
+    else if (
+        ext === 'xls' ||
+        ext === 'xlsx' ||
+        ext === 'xltx'
+    ) return excel;
+    else if (
+        ext === 'ppt' ||
+        ext === 'pptx' ||
+        ext === 'potx' ||
+        ext === 'ppsx'
+    ) return slides;
+    else if (
+        ext === 'jpg' ||
+        ext === 'JPG' ||
+        ext === 'jpeg' ||
+        ext === 'JPEG' ||
+        ext === 'png' ||
+        ext === 'PNG' ||
+        ext === 'webp' ||
+        ext === 'WEBP'
+    ) return 'image';
+    else return file;
+};
+
 const regionList = [
     {
         "label": "Region I - Ilocos Region",
@@ -5629,6 +5668,7 @@ const NTCServices = [
     },
 ];
 export {
+    NTCPreview,
     NTCServices,
     birthyearList, GUEST_USER,
     _classOfStation,

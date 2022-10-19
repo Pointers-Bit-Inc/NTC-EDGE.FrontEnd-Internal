@@ -47,7 +47,8 @@ const {
     FETCHING_CITIES,
     SET_CITIES,
     FETCHING_SCHEDULES,
-    SET_SCHEDULES
+    SET_SCHEDULES,
+    UPLOADING_REQUIREMENT
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -220,6 +221,10 @@ export default function basket(state = initialState, action = {}) {
                 }
             }
 
+            return state;
+        }
+        case UPLOADING_REQUIREMENT: {
+            state = state.set('uploadingRequirement', action.payload);
             return state;
         }
 

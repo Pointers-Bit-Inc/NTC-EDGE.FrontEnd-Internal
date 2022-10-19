@@ -39,11 +39,26 @@ const {
     SET_SCHEDULES,
     FETCH_REGIONS,
     FETCHING_REGIONS,
-    SET_REGIONS
+    SET_REGIONS,
+    UPLOADING_REQUIREMENT,
+    UPLOAD_REQUIREMENT,
 } = require('./types').default;
 export function fetchSchedules(payload: any) {
     return {
         type: FETCH_SCHEDULES,
+        payload,
+    }
+};
+export function setUploadingRequirement(payload: any) {
+    return {
+        type: UPLOADING_REQUIREMENT,
+        payload,
+    }
+};
+
+export function uploadRequirement(payload: any) {
+    return {
+        type: UPLOAD_REQUIREMENT,
         payload,
     }
 };
