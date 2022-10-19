@@ -782,7 +782,7 @@ const BasicInfo = (_props: any) => {
                                                                     updateForm={applicantForm}
                                                                     userProfileForm={userProfileForm}
                                                                     edit={props.edit}
-                                                                    exclude={["createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
+                                                                    exclude={["basic", "createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
 
 
