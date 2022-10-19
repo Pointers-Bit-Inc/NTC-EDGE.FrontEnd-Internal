@@ -363,7 +363,7 @@ const BasicInfo = (_props: any) => {
                                    </CustomText>
                                </View>
                            </View>
-                           <View style={{flex: 0.6, flexWrap: "nowrap"}}>
+                           <View style={{alignItems: "flex-end", flex: 0.6, flexWrap: "nowrap"}}>
                                <Text style={{
                                    color: "#606A80",
                                    fontSize: fontValue(10)
