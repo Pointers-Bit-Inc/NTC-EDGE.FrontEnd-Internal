@@ -4,11 +4,13 @@ import Text from '@atoms/text';
 import {DropdownField} from '@molecules/form-fields';
 import styles from './styles';
 import moment from 'moment';
-import {Calendar,Clock, MapMarker} from '@components/atoms/icon';
 import Ellipsis from '@components/atoms/ellipsis';
 import {infoColor} from '@styles/color';
 import QuestionMarkIcon from "@assets/svg/questionMarkIcon";
-import {RNValue as RFValue} from "@utils/formatting";
+import {RNValue as RFValue} from "../../../../utils/formatting";
+import Calendar from "@atoms/icon/calendar";
+import Clock from "@atoms/icon/clock";
+import MapMarker from "@atoms/icon/map-marker";
 
 interface Region {
   label?: string;
@@ -132,7 +134,7 @@ const Region: FC<Props> = ({
                   ListEmptyComponent={() => {
                     return (
                       <View style={styles?.emptyListContainer}><View style={{backgroundColor:"#DAE7FF",width:RFValue(140*1.2),height:RFValue(140*1.2),borderRadius:10}}>
-                        
+
                         <View style={[styles.row,{marginLeft:RFValue(-21*1.2),marginTop:RFValue(10*1.2),}]}>
                           <RowContent/>
                         </View>

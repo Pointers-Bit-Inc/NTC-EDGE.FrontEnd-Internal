@@ -3,11 +3,12 @@ import { View } from 'react-native';
 import Statusbar from '@atoms/status-bar';
 import Text from '@atoms/text';
 import ProgressSteps from '@atoms/progress-steps';
-import { ArrowLeft, Close } from '@atoms/icon';
 import NTCAlert from '@atoms/alert';
 import { Bottom } from '@molecules/buttons';
 import NavBar from '@organisms/navbar';
 import styles from './styles';
+import Close from "@atoms/icon/close";
+import ArrowLeft from "@atoms/icon/arrow-left";
 
 interface Steps {
   title?: string;
@@ -19,6 +20,7 @@ interface Steps {
 };
 
 interface Props {
+  tabview: JSX.Element,
   steps?: Steps[];
   currentStep?: number;
   completed?: boolean;
@@ -29,6 +31,7 @@ interface Props {
 };
 
 const ApplicationSteps: FC<Props> = ({
+  tabview,
   steps = [],
   currentStep = 0,
   completed,
@@ -43,7 +46,6 @@ const ApplicationSteps: FC<Props> = ({
   const current = steps?.[currentStep] || {};
   const {
     title = '',
-    content = <View />,
     onPrevious = () => {},
     onNext = () => {},
     buttonLabel = 'OK',
@@ -73,7 +75,7 @@ const ApplicationSteps: FC<Props> = ({
               onRight={onExit}
             />
       }
-      
+
       {
         generatingApplication ||
         ((currentStep + 1) >= totalSteps) //currentStep is by index
@@ -83,7 +85,9 @@ const ApplicationSteps: FC<Props> = ({
             </View>
       }
 
-      {content}
+      {tabview}
+
+
 
       <Bottom
         label={buttonLabel}

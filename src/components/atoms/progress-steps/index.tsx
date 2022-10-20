@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { LogBox, View, FlatList } from 'react-native';
-import * as Progress from 'expo-progress';
 import propsStyles from './props-styles';
 import styles from './styles';
+import ProgressBar from "@organisms/progressbar/Bar";
 
 interface Props {
   values?: number[];
@@ -10,7 +10,7 @@ interface Props {
 
 const renderItem = ({item, index}: any) => {
   return (
-    <Progress.Bar
+    <ProgressBar
       key={index}
       progress={item}
       {...propsStyles.progress}
@@ -31,6 +31,5 @@ const ProgressSteps: FC<Props> = ({ values = [0] }) => {
     </View>
   )
 };
-
 LogBox.ignoreLogs(['in Reanimated 2']);
 export default ProgressSteps;

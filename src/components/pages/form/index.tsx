@@ -7,16 +7,35 @@ import {
     fetchCities,
     fetchProvinces,
     fetchRegions,
-    fetchSchedules,
+    fetchSchedules, setSceneIndex,
     uploadRequirement
 } from "../../../reducers/application/actions";
 import ServicesForm from "@pages/form/ServicesForm";
 import NTCServicesConfig from 'src/ntc-services-config';
 import moment from "moment";
-import {BackHandler, Platform, View} from "react-native";
+import {
+    ActivityIndicator,
+    BackHandler,
+    Platform,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import NTCAlert from '@atoms/alert';
 import {isMobile} from "@pages/activities/isMobile";
 import Requirements from "@templates/application-steps/requirements";
+import {TabBar, TabView} from "react-native-tab-view";
+import Region from "@templates/application-steps/region";
+import {regionList} from "../../../utils/ntc";
+import ApplicationSteps from "@templates/application-steps";
+import {Regular} from "@styles/font";
+import {fontValue} from "@pages/activities/fontValue";
+import {infoColor} from "@styles/color";
+import {setFeedVisible} from "../../../reducers/activity/actions";
+import SplitIcon from "@assets/svg/SplitIcon";
+import CloseIcon from "@assets/svg/close";
+import Types from "@templates/application-steps/types";
 
 const ServiceFormPage = () =>{
 
@@ -48,6 +67,9 @@ const ServiceFormPage = () =>{
     const schedules = useSelector((state: RootStateOrAny) => state.application?.schedules);
     const uploadingRequirement = useSelector((state: RootStateOrAny) => state.application?.uploadingRequirement);
     const fetchingCities = useSelector((state: RootStateOrAny) => state.application?.fetchingCities);
+    const regions = useSelector((state: RootStateOrAny) => state.application?.regions);
+    const fetchingSchedules = useSelector((state: RootStateOrAny) => state.application?.fetchingSchedules);
+    const fetchingRegions = useSelector((state: RootStateOrAny) => state.application?.fetchingRegions);
 
     const [service, setService] = useState( applicationItem?.service);
     const [applicationType, setApplicationType] = useState(applicationItem?.service?.applicationType || {});
@@ -111,7 +133,18 @@ const ServiceFormPage = () =>{
     const renewApplication =true;
     const FOR_EDITING = editApplication || renewApplication;
     const [backPressed, setBackPressed] = useState(false);
-
+    useEffect(() => {
+        if (
+            FOR_EDITING &&
+            schedules?.length > 0 &&
+            Object.keys(!!applicationItem?.schedule ? applicationItem?.schedule : {}).length > 0
+        ) {
+            setSchedule({
+                ...applicationItem?.schedule,
+                region,
+            });
+        }
+    }, [schedules]);
 
     useEffect(() => {
         if (!!applicationItem?.region) {
@@ -1284,13 +1317,335 @@ const ServiceFormPage = () =>{
             });
         }
     };
+    const onBack = () => {
+        setBackPressed(true);
+        setBackPressed(false);
+        return true;
+    };
+
+    useEffect(() => {
+        dispatch(fetchRegions());
+         setRegion({code: applicationItem?.region, ...(regionList?.filter(i => i?.value === applicationItem?.region)?.[0] || {})});
+        BackHandler.addEventListener('hardwareBackPress', onBack);
+        return () => { BackHandler.removeEventListener('hardwareBackPress', onBack); };
+    }, []);
+    const layout = useWindowDimensions();
+
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        { key: 'region', title: 'Region' },
+        { key: 'applicationType', title: 'Application Type' },
+        { key: 'service', title: 'Service' },
+        { key: 'requirement', title: 'Requirement' },
+    ]);
+
+    const renderScene = ({ route, jumpTo }) => {
+        switch (route.key) {
+            case 'region':
+                return <Region
+                    serviceCode={service?.serviceCode}
+                    regions={regions}
+                    region={region}
+                    onPreSelect={() => dispatch(fetchRegions())}
+                    onChangeRegion={(region: any) => {
+                        setRegion(region);
+                        if (service?.serviceCode === 'service-1') setSchedule({});
+                    }}
+                    schedule={schedule}
+                    schedules={schedules}
+                    fetchingSchedules={fetchingSchedules}
+                    fetchingRegions={fetchingRegions}
+                    onChangeSchedule={setSchedule}
+                />
+            case 'applicationType':
+                return  <Types
+                    types={service?.applicationTypes}
+                    applicationType={applicationType}
+                    onChangeValue={handleChangeApplicationType}
+                    onSelect={handleChangeElement}
+                />
+            case 'service':
+                return <ServicesForm form={form} onChangeValue={onFormUpdate} onAdd={_onAdd} onRemove={_onRemove} onUseDifferentAddress={onUseDifferentAddress} useDifferentAddress={useDifferentAddress} />
+            case 'requirement':
+                return <Requirements requirements={requirements} onUpload={onUpload} onRemove={onRemove} disabled={isUploading()}/>
+        }
+    };
+    const onNext = () => {
+        setCurrentStep(currentStep + 1);
+    };
+    const [generatingApplication, setGeneratingApplication] = useState(false);
+    const onPrevious = () => setCurrentStep(currentStep - 1);
+    const onExitApplication = () => {
+
+    };
+    const incompleteRequirements = () => {
+        let incomplete = false;
+        requirements.map((r: any) => {
+            if (r?.required) {
+                if (!(r?.files?.length > 0)) {
+                    incomplete = true;
+                    return;
+                }
+                r?.files?.forEach((f: any) => {
+                    if (!(Object.keys(f?.links || {})?.length > 0)) {
+                        incomplete = true;
+                        return;
+                    }
+                });
+            }
+        });
+        return incomplete;
+    };
+    const [reviewed, setReviewed] = useState(false);
+    const [currentStep, setCurrentStep] = useState(0);
+    const [completed, setCompleted] = useState(false);
+    const formValid = () => {
+        var valid = true;
+        form.forEach((parent: any) => {
+            let isParentList = parent?.type === 'list';
+            if (parent?.data?.length > 0) {
+                parent?.data?.forEach((child: any) => {
+                    if (isParentList) { // whatever changes here should also be reflected on the ELSE below
+                        child?.forEach((subChild: any) => {
+                            if (subChild?.required) {
+                                if (child.type === 'time') {}
+                                else if (child?.type === 'option') {
+                                    let selectedItems = child?.items?.filter((i: any) => i?.selected);
+                                    selectedItems?.forEach((item: any) => {
+                                        if (item?.hasSpecification) {
+                                            if (
+                                                item?.specification?.required &&
+                                                !(
+                                                    !item?.specification?.error &&
+                                                    item?.specification?.value
+                                                )
+                                            ) {
+                                                valid = false;
+                                                return;
+                                            }
+                                        }
+                                    });
+                                    if (valid && selectedItems?.length < child?.minimum) {
+                                        valid = false;
+                                        return;
+                                    }
+                                }
+                                else if (typeof(subChild?.value) === 'object' && !!subChild?.value) { // should be array but ts returns 'object' idky
+                                    subChild?.value?.forEach((grandchild: any) => {
+                                        if (!(!grandchild?.error && grandchild?.value)) {
+                                            valid = false;
+                                            return;
+                                        }
+                                    });
+                                }
+                                else if (!(!subChild?.error && subChild?.value)) {
+                                    valid = false;
+                                    return;
+                                }
+                            }
+                            else if (subChild?.data?.length > 0) {
+                                subChild?.data?.forEach((ssubChild: any) => {
+                                    if (ssubChild?.length > 0) {
+                                        ssubChild?.forEach((sssubChild: any) => {
+                                            if (!(!sssubChild?.error && sssubChild?.value) && sssubChild?.required) {
+                                                valid = false;
+                                                return;
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        if (!(!ssubChild?.error && ssubChild?.value) && ssubChild?.required) {
+                                            valid = false;
+                                            return;
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    else { // whatever changes here should also be reflected on the IF above
+                        if (child?.required) {
+                            if (child.type === 'time') {}
+                            else if (child?.type === 'option') {
+                                let selectedItems = child?.items?.filter((i: any) => i?.selected);
+                                selectedItems?.forEach((item: any) => {
+                                    if (item?.hasSpecification) {
+                                        if (
+                                            item?.specification?.required &&
+                                            !(
+                                                !item?.specification?.error &&
+                                                item?.specification?.value
+                                            )
+                                        ) {
+                                            valid = false;
+                                            return;
+                                        }
+                                    }
+                                });
+                                if (valid && selectedItems?.length < child?.minimum) {
+                                    valid = false;
+                                    return;
+                                }
+                            }
+                            else if (typeof(child?.value) === 'object' && !!child?.value) { // should be array but ts returns 'object' idky
+                                child?.value?.forEach((grandchild: any) => {
+                                    if (!(!grandchild?.error && grandchild?.value)) {
+                                        valid = false;
+                                        return;
+                                    }
+                                });
+                            }
+                            else if (!(!child?.error && child?.value)) {
+                                valid = false;
+                                return;
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        return valid;
+    };
+    const steps = [
+
+        {
+            title: service?.serviceCode === 'service-1' ? 'Exam Schedule' : 'Region',
+
+            onPrevious: FOR_EDITING ? onExitApplication : onPrevious,
+            onNext,
+            buttonLabel: 'Next',
+            buttonDisabled: service?.serviceCode === 'service-1' ? !(region?.value && schedule?.id) : !region?.value,
+        },
+        {
+            title: 'Application Type',
+
+            onPrevious,
+            onNext,
+            buttonLabel: 'Next',
+            buttonDisabled: applicationType?.elements?.length > 0 ? !(applicationType?.elements?.length > 0 && applicationType?.element) : !applicationType?.label,
+        },
+        {
+            title: 'Application Form',
+            onPrevious,
+            onNext,
+            buttonLabel: 'Next',
+            buttonDisabled: !formValid(),
+        },
+        {
+            title: 'Requirements',
+            onPrevious,
+            onNext: () => {
+                /*dispatch(setApplication({
+                    ...application,
+                    region: region?.value,
+                    schedule,
+                    service: {
+                        ...service,
+                        applicationType: {
+                            ...applicationType,
+                            requirements,
+                        },
+                    },
+                }));*/
+                onNext();
+            },
+            buttonLabel: 'Review',
+            buttonDisabled: incompleteRequirements(),
+        },
+        {
+            title: completed ? 'Complete' : 'Review',
+
+        },
+    ];
+    const renderTabBar = (tabProp) =>{
+        return isMobile ?  <TabBar
+            renderLabel={({route, focused}) => {
+                return (
+                    <View style={{flexDirection: "row", alignItems: "center"}}>
+
+                        <Text numberOfLines={Platform.OS == "windows" ? 1 : undefined} style={{
+                            color: focused ? infoColor : "#606A80",
+                            fontFamily: Regular, // focused ? Bold : Regular
+                            fontSize: fontValue(14)
+                        }}>{route.title}</Text>
+                    </View>
+                );
+            }}
+            indicatorStyle={{
+                backgroundColor: infoColor,
+                borderRadius: 0,
+                padding: 0,
+                left: 24 / 2,
+                ...Platform.select({
+                    web: {marginBottom:  -15 }
+                }),}}
+            {...tabProp}
+            scrollEnabled={true}
+            style={[{backgroundColor: 'white'}, isMobile ? {} :{shadowOpacity: 0.0, }]}
+        />  :  <View style={{
+            borderBottomWidth: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottomColor: "#d2d2d2", width: "100%",
+            backgroundColor: "#fff"
+        }}>
+            <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                <TabBar
+                    indicatorStyle={{
+                        backgroundColor: infoColor,
+                        borderRadius: 0,
+                        padding: 0,
+                        left: 24 / 2,
+                        ...Platform.select({
+                            web: {marginBottom:  -15 }
+                        }),}}
+                    renderLabel={({route, focused}) => {
+                        return (
+                            <View style={{flexDirection: "row", alignItems: "center", }}>
+
+                                <Text style={{
+                                    color: focused ? infoColor : "#606A80",
+                                    fontFamily: Regular, // focused ? Bold : Regular
+                                    fontSize: fontValue(12)
+                                }}>{route.title}</Text>
+                            </View>
+                        );
+                    }}
+                    scrollEnabled={true}
+                    {...tabProp}
+                    style={{shadowOpacity: 0.0, backgroundColor: 'white'}}
+                />
+
+            </View>
+
+        </View>
+    }
     return <View style={{flex: 1}}>
+
+        <ApplicationSteps
+            tabview={<TabView
+                swipeEnabled={false}
+                renderTabBar={renderTabBar}
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={{ width: layout.width }}
+            />}
+            steps={steps}
+            currentStep={currentStep}
+            completed={completed}
+            onExit={onExitApplication}
+            //loading={fetchingSOA || savingApplication}
+            UDAAlert={udaAlert}
+            generatingApplication={generatingApplication}
+        />
 
 
 
     {/*
-    <Requirements requirements={requirements} onUpload={onUpload} onRemove={onRemove} disabled={isUploading()}/>
-    <ServicesForm form={form} onChangeValue={onFormUpdate} onAdd={_onAdd} onRemove={_onRemove} onUseDifferentAddress={onUseDifferentAddress} useDifferentAddress={useDifferentAddress} />
+
+
 */}
     </View>
 

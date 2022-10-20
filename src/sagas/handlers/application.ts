@@ -5,7 +5,7 @@ import { call, put, select } from 'redux-saga/effects';
 import {
   request_fetchSchedules,
   request_fetchProvinces,
-  request_fetchCities, request_uploadRequirement,
+  request_fetchCities, request_uploadRequirement, request_fetchRegions,
 } from '../requests/application';
 
 import {
@@ -14,7 +14,7 @@ import {
   setFetchingProvinces,
   setProvinces,
   setFetchingCities,
-  setCities, setUploadingRequirement, setApplicationItem,
+  setCities, setUploadingRequirement, setApplicationItem, setFetchingRegions, setRegions,
 } from '../../reducers/application/actions';
 
 import getSession from './_session';
@@ -72,6 +72,23 @@ export function* handle_uploadRequirement(action: any) {
   }
   catch(err) {
     yield put(setUploadingRequirement(false));
+    Alert.alert('Alert', err?.message);
+  }
+};
+
+export function* handle_fetchRegions() {
+  try {
+    yield put(setFetchingRegions(true));
+
+    let session = yield select(getSession);
+    let res = yield call(request_fetchRegions, session);
+    if (res?.data) yield put(setRegions(res?.data));
+
+    yield put(setFetchingRegions(false));
+
+  }
+  catch(err) {
+    yield put(setFetchingRegions(false));
     Alert.alert('Alert', err?.message);
   }
 };

@@ -272,14 +272,14 @@ const ModalTab = props => {
         ;*/
         const indicatorStyle = {
             // transform: [{translateX}] as any,
-            height: Platform.OS == "web" ? 7 : 5,
-            backgroundColor: infoColor,
-            borderRadius: 0,
-            padding: 0,
-            left: 24 / 2,
-            ...Platform.select({
-                web: {marginBottom:  -15 }
-            }),
+                height: Platform.OS == "web" ? 7 : 5,
+                backgroundColor: infoColor,
+                borderRadius: 0,
+                padding: 0,
+                left: 24 / 2,
+                ...Platform.select({
+                    web: {marginBottom:  -15 }
+                }),
         }
 
         const width = getTabWidth(index) - 24

@@ -48,7 +48,9 @@ const {
     SET_CITIES,
     FETCHING_SCHEDULES,
     SET_SCHEDULES,
-    UPLOADING_REQUIREMENT
+    UPLOADING_REQUIREMENT,
+    FETCHING_REGIONS,
+    SET_REGIONS
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -77,6 +79,15 @@ export default function basket(state = initialState, action = {}) {
         case SET_DATA: {
 
             state = state.set('data', action.payload);
+            return state
+        }
+        case FETCHING_REGIONS: {
+            state = state.set('fetchingRegions', action.payload);
+            return state
+
+        }
+        case SET_REGIONS: {
+            state = state.set('regions', action.payload);
             return state
         }
         case FETCHING_SCHEDULES: {
