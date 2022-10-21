@@ -5,7 +5,7 @@ import { call, put, select } from 'redux-saga/effects';
 import {
   request_fetchSchedules,
   request_fetchProvinces,
-  request_fetchCities, request_uploadRequirement, request_fetchRegions, request_fetchSOA,
+  request_fetchCities, request_uploadRequirement, request_fetchRegions, request_fetchSOA, request_saveApplication,
 } from '../requests/application';
 
 import {
@@ -21,10 +21,41 @@ import {
   setRegions,
   setFetchingSOA,
   setSOA,
-  setFetchSOASuccess, setFetchSOAError,
+  setFetchSOASuccess, setFetchSOAError, setSavingApplication, setSaveApplicationSuccess, setSaveApplicationError,
 } from '../../reducers/application/actions';
 
 import getSession from './_session';
+
+
+export function* handle_saveApplication(action: any) {
+  try {
+    yield put(setSavingApplication(true));
+    yield put(setSaveApplicationSuccess(false));
+    yield put(setSaveApplicationError(false));
+    yield put(setFetchSOASuccess(false));
+    yield put(setFetchSOAError(false));
+
+    let session = yield select(getSession);
+    let res = yield call(request_saveApplication, {session, ...action});
+    if (res?.status === 201 || res?.status === 200) {
+      yield put(setSaveApplicationSuccess(true));
+   //   yield put(addApplication(res?.data));
+    }
+    else {
+      yield put(setSaveApplicationError(true));
+      Alert.alert('Alert', res?.msg);
+    }
+
+    yield put(setSavingApplication(false));
+  }
+  catch(err) {
+    yield put(setSaveApplicationError(true));
+    yield put(setSavingApplication(false));
+    Alert.alert('Alert', err?.message);
+  }
+};
+
+
 export function* handle_uploadRequirement(action: any) {
   try {
     const requirements = action?.payload?.requirements;

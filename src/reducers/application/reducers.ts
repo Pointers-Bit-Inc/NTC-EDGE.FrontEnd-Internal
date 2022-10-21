@@ -54,7 +54,10 @@ const {
     FETCHING_SOA,
     SET_SOA,
     FETCH_SOA_SUCCESS,
-    FETCH_SOA_ERROR
+    FETCH_SOA_ERROR,
+    SAVING_APPLICATION,
+    SAVE_APPLICATION_ERROR,
+    SAVE_APPLICATION_SUCCESS
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -87,6 +90,21 @@ export default function basket(state = initialState, action = {}) {
         }
         case FETCHING_REGIONS: {
             state = state.set('fetchingRegions', action.payload);
+            return state
+
+        }
+        case SAVING_APPLICATION: {
+            state = state.set('savingApplication', action.payload);
+            return state
+
+        }
+        case SAVE_APPLICATION_ERROR: {
+            state = state.set('saveApplicationError', action.payload);
+            return state
+
+        }
+        case SAVE_APPLICATION_SUCCESS: {
+            state = state.set('saveApplicationSuccess', action.payload);
             return state
 
         }

@@ -46,7 +46,12 @@ const {
     SET_SOA,
     FETCH_SOA_SUCCESS,
     FETCH_SOA_ERROR,
-    FETCH_SOA
+    FETCH_SOA,
+    SAVE_APPLICATION,
+    SAVE_APPLICATION_ERROR,
+    SAVE_APPLICATION_SUCCESS,
+    SAVING_APPLICATION,
+    ADD_APPLICATION
 } = require('./types').default;
 export function setSOA(payload: any) {
     return {
@@ -102,7 +107,12 @@ export function setFetchingSchedules(payload: boolean) {
         payload,
     }
 };
-
+export function addApplication(payload: any) {
+    return {
+        type: ADD_APPLICATION,
+        payload,
+    }
+};
 export function setSchedules(payload: any) {
     return {
         type: SET_SCHEDULES,
@@ -239,6 +249,33 @@ export function setTopBarNav(payload) {
         payload,
     };
 }
+export function saveApplication(payload: any) {
+    return {
+        type: SAVE_APPLICATION,
+        payload,
+    }
+};
+
+export function setSaveApplicationError(payload: any) {
+    return {
+        type: SAVE_APPLICATION_ERROR,
+        payload,
+    }
+};
+
+export function setSaveApplicationSuccess(payload: any) {
+    return {
+        type: SAVE_APPLICATION_SUCCESS,
+        payload,
+    }
+};
+
+export function setSavingApplication(payload: boolean) {
+    return {
+        type: SAVING_APPLICATION,
+        payload,
+    }
+};
 
 export function setactivitySizeComponent(payload) {
     return {

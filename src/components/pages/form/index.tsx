@@ -7,7 +7,7 @@ import {
     fetchCities,
     fetchProvinces,
     fetchRegions,
-    fetchSchedules, fetchSOA, setApplicationItem, setSceneIndex,
+    fetchSchedules, fetchSOA, saveApplication, setApplicationItem, setSceneIndex,
     uploadRequirement
 } from "../../../reducers/application/actions";
 import ServicesForm from "@pages/form/ServicesForm";
@@ -32,11 +32,7 @@ import ApplicationSteps from "@templates/application-steps";
 import {Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {infoColor} from "@styles/color";
-import {setFeedVisible} from "../../../reducers/activity/actions";
-import SplitIcon from "@assets/svg/SplitIcon";
-import CloseIcon from "@assets/svg/close";
 import Types from "@templates/application-steps/types";
-import Submitted from "@pages/application-steps/submitted";
 import Preview from "@templates/application-steps/preview";
 
 const ServiceFormPage = () =>{
@@ -72,6 +68,9 @@ const ServiceFormPage = () =>{
     const regions = useSelector((state: RootStateOrAny) => state.application?.regions);
     const fetchingSchedules = useSelector((state: RootStateOrAny) => state.application?.fetchingSchedules);
     const fetchingRegions = useSelector((state: RootStateOrAny) => state.application?.fetchingRegions);
+    const fetchSOASuccess = useSelector((state: RootStateOrAny) => state.application?.fetchSOASuccess);
+    const fetchSOAError = useSelector((state: RootStateOrAny) => state.application?.fetchSOAError);
+    const soa = useSelector((state: RootStateOrAny) => state.application?.soa);
 
     const [service, setService] = useState( applicationItem?.service);
     const [applicationType, setApplicationType] = useState(applicationItem?.service?.applicationType || {});

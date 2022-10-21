@@ -6,7 +6,8 @@ const {
   FETCH_CITIES,
   UPLOAD_REQUIREMENT,
   FETCH_REGIONS,
-  FETCH_SOA
+  FETCH_SOA,
+  SAVE_APPLICATION
 } = require('../reducers/application/types').default;
 
 
@@ -16,11 +17,13 @@ import {
   handle_fetchProvinces,
   handle_fetchCities,
   handle_fetchRegions,
-  handle_fetchSOA
+  handle_fetchSOA,
+  handle_saveApplication
 } from './handlers/application';
 
 
 export function* watcherSaga() {
+  yield takeLatest(SAVE_APPLICATION, handle_saveApplication);
   yield takeLatest(FETCH_SOA, handle_fetchSOA);
   yield takeLatest(FETCH_REGIONS, handle_fetchRegions);
   yield takeLatest(FETCH_SCHEDULES, handle_fetchSchedules);

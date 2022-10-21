@@ -48,5 +48,10 @@ export default keyMirror({
   FETCHING_SOA: null,
   SET_SOA: null,
   FETCH_SOA_SUCCESS: null,
-  FETCH_SOA_ERROR: null
+  FETCH_SOA_ERROR: null,
+  SAVING_APPLICATION: null,
+  SAVE_APPLICATION_ERROR: null,
+  SAVE_APPLICATION_SUCCESS: null,
+  SAVE_APPLICATION: null,
+  ADD_APPLICATION: null
 });
