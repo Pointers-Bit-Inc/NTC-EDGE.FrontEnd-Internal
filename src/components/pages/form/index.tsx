@@ -1626,10 +1626,10 @@ const ServiceFormPage = () =>{
         <ApplicationSteps
             tabview={<TabView
                 swipeEnabled={false}
-                renderTabBar={renderTabBar}
-                navigationState={{ index, routes }}
+                renderTabBar={()=> null}
+                navigationState={{ index: currentStep, routes }}
                 renderScene={renderScene}
-                onIndexChange={setIndex}
+                onIndexChange={(index)=> setCurrentStep(index) }
                 initialLayout={{ width: layout.width }}
             />}
             steps={steps}

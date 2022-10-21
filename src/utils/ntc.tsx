@@ -692,10 +692,6 @@ const birthyearList = () => {
 
     return years;
 };
-const GUEST_USER = {
-    email: 'guest.ntcedge@ustp.edu.ph',
-    password: 'AZaz09!@',
-};
 const _bandwidthUnits = [
     {label: 'KHz', value: 'KHz'},
     {label: 'MHz', value: 'MHz'},
@@ -720,23 +716,6 @@ const _classOfStation =[
 const GUEST_USER = {
     email: 'guest.ntcedge@ustp.edu.ph',
     password: 'AZaz09!@',
-};
-const birthyearList = () => {
-    var presentYear = Moment().get('year');
-    var startYear = Moment().subtract(120, 'years');
-    var years = [];
-
-    while (startYear.get('year') <= presentYear) {
-        years.push({
-            label: startYear.get('year').toString(),
-            value: startYear.get('year').toString(),
-        });
-        startYear.add(1, 'years');
-    }
-
-    years = years.reverse();
-
-    return years;
 };
 
 
