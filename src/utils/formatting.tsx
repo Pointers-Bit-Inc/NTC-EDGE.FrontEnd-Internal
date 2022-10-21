@@ -7,6 +7,8 @@ import {RFValue} from "react-native-responsive-fontsize";
 const getInitial = (value:any) => {
     return value.match(/(\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("").toUpperCase()
 }
+export const isMobile = Platform?.OS === 'ios' || Platform?.OS === 'android';
+export const isPad = Platform?.isPad;
 
 const getChannelName = (channel:any) => {
     if (!channel.isGroup && !channel.hasChannelName) {

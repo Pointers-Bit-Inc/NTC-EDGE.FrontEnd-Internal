@@ -5,7 +5,7 @@ import { call, put, select } from 'redux-saga/effects';
 import {
   request_fetchSchedules,
   request_fetchProvinces,
-  request_fetchCities, request_uploadRequirement, request_fetchRegions,
+  request_fetchCities, request_uploadRequirement, request_fetchRegions, request_fetchSOA,
 } from '../requests/application';
 
 import {
@@ -14,7 +14,14 @@ import {
   setFetchingProvinces,
   setProvinces,
   setFetchingCities,
-  setCities, setUploadingRequirement, setApplicationItem, setFetchingRegions, setRegions,
+  setCities,
+  setUploadingRequirement,
+  setApplicationItem,
+  setFetchingRegions,
+  setRegions,
+  setFetchingSOA,
+  setSOA,
+  setFetchSOASuccess, setFetchSOAError,
 } from '../../reducers/application/actions';
 
 import getSession from './_session';
@@ -139,6 +146,28 @@ export function* handle_fetchCities(action: any) {
   }
   catch(err) {
     yield put(setFetchingCities(false));
+    Alert.alert('Alert', err?.message);
+  }
+};
+
+export function* handle_fetchSOA(action: any) {
+  try {
+    yield put(setFetchingSOA(true));
+
+    let session = yield select(getSession);
+    let res = yield call(request_fetchSOA, {session, ...action});
+
+    if (res?.status === 200) {
+      yield put(setSOA(res?.data));
+      yield put(setFetchSOASuccess(true));
+    }
+    else yield put(setFetchSOAError(true));
+    yield put(setFetchingSOA(false));
+
+  }
+  catch(err) {
+    yield put(setFetchingSOA(false));
+    yield put(setFetchSOAError(true));
     Alert.alert('Alert', err?.message);
   }
 };

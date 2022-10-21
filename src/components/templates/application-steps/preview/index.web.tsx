@@ -12,16 +12,19 @@ import {
 } from 'react-native';
 import Moment from 'moment';
 import Text from '@atoms/text';
-import { Close, Check, Load, PDF, Receipt } from '@atoms/icon';
 import { Bottom } from '@molecules/buttons';
 import NavBar from '@organisms/navbar';
-import { NTCPreview, transformText } from '@utils/ntc';
+import { NTCPreview, transformText } from '../../../../utils/ntc';
 import { text } from '@styles/color';
 import styles from './styles';
 import moment from 'moment';
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
-import {setServiceLayout} from "@reducers/service/actions";
-import {useComponentLayout} from "@hooks/useComponentLayout";
+import {useComponentLayout} from "../../../../hooks/useComponentLayout";
+import Check from "@atoms/icon/check";
+import Close from "@atoms/icon/close";
+import Receipt from "@atoms/icon/receipt";
+import PDF from "@atoms/icon/pdf";
+import Load from "@atoms/icon/load";
 
 interface Props {
     navigation?: any;
@@ -259,7 +262,7 @@ const Preview: FC<Props> = ({
             </View>
         )
     };
-    
+
     const renderOptions = ({item}: any) => {
         const parentLabel = item?.label;
         return (
@@ -512,7 +515,7 @@ const Preview: FC<Props> = ({
                 let childLabel = transformText(item);
                 let childValue = values?.[childItem];
                 childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
-    
+
                 if (
                   !!childValue &&
                   typeof(childValue) === 'object'
@@ -544,9 +547,9 @@ const Preview: FC<Props> = ({
                             style={styles?.gggChildContainer}
                           />
                         </View>
-                      )              
+                      )
                     }
-    
+
                     return renderRow(`${gchildLabel}:`, gchildValue);
                   };
                   return (
@@ -560,9 +563,9 @@ const Preview: FC<Props> = ({
                         style={styles?.gggChildContainer}
                       />
                     </View>
-                  )              
+                  )
                 }
-    
+
                 return renderRow(`${childLabel}:`, childValue);
               };
               return (

@@ -204,12 +204,13 @@ const UploadFile: FC<Props> = ({
   };
 
   const renderItem = (_file: any, _index: number) => {
+
     if (multipleFiles) {
       uploading = _file?.uploading;
       uploaded = _file?.uploaded;
     }
     function truncate(source, size) {
-      return source.length > size ? source.slice(0, size - 1) + "…" : source;
+      return source?.length > size ? source?.slice(0, size - 1) + "…" : source;
     }
     const fileName = _file?.links?.small ? _file?.links?.small?.split('/')?.pop() : _file?.name;
     const uri = _file?.links?.small || _file?.uri;

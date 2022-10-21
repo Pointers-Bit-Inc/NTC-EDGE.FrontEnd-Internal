@@ -50,7 +50,11 @@ const {
     SET_SCHEDULES,
     UPLOADING_REQUIREMENT,
     FETCHING_REGIONS,
-    SET_REGIONS
+    SET_REGIONS,
+    FETCHING_SOA,
+    SET_SOA,
+    FETCH_SOA_SUCCESS,
+    FETCH_SOA_ERROR
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -99,6 +103,22 @@ export default function basket(state = initialState, action = {}) {
             state = state.set('schedules', action.payload);
             return state
 
+        }
+        case FETCHING_SOA: {
+            state = state.set('fetchingSOA', action.payload);
+            return state
+        }
+        case SET_SOA: {
+            state = state.set('soa', action.payload);
+            return state
+        }
+        case FETCH_SOA_SUCCESS: {
+            state = state.set('fetchSOASuccess', action.payload);
+            return state
+        }
+        case FETCH_SOA_ERROR: {
+            state = state.set('fetchSOAError', action.payload);
+            return state
         }
         case FETCHING_PROVINCES: {
             state = state.set('fetchingProvinces', action.payload);

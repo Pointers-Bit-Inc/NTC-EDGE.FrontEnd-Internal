@@ -42,7 +42,40 @@ const {
     SET_REGIONS,
     UPLOADING_REQUIREMENT,
     UPLOAD_REQUIREMENT,
+    FETCHING_SOA,
+    SET_SOA,
+    FETCH_SOA_SUCCESS,
+    FETCH_SOA_ERROR,
+    FETCH_SOA
 } = require('./types').default;
+export function setSOA(payload: any) {
+    return {
+        type: SET_SOA,
+        payload,
+    }
+};
+export function fetchSOA(payload: any) {
+    return {
+        type: FETCH_SOA,
+        payload,
+    }
+};
+
+export function setFetchSOASuccess(payload: any) {
+    return {
+        type: FETCH_SOA_SUCCESS,
+        payload,
+    }
+};
+
+export function setFetchSOAError(payload: any) {
+    return {
+        type: FETCH_SOA_ERROR,
+        payload,
+    }
+};
+
+
 export function fetchSchedules(payload: any) {
     return {
         type: FETCH_SCHEDULES,
@@ -186,6 +219,13 @@ export function setDeleteData(payload) {
         payload,
     };
 }
+
+export function setFetchingSOA(payload: any) {
+    return {
+        type: FETCHING_SOA,
+        payload,
+    }
+};
 export function updateApplicationStatus(payload) {
     return {
         type: UPDATE_APPLICATION_STATUS,

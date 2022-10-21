@@ -1,3 +1,3 @@
 export default (state: any) => {
-	return state?.user?.session;
+	return state?.user;
 };

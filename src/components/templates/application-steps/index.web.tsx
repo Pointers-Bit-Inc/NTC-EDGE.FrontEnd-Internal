@@ -1,9 +1,7 @@
 import React, { FC, ReactNode, useEffect, useRef } from 'react';
-import {View,KeyboardAvoidingView,Platform,Dimensions,useWindowDimensions} from 'react-native';
+import {View,Text,useWindowDimensions} from 'react-native';
 import Statusbar from '@atoms/status-bar';
-import Text from '@atoms/text';
 import ProgressSteps from '@atoms/progress-steps';
-import { ArrowLeft, Close } from '@atoms/icon';
 import { Bottom } from '@molecules/buttons';
 import buttonStyle from '@molecules/buttons/bottom/styles';
 import styles from './styles';
@@ -13,8 +11,8 @@ import NTCAlert from '@atoms/alert';
 import {button,text} from "@styles/color";
 import CheveronLeftIcon from "@assets/svg/cheveron-left";
 import CheveronRightIcon from "@assets/svg/cheveron-right";
-import {setSelectedService} from "@reducers/service/actions";
 import {useDispatch} from "react-redux";
+import {setApplicationItem} from "../../../reducers/application/actions";
 
 interface Steps {
   title?: string;
@@ -26,6 +24,7 @@ interface Steps {
 };
 
 interface Props {
+  tabview: JSX.Element,
   steps?: Steps[];
   currentStep?: number;
   completed?: boolean;
@@ -35,6 +34,7 @@ interface Props {
 };
 
 const ApplicationSteps: FC<Props> = ({
+                                       tabview,
   steps = [],
   currentStep = 0,
   completed,
@@ -87,7 +87,7 @@ const ApplicationSteps: FC<Props> = ({
           }
 
           <View style={{flex: 1, overflow: "scroll"}}>
-            {content}
+            {tabview}
           </View>
 
           <View>
@@ -98,7 +98,7 @@ const ApplicationSteps: FC<Props> = ({
                 }}
                 buttonStyles={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}
                 label={buttonLabel}
-                icon={loading ? <Text/> :<View style={{paddingLeft: 14}}>
+                icon={loading ? <Text></Text> :<View style={{paddingLeft: 14}}>
                   <CheveronLeftIcon color={ (buttonDisabled || loading) && text.disabled}  />
                 </View>}
                 onPress={onNext}
@@ -114,7 +114,7 @@ const ApplicationSteps: FC<Props> = ({
                       ]}
                       onPress={() =>{
                         if(currentStep == 0){
-                          dispatch(setSelectedService(null));
+                          dispatch(setApplicationItem(null));
                         }
                         onPrevious()
                       }}

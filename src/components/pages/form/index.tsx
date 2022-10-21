@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {NTCServices as NTCServicesList } from '@utils/ntc';
+import {NTCServices as NTCServicesList } from '../../../utils/ntc';
 import {validateNumber, validateText} from "../../../utils/form-validations";
-import {generateForm, JSONfn} from "../../../utils/formatting";
+import {extractDate, generateForm, JSONfn} from "../../../utils/formatting";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {
     fetchCities,
     fetchProvinces,
     fetchRegions,
-    fetchSchedules, setSceneIndex,
+    fetchSchedules, fetchSOA, setApplicationItem, setSceneIndex,
     uploadRequirement
 } from "../../../reducers/application/actions";
 import ServicesForm from "@pages/form/ServicesForm";
@@ -27,7 +27,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import Requirements from "@templates/application-steps/requirements";
 import {TabBar, TabView} from "react-native-tab-view";
 import Region from "@templates/application-steps/region";
-import {regionList} from "../../../utils/ntc";
+import {regionList, transformToFeePayload} from "../../../utils/ntc";
 import ApplicationSteps from "@templates/application-steps";
 import {Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -36,6 +36,8 @@ import {setFeedVisible} from "../../../reducers/activity/actions";
 import SplitIcon from "@assets/svg/SplitIcon";
 import CloseIcon from "@assets/svg/close";
 import Types from "@templates/application-steps/types";
+import Submitted from "@pages/application-steps/submitted";
+import Preview from "@templates/application-steps/preview";
 
 const ServiceFormPage = () =>{
 
@@ -1337,6 +1339,7 @@ const ServiceFormPage = () =>{
         { key: 'applicationType', title: 'Application Type' },
         { key: 'service', title: 'Service' },
         { key: 'requirement', title: 'Requirement' },
+        { key: 'complete', title: 'Complete' },
     ]);
 
     const renderScene = ({ route, jumpTo }) => {
@@ -1368,6 +1371,8 @@ const ServiceFormPage = () =>{
                 return <ServicesForm form={form} onChangeValue={onFormUpdate} onAdd={_onAdd} onRemove={_onRemove} onUseDifferentAddress={onUseDifferentAddress} useDifferentAddress={useDifferentAddress} />
             case 'requirement':
                 return <Requirements requirements={requirements} onUpload={onUpload} onRemove={onRemove} disabled={isUploading()}/>
+            case 'complete':
+                return    <Preview pageOnly forApplication application={applicationItem} form={JSONfn.parse(JSONfn.stringify(form))} />
         }
     };
     const onNext = () => {
@@ -1381,12 +1386,15 @@ const ServiceFormPage = () =>{
     const incompleteRequirements = () => {
         let incomplete = false;
         requirements.map((r: any) => {
+
             if (r?.required) {
+
                 if (!(r?.files?.length > 0)) {
                     incomplete = true;
                     return;
                 }
                 r?.files?.forEach((f: any) => {
+                    console.log(!(Object.keys(f?.links || {})?.length > 0))
                     if (!(Object.keys(f?.links || {})?.length > 0)) {
                         incomplete = true;
                         return;
@@ -1506,6 +1514,8 @@ const ServiceFormPage = () =>{
         });
         return valid;
     };
+        const [agree, setAgree] = useState(false);
+    const [applicationPayload, setApplicationPayload] = useState({});
     const steps = [
 
         {
@@ -1535,8 +1545,8 @@ const ServiceFormPage = () =>{
             title: 'Requirements',
             onPrevious,
             onNext: () => {
-                /*dispatch(setApplication({
-                    ...application,
+                dispatch(setApplicationItem({
+                    ...applicationItem,
                     region: region?.value,
                     schedule,
                     service: {
@@ -1546,7 +1556,8 @@ const ServiceFormPage = () =>{
                             requirements,
                         },
                     },
-                }));*/
+                }));
+                setAgree(true)
                 onNext();
             },
             buttonLabel: 'Review',
@@ -1554,9 +1565,319 @@ const ServiceFormPage = () =>{
         },
         {
             title: completed ? 'Complete' : 'Review',
-
+            onPrevious: () => {
+                if (agree) setAgree(false);
+                if (reviewed) setReviewed(false);
+                onPrevious();
+            },
+            onNext: () => {
+                console.log("FETCH_SOA", "Agree:", agree)
+                if (agree) {
+                    console.log("FETCH_SOA")
+                    onSaveApplication();
+                }
+            },
+            buttonLabel: !reviewed ? 'Submit' : completed ? 'Close' : 'Confirm',
         },
     ];
+    const getStructuredData = (form: any) => {
+        var structuredParent = {};
+        form?.forEach((parent: any) => {
+            var isParentList = parent?.type === 'list';
+            var structuredChild = isParentList ? [] : {};
+            if (parent?.type !== 'info') {
+                parent?.data?.forEach((child: any, index: number) => {
+                    if (isParentList) { // any changes here should also reflect on ELSE below
+                        var structuredSubChild = {};
+                        child.forEach((subChild: any) => {
+                            if (subChild?.isSet) {
+                                var structuredSetChild = subChild?.type === 'list' ? [] : {};
+                                subChild?.data?.forEach((setChild: any) => {
+                                    if (subChild?.type === 'list') { // multiple set
+                                        var structuredSubSetChild = {};
+                                        setChild?.forEach((subSetChild: any) => {
+                                            var value = subSetChild?.value;
+                                            var isDateIncomplete = () => { return value?.some((v: any) => !v?.isValid) };
+                                            if (subSetChild?.type === 'option') {
+                                                let _selected = subSetChild?.items?.filter((i: any) => i?.selected);
+                                                let _items = [];
+                                                _selected?.forEach((item: any) => {
+                                                    let __obj = { value: item?.value };
+                                                    if (item?.hasSpecification) {
+                                                        __obj = {
+                                                            ...__obj,
+                                                            [`${item?.specification?.id}`]: item?.specification?.value,
+                                                        };
+                                                    }
+                                                    _items?.push(__obj);
+                                                });
+                                                structuredSubSetChild = {
+                                                    ...structuredSubSetChild,
+                                                    [subSetChild?.id]: _items,
+                                                };
+                                            }
+                                            else {
+                                                if (typeof(value) === 'object' && !!value) {
+                                                    var structuredGrandchild = {};
+                                                    value.forEach((grandchild: any) => {
+                                                        structuredGrandchild = {
+                                                            ...structuredGrandchild,
+                                                            [grandchild?.id]: grandchild?.value,
+                                                        };
+                                                    });
+                                                    value = subSetChild?.type === 'date'
+                                                        ? isDateIncomplete()
+                                                            ? null
+                                                            : structuredGrandchild
+                                                        : structuredGrandchild;
+                                                }
+                                                if (subSetChild?.hasSpecification) value = `${value} • ${form?.find((f: any) => f?.id === parent?.id)?.data?.[index]?.find((f: any) => f?.id === `for-${subChild?.id}`)?.value}`;
+                                                if (!subSetChild?.specification) {
+                                                    structuredSubSetChild = {
+                                                        ...structuredSubSetChild,
+                                                        [subSetChild?.id]: value,
+                                                    };
+                                                }
+                                            }
+                                        });
+                                        structuredSetChild?.push(structuredSubSetChild);
+                                    }
+                                    else {
+                                        var value = setChild?.value;
+                                        var isDateIncomplete = () => { return value?.some((v: any) => !v?.isValid) };
+                                        if (setChild?.type === 'option') {
+                                            let _selected = setChild?.items?.filter((i: any) => i?.selected);
+                                            let _items = [];
+                                            _selected?.forEach((item: any) => {
+                                                let __obj = { value: item?.value };
+                                                if (item?.hasSpecification) {
+                                                    __obj = {
+                                                        ...__obj,
+                                                        [`${item?.specification?.id}`]: item?.specification?.value,
+                                                    };
+                                                }
+                                                _items?.push(__obj);
+                                            });
+                                            structuredSetChild = {
+                                                ...structuredSetChild,
+                                                [setChild?.id]: _items,
+                                            };
+                                        }
+                                        else {
+                                            if (typeof(value) === 'object' && !!value) {
+                                                var structuredGrandchild = {};
+                                                value.forEach((grandchild: any) => {
+                                                    structuredGrandchild = {
+                                                        ...structuredGrandchild,
+                                                        [grandchild?.id]: grandchild?.value,
+                                                    };
+                                                });
+                                                value = setChild?.type === 'date'
+                                                    ? isDateIncomplete()
+                                                        ? null
+                                                        : structuredGrandchild
+                                                    : structuredGrandchild;
+                                            }
+                                            if (setChild?.hasSpecification) value = `${value} • ${form?.find((f: any) => f?.id === parent?.id)?.data?.[index]?.find((f: any) => f?.id === `for-${subChild?.id}`)?.value}`;
+                                            if (!setChild?.specification) {
+                                                structuredSetChild = {
+                                                    ...structuredSetChild,
+                                                    [setChild?.id]: value,
+                                                };
+                                            }
+                                        }
+                                    }
+                                });
+                                structuredSubChild = {
+                                    ...structuredSubChild,
+                                    [subChild?.id]: structuredSetChild,
+                                };
+                            }
+                            else {
+                                var value = subChild?.value;
+                                var isDateIncomplete = () => { return value?.some((v: any) => !v?.isValid) };
+                                if (subChild?.type === 'option') {
+                                    let _selected = subChild?.items?.filter((i: any) => i?.selected);
+                                    let _items = [];
+                                    _selected?.forEach((item: any) => {
+                                        let __obj = { value: item?.value };
+                                        if (item?.hasSpecification) {
+                                            __obj = {
+                                                ...__obj,
+                                                [`${item?.specification?.id}`]: item?.specification?.value,
+                                            };
+                                        }
+                                        _items?.push(__obj);
+                                    });
+                                    structuredChild = {
+                                        ...structuredChild,
+                                        [subChild?.id]: _items,
+                                    };
+                                }
+                                else {
+                                    if (typeof(value) === 'object' && !!value) {
+                                        var structuredGrandchild = {};
+                                        value.forEach((grandchild: any) => {
+                                            structuredGrandchild = {
+                                                ...structuredGrandchild,
+                                                [grandchild?.id]: grandchild?.value,
+                                            };
+                                        });
+                                        value = subChild?.type === 'date'
+                                            ? isDateIncomplete()
+                                                ? null
+                                                : structuredGrandchild
+                                            : structuredGrandchild;
+                                    }
+                                    if (subChild?.hasSpecification) value = `${value} • ${form?.find((f: any) => f?.id === parent?.id)?.data?.[index]?.find((f: any) => f?.id === `for-${subChild?.id}`)?.value}`;
+                                    if (!subChild?.specification) {
+                                        structuredSubChild = {
+                                            ...structuredSubChild,
+                                            [subChild?.id]: value,
+                                        };
+                                    }
+                                }
+                            }
+                        });
+                        structuredChild?.push(structuredSubChild);
+                    }
+                    else { // any changes here should also reflect on IF above
+                        var value = child?.value;
+                        var isDateIncomplete = () => { return value?.some((v: any) => !v?.isValid) };
+                        if (child?.type === 'option') {
+                            let _selected = child?.items?.filter((i: any) => i?.selected);
+                            let _items = [];
+                            _selected?.forEach((item: any) => {
+                                let __obj = { value: item?.value };
+                                if (item?.hasSpecification) {
+                                    __obj = {
+                                        ...__obj,
+                                        [`${item?.specification?.id}`]: item?.specification?.value,
+                                    };
+                                }
+                                _items?.push(__obj);
+                            });
+                            structuredChild = {
+                                ...structuredChild,
+                                [child?.id]: _items,
+                            };
+                        }
+                        else {
+                            if (typeof(value) === 'object' && !!value) {
+                                var structuredGrandchild = {};
+                                value.forEach((grandchild: any) => {
+                                    structuredGrandchild = {
+                                        ...structuredGrandchild,
+                                        [grandchild?.id]: grandchild?.value,
+                                    };
+                                });
+                                value = child?.type === 'date'
+                                    ? isDateIncomplete()
+                                        ? null
+                                        : structuredGrandchild
+                                    : structuredGrandchild;
+                            }
+                            if (child?.hasSpecification) value = `${value} • ${form?.find((f: any) => f?.id === parent?.id)?.data?.find((f: any) => f?.id === `for-${child?.id}`)?.value}`;
+                            if (!child?.specification) {
+                                structuredChild = {
+                                    ...structuredChild,
+                                    [child?.id]: value,
+                                };
+                            }
+                        }
+                    }
+                });
+                structuredParent = {
+                    ...structuredParent,
+                    [parent?.id]: structuredChild,
+                };
+            }
+        });
+        return structuredParent;
+    };
+    const onSaveApplication = () => {
+        /**cleaning of payload */
+        const _application = JSONfn.parse(JSONfn.stringify(applicationItem));
+        delete _application?.service?.about;
+        delete _application?.service?.createdAt;
+        // delete _application?.service?.requirements;
+        delete _application?.service?.applicationTypes;
+        // delete _application?.service?.applicationType?.elements;
+        // delete _application?.service?.applicationType?.modificationDueTos;
+        var _requirements = [];
+        if (_application?.service?.applicationType?.requirements?.length > 0) {
+            _requirements = _application?.service?.applicationType?.requirements?.map((r: any) => {
+                let links = r?.files?.map((f: any) => f?.links);
+                return {...r, links};
+            });
+            _application.service.applicationType.requirements = _requirements;
+        }
+
+        let structuredData = form?.length > 0 ? getStructuredData(JSONfn.parse(JSONfn.stringify(form))) : {};
+
+        /**excess */
+        _application.applicant = form?.length > 0 ? {userId: user?.applicant?.userId} : {};
+        _application.applicant = {
+            ...user?.applicant,
+            ..._application?.applicant,
+            userType: user?.userType,
+        };
+        if (typeof(_application?.applicant?.dateOfBirth) === 'string') {
+            const day = extractDate(_application.applicant.dateOfBirth, 'date');
+            const month = extractDate(_application.applicant.dateOfBirth, 'month');
+            const year = extractDate(_application.applicant.dateOfBirth, 'year');
+            _application.applicant.dateOfBirth = {day, month, year};
+        }
+        if (FOR_EDITING && _application?.schedule?.region?.value) _application.schedule.region = _application?.schedule?.region?.value;
+        Object.keys(structuredData).forEach((id: string) => {
+            if (id === 'basic') {
+                _application.applicant = {
+                    ..._application.applicant,
+                    ...structuredData.basic,
+                };
+                _application.service = {
+                    ..._application.service,
+                    [id]: structuredData[id],
+                };
+            }
+            else if (
+                id === 'address' ||
+                id === 'contact' ||
+                id === 'education'
+            ) {
+                _application.applicant = {
+                    ..._application.applicant,
+                    [id]: structuredData[id],
+                };
+            }
+            else {
+                _application.service = {
+                    ..._application.service,
+                    [id]: structuredData[id],
+                };
+            }
+        });
+        if (applicationItem?._id) _application._id = applicationItem?._id;
+        setApplicationPayload(_application);
+        setTimeout(() => onFetchFees(transformToFeePayload(_application)), 500);
+    };
+    const onFetchFees = (__app: any) => {
+        dispatch(fetchSOA(__app));
+    };
+    useEffect(() => {
+        if (fetchSOASuccess || fetchSOAError) {
+            /**payload */
+            dispatch(saveApplication({
+                ...applicationPayload,
+                soa: soa?.statement_Of_Account || [],
+                totalFee: soa?.totalFee || 0,
+                useDifferentAddress,
+                renew,
+                renewApplication,
+                editApplication,
+            }));
+        }
+    }, [fetchSOASuccess, fetchSOAError]);
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar
             renderLabel={({route, focused}) => {

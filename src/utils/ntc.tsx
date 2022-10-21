@@ -5669,7 +5669,6 @@ const NTCServices = [
 export {
     NTCPreview,
     NTCServices,
-    birthyearList, GUEST_USER,
     _classOfStation,
     _employementType,
     _employementStatus,

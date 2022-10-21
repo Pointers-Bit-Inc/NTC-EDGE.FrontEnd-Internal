@@ -22,6 +22,8 @@ import styles from './styles';
 import {isMobile} from '../../../utils/formatting';
 import {RootStateOrAny,useSelector} from 'react-redux';
 import Close from "@atoms/icon/close";
+import Upload from "@atoms/icon/upload";
+import FileAdd from "@atoms/icon/file-add";
 
 interface Props {
 	onUpload?: any;
@@ -162,7 +164,7 @@ const UploadFile: FC<Props> = ({
 			uploading = _file?.uploading;
 			uploaded = _file?.uploaded;
 		}
-		const truncate = (source, size) => { return source.length > size ? source.slice(0, size - 1) + '…' : source; }
+		const truncate = (source, size) => { return source?.length > size ? source?.slice(0, size - 1) + '…' : source; }
 		const preview = NTCPreview(_file?.name);
 		return (
 			<>

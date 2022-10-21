@@ -5,14 +5,18 @@ import RNFS from 'react-native-fs';
 import { WebView } from 'react-native-webview';
 import Moment from 'moment';
 import Text from '@atoms/text';
-import { Close, Check, Load, Receipt, PDF } from '@atoms/icon';
 import NavBar from '@organisms/navbar';
-import { NTCPreview, transformText } from '@utils/ntc';
+import { NTCPreview, transformText } from '../../../../utils/ntc';
 import { text } from '@styles/color';
 import styles from './styles';
 import moment from 'moment';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Bottom } from '@molecules/buttons';
+import Check from "@atoms/icon/check";
+import Close from "@atoms/icon/close";
+import Load from "@atoms/icon/load";
+import Receipt from "@atoms/icon/receipt";
+import PDF from "@atoms/icon/pdf";
 
 interface Props {
   navigation?: any;
@@ -163,7 +167,7 @@ const Preview: FC<Props> = ({
       </View>
     )
   };
-  
+
   const renderService = () => {
     let { name = '', applicationType = {} } = myApplication?.service || {};
     return (
@@ -223,7 +227,7 @@ const Preview: FC<Props> = ({
       let arr = index >= 0 ? _form?.find((f: any) => f?.id === parentId)?.data?.[index] : _form?.find((f: any) => f?.id === parentId)?.data;
       value = `${item?.value} • ${arr?.find((f: any) => f?.id === `for-${item?.id}`)?.value}`;
     }
-    
+
     if (item?.hidden) return <></>;
     if (typeof(value) === 'string') return renderRow(item?.label, value);
     else return <></>;
@@ -321,7 +325,7 @@ const Preview: FC<Props> = ({
       </View>
     )
   };
-  
+
   const renderDocumentsUploaded = () => {
     return (
       <View style={styles.tableContainer}>
@@ -359,7 +363,7 @@ const Preview: FC<Props> = ({
       )
     }
   };
-  
+
   const renderAddress = () => {
     let { unit, street, barangay, province, city, zipCode } = myApplication?.applicant?.address || {};
     if (unit || street || barangay || province || city || zipCode) {
@@ -376,7 +380,7 @@ const Preview: FC<Props> = ({
       )
     }
   };
-  
+
   const renderEducation = () => {
     let { schoolAttended, courseTaken, yearGraduated } = myApplication?.applicant?.education || {};
     if (schoolAttended || courseTaken || yearGraduated) {
@@ -390,7 +394,7 @@ const Preview: FC<Props> = ({
       )
     }
   };
-  
+
   const renderContact = () => {
     let { contactNumber, email } = myApplication?.applicant?.contact || {};
     if (contactNumber || email) {
@@ -485,7 +489,7 @@ const Preview: FC<Props> = ({
                         style={styles?.gggChildContainer}
                       />
                     </View>
-                  )              
+                  )
                 }
 
                 return renderRow(`${gchildLabel}:`, gchildValue);
@@ -501,7 +505,7 @@ const Preview: FC<Props> = ({
                     style={styles?.gggChildContainer}
                   />
                 </View>
-              )              
+              )
             }
 
             return renderRow(`${childLabel}:`, childValue);

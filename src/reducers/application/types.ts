@@ -43,5 +43,10 @@ export default keyMirror({
   FETCHING_REGIONS: null,
   SET_REGIONS: null,
   UPLOADING_REQUIREMENT: null,
-  UPLOAD_REQUIREMENT: null
+  UPLOAD_REQUIREMENT: null,
+  FETCH_SOA: null,
+  FETCHING_SOA: null,
+  SET_SOA: null,
+  FETCH_SOA_SUCCESS: null,
+  FETCH_SOA_ERROR: null
 });

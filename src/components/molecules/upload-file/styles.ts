@@ -1,7 +1,7 @@
 import {StyleSheet,Dimensions,Platform} from 'react-native';
 import { input, outline, text } from '@styles/color';
 import { Bold } from '@styles/font';
-import {RNValue as RFValue, RNValue} from "@utils/formatting";
+import {RNValue as RFValue, RNValue} from "../../../utils/formatting";
 
 const { width } = Dimensions.get('window');
 
