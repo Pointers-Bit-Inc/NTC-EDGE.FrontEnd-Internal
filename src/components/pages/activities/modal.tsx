@@ -438,10 +438,10 @@ function ActivityModal(props: any) {
                 const diff =  _.differenceBy(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
                 let arr2 = (response.data?.statement_Of_Account || response.data?.soa)
 
-
-                let arr1 = removeEmpty(tabName == "Basic Info" ? diff  : _flattenSoa)
+                let arr1 = removeEmpty(tabName == "Basic Info" ? diff  : _flattenSoa.filter(v => v.item || v.amount))
 
                 let unionWith = _.unionWith(arr1, arr2, (a, b) => a.item == b.item && a.amount == b.amount);
+
                 let exclude = [];
                 for (let i = 0; i < unionWith.length; i++) {
                     let ubItem = unionWith[i].item
@@ -452,8 +452,8 @@ function ActivityModal(props: any) {
                         }
                     }
                 }
-                const unionBy = _.unionBy(exclude, arr1, "item");
-                console.log(unionBy)
+                const unionBy = _.unionBy(arr1,exclude, "item");
+
                 cleanSoa = {
                     //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                     totalFee: response.data?.totalFee,
