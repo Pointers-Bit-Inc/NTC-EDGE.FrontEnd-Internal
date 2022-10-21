@@ -876,7 +876,7 @@ const ActivitiesPage = (props) => {
                         <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={() => {
                             onMoreModalDismissed(applicationItem?.isOpen)
                         }}/>
-                        <ActivityModal updateModal={updateModalFn}
+                        <ActivityModal nav={props?.navigation} updateModal={updateModalFn}
                                        readFn={unReadReadApplicationFn}
                                        onChangeEvent={onChangeEvent}
                                        onChangeAssignedId={onChangeAssignedId}

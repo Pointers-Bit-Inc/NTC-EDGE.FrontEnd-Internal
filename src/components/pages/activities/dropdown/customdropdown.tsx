@@ -230,7 +230,7 @@ interface Props {
             marginRight: 10,
         },
         dropdown: {
-            overflow: "scroll",
+           // overflow: "scroll",
             alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
 

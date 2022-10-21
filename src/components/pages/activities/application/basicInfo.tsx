@@ -363,7 +363,7 @@ const BasicInfo = (_props: any) => {
                                    </CustomText>
                                </View>
                            </View>
-                           <View style={{flex: 0.6, flexWrap: "nowrap"}}>
+                           <View style={{alignItems: "flex-end", flex: 0.6, flexWrap: "nowrap"}}>
                                <Text style={{
                                    color: "#606A80",
                                    fontSize: fontValue(10)
@@ -782,7 +782,7 @@ const BasicInfo = (_props: any) => {
                                                                     updateForm={applicantForm}
                                                                     userProfileForm={userProfileForm}
                                                                     edit={props.edit}
-                                                                    exclude={["createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
+                                                                    exclude={["basic", "createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
 
 
