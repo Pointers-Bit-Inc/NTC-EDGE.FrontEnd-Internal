@@ -36,6 +36,7 @@ import Types from "@templates/application-steps/types";
 import Preview from "@templates/application-steps/preview";
 import CustomAlert from "@pages/activities/alert/alert";
 import {APPROVED} from "../../../reducers/activity/initialstate";
+import _ from "lodash";
 
 const ServiceFormPage = (props) =>{
 
@@ -154,7 +155,8 @@ const ServiceFormPage = (props) =>{
 
     useEffect(() => {
         if (!!applicationItem?.region) {
-            let r = {regionCode: applicationItem.region};
+
+            let r = {regionCode:  applicationItem?.region?.code ? applicationItem?.region?.code :  applicationItem?.region};
             if (service?.serviceCode === 'service-1') dispatch(fetchSchedules(r));
             dispatch(fetchProvinces(r));
 
@@ -1331,7 +1333,8 @@ const ServiceFormPage = (props) =>{
 
     useEffect(() => {
         dispatch(fetchRegions());
-         setRegion({code: applicationItem?.region, ...(regionList?.filter(i => i?.value === applicationItem?.region)?.[0] || {})});
+        let r = applicationItem?.region?.code ? applicationItem?.region?.code :  applicationItem?.region
+         setRegion({code: r, ...(regionList?.filter(i => i?.value === r)?.[0] || {})});
         BackHandler.addEventListener('hardwareBackPress', onBack);
         return () => { BackHandler.removeEventListener('hardwareBackPress', onBack); };
     }, []);
@@ -1385,7 +1388,6 @@ const ServiceFormPage = (props) =>{
     const [generatingApplication, setGeneratingApplication] = useState(false);
     const onPrevious = () => setCurrentStep(currentStep - 1);
     const onExitApplication = () => {
-        console.log("application")
         props.jumpTo()
     };
     const incompleteRequirements = () => {
@@ -1399,7 +1401,6 @@ const ServiceFormPage = (props) =>{
                     return;
                 }
                 r?.files?.forEach((f: any) => {
-                    console.log(!(Object.keys(f?.links || {})?.length > 0))
                     if (!(Object.keys(f?.links || {})?.length > 0)) {
                         incomplete = true;
                         return;
@@ -1551,18 +1552,7 @@ const ServiceFormPage = (props) =>{
             title: 'Requirements',
             onPrevious,
             onNext: () => {
-                dispatch(setApplicationItem({
-                    ...applicationItem,
-                    region: region?.value,
-                    schedule,
-                    service: {
-                        ...service,
-                        applicationType: {
-                            ...applicationType,
-                            requirements,
-                        },
-                    },
-                }));
+
                 onNext();
 
             },

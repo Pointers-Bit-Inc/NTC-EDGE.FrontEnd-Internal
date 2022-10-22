@@ -78,6 +78,7 @@ function ActivityModal(props: any) {
 
     const _props = useMemo(() => (Platform.OS == "web"  ? props : props?.route?.params), [props])
     const dispatch = useDispatch();
+
     const applicationItem = useSelector((state: RootStateOrAny) => {
         let _applicationItem = state.application?.applicationItem
         for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
@@ -92,7 +93,9 @@ function ActivityModal(props: any) {
 
         return _applicationItem
     });
-
+    useEffect(()=>{
+        console.log(applicationItem)
+    }, [applicationItem])
     const sceneIndex = useSelector((state: RootStateOrAny) => {
         return state.application.sceneIndex
     });
@@ -522,6 +525,9 @@ function ActivityModal(props: any) {
              setMessageUpdate('The Application has been updated!')
              setTitleUpdate("Success")*/
             let _applicationItem = response.data?.doc
+            if(_applicationItem?.region?.code){
+                _applicationItem.region = _applicationItem?.region?.code ? _applicationItem?.region?.code :  _applicationItem?.region
+            }
 
 
             if (_applicationItem?.service?.stationClass) {
@@ -540,7 +546,7 @@ function ActivityModal(props: any) {
             dispatch(setUserOriginalProfileForm(_flatten))
             dispatch(setUserProfileForm(_flatten))
             dispatch(setApplicationItem(_applicationItem))
-            dispatch(updateChangeEvent(response.data?.doc))
+            dispatch(updateChangeEvent(_applicationItem))
 
             if (isLoading) setSaved(false)
             if (isLoading) {
@@ -598,7 +604,6 @@ function ActivityModal(props: any) {
 
         return promise;
     };
-
 
 
     let buttonLabel;
@@ -988,15 +993,17 @@ function ActivityModal(props: any) {
                 </>;
             case 'edit':
                 return <ServiceFormPage jumpTo={()=> {
-                    console.log("jumpTo")
                     jumpTo("application")
                 }}/>
         }
     };
     const [routes] = React.useState([
-        { key: 'application', title: 'First' },
-        { key: 'edit', title: 'Second' },
+        { key: 'application', title: 'Application' },
+        { key: 'edit', title: 'Edit' },
     ]);
+    const _setUpdateIncrement = () => {
+        dispatch(setUpdateIncrement(updateIncrement + 1))
+    }
 
     return (
         <>

@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-
+const flatten = require('flat')
 import { call, put, select } from 'redux-saga/effects';
 
 import {
@@ -26,10 +26,14 @@ import {
   setSavingApplication,
   setSaveApplicationSuccess,
   setSaveApplicationError,
-  setReviewed,
+  setReviewed, setUserOriginalProfileForm, setUserProfileForm, updateChangeEvent,
 } from '../../reducers/application/actions';
 
+
+
+
 import getSession from './_session';
+import {setUpdateIncrement} from "../../reducers/activity/actions";
 
 
 export function* handle_saveApplication(action: any) {
@@ -47,6 +51,19 @@ export function* handle_saveApplication(action: any) {
       yield put(setSaveApplicationSuccess(true));
       yield put(setReviewed(false));
       yield put(setFetchingSOA(false));
+      let _applicationItem = res?.data
+      if(_applicationItem?.region?.code){
+        _applicationItem.region = _applicationItem?.region?.code ? _applicationItem?.region?.code :  _applicationItem?.region
+      }
+
+      var _flatten = flatten.flatten({..._applicationItem})
+
+      yield put(setUserOriginalProfileForm(_flatten))
+      yield put(setUserProfileForm(_flatten))
+      yield put(setApplicationItem(res.data))
+
+
+
       //   yield put(addApplication(res?.data));
     }
     else {
