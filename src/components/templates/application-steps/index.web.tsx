@@ -105,17 +105,13 @@ const ApplicationSteps: FC<Props> = ({
                 disabled={buttonDisabled || loading}
                 loading={loading}
             >
-              {currentStep > 0 || dimensions?.width<=dimensions?.height ?
-                  <Button
+              <Button
                       style={[
                         buttonStyle.button,
                         loading && {backgroundColor: button.info},
                         {flexDirection: "row", justifyContent: "center", alignItems: "center"}
                       ]}
                       onPress={() =>{
-                        if(currentStep == 0){
-                          dispatch(setApplicationItem(null));
-                        }
                         onPrevious()
                       }}
                   >
@@ -136,8 +132,7 @@ const ApplicationSteps: FC<Props> = ({
                         {"Back"}
                       </Text>
                     }
-                  </Button> : <View/>
-              }
+                  </Button>
             </Bottom>
 
           </View>

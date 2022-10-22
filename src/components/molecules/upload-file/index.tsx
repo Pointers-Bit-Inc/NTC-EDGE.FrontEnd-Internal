@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import { View, TouchableOpacity, FlatList, ImageBackground, Platform } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
@@ -44,6 +44,11 @@ const UploadFile: FC<Props> = ({
   uploading = false,
   uploaded = false,
 }) => {
+
+
+
+
+
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
   const [file, setFile] = useState(defaultFile);
   const [files, setFiles] = useState(defaultFiles);
@@ -214,7 +219,13 @@ const UploadFile: FC<Props> = ({
     }
     const fileName = _file?.links?.small ? _file?.links?.small?.split('/')?.pop() : _file?.name;
     const uri = _file?.links?.small || _file?.uri;
+
+
     const preview = NTCPreview(fileName);
+
+
+
+
     return (
       <>
         {
@@ -241,7 +252,7 @@ const UploadFile: FC<Props> = ({
                     >
                       <ImageBackground
                         style={styles?.filePreview}
-                        source={preview === 'image' ? {uri} : preview}
+                        source={preview === 'image' && Platform.OS != "web" ? {uri} : preview}
                       >
                         <TouchableOpacity
                           onPress={() => {

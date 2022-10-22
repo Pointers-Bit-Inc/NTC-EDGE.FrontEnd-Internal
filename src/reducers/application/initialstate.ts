@@ -43,8 +43,8 @@ soa: [],
   dateEnd: null,
   calendarVisible: false,
   prevDateStart: null,
-  prevDateEnd: null
-
+  prevDateEnd: null,
+reviewed: false
 });
 
 export default InitialState;

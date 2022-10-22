@@ -7,7 +7,7 @@ import {
     fetchCities,
     fetchProvinces,
     fetchRegions,
-    fetchSchedules, fetchSOA, saveApplication, setApplicationItem, setSceneIndex,
+    fetchSchedules, fetchSOA, saveApplication, setApplicationItem, setReviewed, setSceneIndex,
     uploadRequirement
 } from "../../../reducers/application/actions";
 import ServicesForm from "@pages/form/ServicesForm";
@@ -34,8 +34,10 @@ import {fontValue} from "@pages/activities/fontValue";
 import {infoColor} from "@styles/color";
 import Types from "@templates/application-steps/types";
 import Preview from "@templates/application-steps/preview";
+import CustomAlert from "@pages/activities/alert/alert";
+import {APPROVED} from "../../../reducers/activity/initialstate";
 
-const ServiceFormPage = () =>{
+const ServiceFormPage = (props) =>{
 
 
 
@@ -70,6 +72,9 @@ const ServiceFormPage = () =>{
     const fetchingRegions = useSelector((state: RootStateOrAny) => state.application?.fetchingRegions);
     const fetchSOASuccess = useSelector((state: RootStateOrAny) => state.application?.fetchSOASuccess);
     const fetchSOAError = useSelector((state: RootStateOrAny) => state.application?.fetchSOAError);
+    const fetchingSOA = useSelector((state: RootStateOrAny) => state.application?.fetchingSOA);
+    const reviewed = useSelector((state: RootStateOrAny) => state.application?.reviewed);
+    const savingApplication = useSelector((state: RootStateOrAny) => state.application?.savingApplication);
     const soa = useSelector((state: RootStateOrAny) => state.application?.soa);
 
     const [service, setService] = useState( applicationItem?.service);
@@ -1333,13 +1338,13 @@ const ServiceFormPage = () =>{
     const layout = useWindowDimensions();
 
     const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
+    const routes = React.useMemo(() => [
         { key: 'region', title: 'Region' },
         { key: 'applicationType', title: 'Application Type' },
         { key: 'service', title: 'Service' },
         { key: 'requirement', title: 'Requirement' },
         { key: 'complete', title: 'Complete' },
-    ]);
+    ], []);
 
     const renderScene = ({ route, jumpTo }) => {
         switch (route.key) {
@@ -1380,7 +1385,8 @@ const ServiceFormPage = () =>{
     const [generatingApplication, setGeneratingApplication] = useState(false);
     const onPrevious = () => setCurrentStep(currentStep - 1);
     const onExitApplication = () => {
-
+        console.log("application")
+        props.jumpTo()
     };
     const incompleteRequirements = () => {
         let incomplete = false;
@@ -1403,7 +1409,6 @@ const ServiceFormPage = () =>{
         });
         return incomplete;
     };
-    const [reviewed, setReviewed] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [completed, setCompleted] = useState(false);
     const formValid = () => {
@@ -1515,12 +1520,14 @@ const ServiceFormPage = () =>{
     };
         const [agree, setAgree] = useState(false);
     const [applicationPayload, setApplicationPayload] = useState({});
+
+
     const steps = [
 
         {
             title: service?.serviceCode === 'service-1' ? 'Exam Schedule' : 'Region',
 
-            onPrevious: FOR_EDITING ? onExitApplication : onPrevious,
+            onPrevious: () => FOR_EDITING ? onExitApplication() : onPrevious(),
             onNext,
             buttonLabel: 'Next',
             buttonDisabled: service?.serviceCode === 'service-1' ? !(region?.value && schedule?.id) : !region?.value,
@@ -1556,8 +1563,8 @@ const ServiceFormPage = () =>{
                         },
                     },
                 }));
-                setAgree(true)
                 onNext();
+
             },
             buttonLabel: 'Review',
             buttonDisabled: incompleteRequirements(),
@@ -1566,17 +1573,22 @@ const ServiceFormPage = () =>{
             title: completed ? 'Complete' : 'Review',
             onPrevious: () => {
                 if (agree) setAgree(false);
-                if (reviewed) setReviewed(false);
+                if (reviewed) dispatch(setReviewed(false));
                 onPrevious();
             },
             onNext: () => {
-                console.log("FETCH_SOA", "Agree:", agree)
-                if (agree) {
-                    console.log("FETCH_SOA")
-                    onSaveApplication();
+
+                if (!reviewed) {
+                    dispatch(setReviewed(true));
                 }
+                else if (completed) {
+                    if(Platform.OS == 'web') dispatch(setApplicationItem({}));
+                    onExitApplication();
+                }
+                else if (agree) onSaveApplication();
             },
             buttonLabel: !reviewed ? 'Submit' : completed ? 'Close' : 'Confirm',
+           // buttonDisabled: (applicationItem || (!reviewed ? false : completed ? false : !agree)),
         },
     ];
     const getStructuredData = (form: any) => {
@@ -1877,6 +1889,15 @@ const ServiceFormPage = () =>{
             }));
         }
     }, [fetchSOASuccess, fetchSOAError]);
+
+
+    useEffect(()=>{
+        if(savingApplication){
+            setCurrentStep(0)
+            onExitApplication()
+        }
+    }, [savingApplication])
+
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar
             renderLabel={({route, focused}) => {
@@ -1941,6 +1962,7 @@ const ServiceFormPage = () =>{
 
         </View>
     }
+
     return <View style={{flex: 1}}>
 
         <ApplicationSteps
@@ -1960,6 +1982,26 @@ const ServiceFormPage = () =>{
             UDAAlert={udaAlert}
             generatingApplication={generatingApplication}
         />
+
+        <CustomAlert
+            showClose={false}
+            type={""}
+            onDismissed={()=>{
+                dispatch(setReviewed(false))
+            }}
+            onLoading={(fetchingSOA)}
+            onCancelPressed={()=>{
+
+                dispatch(setReviewed(false))
+            }}
+            confirmButton={"Confirm"}
+            onConfirmPressed={async () => {
+                onSaveApplication();
+
+
+            }}
+            show={reviewed /*&& !saveApplicationError && !fetchSOAError*/} title={"Update Application"}
+            message={"Are you sure you want to update this application?"}/>
 
 
 

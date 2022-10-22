@@ -987,7 +987,10 @@ function ActivityModal(props: any) {
                     />
                 </>;
             case 'edit':
-                return <ServiceFormPage/>
+                return <ServiceFormPage jumpTo={()=> {
+                    console.log("jumpTo")
+                    jumpTo("application")
+                }}/>
         }
     };
     const [routes] = React.useState([

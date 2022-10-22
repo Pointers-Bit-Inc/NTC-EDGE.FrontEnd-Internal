@@ -51,7 +51,8 @@ const {
     SAVE_APPLICATION_ERROR,
     SAVE_APPLICATION_SUCCESS,
     SAVING_APPLICATION,
-    ADD_APPLICATION
+    ADD_APPLICATION,
+    SET_REVIEWED
 } = require('./types').default;
 export function setSOA(payload: any) {
     return {
@@ -62,6 +63,12 @@ export function setSOA(payload: any) {
 export function fetchSOA(payload: any) {
     return {
         type: FETCH_SOA,
+        payload,
+    }
+};
+export function setReviewed(payload: any) {
+    return {
+        type: SET_REVIEWED,
         payload,
     }
 };

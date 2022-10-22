@@ -166,6 +166,7 @@ const UploadFile: FC<Props> = ({
 		}
 		const truncate = (source, size) => { return source?.length > size ? source?.slice(0, size - 1) + '…' : source; }
 		const preview = NTCPreview(_file?.name);
+		console.log(_file)
 		return (
 			<>
 				{
@@ -195,7 +196,7 @@ const UploadFile: FC<Props> = ({
 												>
 													<ImageBackground
 														style={styles?.filePreview}
-														source={preview === 'image' ? {uri: _file?.uri} : preview}
+														source={preview === 'image' ? {uri: _file?.links?.small} : preview}
 													>
 														<TouchableOpacity
 															onPress={() => {

@@ -57,7 +57,8 @@ const {
     FETCH_SOA_ERROR,
     SAVING_APPLICATION,
     SAVE_APPLICATION_ERROR,
-    SAVE_APPLICATION_SUCCESS
+    SAVE_APPLICATION_SUCCESS,
+    SET_REVIEWED
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -86,6 +87,12 @@ export default function basket(state = initialState, action = {}) {
         case SET_DATA: {
 
             state = state.set('data', action.payload);
+            return state
+        }
+
+        case SET_REVIEWED: {
+
+            state = state.set('reviewed', action.payload);
             return state
         }
         case FETCHING_REGIONS: {

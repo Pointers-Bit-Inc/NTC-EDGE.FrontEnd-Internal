@@ -21,7 +21,12 @@ import {
   setRegions,
   setFetchingSOA,
   setSOA,
-  setFetchSOASuccess, setFetchSOAError, setSavingApplication, setSaveApplicationSuccess, setSaveApplicationError,
+  setFetchSOASuccess,
+  setFetchSOAError,
+  setSavingApplication,
+  setSaveApplicationSuccess,
+  setSaveApplicationError,
+  setReviewed,
 } from '../../reducers/application/actions';
 
 import getSession from './_session';
@@ -34,15 +39,20 @@ export function* handle_saveApplication(action: any) {
     yield put(setSaveApplicationError(false));
     yield put(setFetchSOASuccess(false));
     yield put(setFetchSOAError(false));
-
+    yield put(setReviewed(true));
+    yield put(setFetchingSOA(true));
     let session = yield select(getSession);
     let res = yield call(request_saveApplication, {session, ...action});
     if (res?.status === 201 || res?.status === 200) {
       yield put(setSaveApplicationSuccess(true));
-   //   yield put(addApplication(res?.data));
+      yield put(setReviewed(false));
+      yield put(setFetchingSOA(false));
+      //   yield put(addApplication(res?.data));
     }
     else {
       yield put(setSaveApplicationError(true));
+      yield put(setReviewed(false));
+      yield put(setFetchingSOA(false));
       Alert.alert('Alert', res?.msg);
     }
 
