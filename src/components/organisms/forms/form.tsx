@@ -26,7 +26,6 @@ const FormField=({
     const renderElements=(id:number,element:any, /*color: any,*/ styleProps:any)=>{
         const {type,pickerData,...otherProps}=element;
         const buttonElement=()=>{
-
             return <Button onPress={()=>onSubmit(id,type)}    {...styleProps} {...otherProps}>
                 <Text fontSize={16} color={'white'}>
                     {otherProps.label}
@@ -47,6 +46,7 @@ const FormField=({
             case "text":
                 return <Text  {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
+
                 return !element.hidden ? <InputField   {...styleProps} {...otherProps}
                                    onEndEditing={(e:any)=>{
                                        onChange(id,e.nativeEvent.text,'input')

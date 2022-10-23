@@ -157,7 +157,6 @@ function useSchedule(props: any) {
             }
 
         });
-        console.log(valid)
         return valid;
     };
 
@@ -248,7 +247,8 @@ function useSchedule(props: any) {
 
     }, [formValue])
     const updateValid = useMemo(() => {
-        return isDiff(_.map(formValue, 'value'), _.map(originalForm, 'value'));
+        console.log(isDiff(_.map(originalForm, 'value'), _.map(formValue, 'value')))
+        return isDiff(_.map(originalForm, 'value'), _.map(formValue, 'value'));
     }, [formValue, originalForm])
     const renderListItem = ({item}) => {
         return <TouchableOpacity onPress={() => {
@@ -336,7 +336,8 @@ function useSchedule(props: any) {
         showDeleteAlert,
         setShowDeleteAlert,
         onDelete,
-        scheduleId
+        scheduleId,
+        isValid
     };
 }
 

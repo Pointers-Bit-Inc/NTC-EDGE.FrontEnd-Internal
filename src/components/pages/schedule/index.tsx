@@ -51,7 +51,8 @@ export default function SchedulePage(props: any) {
         showDeleteAlert,
         setShowDeleteAlert,
         onDelete,
-        scheduleId
+        scheduleId,
+        isValid
     } = useSchedule(props);
     const [filter, setFilter] = useState(schedulesMemo)
 
@@ -221,7 +222,7 @@ export default function SchedulePage(props: any) {
 
                         </TouchableOpacity>*/}
                         <TouchableOpacity onPress={() => onUpdateCreateSchedule('post')} style={[{
-                            backgroundColor: updateValid ? disabledColor : successColor,
+                            backgroundColor: !isValid() ? disabledColor : successColor,
                         }, styles.scheduleButton]}>
 
                             <Text style={[styles.text, {color: "#fff"}]} size={14}>Create Schedule</Text>

@@ -116,6 +116,7 @@ const ServiceFormPage = (props) =>{
         "weight": 0,
     };
     let applicantFn = (_a: any) => {
+        if(!_a) return
         Object.keys(_a).forEach((k) =>
             (!_a[k] || k === '_id' || k === 'userId' || k === 'contactNumber' || k === 'email') && delete _a[k]);
         return _a;
@@ -1981,7 +1982,6 @@ const ServiceFormPage = (props) =>{
             }}
             onLoading={(fetchingSOA)}
             onCancelPressed={()=>{
-
                 dispatch(setReviewed(false))
             }}
             confirmButton={"Confirm"}

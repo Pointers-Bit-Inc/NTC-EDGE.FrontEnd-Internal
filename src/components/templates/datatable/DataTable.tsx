@@ -459,7 +459,7 @@ const DataTable = (props) => {
             label: 'Date of Birth',
             type: 'date',
             placeholder: 'Date of Birth',
-            value: '2022-10-07T01:36:36.417Z',
+            value: new Date()?.toISOString(),
             error: false,
             description: false,
             hasValidation: true
@@ -1162,7 +1162,6 @@ const DataTable = (props) => {
         }).catch((err) => {
             setLoading(false);
             var _err = err;
-            console.log(_err?.response?.data?.message, "_err?.response?.data?.message")
             if (_err?.response?.data?.message) {
                 showToast(ToastType.Error, _err?.response?.data?.message)
             }

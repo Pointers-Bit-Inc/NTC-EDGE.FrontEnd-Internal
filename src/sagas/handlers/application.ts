@@ -77,6 +77,9 @@ export function* handle_saveApplication(action: any) {
   }
   catch(err) {
     yield put(setSaveApplicationError(true));
+    yield put(setReviewed(false));
+    yield put(setFetchingSOA(false));
+    yield put(setSaveApplicationError(true));
     yield put(setSavingApplication(false));
     Alert.alert('Alert', err?.message);
   }

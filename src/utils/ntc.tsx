@@ -468,7 +468,7 @@ function isValidDate(dateString) {
     var d = new Date(dateString);
     var dNum = d.getTime();
     if(!dNum && dNum !== 0) return false;
-    return d.toISOString().slice(0,10) === dateString;
+    return d?.toISOString()?.slice(0,10) === dateString;
 }
 
 const cleanNonNumericChars = (text) =>  {
@@ -523,9 +523,12 @@ function isDiff(access: any[], originalAccess: any[]) {
         }
     }
 
+
+
     for (var k in a) {
         diff.push(k);
     }
+
     return diff.length;
 }
  const currency = (number: number) => {

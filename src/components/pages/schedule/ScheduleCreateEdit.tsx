@@ -8,20 +8,23 @@ import useSafeState from "../../../hooks/useSafeState";
 import Moment from "moment";
 import CalendarView from "@pages/schedule/CalendarView";
 import CalendarModal from "@pages/schedule/CalendarModal";
+import _ from "lodash";
 
 function ScheduleTime(props: { scheduleId: any, value: any, id: string, onChange: any }) {
 
     const dates = useMemo(() => {
-        return (typeof props!.value == "string" ? (props?.value) : (props?.value?.toISOString()))?.split?.('T')?.[0]?.split?.('-')
+
+        return (props?.value ? props?.value : ((props?.value || new Date())?.toISOString()))?.split?.('T')?.[0]?.split?.('-')
+
     }, [props?.value])
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
     let _year = year || Moment().get('year');
     let _month = month || '00';
-    const [hourValue, setHourValue] = useSafeState()
-    const [minuteValue, setMinuteValue] = useSafeState(0)
-    const [ampmValue, setAmpmValue] = useSafeState(0)
+    const [hourValue, setHourValue] = useSafeState(12)
+    const [minuteValue, setMinuteValue] = useSafeState("00")
+    const [ampmValue, setAmpmValue] = useSafeState("am")
     const [monthValue, setMonthValue] = useSafeState(_month)
     const [dayValue, setDayValue] = useSafeState(parseInt(day).toString())
     const [yearValue, setYearValue] = useSafeState(_year)
@@ -32,9 +35,10 @@ function ScheduleTime(props: { scheduleId: any, value: any, id: string, onChange
 
         if (!props.value) return
         const format = formatAMPM(new Date(props?.value?.replace?.(/\.\d+/, "")))
+
         if ((prevScheduleId != props.scheduleId) && (prevValue != props.value)) {
             setHourValue(format?.[0])
-            setMinuteValue(format?.[1])
+            setMinuteValue(  format?.[1] ? "00": format?.[1])
             setAmpmValue(format?.[2])
             setInitializeValue(false)
             setPrevScheduleId(props.scheduleId)
