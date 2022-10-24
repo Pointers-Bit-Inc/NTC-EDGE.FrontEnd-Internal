@@ -36,6 +36,7 @@ import {isMobile} from "@pages/activities/isMobile";
 
 const ModalTab = props => {
     const dispatch = useDispatch();
+    const applicationItem = useSelector((state: RootStateOrAny) =>  state.application?.applicationItem)
     const user = useSelector((state: RootStateOrAny) => state.user);
     const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
     const tabName = useSelector((state: RootStateOrAny) => state.activity.tabName);
@@ -367,42 +368,44 @@ const ModalTab = props => {
                 />
 
             </View>
-            <View style={{flexDirection: "row",  alignItems: "center",}}>
-                {props.edit ? <TouchableOpacity onPress={() => {
-                        props.updateApplication(() => {
-                        })
-                        console.log("edit updateApplication")
-                    }
-                    }>
-                        {props.loading ? <ActivityIndicator color={infoColor}/> :
-                            <Text style={styles.action}>Save</Text>}
-                        {/* <EditIcon color="#606A80"/>*/}
-                    </TouchableOpacity>
-
-                    : editModalVisible ?
-
-                        <TouchableOpacity onPress={()=>{
-                            if(paymentIndex == index){
-                                props.editBtn()
-                            }else{
-                                dispatch(setSceneIndex(1))
-                            }
-
+            { applicationItem?.approvalHistory?.personnel?._id == user?._id  ?
+                <View style={{flexDirection: "row", alignItems: "center",}}>
+                    {props.edit ? <TouchableOpacity onPress={() => {
+                            props.updateApplication(() => {
+                            })
+                            console.log("edit updateApplication")
                         }
                         }>
-                            <Text style={styles.action}>Edit</Text>
-                        </TouchableOpacity> : <View style={{opacity: "0%"}}> <Text style={styles.action}>Edit</Text></View>}
-                <View style={{paddingVertical: 29.5, paddingHorizontal: 10}}>
-                    <TouchableOpacity onPress={() => {
-                        dispatch(setFeedVisible(true))
-                        props.dismissed()
-                    }}>
-                        <CloseIcon width={12} height={12}/>
-                    </TouchableOpacity>
+                            {props.loading ? <ActivityIndicator color={infoColor}/> :
+                                <Text style={styles.action}>Save</Text>}
+                            {/* <EditIcon color="#606A80"/>*/}
+                        </TouchableOpacity>
 
+                        : editModalVisible ?
+
+                            <TouchableOpacity onPress={() => {
+                                if (paymentIndex == index) {
+                                    props.editBtn()
+                                } else {
+                                    dispatch(setSceneIndex(1))
+                                }
+
+                            }
+                            }>
+                                <Text style={styles.action}>Edit</Text>
+                            </TouchableOpacity> :
+                            <View style={{opacity: "0%"}}> <Text style={styles.action}>Edit</Text></View>}
+                    <View style={{paddingVertical: 29.5, paddingHorizontal: 10}}>
+                        <TouchableOpacity onPress={() => {
+                            dispatch(setFeedVisible(true))
+                            props.dismissed()
+                        }}>
+                            <CloseIcon width={12} height={12}/>
+                        </TouchableOpacity>
+
+                    </View>
                 </View>
-            </View>
-
+            : <></>}
         </View>
     }
 

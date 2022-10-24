@@ -614,6 +614,10 @@ function ActivityModal(props: any) {
     useEffect(() => {
         setInitialPage(true)
     }, [applicationItem._id]);
+
+
+
+
     let buttonLabel;
     const renderScene = ({ route, jumpTo }) => {
         if (initialPage) {
@@ -691,10 +695,12 @@ function ActivityModal(props: any) {
                             <Text
                                 style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
-                            {editModalVisible ? edit ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
+                            {applicationItem?.approvalHistory?.personnel?._id == user?._id ? editModalVisible ? edit ?
+                                <TouchableOpacity hitSlop={hitSlop} onPress={() => {
 
                                     updateApplication(() => {
-                                    }).then(r => {})
+                                    }).then(r => {
+                                    })
 
                                 }
                                 }>
@@ -708,7 +714,7 @@ function ActivityModal(props: any) {
                                     {/* <EditIcon color="#606A80"/>*/}
                                 </TouchableOpacity>
 
-                                : <TouchableOpacity hitSlop={hitSlop} onPress={()=>{
+                                : <TouchableOpacity hitSlop={hitSlop} onPress={() => {
                                     dispatch(setSceneIndex(1))
                                 }
                                 }>
@@ -725,7 +731,7 @@ function ActivityModal(props: any) {
                                 fontFamily: Regular,
                                 fontSize: fontValue(16),
                                 opacity: 0
-                            }}>Edit</Text>
+                            }}>Edit</Text> : <></>
                             }
 
                         </View>}
