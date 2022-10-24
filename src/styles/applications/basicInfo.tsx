@@ -75,7 +75,7 @@ const styles=StyleSheet.create({
         textTransform:'uppercase',
         fontSize:fontValue(12),
         fontFamily:Regular500,
-        color:"#565961",
+
         padding:5,
         marginLeft:5
     },

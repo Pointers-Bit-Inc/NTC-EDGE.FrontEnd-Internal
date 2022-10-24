@@ -382,7 +382,12 @@ const ModalTab = props => {
                     : editModalVisible ?
 
                         <TouchableOpacity onPress={()=>{
-                        dispatch(setSceneIndex(1))
+                            if(paymentIndex == index){
+                                props.editBtn()
+                            }else{
+                                dispatch(setSceneIndex(1))
+                            }
+
                         }
                         }>
                             <Text style={styles.action}>Edit</Text>

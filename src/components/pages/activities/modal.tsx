@@ -93,9 +93,6 @@ function ActivityModal(props: any) {
 
         return _applicationItem
     });
-    useEffect(()=>{
-        console.log(applicationItem)
-    }, [applicationItem])
     const sceneIndex = useSelector((state: RootStateOrAny) => {
         return state.application.sceneIndex
     });
@@ -323,7 +320,7 @@ function ActivityModal(props: any) {
             BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
         };
     }, [routeIsFocused]);
-    const editBtn = () => {
+    const editBtn = (editBtn) => {
         if (hasChange) setEditAlert(true);
         else {
             let _edit = edit
@@ -333,13 +330,18 @@ function ActivityModal(props: any) {
     const {showToast, hideToast} = useToast();
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
-    const updateApplication = useCallback(async (callback, isLoading = true) => {
 
+
+
+    const updateApplication =(async (callback, isLoading = true) => {
         /* hideToast()
          showToast(ToastType.Info, <ToastLoading/>)*/
         if (isLoading) setLoading(true)
         if (isLoading) setSaved(true)
+
         let profileForm = JSON.parse(JSON.stringify(userProfileForm))
+
+
         let dateOfBirth = profileForm?.['applicant.dateOfBirth'], region = profileForm?.['region.code'],
             dateValue = {year: "", month: "", day: ""}
         if (typeof dateOfBirth == 'string' && dateOfBirth) {
@@ -571,7 +573,7 @@ function ActivityModal(props: any) {
             setTitleUpdate("Error")*/
             callback()
         });
-    }, [userProfileForm, amnesty])
+    })
     const visibleAnimated = useRef(new Animated.Value(Number(!edit))).current;
     const getAnimatedStyle = () => {
         Animated.timing(visibleAnimated, {

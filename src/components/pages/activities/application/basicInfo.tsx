@@ -8,7 +8,7 @@ import {
     Text,
     useWindowDimensions,
     View,
-    TouchableOpacity
+    TouchableOpacity, ActivityIndicator
 } from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
@@ -37,12 +37,16 @@ import ChevronDown from "@assets/svg/chevron-down";
 import ChevronUp from "@assets/svg/chevron-up";
 import RowText from "@pages/activities/application/RowText";
 import Loading from "@atoms/loading";
-import {infoColor} from "@styles/color";
-import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import {errorColor, infoColor} from "@styles/color";
+import {setEditModalVisible, setUpdateIncrement} from "../../../../reducers/activity/actions";
 import _ from "lodash";
 import useMemoizedFn from "../../../../hooks/useMemoizedFn";
-import {setUserProfileForm} from "../../../../reducers/application/actions";
-
+import {
+    setApplicationItem,
+    setUserOriginalProfileForm,
+    setUserProfileForm, updateChangeEvent
+} from "../../../../reducers/application/actions";
+const flatten = require('flat')
 
 function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
     const props = useMemo(() => _props, [_props] )
@@ -185,7 +189,7 @@ const BasicInfo = (_props: any) => {
 
 
     const applicantForm = (stateName, value) => {
-        console.log("applicantForm", )
+
         let newForm = {...userProfileForm}
         newForm[stateName] =value
        dispatch(setUserProfileForm(newForm))
@@ -279,7 +283,9 @@ const BasicInfo = (_props: any) => {
         return  props.isMore ? historyMemo : [_.first(historyMemo)]
     }, [props.paymentHistory,historyMemo, props.approvalHistory, props.isMore])
     const drowdownVisible= useSelector((state:RootStateOrAny)=>state.activity?.drowdownVisible);
-
+    const updateIncrement = useSelector((state: RootStateOrAny) => {
+        return state.activity.updateIncrement
+    });
     const collapsedText = useMemo(() => {
         return [CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) || (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ): ((props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ||  (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks))
     }, [props])
@@ -300,6 +306,7 @@ const BasicInfo = (_props: any) => {
         </View>}</>
     })
     const [isRemarkMore, setIsRemarkMore] = useState(false)
+    const [isEditNote, setIsEditNote] = useState(false)
     const RemarkFn = useMemoizedFn(() => {
         return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
 
@@ -497,7 +504,11 @@ const BasicInfo = (_props: any) => {
     const containerRef = useRef(null);
     const textRef = useRef(null);
 
-
+    let config = {
+        headers: {
+            Authorization: "Bearer ".concat(user?.sessionToken)
+        }
+    }
     const [measure, setMeasure] = useState(null);
     useEffect(()=>{
        /* if(Platform.OS == "web"){
@@ -730,46 +741,51 @@ const BasicInfo = (_props: any) => {
                                                 </View>
                                             </View>
 
-                                            <DateField edit={props.edit} label={"Date:"}
+                                            <DateField
+                                                //edit={props.edit}
+                                                label={"Date:"}
                                                 /*show={true}
                                                 showEdit={true}*/
-                                                       updateForm={applicantForm}
+                                                       //updateForm={applicantForm}
                                                        hasChanges={props.hasChanges}
-                                                       updateApplication={updateApplication}
+                                                       //updateApplication={updateApplication}
                                                        stateName={"schedule.dateStart"}
                                                        applicant={userProfileForm?.["schedule.dateStart"]}
                                                        display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
-                                            <TimeField edit={props.edit} label={"Start Time:"}
+                                            <TimeField
+                                                //edit={props.edit}
+                                                label={"Start Time:"}
                                                 /*show={true}
                                                 */
-                                                       updateForm={applicantForm}
+                                                       //updateForm={applicantForm}
                                                        hasChanges={props.hasChanges}
-                                                       updateApplication={updateApplication}
+                                                       //updateApplication={updateApplication}
                                                        stateName={"schedule.dateStart"}
                                                        applicant={userProfileForm?.["schedule.dateStart"]}
                                                        display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart}/>
-                                            <TimeField  edit={props.edit} label={"End Time:"}
+                                            <TimeField  //edit={props.edit}
+                                                        label={"End Time:"}
                                                 /*show={true}
                                                 */
                                                        hasChanges={props.hasChanges}
-                                                       updateApplication={updateApplication}
-                                                       updateForm={applicantForm}
+                                                       //updateApplication={updateApplication}
+                                                      // updateForm={applicantForm}
                                                        stateName={"schedule.dateEnd"}
                                                        applicant={userProfileForm?.["schedule.dateEnd"]}
                                                        display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
                                             <Row  id={userProfileForm?.["_id"]}  /*show={true}
                                            */
-                                                updateForm={applicantForm}
+                                                //updateForm={applicantForm}
                                                 stateName={"schedule.venue"}
-                                                edit={props.edit}
+                                               // edit={props.edit}
                                                 label={"Venue:"}
                                                 applicant={userProfileForm?.["schedule.venue"]}/>
                                             <Row  /*show={true}
                                           */
                                                 id={userProfileForm?.["_id"]}
-                                                updateForm={applicantForm}
+                                                //updateForm={applicantForm}
                                                 stateName={"schedule.seatNumber"}
-                                                edit={props.edit}
+                                                //edit={props.edit}
                                                 label={"Seat No:"}
                                                 applicant={userProfileForm?.["schedule.seatNumber"]}/>
 
@@ -778,18 +794,90 @@ const BasicInfo = (_props: any) => {
 
 
                                         <RenderServiceMiscellaneous hasChanges={props.hasChanges}
-                                                                    updateApplication={updateApplication}
+                                                                   // updateApplication={updateApplication}
                                                                     updateForm={applicantForm}
                                                                     userProfileForm={userProfileForm}
-                                                                    edit={props.edit}
+                                                                    //edit={props.edit}
                                                                     exclude={["basic", "createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
 
 
                                         <View style={styles.group3}>
-                                           <View style={styles.group}>
+                                           <View style={[styles.group, { backgroundColor:"#EFF0F6",  flexDirection: "row", justifyContent: "space-between"}]}>
                                                <View style={styles.rect}>
                                                    <Text style={styles.header}>Note</Text>
+                                               </View>
+                                               <View style={[styles.rect, {flexDirection: "row"}]}>
+                                                   {isEditNote ? <TouchableOpacity onPress={()=> {
+                                                       userProfileForm["note"] = userOriginalProfileForm["note"]
+                                                       setUserProfileForm(userProfileForm)
+                                                       setIsEditNote(false)
+                                                   }
+                                                   }>
+                                                       <Text style={[styles.header, {color: errorColor}]}>Cancel</Text>
+                                                   </TouchableOpacity> : <></>}
+
+                                                   {!isEditNote ? <TouchableOpacity onPress={()=>setIsEditNote((edit) => !edit)}>
+                                                       <Text style={[styles.header, {color: infoColor}]}>Edit</Text>
+                                                   </TouchableOpacity> :  <TouchableOpacity onPress={()=>{
+                                                       let profileForm = JSON.parse(JSON.stringify(userProfileForm))
+                                                       let dateOfBirth = profileForm?.['applicant.dateOfBirth'],
+                                                           dateValue = {year: "", month: "", day: ""}
+                                                       if (typeof dateOfBirth == 'string' && dateOfBirth) {
+                                                           let dateOfBirthSplit = dateOfBirth?.split('-')
+                                                           dateValue.year = dateOfBirthSplit[0]
+                                                           dateValue.month = dateOfBirthSplit[1]
+                                                           dateValue.day = dateOfBirthSplit[2]
+                                                           profileForm['applicant.dateOfBirth'] = dateValue
+                                                       }
+                                                       setLoading(true)
+                                                       axios.patch(BASE_URL + `/applications/${userProfileForm?._id}`, {...flatten.unflatten(profileForm)}, config).then((response) => {
+
+                                                           let _applicationItem = response.data?.doc
+                                                           if(_applicationItem?.region?.code){
+                                                               _applicationItem.region = _applicationItem?.region?.code ? _applicationItem?.region?.code :  _applicationItem?.region
+                                                           }
+                                                           if (_applicationItem?.service?.stationClass) {
+                                                               for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
+
+                                                                   let _split = _applicationItem?.service?.stationClass[i]?.stationClass.split(" • ")
+                                                                   if (_split.length == 2) {
+                                                                       _applicationItem.service.stationClass[i].stationClass = _split[0]
+                                                                       _applicationItem.service.stationClass[i].unit = _split[1]
+                                                                   }
+
+                                                               }
+                                                           }
+                                                           var _flatten = flatten.flatten({..._applicationItem})
+
+                                                           dispatch(setUserOriginalProfileForm(_flatten))
+                                                           dispatch(setUserProfileForm(_flatten))
+                                                           dispatch(setApplicationItem(_applicationItem))
+                                                           dispatch(updateChangeEvent(_applicationItem))
+                                                           dispatch(setUpdateIncrement(updateIncrement + 1))
+                                                           setIsEditNote(false)
+                                                           setLoading(false)
+                                                       }).catch((error) => {
+                                                           setLoading(false)
+                                                           //hideToast()
+                                                           let _err = '';
+                                                           for (const err in error?.response?.data?.errors) {
+                                                               _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+                                                           }
+                                                           if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string") ) {
+                                                               showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data)
+                                                           }
+                                                       });
+
+                                                   }
+                                                   }>
+                                                       {loading ? <View style={styles.header}>
+                                                               <ActivityIndicator color={infoColor}/>
+                                                       </View> :
+                                                           <Text style={[styles.header, {color: infoColor}]}>Save</Text>}
+
+                                                   </TouchableOpacity> }
+
                                                </View>
                                            </View>
                                         <View style={{paddingVertical: 5}}>
@@ -819,7 +907,7 @@ const BasicInfo = (_props: any) => {
                                                 }}
                                                 updateForm={applicantForm}
                                                 stateName={"note"}
-                                                edit={props.edit}
+                                                edit={isEditNote}
                                                 label={""}
                                                 applicant={userProfileForm?.["note"]}/>
                                         </View>

@@ -65,17 +65,12 @@ let arr = []
 function Title(props: { nextValue, index, value }) {
 
 
-    console.log(title, transformText(props.nextValue), transformText(props.index), !((
-        title === transformText(props.nextValue)) || (
-        title === transformText(props.index))), props.nextValue, props.index, props.value)
 
-
-    if ( !((
+    if ( (!((
         title == transformText(props.nextValue)) || (
-        title == transformText(props.index)))) {
+        title == transformText(props.index)))) && props.value) {
 
         title = transformText(props.nextValue || props.index);
-        console.log(title, "title")
         arr = []
         arr.push(props.value)
         console.log(arr, "arr", title?.toUpperCase(), "uppercase", title?.toUpperCase() && !!arr?.join("")?.toString())
@@ -86,6 +81,7 @@ function Title(props: { nextValue, index, value }) {
         </View> : <></>}</>
 
     }
+
     arr.push(props?.value)
     return <></>
 }
