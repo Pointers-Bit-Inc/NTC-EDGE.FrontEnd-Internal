@@ -213,6 +213,10 @@ function ActivityModal(props: any) {
                     if (res.status === 200) {
                         if (res.data) {
                             const data = res.data?.doc || res?.data;
+                            if(data?.region?.code){
+                                data.region = data?.region?.code ? data?.region?.code :  data?.region
+                            }
+
                             dispatch(updateApplicationStatus({
                                 application: data,
                                 status: status,
@@ -746,7 +750,7 @@ function ActivityModal(props: any) {
                                                 <ApprovedButton
                                                     user={user}
                                                     currentLoading={currentLoading}
-                                                    allButton={allButton}
+                                                    allButton={false}
                                                     onPress={() => {
                                                         if (getRole(user, [EVALUATOR])) {
                                                             setShowAlert1(true)
