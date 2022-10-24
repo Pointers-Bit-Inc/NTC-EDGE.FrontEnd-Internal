@@ -1886,7 +1886,7 @@ const ServiceFormPage = (props) =>{
 
             setCurrentStep(0)
             onExitApplication()
-    }, [savingApplication])
+    }, [applicationItem._id])
 
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar
