@@ -62,20 +62,20 @@ const ServiceFormPage = (props) =>{
         }*/
         return _applicationItem
     });
-    const provinces = useSelector((state: RootStateOrAny) => state.application?.provinces);
-    const fetchingProvinces = useSelector((state: RootStateOrAny) => state.application?.fetchingProvinces);
     const cities = useSelector((state: RootStateOrAny) => state.application?.cities);
     const schedules = useSelector((state: RootStateOrAny) => state.application?.schedules);
-    const uploadingRequirement = useSelector((state: RootStateOrAny) => state.application?.uploadingRequirement);
-    const fetchingCities = useSelector((state: RootStateOrAny) => state.application?.fetchingCities);
-    const regions = useSelector((state: RootStateOrAny) => state.application?.regions);
-    const fetchingSchedules = useSelector((state: RootStateOrAny) => state.application?.fetchingSchedules);
+    const provinces = useSelector((state: RootStateOrAny) => state.application?.provinces);
     const fetchingRegions = useSelector((state: RootStateOrAny) => state.application?.fetchingRegions);
+    const savingApplication = useSelector((state: RootStateOrAny) => state.application?.savingApplication);
+    const uploadingRequirement = useSelector((state: RootStateOrAny) => state.application?.uploadingRequirement);
+    const fetchingSchedules = useSelector((state: RootStateOrAny) => state.application?.fetchingSchedules);
+    const fetchingProvinces = useSelector((state: RootStateOrAny) => state.application?.fetchingProvinces);
     const fetchSOASuccess = useSelector((state: RootStateOrAny) => state.application?.fetchSOASuccess);
+    const fetchingCities = useSelector((state: RootStateOrAny) => state.application?.fetchingCities);
     const fetchSOAError = useSelector((state: RootStateOrAny) => state.application?.fetchSOAError);
     const fetchingSOA = useSelector((state: RootStateOrAny) => state.application?.fetchingSOA);
     const reviewed = useSelector((state: RootStateOrAny) => state.application?.reviewed);
-    const savingApplication = useSelector((state: RootStateOrAny) => state.application?.savingApplication);
+    const regions = useSelector((state: RootStateOrAny) => state.application?.regions);
     const soa = useSelector((state: RootStateOrAny) => state.application?.soa);
 
     const [service, setService] = useState( applicationItem?.service);
@@ -1883,10 +1883,9 @@ const ServiceFormPage = (props) =>{
 
 
     useEffect(()=>{
-        if(savingApplication){
+
             setCurrentStep(0)
             onExitApplication()
-        }
     }, [savingApplication])
 
     const renderTabBar = (tabProp) =>{

@@ -346,7 +346,7 @@ const Preview: FC<Props> = ({
 
     const renderUploadRow = ({item}: any) => {
         const fileName = forApplication ? item?.name : item?.small?.split('/')?.pop();
-        const uri = forApplication ? item?.uri : item?.small;
+        const uri = forApplication ?   item?.links?.small : item?.links?.small;
         const preview = NTCPreview(fileName);
         return (
             <UploadRow
@@ -641,7 +641,7 @@ const Preview: FC<Props> = ({
 
     return (
         <>
-            <View onLayout={onLayoutComponent} style={styles.container}>
+            <View onLayout={onLayoutComponent} style={[styles.container, {flex: 1}]}>
 
                 {
                     Platform.select({
@@ -655,7 +655,7 @@ const Preview: FC<Props> = ({
                 }
 
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.reviewContainer}>
+                    <View style={[styles.reviewContainer,]}>
                         {
                             !pageOnly &&
                             renderStatus()
