@@ -610,10 +610,16 @@ function ActivityModal(props: any) {
 
         return promise;
     };
-
-
+    const [initialPage, setInitialPage] = useState(true);
+    useEffect(() => {
+        setInitialPage(true)
+    }, [applicationItem._id]);
     let buttonLabel;
     const renderScene = ({ route, jumpTo }) => {
+        if (initialPage) {
+            jumpTo( 0)
+            setInitialPage(false)
+        }
         switch (route.key) {
             case 'application':
 
