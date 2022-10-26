@@ -4,7 +4,14 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React, {memo, useEffect, useMemo, useState} from "react";
-import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
+import {
+    ACCOUNTANT,
+    CASHIER,
+    CHECKER,
+    DIRECTOR,
+    EVALUATOR,
+    FOREVALUATION
+} from "../../../../reducers/activity/initialstate";
 import {
     ActivityIndicator,
     Animated,
@@ -303,6 +310,8 @@ const ModalTab = props => {
 
     }
 
+
+
     const feedVisible = useSelector((state: RootStateOrAny) => state.activity.feedVisible);
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar
@@ -368,7 +377,7 @@ const ModalTab = props => {
                 />
 
             </View>
-            { applicationItem?.approvalHistory?.personnel?._id == user?._id  ?
+            { ((applicationItem?.approvalHistory?.personnel?._id == user?._id) && applicationItem?.approvalHistory.action == FOREVALUATION )  ?
                 <View style={{flexDirection: "row", alignItems: "center",}}>
                     {props.edit ? <TouchableOpacity onPress={() => {
                             props.updateApplication(() => {

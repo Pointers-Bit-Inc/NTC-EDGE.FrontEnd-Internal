@@ -1102,7 +1102,7 @@ const DataTable = (props) => {
             let _signature = userProfileForm[signatureIndex]
             let tempBlob = userProfileForm?.[signatureIndex]?.tempBlob
 
-
+            console.log(tempBlob, "tempBlob")
             if (tempBlob) {
                 await fetch(tempBlob)
                     .then(res => {
@@ -1139,13 +1139,10 @@ const DataTable = (props) => {
                                 return app?._id == _id
                             });
 
-
                             if (_id && index >= 0) {
                                 console.log("update->", newArr[index]["employeeDetails"]?.hasOwnProperty("signature"))
 
-                                    newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
-
-                                newArr[index] = {...newArr[index], ...removeEmpty(response.data.doc)};
+                                newArr[index]["employeeDetails"]["signature"] = res?.doc?.signature
 
                                 setDocs(newArr)
                             } else {

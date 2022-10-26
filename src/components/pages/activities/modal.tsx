@@ -695,7 +695,7 @@ function ActivityModal(props: any) {
                             <Text
                                 style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
-                            {applicationItem?.approvalHistory?.personnel?._id == user?._id ? editModalVisible ? edit ?
+                            {((applicationItem?.approvalHistory?.personnel?._id == user?._id) && applicationItem?.approvalHistory.action == FOREVALUATION )  ? editModalVisible ? edit ?
                                 <TouchableOpacity hitSlop={hitSlop} onPress={() => {
 
                                     updateApplication(() => {

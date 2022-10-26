@@ -101,7 +101,7 @@ const DropDown = ({
                         bottom: items?.length < 6  ? undefined : "15%",
                         width: dropdownWidth,
                         left: dropdownLeft,
-                        overflow: 'scroll'
+                        overflow: 'auto'
                       }
                     }),
 

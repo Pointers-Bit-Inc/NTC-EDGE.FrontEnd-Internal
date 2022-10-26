@@ -656,7 +656,7 @@ const ActivitiesPage = (props) => {
     const containerMergeStyle = useMemo(() => [styles1.container, styles1.shadow, isMobile ? {
         flex: 1,
     } : {
-        overflow: "scroll",
+        overflow: "auto",
         flexBasis: (
             (
                 isMobile && !(

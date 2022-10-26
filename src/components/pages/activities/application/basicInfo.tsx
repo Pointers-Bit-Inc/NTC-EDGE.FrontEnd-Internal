@@ -13,7 +13,7 @@ import {
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
-import {APPROVED, CASHIER, DECLINED} from "../../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import moment from "moment";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -305,6 +305,8 @@ const BasicInfo = (_props: any) => {
             </View>
         </View>}</>
     })
+
+
     const [isRemarkMore, setIsRemarkMore] = useState(false)
     const [isEditNote, setIsEditNote] = useState(false)
     const RemarkFn = useMemoizedFn(() => {
@@ -382,11 +384,14 @@ const BasicInfo = (_props: any) => {
                                          textContainerStyle={{}}
                                          textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
                                          text={collapsedText}/>
-                           <IsMorePress isRemark={isRemarkMore} onPress={() => {
-                               isMoreRemark()
-                               setIsRemarkMore(bool => !bool)
-                               props.setIsMore((bool) => !bool)
-                           }} loading={loading} more={props.isMore}/>
+                           {isRemarkMore ? <View style={{flex: 1,}}>
+                               <IsMorePress isRemark={isRemarkMore} onPress={() => {
+                                   isMoreRemark()
+                                   setIsRemarkMore(bool => !bool)
+                                   props.setIsMore((bool) => !bool)
+                               }} loading={loading} more={props.isMore}/>
+                           </View> : <></>}
+
                        </> : <></>}
 
 
@@ -808,7 +813,7 @@ const BasicInfo = (_props: any) => {
                                                    <Text style={styles.header}>Note</Text>
                                                </View>
                                                <View style={[styles.rect, {flexDirection: "row"}]}>
-                                                   {isEditNote ? <TouchableOpacity onPress={()=> {
+                                                   {isEditNote && ((userProfileForm?.["approvalHistory.personnel._id"] == user?._id) && userProfileForm?.["approvalHistory.action"] == FOREVALUATION )  ? <TouchableOpacity onPress={()=> {
                                                        userProfileForm["note"] = userOriginalProfileForm["note"]
                                                        setUserProfileForm(userProfileForm)
                                                        setIsEditNote(false)
@@ -817,7 +822,7 @@ const BasicInfo = (_props: any) => {
                                                        <Text style={[styles.header, {color: errorColor}]}>Cancel</Text>
                                                    </TouchableOpacity> : <></>}
 
-                                                   {!isEditNote ? <TouchableOpacity onPress={()=>setIsEditNote((edit) => !edit)}>
+                                                   {((userProfileForm?.["approvalHistory.personnel._id"] == user?._id) && userProfileForm?.["approvalHistory.action"] == FOREVALUATION ) ? !isEditNote ? <TouchableOpacity onPress={()=>setIsEditNote((edit) => !edit)}>
                                                        <Text style={[styles.header, {color: infoColor}]}>Edit</Text>
                                                    </TouchableOpacity> :  <TouchableOpacity onPress={()=>{
                                                        let profileForm = JSON.parse(JSON.stringify(userProfileForm))
@@ -876,7 +881,7 @@ const BasicInfo = (_props: any) => {
                                                        </View> :
                                                            <Text style={[styles.header, {color: infoColor}]}>Save</Text>}
 
-                                                   </TouchableOpacity> }
+                                                   </TouchableOpacity> : <></> }
 
                                                </View>
                                            </View>
