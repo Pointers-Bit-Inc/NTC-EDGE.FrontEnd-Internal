@@ -52,13 +52,17 @@ const Approval=(props:any)=>{
     const [message,setMessage]=useSafeState<string>("");
     const [cashier,setCashier]=useSafeState();
     const [remarks,setRemarks]=useSafeState("");
+    const [checkNumber,setCheckNumber]=useSafeState("");
+    const [bankName,setBankName]=useSafeState("");
     const [validateRemarks,setValidateRemarks]=useSafeState<{error:boolean}>({error:false});
     const [loading,setLoading]=useSafeState(false);
     const approveInputField = useRef()
     const [visible, setVisible] = useSafeState(true)
     const cancelTokenSource = axios.CancelToken.source();
     useEffect(()=>{
-        approveInputField?.current?.focus()
+        if(!getRole(user,[CASHIER]) ){
+            approveInputField?.current?.focus()
+        }
     }, [_springHide])
 
     useEffect(async()=>{
@@ -140,7 +144,7 @@ const Approval=(props:any)=>{
                 resolve("");
             }
         }).then(()=>{
-            props.onChangeRemarks(remarks,cashier);
+            props.onChangeRemarks(remarks,cashier, checkNumber, bankName);
             setMessage("Are you sure you want to approve this application?");
             props.setShowAlert(true)
         })
@@ -171,6 +175,8 @@ const Approval=(props:any)=>{
     };
     const [alertLoading,setAlertLoading]=useSafeState(false);
     const [approvalIcon,setApprovalIcon]=useSafeState(false);
+    const [isCheck,setIsCheck]=useSafeState(false);
+    const [isCheckConfirm,setIsCheckConfirm]=useSafeState(false);
     const [title,setTitle]=useSafeState("Approve Application");
     const [showClose,setShowClose]=useSafeState(false);
     const [isTyping,setIsTyping]=useSafeState(true);
@@ -226,7 +232,9 @@ const Approval=(props:any)=>{
 
         });
         setTimeout(()=>{
+
             props.onDismissed(APPROVED, () => {
+                setIsCheck(false)
                 props.setShowAlert(false);
             });
         }, 70)
@@ -240,6 +248,7 @@ const Approval=(props:any)=>{
             }).start();
         }
     }, [props.visible])
+
     return (
 
         <Modal
@@ -271,7 +280,7 @@ const Approval=(props:any)=>{
 
                         setAlertLoading(true);
 
-                        props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
+                        props.confirm({cashier: cashier, remarks: remarks, checkNumber, bankName}, (response, callback) => {
 
                             setAlertLoading(false);
                             if (response) {
@@ -332,50 +341,82 @@ const Approval=(props:any)=>{
                                     </Text>
                                     <View style={styles.group2}>
 
-                                        { getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT]) ?
-                                            <InputField
+                                        {
+                                        getRole(user,[CASHIER]) && (isCheck) ?
+                                                <>
+                                                    <InputField label={"Bank Name"} placeholder={"Bank Name"} containerStyle={{
+                                                        borderColor:"#D1D1D6",
+                                                        borderWidth:1,
+                                                        backgroundColor:undefined,
+                                                    }} outlineStyle={{
+                                                        borderColor:"rgba(202,210,225,1)",
 
-                                                ref={approveInputField}
-                                                inputStyle={{
-                                                    textAlignVertical: "top",
-                                                    [Platform.OS=="android" ? "height" : "height"]:(
-                                                        height<720&&isKeyboardVisible) ? 70 : height*0.15,
-                                                    fontWeight:"400",
-                                                    fontSize:fontValue(14)
-                                                }}
-                                                onBlur={()=>setOnFocus(false)}
-                                                onFocus={()=>setOnFocus(true)}
-                                                containerStyle={{
-                                                    height:undefined,
+                                                    }}  onChangeText={(text:string)=>{
+                                                        setBankName(text)
+                                                    }
+                                                    }    value={bankName}></InputField>
+                                                    <InputField label={"Check Number"} placeholder={"Check Number"} containerStyle={{
                                                     borderColor:"#D1D1D6",
                                                     borderWidth:1,
                                                     backgroundColor:undefined,
-                                                }}
-                                                clearable={false}
-                                                outlineStyle={{
+                                                }} outlineStyle={{
                                                     borderColor:"rgba(202,210,225,1)",
-                                                    paddingTop:5,
-                                                    height:(
-                                                        height<720&&isKeyboardVisible) ? 70 : height*0.15
-                                                }}
-                                                placeholder= {getRole(user,[CASHIER]) ? 'OR Number' : 'Remarks'}
-                                                multiline={true}
-                                                value={remarks}
-                                                error={validateRemarks.error}
-                                                errorColor={errorColor}
-                                                onEndEditing={()=>{
-                                                    setIsTyping(false)
-                                                }}
-                                                onChangeText={(text:string)=>{
-                                                    setIsTyping(true);
 
-                                                    setRemarks(text)
+                                                }}  onChangeText={(text:string)=>{
+                                                    setCheckNumber(text)
                                                 }
-                                                }
-                                            /> : <View style={{paddingVertical: 20}}/>}
+                                                }    value={checkNumber}></InputField></> : <></>
+                                        }
+
+
+                                        { getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT]) && !isCheck  ?
+                                            <>
+
+                                                <InputField
+
+                                                    ref={approveInputField}
+                                                    inputStyle={{
+                                                        textAlignVertical: "top",
+                                                        [Platform.OS=="android" ? "height" : "height"]:(
+                                                            height<720&&isKeyboardVisible) ? 70 : height*0.15,
+                                                        fontWeight:"400",
+                                                        fontSize:fontValue(14)
+                                                    }}
+                                                    onBlur={()=>setOnFocus(false)}
+                                                    onFocus={()=>setOnFocus(true)}
+                                                    containerStyle={{
+                                                        height:undefined,
+                                                        borderColor:"#D1D1D6",
+                                                        borderWidth:1,
+                                                        backgroundColor:undefined,
+                                                    }}
+                                                    clearable={false}
+                                                    outlineStyle={{
+                                                        borderColor:"rgba(202,210,225,1)",
+                                                        paddingTop:5,
+                                                        height:(
+                                                            height<720&&isKeyboardVisible) ? 70 : height*0.15
+                                                    }}
+                                                    placeholder= {getRole(user,[CASHIER]) ? 'OR Number' : 'Remarks'}
+                                                    multiline={true}
+                                                    value={remarks}
+                                                    error={validateRemarks.error}
+                                                    errorColor={errorColor}
+                                                    onEndEditing={()=>{
+                                                        setIsTyping(false)
+                                                    }}
+                                                    onChangeText={(text:string)=>{
+                                                        setIsTyping(true);
+
+                                                        setRemarks(text)
+                                                    }
+                                                    }
+                                                />
+                                            </>
+                                            : <View style={{paddingVertical: 20}}/>}
                                         <View style={{marginTop:5}}>
-                                            <TouchableOpacity disabled={!(remarks) && getRole(user,[CASHIER])} onPress={onConfirmation}>
-                                                <View style={[styles.confirmButton, {backgroundColor:!(remarks) && getRole(user,[CASHIER]) ? disabledColor :primaryColor,}]}>
+                                            <TouchableOpacity disabled={(!(checkNumber && isCheck) ? !(remarks) : !(bankName && checkNumber)) && getRole(user,[CASHIER])} onPress={() => props.paymentMethod == "check" && !(checkNumber && isCheck)   ? setIsCheck(true) :  onConfirmation() }>
+                                                <View style={[styles.confirmButton, {backgroundColor:(!(isCheck) ? !(remarks && getRole(user,[CASHIER])) : !(bankName && checkNumber && getRole(user,[CASHIER])))  ? disabledColor :primaryColor,}]}>
                                                     <Text style={styles.confirm}>Confirm</Text>
                                                 </View>
                                             </TouchableOpacity>

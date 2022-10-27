@@ -8,7 +8,7 @@ import {Alert , BackHandler} from "react-native";
 import useSafeState from "./useSafeState";
 import useBiometrics from "./useBiometrics";
 import {ACCOUNTANT, CASHIER} from "../reducers/activity/initialstate";
-import {setEditModalVisible} from "../reducers/activity/actions";
+import {setEditModalVisible, setFeedVisible} from "../reducers/activity/actions";
 
 export function useAuth(navigation) {
     const errorResponse = {
@@ -52,11 +52,13 @@ export function useAuth(navigation) {
             .then(res => {
                 setLoading(false);
                 dispatch(setUser(res.data));
+                dispatch(setFeedVisible(true))
                 if([CASHIER, ACCOUNTANT].indexOf(res?.data?.role?.key)){
                     dispatch(setEditModalVisible(false))
                 }else{
                     dispatch(setEditModalVisible(true))
                 }
+
                 storeCredentials(res.data.email, data.password);
                 navigation.dispatch(StackActions.replace('ActivitiesScreen'));
             })

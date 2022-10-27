@@ -127,7 +127,11 @@ function ActivityModal(props: any) {
     const [visible, setVisible] = useState(false);
     const [endorseVisible, setEndorseVisible] = useState(false);
     const [approveVisible, setApproveVisible] = useState(false);
+    const [checkNumber, setCheckNumber] = useState("");
     const [status, setStatus] = useState("");
+    const [prevBankName, setPrevBankName] = useState("");
+    const [bankName, setBankName] = useState("");
+    const [prevCheckNumber, setPrevCheckNumber] = useState("");
     const [prevStatus, setPrevStatus] = useState("");
     const [message, setMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
@@ -163,9 +167,14 @@ function ActivityModal(props: any) {
         };
         let AddORNoparams: any =
             {
+                bankName: event?.bankName ? event?.bankName : "",
+                checkNumber: event?.checkNumber ? event?.checkNumber : "",
                 orNumber: event.remarks ? event.remarks : remarks,
                 orBy: event.cashier ? event.cashier : assignId,
             }
+
+            console.log(AddORNoparams, "AddORNoparams")
+
         setCurrentLoading(status);
         if (status == DECLINED) {
             setAssignId("")
@@ -617,7 +626,6 @@ function ActivityModal(props: any) {
 
 
 
-
     let buttonLabel;
     const renderScene = ({ route, jumpTo }) => {
         if (initialPage) {
@@ -695,7 +703,7 @@ function ActivityModal(props: any) {
                             <Text
                                 style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
-                            {((applicationItem?.approvalHistory?.personnel?._id == user?._id) && applicationItem?.approvalHistory.action == FOREVALUATION )  ? editModalVisible ? edit ?
+                            {((applicationItem?.assignedPersonnel?._id == user?._id) && applicationItem?.approvalHistory.action == FOREVALUATION )   ? editModalVisible ? edit ?
                                 <TouchableOpacity hitSlop={hitSlop} onPress={() => {
 
                                     updateApplication(() => {
@@ -796,6 +804,7 @@ function ActivityModal(props: any) {
                     </View>
 
                     <Approval
+                        paymentMethod={applicationItem.paymentMethod}
                         showAlert={showAlert1}
                         setShowAlert={setShowAlert1}
                         size={activityModalScreenComponent}
@@ -803,6 +812,8 @@ function ActivityModal(props: any) {
                             if (event == "cancel") {
                                 //cancelTokenSource?.cancel();
                             }
+                            setCheckNumber(prevCheckNumber)
+                            setBankName(prevBankName);
                             setStatus(prevStatus);
                             setRemarks(prevRemarks);
                             setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
@@ -812,12 +823,16 @@ function ActivityModal(props: any) {
                             }
                             dispatch(setFeedVisible(true))
                         }}
-                        onChangeRemarks={(_remark: string, _assign) => {
+                        onChangeRemarks={(_remark: string, _assign, _checkNumber, _bankName) => {
 
+                            setPrevBankName(bankName);
+                            setPrevCheckNumber(checkNumber);
                             setPrevStatus(status);
                             setPrevRemarks(remarks);
                             setPrevAssignId(assignId);
                             if (getRole(user, [CASHIER, DIRECTOR, ACCOUNTANT])) {
+                                setBankName(_bankName);
+                                setCheckNumber(_checkNumber);
                                 setRemarks(_remark);
                                 setAssignId(_assign)
                             }
@@ -829,6 +844,8 @@ function ActivityModal(props: any) {
                         visible={approveVisible}
                         confirm={(event: any, callback: (res, callback) => {}) => {
                             setRemarks(event.remark);
+                            setBankName(event.bankName);
+                            setCheckNumber(event.checkNumber);
                             setAssignId(event.cashier)
                             let status = "";
 
