@@ -354,7 +354,8 @@ const Approval=(props:any)=>{
                                                     }}  onChangeText={(text:string)=>{
                                                         setBankName(text)
                                                     }
-                                                    }    value={bankName}></InputField>
+                                                    }
+                                                                value={bankName}></InputField>
                                                     <InputField label={"Check Number"} placeholder={"Check Number"} containerStyle={{
                                                     borderColor:"#D1D1D6",
                                                     borderWidth:1,
