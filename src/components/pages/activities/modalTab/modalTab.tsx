@@ -161,7 +161,7 @@ const ModalTab = props => {
     const renderScene = useMemo(() => {
         return ({route, jumpTo}) => {
             if (initialPage && Platform?.isPad) {
-                jumpTo(user?.role?.key == ACCOUNTANT ? 2 : 0)
+                jumpTo([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) ? 2 : 0)
                 setInitialPage(false)
             }
 

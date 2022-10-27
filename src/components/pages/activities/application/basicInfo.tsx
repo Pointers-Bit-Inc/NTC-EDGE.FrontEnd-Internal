@@ -739,7 +739,7 @@ const BasicInfo = (_props: any) => {
                                         </View> : <></>}
                                         <View ref={textRef}/>
                                         {props?.schedule  ? <View style={styles.divider}/> : <></>}
-                                        {props?.schedule ? <View style={styles.group3}>
+                                        {(props?.schedule  && props.service.serviceCode === "service-1") ? <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>SCHEDULE</Text>
