@@ -26,8 +26,17 @@ export default StyleSheet.create({
         marginTop: RFValue(5),
     },
     valueText: {
-        marginTop: RFValue(-5),
-        marginBottom: RFValue(5),
+        ...Platform.select({
+            native:{
+                marginTop: RFValue(-5),
+                marginBottom: RFValue(5),
+            },
+            web: {
+                marginTop: RFValue(-3),
+                marginBottom: RFValue(3),
+            }
+        })
+
     },
     ellipsisContainer: {
         ...Platform.select({

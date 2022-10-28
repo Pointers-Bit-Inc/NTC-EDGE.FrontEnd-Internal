@@ -96,11 +96,9 @@ function ActivityModal(props: any) {
     const sceneIndex = useSelector((state: RootStateOrAny) => {
         return state.application.sceneIndex
     });
-
     const userProfileForm = useSelector((state: RootStateOrAny) => {
         return state.application.userProfileForm
     });
-
     const amnesty = useSelector((state: RootStateOrAny) => {
         return state.soa.amnesty
     });
@@ -120,7 +118,6 @@ function ActivityModal(props: any) {
     const navigation = useNavigation();
 
     const dimensions = useWindowDimensions();
-    const NativeView = ((isMobile && !Platform?.isPad) || dimensions?.width < 768 || Platform?.isPad && !isLandscapeSync()) ? Modal : View;
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [change, setChange] = useState<boolean>(false);
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
@@ -137,11 +134,10 @@ function ActivityModal(props: any) {
     const [showAlert, setShowAlert] = useState(false);
     const [currentLoading, setCurrentLoading] = useState('');
     const [assignId, setAssignId] = useState("");
-    const [prevAssignId, setPrevAssignId] = useState("");
     const [remarks, setRemarks] = useState("");
     const [prevRemarks, setPrevRemarks] = useState("");
+    const [prevAssignId, setPrevAssignId] = useState("");
     const [grayedOut, setGrayedOut] = useState(false);
-    const cancelTokenSource = axios.CancelToken.source();
     const [showAlert1, setShowAlert1] = useState(false)
     const [showAlert2, setShowAlert2] = useState(false)
     const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
@@ -172,8 +168,6 @@ function ActivityModal(props: any) {
                 orNumber: event.remarks ? event.remarks : remarks,
                 orBy: event.cashier ? event.cashier : assignId,
             }
-
-            console.log(AddORNoparams, "AddORNoparams")
 
         setCurrentLoading(status);
         if (status == DECLINED) {
@@ -235,6 +229,7 @@ function ActivityModal(props: any) {
                             _props.onChangeAssignedId(data);
                             //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true);
+                            dispatch(setFeedVisible(true))
                             // props.onDismissed(true, applicationId)
                             return callback(null, applicationId);
                         }
@@ -703,7 +698,7 @@ function ActivityModal(props: any) {
                             <Text
                                 style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
-                            {(((applicationItem?.assignedPersonnel?._id == user?._id) || (applicationItem?.assignedPersonnel?.find( assignment => assignment?._id == user?._id) != -1))  && (applicationItem?.approvalHistory.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ? editModalVisible ? edit ?
+                            {(((applicationItem?.assignedPersonnel?._id == user?._id) || (applicationItem?.assignedPersonnel?.length > 0 ? applicationItem?.assignedPersonnel?.findIndex( assignment => assignment?._id == user?._id) != -1 : false) )  && (applicationItem?.approvalHistory.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ? editModalVisible ? edit ?
                                 <TouchableOpacity hitSlop={hitSlop} onPress={() => {
 
                                     updateApplication(() => {
@@ -1028,6 +1023,7 @@ function ActivityModal(props: any) {
                 </>;
             case 'edit':
                 return <ServiceFormPage jumpTo={()=> {
+
                     jumpTo("application")
                 }}/>
         }

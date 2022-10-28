@@ -65,7 +65,7 @@ const DateField: FC<Props> = ({
       <View style={styles.view}>
         <View style={[
           styles.dropdownContainer,
-          {...Platform.select( { web: {width: (width * 0.40) / 2}})},
+          {...Platform.select( { web: {flex: 0.48}})},
           !!isParentList && styles?.dropdownContainer3
         ]}>
           <DropdownField
@@ -78,7 +78,7 @@ const DateField: FC<Props> = ({
             onChangeValue={(value: string) => onChangeValue('month', value)}
           />
         </View>
-        <View style={[styles.dropdownContainer, {...Platform.select( { web: {width: (width * 0.40) / 2}})}]}>
+        <View style={[styles.dropdownContainer, {...Platform.select( { web: {flex: 0.48}})}]}>
           <DropdownField
             items={datesArray}
             placeholder='Day'

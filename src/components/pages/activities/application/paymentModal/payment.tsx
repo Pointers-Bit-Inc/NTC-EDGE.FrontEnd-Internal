@@ -349,7 +349,7 @@ const Payment = (_props: any) => {
     const updateSoa = (stateName, value, index) => {
 
         let hasChanges = false
-        let compare = soa.findIndex(uf => uf.id === index);
+        let compare = soa?.findIndex(uf => uf.id === index);
 
         if (value !== props.soa?.[compare]?.[stateName]) {
 

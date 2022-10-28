@@ -117,7 +117,7 @@ const ModalTab = props => {
     const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
     useEffect(() => {
         setInitialPage(true)
-        setIndex(user?.role?.key == ACCOUNTANT ? 2 : 0)
+        setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1)  ? 2 : 0)
     }, [props.details._id]);
     const layout = useWindowDimensions();
 
@@ -125,6 +125,7 @@ const ModalTab = props => {
 
 
     const routes = useMemo(() => {
+
         return tabs.filter((tab, _index) => {
             return !(service?.applicationType?.isDirectProcess == true && service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
@@ -140,6 +141,7 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
+        dispatch(setEditModalVisible(false))
         if (paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
 
             dispatch(setTabName("SOA & Payment"))
@@ -157,15 +159,12 @@ const ModalTab = props => {
     }, [index, props.details._id, tabName])
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
-
     const renderScene = useMemo(() => {
         return ({route, jumpTo}) => {
             if (initialPage && Platform?.isPad) {
-                jumpTo([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) ? 2 : 0)
+                jumpTo(([ACCOUNTANT, CASHIER]?.indexOf(user?.role?.key) != -1)  ? 2 : 0)
                 setInitialPage(false)
             }
-
-
             switch (route.key) {
                 case 'Basic Info':
                     return <BasicInfo isMore={isMore} setIsMore={setIsMore} saved={props.saved}
@@ -284,14 +283,15 @@ const ModalTab = props => {
                 backgroundColor: infoColor,
                 borderRadius: 0,
                 padding: 0,
-                left: 24 / 2,
+
+                //left: 24 / 2,
                 ...Platform.select({
                     web: {marginBottom:  -15 }
                 }),
         }
 
         const width = getTabWidth(index) - 24
-        return <TabBarIndicator   {...indicatorProps}  width={width}
+        return <TabBarIndicator   {...indicatorProps}
                                   style={indicatorStyle}
         />;
     }
@@ -371,13 +371,14 @@ const ModalTab = props => {
                     }}
                     {...tabProp}
                     renderIndicator={renderIndicator}
-                    tabStyle={{width: fontValue(165)}}
+                   tabStyle={{width: "auto",paddingHorizontal: 10 }}
                     scrollEnabled={true}
+
                     style={{shadowOpacity: 0.0, backgroundColor: 'white'}}
                 />
 
             </View>
-            { (((applicationItem?.assignedPersonnel?._id == user?._id) || (applicationItem?.assignedPersonnel?.find( assignment => assignment?._id == user?._id) != -1))  && (applicationItem?.approvalHistory.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ?
+            { (((applicationItem?.assignedPersonnel?._id == user?._id) || (applicationItem?.assignedPersonnel?.length > 0  ? applicationItem?.assignedPersonnel?.findIndex( assignment => assignment?._id == user?._id) != -1 : false) )  && (applicationItem?.approvalHistory?.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ?
                 <View style={{flexDirection: "row", alignItems: "center",}}>
                     {props.edit ? <TouchableOpacity onPress={() => {
                             props.updateApplication(() => {

@@ -1869,6 +1869,7 @@ const ServiceFormPage = (props) =>{
     useEffect(() => {
         if (fetchSOASuccess || fetchSOAError) {
             /**payload */
+
             dispatch(saveApplication({
                 ...applicationPayload,
                 soa: soa?.statement_Of_Account || [],
@@ -1883,10 +1884,9 @@ const ServiceFormPage = (props) =>{
 
 
     useEffect(()=>{
-
-            setCurrentStep(0)
-            onExitApplication()
-    }, [applicationItem._id])
+        setCurrentStep(0)
+        onExitApplication()
+    }, [applicationItem._id, savingApplication ])
 
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar

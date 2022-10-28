@@ -1,7 +1,7 @@
 import moment from 'moment';
-import { validateEmail, validateIMEI, validateNumber, validatePhone, validateZipCode } from '@utils/form-validations';
-import { birthyearList, GUEST_USER, regionList } from '@utils/ntc';
-import { extractDate } from '@utils/formatting';
+import { validateEmail, validateIMEI, validateNumber, validatePhone, validateZipCode } from './utils/form-validations';
+import { birthyearList, GUEST_USER, regionList } from './utils/ntc';
+import { extractDate } from './utils/formatting';
 
 const NTCService = ({
   formCode,
@@ -62,7 +62,6 @@ const NTCService = ({
 
 
 
-
   /**
    * LIMITATIONS
    * - set (inside a set; ex. equipments inside particulars) can only handle (for now) textinput && dropdown (onFormUpdate && editApplication)
@@ -70,7 +69,6 @@ const NTCService = ({
    */
 
   /** had to subtract 1 month from dateOfBirth since moment uses 0 as January, 1 as February and so on.. */
-
   const birthDate = extractDate(user?.dateOfBirth, 'date');
   const birthMonth = extractDate(user?.dateOfBirth, 'month');
   const birthYear = extractDate(user?.dateOfBirth, 'year');
@@ -791,17 +789,6 @@ const NTCService = ({
             ],
             isValid: false,
             error: '',
-          },
-          {
-            id: 'typeClass',
-            label: 'Type/Class',
-            placeholder: 'Type/Class',
-            value: 'To be assigned by NTC',
-            hasValidation: true,
-            isValid: true,
-            error: '',
-            errorResponse: 'Please enter type/class',
-            editable: false,
           },
           {
             id: 'rating',
@@ -6616,6 +6603,7 @@ const NTCService = ({
             errorResponse: 'Please enter a valid power output (watts)',
             validate: validateNumber,
             keyboardType: 'decimal-pad',
+            required: true,
           },
           {
             id: 'hoursOfOperation',
@@ -7308,6 +7296,25 @@ const NTCService = ({
         ]
       },
       {
+        id: 'stationEquipment',
+        title: 'Station/Equipment',
+        data: [
+          {
+            id: 'powerOutput',
+            label: 'Power Output (watts)',
+            placeholder: 'Power Output (watts)',
+            value: '',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter a valid power output (watts)',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
+            required: true,
+          },
+        ]
+      },
+      {
         id: 'particulars',
         title: 'Particulars',
         type: 'list',
@@ -7591,6 +7598,25 @@ const NTCService = ({
             error: '',
             errorResponse: 'Please select nature of service',
           }
+        ]
+      },
+      {
+        id: 'stationEquipment',
+        title: 'Station/Equipment',
+        data: [
+          {
+            id: 'powerOutput',
+            label: 'Power Output (watts)',
+            placeholder: 'Power Output (watts)',
+            value: '',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter a valid power output (watts)',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
+            required: true,
+          },
         ]
       },
       {
@@ -7985,6 +8011,7 @@ const NTCService = ({
             errorResponse: 'Please enter a valid power output (watts)',
             validate: validateNumber,
             keyboardType: 'decimal-pad',
+            required: true,
           },
           {
             id: 'hoursOfOperation',
@@ -8427,6 +8454,25 @@ const NTCService = ({
         ]
       },
       {
+        id: 'stationEquipment',
+        title: 'Station/Equipment',
+        data: [
+          {
+            id: 'powerOutput',
+            label: 'Power Output (watts)',
+            placeholder: 'Power Output (watts)',
+            value: '',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter a valid power output (watts)',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
+            required: true,
+          },
+        ]
+      },
+      {
         id: 'particulars',
         title: 'Particulars',
         type: 'list',
@@ -8826,6 +8872,7 @@ const NTCService = ({
             errorResponse: 'Please enter a valid power output (watts)',
             validate: validateNumber,
             keyboardType: 'decimal-pad',
+            required: true,
           },
           {
             id: 'hoursOfOperation',
@@ -19971,16 +20018,16 @@ const NTCService = ({
                     errorResponse: 'Please enter a valid frequency range',
                   },
                   {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
+                    id: 'callSign',
+                    label: 'Call Sign',
+                    placeholder: 'Call Sign',
+                    value: '',
+                    hasValidation: true,
+                    required: true,
+                    isValid: false,
+                    error: '',
+                    errorResponse: 'Please enter call sign',
+                  },
                 ]
               ],
             },
