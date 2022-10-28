@@ -87,6 +87,7 @@ const DropDown = ({
                 setVisible(false);
               }}
           >
+
             <View
                 style={[
                   styles.dropdown,
