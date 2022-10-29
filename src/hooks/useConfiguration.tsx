@@ -269,7 +269,7 @@ function useConfiguration(props: any) {
                     fd.append('profilePicture', file, (
                         _file?.name + "." + _mimeType || _file?.mimeType));
 
-                    const API_URL = `${BASE_URL}/regions/${region?._id}/${position}/upload-signature`;
+                    const API_URL = `${BASE_URL}/regions/${region?._id || 0}/${position}/upload-signature`;
 
                     fetch(API_URL, {
                         method: 'POST', body: fd, headers: {
@@ -319,6 +319,15 @@ function useConfiguration(props: any) {
                 if (_userProfileFormElement.hasOwnProperty("tempBlob")) {
                     _userProfileFormElement.tempBlob = _file?.uri
                 }
+
+
+
+
+
+
+                if (_userProfileFormElement.hasOwnProperty("value")) {
+                    _userProfileFormElement.value = _file?.uri
+                }
                 if (_userProfileFormElement.hasOwnProperty("mime")) {
                     _userProfileFormElement.mime = mime
                 }
@@ -331,6 +340,42 @@ function useConfiguration(props: any) {
                 if (_userProfileFormElement.hasOwnProperty("_mimeType")) {
                     _userProfileFormElement._mimeType = _mimeType
                 }
+
+
+
+                await fetch(base64)
+                    .then(res => {
+
+                        return res?.blob()
+                    })
+                    .then(blob => {
+
+                        const fd = new FormData();
+                        const file = isMobile ? {
+                            name: _file?.name,
+                            type: 'application/octet-stream',
+                            uri: _file?.uri,
+                        } : new File([blob], (
+                            _file?.name + "." + _mimeType || _file?.mimeType));
+
+                        fd.append('profilePicture', file, (
+                            _file?.name + "." + _mimeType || _file?.mimeType));
+
+                        const API_URL = `${BASE_URL}/regions/${region?._id || 0}/commissioner/upload-signature`;
+
+                        fetch(API_URL, {
+                            method: 'POST', body: fd, headers: {
+                                'Authorization': `Bearer ${sessionToken}`,
+                            }
+                        })
+                            .then(res => {
+
+                                return res?.json()
+                            })
+                    })
+
+
+
             }
             setUploadSignatureLoading(false)
         } else {
@@ -402,9 +447,9 @@ function useConfiguration(props: any) {
     const regionsMemo = useMemo(() => {
         return regions
     }, [regions])
-    useEffect(() => {
+    /*useEffect(() => {
         return fetchConfigurations()
-    }, [])
+    }, [])*/
     useEffect(() => {
         return fetchCommissioner()
     }, [])
@@ -414,6 +459,7 @@ function useConfiguration(props: any) {
     }
 
     const onItemPress = useCallback((item) => {
+        setCommissionerVisible(false)
         dispatch(setRegion(item))
         let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
         parseSchedule(_originalForm, item)
@@ -432,7 +478,7 @@ function useConfiguration(props: any) {
                 parseSchedule(_originalForm, item);
                 setOriginalForm(_originalForm)
             }
-            console.log(item)
+
             onItemPress(item)
 
         }}><View style={[
@@ -465,6 +511,7 @@ function useConfiguration(props: any) {
 
 
     const updateValid = useMemo(() => {
+        let index = commissionerForm?.findIndex(app => app?.subStateName == "signature");
         return isDiff(_.map(formValue, 'value'), _.map(originalForm, 'value'));
     }, [formValue, originalForm])
 
@@ -667,6 +714,16 @@ function useConfiguration(props: any) {
     const commissionUpdateValid = useMemo(() => {
         return isDiff(_.map(commissionerForm, 'value'), _.map(commissionerOriginalForm, 'value'));
     }, [commissionerForm, commissionerOriginalForm])
+
+    const onPressDropDownCommissioner = ()=>{
+        if (isMobile) {
+            props.navigation.push('CommissionerConfigurationScreen')
+        } else {
+            dispatch(setRegion({}))
+            setCommissionerVisible(true)
+        }
+
+    }
     return {
         dimensions,
         value,
@@ -696,7 +753,8 @@ function useConfiguration(props: any) {
         onPressSignature,
         onPressCommissioner,
         updateValid,
-        commissionUpdateValid
+        commissionUpdateValid,
+        onPressDropDownCommissioner
     };
 }
 

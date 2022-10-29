@@ -344,9 +344,9 @@ const BasicInfo = (_props: any) => {
 
                                        alignItems: "center",
                                        justifyContent: "center",
-                                       backgroundColor: remarkColor(
+                                       backgroundColor: !!(personnel?.firstName && personnel?.lastName) ?  remarkColor(
                                            getStatusText(props, personnel)
-                                       ),
+                                       ) : undefined,
                                        borderRadius: fontValue(30),
                                        paddingHorizontal: fontValue(5),
                                        paddingVertical: fontValue(6)

@@ -19,6 +19,7 @@ import useConfiguration from "../../../hooks/useConfiguration";
 import FormField from "@organisms/forms/form";
 import UploadQrCode from "@assets/svg/uploadQrCode";
 import {Bold} from "@styles/font";
+import {setRegion} from "../../../reducers/configuration/actions";
 
 export default function ConfigurationPage(props: any) {
     const {
@@ -49,8 +50,10 @@ export default function ConfigurationPage(props: any) {
         commissionerOriginalForm,
         onPressSignature,
         onPressCommissioner,
-        commissionUpdateValid
+        commissionUpdateValid,
+        onPressDropDownCommissioner
     } = useConfiguration(props);
+
 
 
     return (
@@ -119,7 +122,7 @@ export default function ConfigurationPage(props: any) {
                                                         service={fee.fees}/>
                             </DropdownCard> : <></>
                         }
-                        {!lodash.isEmpty(regionsMemo) ? <DropdownCard
+                        {!lodash.isEmpty(regionsMemo) && false ? <DropdownCard
                             style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>
                             <Text style={{fontWeight: 'bold'}} color={"#113196"}
                                   size={16}>Other</Text>
@@ -133,14 +136,7 @@ export default function ConfigurationPage(props: any) {
                             />
                         </DropdownCard> : <></>}
 
-                        {!lodash.isEmpty(commissioner) ? <DropdownCard onPress={()=>{
-                            if (isMobile) {
-                                props.navigation.push('CommissionerConfigurationScreen')
-                            } else {
-                                setCommissionerVisible(true)
-                            }
-
-                        }} isChevronVisible={false}
+                        {!lodash.isEmpty(commissioner) ? <DropdownCard onPress={onPressDropDownCommissioner} isChevronVisible={false}
                             style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>
                             <Text style={{fontWeight: 'bold'}} color={"#113196"}
                                   size={16}>Commissioner</Text>
@@ -170,7 +166,7 @@ export default function ConfigurationPage(props: any) {
                 </View>
             }
             {
-                (!lodash.isEmpty(region) && Platform.OS == "web") ? <View style={[{flex: 1, backgroundColor: "#fff",}]}>
+                (!lodash.isEmpty(region) && Platform.OS == "web" && false) ? <View style={[{flex: 1, backgroundColor: "#fff",}]}>
 
                     <Header size={24} title={"Region: " + region?.label || ""}>
                         <TouchableOpacity onPress={onClose}>
