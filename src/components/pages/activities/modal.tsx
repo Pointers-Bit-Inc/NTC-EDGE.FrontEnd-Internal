@@ -673,6 +673,8 @@ function ActivityModal(props: any) {
                         }}
                         show={showAlert} title={title}
                         message={message}/>
+
+
                     <View onLayout={onActivityModalScreenComponent} style={{flex: 1, backgroundColor: "#FFF"}}>
                         {(
                             isMobile || (Platform?.isPad)) && <View style={{
@@ -748,8 +750,7 @@ function ActivityModal(props: any) {
                         }} details={applicationItem} status={status}/>
 
                         {Platform.OS != "web" ? <Toast/> : <></>}
-                        {!edit ?
-                            <View style={[{
+                        {!edit ? <View style={[{
                                 paddingHorizontal: !isMobile ? 64 : 0,
                                 borderTopColor: 'rgba(0, 0, 0, 0.1)',
                                 borderTopWidth: 1, backgroundColor: "white"
@@ -760,7 +761,7 @@ function ActivityModal(props: any) {
                                     alignSelf: "flex-end"
                                 }}>
                                     <View style={styles.footer}>
-                                        {getRole(user, [DIRECTOR, EVALUATOR, CASHIER, ACCOUNTANT]) &&
+                                        {getRole(user, [DIRECTOR, EVALUATOR, CASHIER, ACCOUNTANT]) ?
                                             <View style={styles.groupButton}>
                                                 <ApprovedButton
                                                     user={user}
@@ -775,26 +776,24 @@ function ActivityModal(props: any) {
                                                         }
                                                     }}/>
 
-                                                {<DeclineButton
+                                                <DeclineButton
                                                     currentLoading={currentLoading}
                                                     allButton={allButton}
                                                     onPress={() => {
                                                         setVisible(true)
-                                                    }}/>}
+                                                    }}/>
 
-                                            </View>}
-                                        {getRole(user, [EVALUATOR]) && applicationItem?.service?.serviceCode !== "service-22" &&
+                                            </View> :<></>}
+                                        {getRole(user, [EVALUATOR]) && applicationItem?.service?.serviceCode !== "service-22" ?
                                             <EndorsedButton
                                                 currentLoading={currentLoading}
                                                 allButton={allButton}
                                                 onPress={() => {
                                                     setEndorseVisible(true)
-                                                }}/>}
+                                                }}/> : <></>}
                                     </View>
                                 </View>
-                            </View> : <>
-
-                            </>
+                            </View> : <></>
                         }
                     </View>
 

@@ -165,6 +165,8 @@ const ModalTab = props => {
                 jumpTo(([ACCOUNTANT, CASHIER]?.indexOf(user?.role?.key) != -1)  ? 2 : 0)
                 setInitialPage(false)
             }
+
+
             switch (route.key) {
                 case 'Basic Info':
                     return <BasicInfo isMore={isMore} setIsMore={setIsMore} saved={props.saved}
