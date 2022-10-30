@@ -141,7 +141,7 @@ const OneTimePin = ({ navigation , route }: any) => {
                 rightIcon={ <Text size={ 16 } color='#fff'>Close</Text> }
                 onRight={ () => navigation.navigate('Login') }
                 leftIcon={ <Left color='#fff' size={ 17 }/> }
-                onLeft={ () => navigation.pop() }
+                onLeft={ () => navigation?.pop() }
             />}
 
             <KeyboardAvoidingView

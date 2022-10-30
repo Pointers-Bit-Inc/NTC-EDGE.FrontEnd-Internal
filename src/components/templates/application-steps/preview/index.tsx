@@ -43,7 +43,7 @@ const Preview: FC<Props> = ({
 
   const onBack = () => {
     if (showWebView) setShowWebView(false);
-    navigation.pop();
+    navigation?.pop();
     return true;
   };
   useEffect(() => {
@@ -609,7 +609,7 @@ const Preview: FC<Props> = ({
             <NavBar
               title='Preview'
               leftIcon={<Close color='#fff' />}
-              onLeft={() => navigation.pop()}
+              onLeft={() => navigation?.pop()}
             />
         })
       }

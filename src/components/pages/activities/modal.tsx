@@ -321,7 +321,7 @@ function ActivityModal(props: any) {
             return true;
         }
     };
-    const routeIsFocused = navigation.isFocused();
+    const routeIsFocused = navigation?.isFocused();
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
         return () => {

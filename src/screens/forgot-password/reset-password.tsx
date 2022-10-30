@@ -136,7 +136,7 @@ const ResetPassword = ({ navigation, route }: any) => {
             rightIcon={<Text color='#fff'>Close</Text>}
             onRight={() => navigation.navigate('Login')}
             leftIcon={<Left color='#fff' size={17}/>}
-            onLeft={() => navigation.pop()}
+            onLeft={() => navigation?.pop()}
         />}
 
         <KeyboardAvoidingView

@@ -479,7 +479,7 @@ const UserProfileScreen=({navigation}:any)=>{
                 leftIcon={<Left color='#fff'/>}
                 onLeft={()=>{
                     if(hasChanges()) setDiscardAlert(true);
-                    else navigation.pop();
+                    else navigation?.pop();
                 }}
             />
 
@@ -549,7 +549,7 @@ const UserProfileScreen=({navigation}:any)=>{
                 message={'Any unsaved changes will not be saved. Continue?'}
                 confirmText='OK'
                 cancelText={"Cancel"}
-                onConfirm={()=>navigation.pop()}
+                onConfirm={()=>navigation?.pop()}
                 onCancel={()=>setDiscardAlert(false)}
             />
 
@@ -561,7 +561,7 @@ const UserProfileScreen=({navigation}:any)=>{
                 onConfirm={()=>{
 
                     if(alert.status==200){
-                        navigation.pop()
+                        navigation?.pop()
                     }
                     setShowAlert(false)
                 }}
