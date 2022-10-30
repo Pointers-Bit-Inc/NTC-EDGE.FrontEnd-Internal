@@ -141,6 +141,9 @@ function ActivityModal(props: any) {
     const [showAlert1, setShowAlert1] = useState(false)
     const [showAlert2, setShowAlert2] = useState(false)
     const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
+    const editMemo = useMemo(()=>{
+        return edit
+    }, [edit])
     const onDismissed = () => {
         setVisible(false)
     };
@@ -329,8 +332,10 @@ function ActivityModal(props: any) {
         };
     }, [routeIsFocused]);
     const editBtn = (editBtn) => {
+        console.log("editBtn")
         if (hasChange) setEditAlert(true);
         else {
+
             let _edit = edit
             dispatch(setEdit(!_edit))
         }
@@ -700,7 +705,7 @@ function ActivityModal(props: any) {
                             <Text
                                 style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
-                            {(((applicationItem?.assignedPersonnel?._id == user?._id) || (applicationItem?.assignedPersonnel?.length > 0 ? applicationItem?.assignedPersonnel?.findIndex( assignment => assignment?._id == user?._id) != -1 : false) )  && (applicationItem?.approvalHistory.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ? editModalVisible ? edit ?
+                            {(((applicationItem?.assignedPersonnel?._id == user?._id) || (applicationItem?.assignedPersonnel?.length > 0 ? applicationItem?.assignedPersonnel?.findIndex( assignment => assignment?._id == user?._id) != -1 : false) )  && (applicationItem?.approvalHistory?.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ? editModalVisible ? edit ?
                                 <TouchableOpacity hitSlop={hitSlop} onPress={() => {
 
                                     updateApplication(() => {
