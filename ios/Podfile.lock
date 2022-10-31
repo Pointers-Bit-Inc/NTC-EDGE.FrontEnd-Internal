@@ -1,27 +1,27 @@
 PODS:
-  - AgoraRtcEngine_iOS (3.7.0.3):
-    - AgoraRtcEngine_iOS/AINS (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/AV1Dec (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/ContentInspect (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/FullAudioFormat (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/ReplayKit (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/ROIEnc (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/RtcBasic (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/SpatialAudio (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/SuperResolution (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/VideoPreprocess (= 3.7.0.3)
-    - AgoraRtcEngine_iOS/VirtualBackground (= 3.7.0.3)
-  - AgoraRtcEngine_iOS/AINS (3.7.0.3)
-  - AgoraRtcEngine_iOS/AV1Dec (3.7.0.3)
-  - AgoraRtcEngine_iOS/ContentInspect (3.7.0.3)
-  - AgoraRtcEngine_iOS/FullAudioFormat (3.7.0.3)
-  - AgoraRtcEngine_iOS/ReplayKit (3.7.0.3)
-  - AgoraRtcEngine_iOS/ROIEnc (3.7.0.3)
-  - AgoraRtcEngine_iOS/RtcBasic (3.7.0.3)
-  - AgoraRtcEngine_iOS/SpatialAudio (3.7.0.3)
-  - AgoraRtcEngine_iOS/SuperResolution (3.7.0.3)
-  - AgoraRtcEngine_iOS/VideoPreprocess (3.7.0.3)
-  - AgoraRtcEngine_iOS/VirtualBackground (3.7.0.3)
+  - AgoraRtcEngine_Special_iOS (3.6.2.70):
+    - AgoraRtcEngine_Special_iOS/AINS (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/AV1Dec (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/ContentInspect (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/FullAudioFormat (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/JND (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/ReplayKit (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/ROIEnc (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/RtcBasic (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/SuperResolution (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/VideoPreprocess (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/VirtualBackground (= 3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/AINS (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/AV1Dec (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/ContentInspect (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/FullAudioFormat (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/JND (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/ReplayKit (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/ROIEnc (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/RtcBasic (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/SuperResolution (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/VideoPreprocess (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/VirtualBackground (3.6.2.70)
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
   - EXApplication (4.0.2):
@@ -128,17 +128,8 @@ PODS:
   - libwebp/mux (1.2.3):
     - libwebp/demux
   - libwebp/webp (1.2.3)
-  - OneSignalXCFramework (3.11.2):
-    - OneSignalXCFramework/OneSignalCore (= 3.11.2)
-    - OneSignalXCFramework/OneSignalExtension (= 3.11.2)
-    - OneSignalXCFramework/OneSignalOutcomes (= 3.11.2)
-  - OneSignalXCFramework/OneSignalCore (3.11.2)
-  - OneSignalXCFramework/OneSignalExtension (3.11.2):
-    - OneSignalXCFramework/OneSignalCore
-    - OneSignalXCFramework/OneSignalOutcomes
-  - OneSignalXCFramework/OneSignalOutcomes (3.11.2):
-    - OneSignalXCFramework/OneSignalCore
-  - Permission-Camera (3.6.1):
+  - OneSignalXCFramework (3.10.1)
+  - Permission-Camera (3.3.1):
     - RNPermissions
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
@@ -333,8 +324,8 @@ PODS:
     - React-jsi (= 0.64.3)
     - React-perflogger (= 0.64.3)
   - React-jsinspector (0.64.3)
-  - react-native-agora (3.7.1):
-    - AgoraRtcEngine_iOS (= 3.7.0.3)
+  - react-native-agora (3.6.2):
+    - AgoraRtcEngine_Special_iOS (= 3.6.2.70)
     - React-Core
   - react-native-blob-util (0.14.1):
     - React-Core
@@ -346,12 +337,12 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
-  - react-native-onesignal (4.4.1):
-    - OneSignalXCFramework (= 3.11.2)
+  - react-native-onesignal (4.3.7):
+    - OneSignalXCFramework (= 3.10.1)
     - React (< 1.0.0, >= 0.13.0)
   - react-native-pager-view (5.4.6):
     - React-Core
-  - react-native-pdf (6.6.2):
+  - react-native-pdf (6.4.0):
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
@@ -427,25 +418,25 @@ PODS:
     - React-Core
   - RNDateTimePicker (3.5.2):
     - React-Core
-  - RNDeviceInfo (8.7.1):
+  - RNDeviceInfo (8.7.0):
     - React-Core
   - RNExitApp (1.1.0):
     - React
-  - RNFastImage (8.6.1):
+  - RNFastImage (8.5.11):
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
   - RNFileViewer (2.1.5):
     - React-Core
-  - RNFlashList (1.3.1):
+  - RNFlashList (1.2.2):
     - React-Core
-  - RNFS (2.20.0):
+  - RNFS (2.19.0):
     - React-Core
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNKeychain (8.0.0):
     - React-Core
-  - RNPermissions (3.6.1):
+  - RNPermissions (3.3.1):
     - React-Core
   - RNReanimated (2.2.4):
     - DoubleConversion
@@ -579,7 +570,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AgoraRtcEngine_iOS
+    - AgoraRtcEngine_Special_iOS
     - boost-for-react-native
     - libwebp
     - OneSignalXCFramework
@@ -746,7 +737,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AgoraRtcEngine_iOS: 549bb3853d5afb18fabca4197786f39f31141da8
+  AgoraRtcEngine_Special_iOS: 929a1cacc8e396fb7f4e7d329c7c38f56465b8c4
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   EXApplication: 54fe5bd6268d697771645e8f1aef8b806a65247a
@@ -779,8 +770,8 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 55265786b2839fcf2afe72be936cb2359da4032d
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
-  OneSignalXCFramework: 81ceac017a290f23793443323090cfbe888f74ea
-  Permission-Camera: bf6791b17c7f614b6826019fcfdcc286d3a107f6
+  OneSignalXCFramework: fe027712118f2862ab193b72270487f11450ea63
+  Permission-Camera: bae27a8503530770c35aadfecbb97ec71823382a
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: d34bf57e17cb6e3b2681f4809b13843c021feb6c
   RCTTypeSafety: 8dab4933124ed39bb0c1d88d74d61b1eb950f28f
@@ -792,12 +783,12 @@ SPEC CHECKSUMS:
   React-jsi: a8b09c29521c798f1783348b37b511ba7b3dbeb3
   React-jsiexecutor: df6abc9fafbecb8e5b7a5fbc5e6d4bd017d594d5
   React-jsinspector: 34e23860273a23695342f58eed3ffd3ba10c31e0
-  react-native-agora: c328ef8c381d7b22cc11d1eb298d8ff8a8e7a70d
+  react-native-agora: c6db7769dbdc62fed8412435808e25ce6230f355
   react-native-blob-util: 7ac01cd4a4ba81016864727a756ce2c1af995e35
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
-  react-native-onesignal: e1f82b98767a9014d2c46f395b083330cfa29cea
+  react-native-onesignal: 7643517fe655b94cfda8e697ec16f9b9135648b8
   react-native-pager-view: b90963d848e777def6714ab7fd40d02fa797e930
-  react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
+  react-native-pdf: a6a5a3f0bdf340eb2eed6c96034424d2cc3f84b0
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-webview: 133a6a5149f963259646e710b4545c67ef35d7c9
   React-perflogger: cc76a4254d19640f1d8ad1c66fdee800414b805c
@@ -815,15 +806,15 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 6bd5a7ba3dde1c3facba418aa273f449bdc5437a
   RNCPicker: f7a40b21b915b7a187624d52f52b7bc2f73ea413
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
-  RNDeviceInfo: aad3c663b25752a52bf8fce93f2354001dd185aa
+  RNDeviceInfo: 36286df381fcaf1933ff9d2d3c34ba2abeb2d8d8
   RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3
-  RNFastImage: 3207b9eb17c2425d574ca40db35185db6e324f4e
+  RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
-  RNFlashList: 18d906a373da5ff16776e5013df9495d826edc7e
-  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
+  RNFlashList: 13d14d9502661134ad3ba892f81d76bdcbd79755
+  RNFS: fc610f78fdf8bfc89a9e5cc2f898519f4dba1002
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
-  RNPermissions: dcdb7b99796bbeda6975a6e79ad519c41b251b1c
+  RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
   RNReanimated: 024eff8202342abf4b24e11575a16afc441dabfe
   RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f

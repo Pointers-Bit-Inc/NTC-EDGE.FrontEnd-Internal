@@ -9,7 +9,7 @@ import LeftSideWeb from "@atoms/left-side-web";
 import Header from "@molecules/header";
 import SearchIcon from "@assets/svg/search";
 import {UploadIcon} from "@atoms/icon";
-import {defaultColor, disabledColor, successColor, text} from "@styles/color";
+import {defaultColor, disabledColor, errorColor, infoColor, successColor, text} from "@styles/color";
 import lodash from "lodash";
 import RenderFeeConfiguration from "@pages/configuration/renderFeeConfiguration";
 import Text from "@atoms/text"
@@ -61,14 +61,23 @@ export default function ConfigurationPage(props: any) {
             <LeftSideWeb>
                 <View style={styles.header}>
                     <Header title={"Configurations"}>
-                        {!lodash.isEmpty(fee?.fees) ? (edit ? <TouchableOpacity onPress={updateApplication}>
-                                <Text>Save</Text>
-                            </TouchableOpacity> :
+                        {!lodash.isEmpty(fee?.fees) ? (edit ? <View style={{flexDirection: "row", justifyContent: "space-between",  alignItems: "center"}}>
+
+
+                                <TouchableOpacity onPress={updateApplication}>
+                                    <Text style={{fontFamily: Bold, color: successColor,  fontSize: fontValue(15)}}>Save</Text>
+                                </TouchableOpacity>
+                                <View style={{paddingLeft: 10}}>
+                                    <TouchableOpacity onPress={()=> setEdit(false)}>
+                                        <Text style={{fontFamily: Bold, color: errorColor,  fontSize: fontValue(15)}}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View> :
                             <TouchableOpacity onPress={() => {
                                 setEdit(edit => !edit)
 
                             }}>
-                                <Text style={{fontFamily: Bold, fontSize: fontValue(15)}}>Edit</Text>
+                                <Text style={{ color: infoColor, fontFamily: Bold, fontSize: fontValue(15)}}>Edit</Text>
                             </TouchableOpacity>) : <></>
                         }
 
