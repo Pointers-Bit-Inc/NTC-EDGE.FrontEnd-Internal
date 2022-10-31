@@ -58,7 +58,8 @@ const {
     SAVING_APPLICATION,
     SAVE_APPLICATION_ERROR,
     SAVE_APPLICATION_SUCCESS,
-    SET_REVIEWED
+    SET_REVIEWED,
+    SET_COMPLETED
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -87,6 +88,12 @@ export default function basket(state = initialState, action = {}) {
         case SET_DATA: {
 
             state = state.set('data', action.payload);
+            return state
+        }
+
+        case SET_COMPLETED: {
+
+            state = state.set('completed', action.payload);
             return state
         }
 

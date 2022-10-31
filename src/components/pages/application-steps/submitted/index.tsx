@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Image } from 'react-native';
+import {View, Image, Platform} from 'react-native';
 import Text from '@atoms/text';
 import styles from './styles';
 
 export default () => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {...Platform.select({web: {
+                backgroundColor: "#fff"
+            } }) }]}>
       <Image
         style={styles.image}
         source={require('@assets/plane.png')}

@@ -7,7 +7,7 @@ import {
     fetchCities,
     fetchProvinces,
     fetchRegions,
-    fetchSchedules, fetchSOA, saveApplication, setApplicationItem, setReviewed, setSceneIndex,
+    fetchSchedules, fetchSOA, saveApplication, setApplicationItem, setCompleted, setReviewed, setSceneIndex,
     uploadRequirement
 } from "../../../reducers/application/actions";
 import ServicesForm from "@pages/form/ServicesForm";
@@ -37,6 +37,7 @@ import Preview from "@templates/application-steps/preview";
 import CustomAlert from "@pages/activities/alert/alert";
 import {APPROVED} from "../../../reducers/activity/initialstate";
 import _ from "lodash";
+import Submitted from "@pages/application-steps/submitted";
 
 const ServiceFormPage = (props) =>{
 
@@ -67,6 +68,7 @@ const ServiceFormPage = (props) =>{
     const provinces = useSelector((state: RootStateOrAny) => state.application?.provinces);
     const fetchingRegions = useSelector((state: RootStateOrAny) => state.application?.fetchingRegions);
     const savingApplication = useSelector((state: RootStateOrAny) => state.application?.savingApplication);
+    const completed = useSelector((state: RootStateOrAny) => state.application?.completed);
     const uploadingRequirement = useSelector((state: RootStateOrAny) => state.application?.uploadingRequirement);
     const fetchingSchedules = useSelector((state: RootStateOrAny) => state.application?.fetchingSchedules);
     const fetchingProvinces = useSelector((state: RootStateOrAny) => state.application?.fetchingProvinces);
@@ -129,6 +131,8 @@ const ServiceFormPage = (props) =>{
             ..._applicantItem,
         }
     };
+
+    console.log(completed)
 
     const newForm = JSONfn.parse(JSONfn.stringify(NTCServicesConfig({formCode, user})));
     const dispatch = useDispatch();
@@ -1380,7 +1384,9 @@ const ServiceFormPage = (props) =>{
             case 'requirement':
                 return <Requirements requirements={requirements} onUpload={onUpload} onRemove={onRemove} disabled={isUploading()}/>
             case 'complete':
-                return    <Preview pageOnly forApplication application={applicationItem} form={JSONfn.parse(JSONfn.stringify(form))} />
+                return    completed
+                    ? <Submitted  />:
+                    <Preview pageOnly forApplication application={applicationItem} form={JSONfn.parse(JSONfn.stringify(form))} />
         }
     };
     const onNext = () => {
@@ -1389,6 +1395,8 @@ const ServiceFormPage = (props) =>{
     const [generatingApplication, setGeneratingApplication] = useState(false);
     const onPrevious = () => setCurrentStep(currentStep - 1);
     const onExitApplication = () => {
+        dispatch(setCompleted(false))
+        setCurrentStep(0)
         props.jumpTo()
     };
     const incompleteRequirements = () => {
@@ -1412,7 +1420,6 @@ const ServiceFormPage = (props) =>{
         return incomplete;
     };
     const [currentStep, setCurrentStep] = useState(0);
-    const [completed, setCompleted] = useState(false);
     const formValid = () => {
         var valid = true;
         form.forEach((parent: any) => {
@@ -1565,20 +1572,21 @@ const ServiceFormPage = (props) =>{
             onPrevious: () => {
                 if (agree) setAgree(false);
                 if (reviewed) dispatch(setReviewed(false));
+                if (completed) {
+                    onExitApplication();
+                }
                 onPrevious();
             },
             onNext: () => {
-
-                if (!reviewed) {
-                    dispatch(setReviewed(true));
-                }
-                else if (completed) {
-                    if(Platform.OS == 'web') dispatch(setApplicationItem({}));
+                if (completed) {
                     onExitApplication();
+                }
+                else if (!reviewed) {
+                    dispatch(setReviewed(true));
                 }
                 else if (agree) onSaveApplication();
             },
-            buttonLabel: !reviewed ? 'Submit' : completed ? 'Close' : 'Confirm',
+            buttonLabel: !(completed) ? 'Submit' : completed ? 'Close' : 'Confirm',
            // buttonDisabled: (applicationItem || (!reviewed ? false : completed ? false : !agree)),
         },
     ];
@@ -1883,10 +1891,10 @@ const ServiceFormPage = (props) =>{
     }, [fetchSOASuccess, fetchSOAError]);
 
 
-    useEffect(()=>{
+  /* useEffect(()=>{
         setCurrentStep(0)
         onExitApplication()
-    }, [applicationItem._id, savingApplication ])
+    }, [applicationItem._id, savingApplication ])*/
 
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar

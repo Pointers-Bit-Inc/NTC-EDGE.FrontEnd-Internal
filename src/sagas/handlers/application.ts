@@ -26,7 +26,7 @@ import {
   setSavingApplication,
   setSaveApplicationSuccess,
   setSaveApplicationError,
-  setReviewed, setUserOriginalProfileForm, setUserProfileForm, updateChangeEvent,
+  setReviewed, setUserOriginalProfileForm, setUserProfileForm, updateChangeEvent, setCompleted,
 } from '../../reducers/application/actions';
 
 
@@ -38,6 +38,7 @@ import {setUpdateIncrement} from "../../reducers/activity/actions";
 
 export function* handle_saveApplication(action: any) {
   try {
+    yield put(setCompleted(false))
     yield put(setSavingApplication(true));
     yield put(setSaveApplicationSuccess(false));
     yield put(setSaveApplicationError(false));
@@ -55,8 +56,8 @@ export function* handle_saveApplication(action: any) {
       if(_applicationItem?.region?.code){
         _applicationItem.region = _applicationItem?.region?.code ? _applicationItem?.region?.code :  _applicationItem?.region
       }
-console.log(_applicationItem, "_applicationItem")
 
+      yield put(setCompleted(true))
 
 
 
@@ -71,6 +72,7 @@ console.log(_applicationItem, "_applicationItem")
       //   yield put(addApplication(res?.data));
     }
     else {
+      yield put(setCompleted(false))
       yield put(setSaveApplicationError(true));
       yield put(setReviewed(false));
       yield put(setFetchingSOA(false));
@@ -80,6 +82,7 @@ console.log(_applicationItem, "_applicationItem")
     yield put(setSavingApplication(false));
   }
   catch(err) {
+    yield put(setCompleted(false))
     yield put(setSaveApplicationError(true));
     yield put(setReviewed(false));
     yield put(setFetchingSOA(false));

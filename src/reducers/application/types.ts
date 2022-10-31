@@ -54,5 +54,6 @@ export default keyMirror({
   SAVE_APPLICATION_SUCCESS: null,
   SAVE_APPLICATION: null,
   ADD_APPLICATION: null,
-  SET_REVIEWED: null
+  SET_REVIEWED: null,
+  SET_COMPLETED: null
 });

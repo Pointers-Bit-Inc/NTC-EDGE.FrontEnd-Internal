@@ -1058,6 +1058,7 @@ console.log("handleBackButtonClick")
             </View>
 
             <TabView
+                lazy={true}
                 swipeEnabled={false}
                 renderTabBar={() => null}
                 navigationState={{ index: sceneIndex, routes }}
