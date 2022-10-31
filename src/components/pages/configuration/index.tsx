@@ -68,7 +68,7 @@ export default function ConfigurationPage(props: any) {
                                 setEdit(edit => !edit)
 
                             }}>
-                                <Text>Edit</Text>
+                                <Text style={{fontFamily: Bold, fontSize: fontValue(15)}}>Edit</Text>
                             </TouchableOpacity>) : <></>
                         }
 

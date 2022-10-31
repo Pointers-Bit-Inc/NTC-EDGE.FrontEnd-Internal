@@ -314,7 +314,7 @@ function ActivityModal(props: any) {
     const [discardAlert, setDiscardAlert] = useSafeState(false);
     const [editAlert, setEditAlert] = useSafeState(false);
     const handleBackButtonClick = () => {
-
+console.log("handleBackButtonClick")
         if (hasChange) setDiscardAlert(true);
         else {
             setAssignId("");
@@ -326,6 +326,7 @@ function ActivityModal(props: any) {
     };
     const routeIsFocused = navigation?.isFocused();
     useEffect(() => {
+        console.log("handleBackButtonClick")
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
@@ -606,12 +607,14 @@ function ActivityModal(props: any) {
         };
     }
     const goBackAsync = () => {
+        console.log("goback")
         const promise = new Promise<void>(resolve => {
             const subscription = Platform.OS == "web" ? resolve() : props.navigation?.addListener('didBlur', () => {
                 subscription.remove();
                 resolve();
             });
         });
+        console.log("goback")
         if(props?.navigation?.canGoBack()){
             props.navigation?.goBack();
         }

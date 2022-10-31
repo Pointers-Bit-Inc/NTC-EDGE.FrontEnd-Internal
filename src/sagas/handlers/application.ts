@@ -55,6 +55,10 @@ export function* handle_saveApplication(action: any) {
       if(_applicationItem?.region?.code){
         _applicationItem.region = _applicationItem?.region?.code ? _applicationItem?.region?.code :  _applicationItem?.region
       }
+console.log(_applicationItem, "_applicationItem")
+
+
+
 
       var _flatten = flatten.flatten({..._applicationItem})
 
