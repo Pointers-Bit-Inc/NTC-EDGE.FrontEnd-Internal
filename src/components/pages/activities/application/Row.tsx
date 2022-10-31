@@ -8,8 +8,8 @@ import useSafeState from "../../../../hooks/useSafeState";
 const styles = StyleSheet.create({
     group2: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        //alignItems: "center",
+        justifyContent: "flex-start",
+        alignItems: "center",
         marginTop: 8,
         flexWrap: "wrap",
         paddingHorizontal: 10,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         textAlign: "left"
     },
 })
-const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
+const Row = (props: { leftStyle?: any, id?: any, visibleText?: string, outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
 
     const [edit, setEdit] = useSafeState(false)
     const [value, setValue] = useState()
@@ -62,9 +62,7 @@ const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, contai
     return ((!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) )  ?
         <View style={styles.group2}>
             {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
-            <View style={{
-               // flex: 1,
-            }}>
+            <View style={[{flex: 1, }, props?.leftStyle]}>
                 {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{props.display || props.applicant || applicantMemo || props.visibleText || ""}</Text>}
             </View>
              </View> : <>
@@ -78,6 +76,6 @@ const Row = (props: { id?: any, visibleText?: string, outlineStyle?: any, contai
 };
 
 Row.defaultProps = {
-    editable: true, show: true, showEdit: true, multiline: false, inputStyle: {}, containerStyle :{}, outlineStyle: {}, visibleText: ""
+    leftStyle: {}, editable: true, show: true, showEdit: true, multiline: false, inputStyle: {}, containerStyle :{}, outlineStyle: {}, visibleText: ""
 }
 export default memo(Row)

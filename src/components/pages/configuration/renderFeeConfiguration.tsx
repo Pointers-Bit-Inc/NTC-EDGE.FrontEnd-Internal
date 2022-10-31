@@ -166,7 +166,7 @@ const RenderFeeConfiguration = (props) => {
                     updateForm={props.updateForm}
                     edit={props.edit}
                     stateName={"fees." + keys}
-
+                    leftStyle={{flex: undefined}}
                     label={prevValue ? `${transformText(keys?.split?.(".")?.[keys?.split?.(".")?.length - 1])}:` : ""}
                     display={value.toString()}
                     applicant={props?.userProfileForm?.["fees." + keys]}/>
