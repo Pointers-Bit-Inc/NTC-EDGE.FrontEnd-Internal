@@ -416,8 +416,8 @@ const Approval=(props:any)=>{
                                             </>
                                             : <View style={{paddingVertical: 20}}/>}
                                         <View style={{marginTop:5}}>
-                                            <TouchableOpacity disabled={(!(checkNumber && isCheck) ? !(remarks) : !(bankName && checkNumber)) && getRole(user,[CASHIER])} onPress={() => props.paymentMethod == "check" && !(checkNumber && isCheck)   ? setIsCheck(true) :  onConfirmation() }>
-                                                <View style={[styles.confirmButton, {backgroundColor:(!(isCheck) ? !(remarks && getRole(user,[CASHIER])) : !(bankName && checkNumber && getRole(user,[CASHIER])))  ? disabledColor :primaryColor,}]}>
+                                            <TouchableOpacity disabled={(!(getRole(user,[CASHIER])) ? !(remarks) : (!(checkNumber && isCheck) ? !(remarks) : !(bankName && checkNumber)) && getRole(user,[CASHIER]))} onPress={() => props.paymentMethod == "check" && !(checkNumber && isCheck)   ? setIsCheck(true) :  onConfirmation() }>
+                                                <View style={[styles.confirmButton, {backgroundColor:((!(getRole(user,[CASHIER])) ? !(remarks) : (!(isCheck) ? !(remarks && getRole(user,[CASHIER])) : !(bankName && checkNumber && getRole(user,[CASHIER])))))  ? disabledColor :primaryColor,}]}>
                                                     <Text style={styles.confirm}>Confirm</Text>
                                                 </View>
                                             </TouchableOpacity>
