@@ -70,7 +70,7 @@ const Region: FC<Props> = ({
       <TouchableOpacity onPress={() => onChangeSchedule(item)}>
         <View style={[
           styles?.scheduleContainer,
-          Platform.OS === 'web' && {width : ((width>=768 ? width * 0.60978835978 : width * 0.90)  -  (120 + 72 + 72)) /3 ,} ,
+          //Platform.OS === 'web' && {width : ((width>=768 ? width * 0.60978835978 : width * 0.90)  -  (120 + 72 + 72)) /3 ,} ,
           schedule?.id === item?.id && styles?.selectedScheduleContainer,
         ]}>
           <View style={styles?.scheduleRow}>
@@ -114,7 +114,7 @@ const Region: FC<Props> = ({
         hasSchedule &&
         region?.value &&
         <View style={[styles?.subContainer, styles?.schedulesContainer]}>
-          <Text>Scheduled Dates</Text>
+          <Text style={{marginBottom: 15}}>Scheduled Dates</Text>
           {
             fetchingSchedules
             ? <View style={styles?.ellipsisContainer}>
@@ -129,7 +129,7 @@ const Region: FC<Props> = ({
                   keyExtractor={(item, index) => `${index}`}
                   numColumns={Platform.select({
                     native: 1,
-                    web: 3
+                    web: 1
                   })}
                   ListEmptyComponent={() => {
                     return (

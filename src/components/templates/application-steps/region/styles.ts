@@ -1,7 +1,7 @@
 import {StyleSheet,Dimensions,Platform} from 'react-native';
 import { infoColor, input, outline, text } from '@styles/color';
 import { Bold } from '@styles/font';
-import {RNValue as RFValue} from "@utils/formatting";
+import {RNValue as RFValue} from "../../../../utils/formatting";
 
 const { width } = Dimensions.get('window');
 
@@ -47,7 +47,8 @@ export default StyleSheet.create({
     ...Platform.select({
       web: {
         marginRight: 15,
-        marginVertical:15,
+        //marginVertical:15,
+        //marginTop:15,
       }
     }),
 
