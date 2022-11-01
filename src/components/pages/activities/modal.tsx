@@ -58,7 +58,7 @@ import {isLandscapeSync, isTablet} from "react-native-device-info";
 import {Toast} from "@atoms/toast/Toast";
 import axios from "axios";
 import useSafeState from "../../../hooks/useSafeState";
-import {useNavigation} from "@react-navigation/native";
+import {useFocusEffect, useNavigation} from "@react-navigation/native";
 import {BASE_URL} from "../../../services/config";
 import {transformToFeePayload} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
@@ -310,11 +310,10 @@ function ActivityModal(props: any) {
     useEffect(() => {
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
     }, [activityModalScreenComponent]);
-    const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
+    const hitSlop = {top: 100, left: 100, bottom: 100, right: 100}
     const [discardAlert, setDiscardAlert] = useSafeState(false);
     const [editAlert, setEditAlert] = useSafeState(false);
     const handleBackButtonClick = () => {
-console.log("handleBackButtonClick")
         if (hasChange) setDiscardAlert(true);
         else {
             setAssignId("");
@@ -325,13 +324,28 @@ console.log("handleBackButtonClick")
         }
     };
     const routeIsFocused = navigation?.isFocused();
-    useEffect(() => {
-        console.log("handleBackButtonClick")
-        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-        return () => {
-            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
-        };
-    }, [routeIsFocused]);
+
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const onBackPress = () => {
+                // Do Whatever you want to do on back button click
+                // Return true to stop default back navigaton
+                // Return false to keep default back navigaton
+                return true;
+            };
+
+            BackHandler.addEventListener(
+                'hardwareBackPress', handleBackButtonClick
+            );
+
+            return () =>
+                BackHandler.removeEventListener(
+                    'hardwareBackPress', handleBackButtonClick
+                );
+        }, [])
+    );
+
     const editBtn = (editBtn) => {
         console.log("editBtn")
         if (hasChange) setEditAlert(true);
