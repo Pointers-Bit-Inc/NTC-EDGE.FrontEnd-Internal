@@ -2537,7 +2537,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
-            editable: false,
+           // editable: false,
           },
           {
             type: 'unit',
@@ -4599,7 +4599,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
-            editable: false,
+           // editable: false,
           },
           {
             type: 'unit',
@@ -5605,7 +5605,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
-            editable: false,
+           // editable: false,
           },
           {
             type: 'unit',
@@ -6756,7 +6756,7 @@ const NTCService = ({
                 isValid: false,
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
-                editable: false,
+               // editable: false,
               },
               {
                 id: 'callSign',
@@ -6793,7 +6793,7 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                  editable: false,
+                 // editable: false,
                 },
                 {
                   id: 'callSign',
@@ -6946,7 +6946,7 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                  editable: false,
+                 // editable: false,
                 },
                 {
                   id: 'callSign',
@@ -6983,7 +6983,7 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                    editable: false,
+                   // editable: false,
                   },
                   {
                     id: 'callSign',
@@ -8774,7 +8774,7 @@ const NTCService = ({
                   errorResponse: 'Please enter a valid frequency',
                   validate: validateNumber,
                   keyboardType: 'decimal-pad',
-                  editable: false,
+                 // editable: false,
                   specification: true,
                 }
               },
@@ -9405,7 +9405,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter source',
-            editable: false,
+           // editable: false,
           },
           {
             id: 'pointsOfCommServiceArea',
@@ -22513,7 +22513,7 @@ const NTCService = ({
             isValid: true,
             error: '',
             errorResponse: 'Please enter BSD number',
-            editable: false,
+           // editable: false,
           },
         ]
       },
@@ -23686,7 +23686,7 @@ const NTCService = ({
             isValid: true,
             error: '',
             errorResponse: 'Please enter BSD number',
-            editable: false,
+           // editable: false,
           },
         ]
       },
@@ -25857,7 +25857,7 @@ const NTCService = ({
             isValid: true,
             error: '',
             errorResponse: 'Please enter BSD number',
-            editable: false,
+           // editable: false,
           },
         ]
       },

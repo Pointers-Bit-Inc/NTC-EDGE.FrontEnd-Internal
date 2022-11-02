@@ -37,7 +37,7 @@ const PaymentModal = (_props: any) => {
         ["Email", props?.applicant?.user?.email],
         ["Fee", "PHP " +  props?.totalFee],
         ["Account", props?.applicant?.user?.firstName && props?.applicant?.user?.lastName ? props?.applicant?.user?.firstName + " " + props?.applicant?.user?.lastName : (props?.applicant?.fullName || (props?.applicant?.companyName || props?.applicant?.applicantName)  )],
-        ["Amount paid", "PHP" + props?.totalFee],
+        ["Amount paid", "PHP " + props?.totalFee],
     ];
     const [sizeComponent, onLayoutComponent] = useComponentLayout()
     const [amountOfBorder, setAmountOfBorder] = useState()
@@ -80,8 +80,8 @@ const PaymentModal = (_props: any) => {
                              <Text style={styles.close}>Close</Text>
                          </TouchableOpacity>
                      </View>
-                     
-                     <ScrollView>
+
+
                             <View style={[styles.group8, { height: isMobile ? undefined : rightLayoutComponent?.height- rightLayoutComponent?.top , alignItems: 'center'}]}>
 
                                 <View style={styles.paymentModal}>
@@ -142,8 +142,6 @@ const PaymentModal = (_props: any) => {
 
                             </View>
 
-
-                     </ScrollView>
                  </View>
              </View>
          </View>
@@ -166,17 +164,15 @@ const styles = StyleSheet.create({
        })
     },
     gridContainer: {
-        alignSelf: "center",
-        justifyContent: "flex-start",
-        alignItems: "center"
+       /* justifyContent: "space-between",
+        alignItems: "center"*/
     },
     rowStyle: {
 
-        width: "90%",
-        paddingHorizontal: 20,
+        paddingHorizontal: 24,
         flexDirection: "row",
-       
-        justifyContent: "space-around",
+
+        justifyContent: "space-between",
     },
     cellStyle: {
         flex: 1,
@@ -203,9 +199,9 @@ const styles = StyleSheet.create({
         fontSize: fontValue(18),
     },
     group8: {
-        width: "100%",
+       flex: 0.7,
         height: 473,
-        marginTop: 70,
+        marginTop: 10,
         alignSelf: "center"
     },
     group5: {

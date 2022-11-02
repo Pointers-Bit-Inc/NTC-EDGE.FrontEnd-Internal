@@ -1072,7 +1072,7 @@ function ActivityModal(props: any) {
             </View>
 
             <TabView
-                lazy={true}
+               // lazy={true}
                 swipeEnabled={false}
                 renderTabBar={() => null}
                 navigationState={{ index: sceneIndex, routes }}

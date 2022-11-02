@@ -827,7 +827,7 @@ const BasicInfo = (_props: any) => {
                                                        <Text style={[styles.header, {color: errorColor}]}>Cancel</Text>
                                                    </TouchableOpacity> : <></>}
 
-                                                   {((userProfileForm?.["approvalHistory.personnel._id"] == user?._id) && userProfileForm?.["approvalHistory.action"] == FOREVALUATION ) ? !isEditNote ? <TouchableOpacity onPress={()=>setIsEditNote((edit) => !edit)}>
+                                                   {((userProfileForm?.["approvalHistory.personnel._id"] == user?._id || userProfileForm?.["approvalHistory.0.personnel._id"] == user?._id ) && (userProfileForm?.["approvalHistory.action"] == FOREVALUATION ) || userProfileForm?.["approvalHistory.0.action"] == FOREVALUATION) ? !isEditNote ? <TouchableOpacity onPress={()=>setIsEditNote((edit) => !edit)}>
                                                        <Text style={[styles.header, {color: infoColor}]}>Edit</Text>
                                                    </TouchableOpacity> :  <TouchableOpacity onPress={()=>{
                                                        let profileForm = JSON.parse(JSON.stringify(userProfileForm))

@@ -25,6 +25,7 @@ import { setUser } from 'src/reducers/user/actions';
 import { StackActions } from '@react-navigation/native';
 import Ellipsis from "@atoms/ellipsis";
 import {setTabBarHeight} from "../reducers/application/actions";
+import {isMobile} from "../utils/formatting";
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/loginbackground.png');
 
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   bottomContainer: {
-    
+
   },
   loginButton: {
     borderRadius: 10,
