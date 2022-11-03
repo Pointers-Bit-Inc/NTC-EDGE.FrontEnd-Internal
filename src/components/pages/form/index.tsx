@@ -735,11 +735,20 @@ const ServiceFormPage = (props) =>{
 
     };
     const [form, setForm] = useState(generatedForm);
+
+
+
+    useEffect(()=>{
+        setForm(generatedForm)
+        setApplicationType(applicationItem?.service?.applicationType || {})
+    }, [applicationItem?._id])
+
+
     const [formFilledIn, setFormFilledIn] = useState(false);
     const [useDifferentAddress, setUseDifferentAddress] = useState(false);
     const [alternateRequirements, setAlternateRequirements] = useState([]);
     const onUseDifferentAddress = () => setUseDifferentAddress(!useDifferentAddress);
-    const requirements = alternateRequirements?.length > 0 ? alternateRequirements : (applicationType?.requirements || []);
+    const requirements = useMemo(()=> alternateRequirements?.length > 0 ? alternateRequirements : (applicationType?.requirements || []), [alternateRequirements?.length > 0 ? alternateRequirements : (applicationType?.requirements || [])] );
 
 
 
@@ -1260,10 +1269,10 @@ const ServiceFormPage = (props) =>{
         }
     };
     useEffect(() => {
-       setItemsOnForm('address', 'province', fetchingProvinces, provinces);
+        setItemsOnForm('address', 'province', fetchingProvinces, provinces);
     }, [provinces, /*applicationType,*/ fetchingProvinces]);
     useEffect(() => {
-       setItemsOnForm('address', 'city', fetchingCities, cities);
+        setItemsOnForm('address', 'city', fetchingCities, cities);
     }, [cities, fetchingCities]);
     const onUploadFile = async(requirement:any)=>{
         let createFormData=async(payload:any)=>{
@@ -1338,7 +1347,7 @@ const ServiceFormPage = (props) =>{
     useEffect(() => {
         dispatch(fetchRegions());
         let r = applicationItem?.region?.code ? applicationItem?.region?.code :  applicationItem?.region
-         setRegion({code: r, ...(regionList?.filter(i => i?.value === r)?.[0] || {})});
+        setRegion({code: r, ...(regionList?.filter(i => i?.value === r)?.[0] || {})});
         BackHandler.addEventListener('hardwareBackPress', onBack);
         return () => { BackHandler.removeEventListener('hardwareBackPress', onBack); };
     }, []);
@@ -1526,7 +1535,7 @@ const ServiceFormPage = (props) =>{
         });
         return valid;
     };
-        const [agree, setAgree] = useState(false);
+    const [agree, setAgree] = useState(false);
     const [applicationPayload, setApplicationPayload] = useState({});
 
 
@@ -1586,7 +1595,7 @@ const ServiceFormPage = (props) =>{
                 else if (agree) onSaveApplication();
             },
             buttonLabel: !(completed) ? 'Submit' : completed ? 'Close' : 'Confirm',
-           // buttonDisabled: (applicationItem || (!reviewed ? false : completed ? false : !agree)),
+            // buttonDisabled: (applicationItem || (!reviewed ? false : completed ? false : !agree)),
         },
     ];
     const getStructuredData = (form: any) => {
@@ -1890,10 +1899,10 @@ const ServiceFormPage = (props) =>{
     }, [fetchSOASuccess, fetchSOAError]);
 
 
-  /* useEffect(()=>{
-        setCurrentStep(0)
-        onExitApplication()
-    }, [applicationItem._id, savingApplication ])*/
+    /* useEffect(()=>{
+          setCurrentStep(0)
+          onExitApplication()
+      }, [applicationItem._id, savingApplication ])*/
 
     const renderTabBar = (tabProp) =>{
         return isMobile ?  <TabBar
@@ -2001,7 +2010,7 @@ const ServiceFormPage = (props) =>{
 
 
 
-    {/*
+        {/*
 
 
 */}

@@ -13,7 +13,7 @@ import {
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
-import {APPROVED, CASHIER, DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DECLINED, FORAPPROVAL, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import moment from "moment";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -818,7 +818,7 @@ const BasicInfo = (_props: any) => {
                                                    <Text style={styles.header}>Note</Text>
                                                </View>
                                                <View style={[styles.rect, {flexDirection: "row"}]}>
-                                                   {isEditNote && ((userProfileForm?.["approvalHistory.personnel._id"] == user?._id) && userProfileForm?.["approvalHistory.action"] == FOREVALUATION )  ? <TouchableOpacity onPress={()=> {
+                                                   {isEditNote && (userProfileForm?.["assignedPersonnel._id"] == user?._id || userProfileForm?.["assignedPersonnel.0._id"] == user?._id) && (([FOREVALUATION, FORAPPROVAL].indexOf(userProfileForm?.["approvalHistory.action"]) != -1 ) || ([FOREVALUATION, FORAPPROVAL].indexOf(userProfileForm?.["approvalHistory.0.action"]) != -1))  ? <TouchableOpacity onPress={()=> {
                                                        userProfileForm["note"] = userOriginalProfileForm["note"]
                                                        setUserProfileForm(userProfileForm)
                                                        setIsEditNote(false)
@@ -827,7 +827,7 @@ const BasicInfo = (_props: any) => {
                                                        <Text style={[styles.header, {color: errorColor}]}>Cancel</Text>
                                                    </TouchableOpacity> : <></>}
 
-                                                   {((userProfileForm?.["approvalHistory.personnel._id"] == user?._id || userProfileForm?.["approvalHistory.0.personnel._id"] == user?._id ) && (userProfileForm?.["approvalHistory.action"] == FOREVALUATION ) || userProfileForm?.["approvalHistory.0.action"] == FOREVALUATION) ? !isEditNote ? <TouchableOpacity onPress={()=>setIsEditNote((edit) => !edit)}>
+                                                   {((userProfileForm?.["assignedPersonnel._id"] == user?._id || userProfileForm?.["assignedPersonnel.0._id"] == user?._id ) && ([FOREVALUATION, FORAPPROVAL].indexOf(userProfileForm?.["approvalHistory.action"]) != -1 ) || ([FOREVALUATION, FORAPPROVAL].indexOf(userProfileForm?.["approvalHistory.0.action"]) != -1 )) ? !isEditNote ? <TouchableOpacity onPress={()=>setIsEditNote((edit) => !edit)}>
                                                        <Text style={[styles.header, {color: infoColor}]}>Edit</Text>
                                                    </TouchableOpacity> :  <TouchableOpacity onPress={()=>{
                                                        let profileForm = JSON.parse(JSON.stringify(userProfileForm))

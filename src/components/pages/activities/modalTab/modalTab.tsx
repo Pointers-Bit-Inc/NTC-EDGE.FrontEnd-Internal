@@ -328,7 +328,7 @@ const ModalTab = props => {
                                 {tabIcon(route.title, focused)}
                             </View>
                         }
-                        <Text numberOfLines={Platform.OS == "windows" ? 1 : undefined} style={{
+                        <Text allowFontScaling={false} numberOfLines={Platform.OS == "windows" ? 1 : undefined} style={{
                             color: focused ? infoColor : "#606A80",
                             fontFamily: Regular, // focused ? Bold : Regular
                             fontSize: fontValue(14)

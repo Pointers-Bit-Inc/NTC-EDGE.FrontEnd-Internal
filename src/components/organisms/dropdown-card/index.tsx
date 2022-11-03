@@ -52,7 +52,7 @@ const DropdownCard: FC<Props> = ({
       </TouchableOpacity>
       {
         !!children &&
-        <Collapsible collapsed={isCollapsed}>
+        <Collapsible collapsed={isCollapsed }>
           <View style={styles.contentContainer}>
             {children}
           </View>

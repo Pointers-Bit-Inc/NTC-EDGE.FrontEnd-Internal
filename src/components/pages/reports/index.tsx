@@ -49,7 +49,7 @@ export default function ReportPage(props:any){
 
         });
         if(!picker.cancelled){
-            
+
             let uri=picker?.uri;
             let split=uri?.split('/');
             let name=split?.[split?.length-1];
@@ -264,7 +264,11 @@ export default function ReportPage(props:any){
 
                     </View>
 
-                        <View style={{overflow: "scroll", flex: 1,  paddingHorizontal: 61, paddingVertical: 50, }}>
+                        <View style={{ ...Platform.select({ web: {
+                                    overflow: "auto"
+                                }, native: {
+                                    overflow: "scroll"
+                                }}), flex: 1,  paddingHorizontal: 61, paddingVertical: 50, }}>
                             <View style={{shadowColor: "rgba(0,0,0,0.1)",
                                 shadowOffset: {
                                     width: 0,

@@ -81,7 +81,7 @@ function ActivityModal(props: any) {
 
     const applicationItem = useSelector((state: RootStateOrAny) => {
         let _applicationItem = state.application?.applicationItem
-        for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
+       /* for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
 
             let _split = _applicationItem?.service?.stationClass[i]?.stationClass?.split(" • ")
             if (_split?.length == 2) {
@@ -90,7 +90,7 @@ function ActivityModal(props: any) {
             }
 
         }
-
+*/
         return _applicationItem
     });
     const sceneIndex = useSelector((state: RootStateOrAny) => {
@@ -1043,7 +1043,7 @@ function ActivityModal(props: any) {
                     />
                 </>;
             case 'edit':
-                return <ServiceFormPage jumpTo={()=> {
+                return <ServiceFormPage  jumpTo={()=> {
 
                     jumpTo("application")
                 }}/>

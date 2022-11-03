@@ -86,7 +86,7 @@ const ApplicationSteps: FC<Props> = ({
                 </View>
           }
 
-          <View style={{flex: 1, overflow: "scroll"}}>
+          <View style={{flex: 1, overflow: "auto"}}>
             {tabview}
           </View>
 

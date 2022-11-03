@@ -63,10 +63,10 @@ export default function ConfigurationPage(props: any) {
                     <Header title={"Configurations"}>
                         {!lodash.isEmpty(fee?.fees) ? (edit ? <View style={{flexDirection: "row", justifyContent: "space-between",  alignItems: "center"}}>
 
-
-                                <TouchableOpacity onPress={updateApplication}>
+                                {loading ? <ActivityIndicator/> : <TouchableOpacity onPress={updateApplication}>
                                     <Text style={{fontFamily: Bold, color: successColor,  fontSize: fontValue(15)}}>Save</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity>}
+
                                 <View style={{paddingLeft: 10}}>
                                     <TouchableOpacity onPress={()=> setEdit(false)}>
                                         <Text style={{fontFamily: Bold, color: errorColor,  fontSize: fontValue(15)}}>Cancel</Text>
@@ -119,6 +119,7 @@ export default function ConfigurationPage(props: any) {
                         {!lodash.isEmpty(fee?.fees) ?
 
                             <DropdownCard
+
                                 style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}}
                                 label={<>
                                     <Text style={{fontWeight: 'bold'}} color={"#113196"}

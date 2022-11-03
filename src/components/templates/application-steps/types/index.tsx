@@ -62,7 +62,7 @@ const Types: FC<Props> = ({
       )}
       ListFooterComponent={() => (
         <FlatList
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           data={requirements}
           renderItem={renderRequirement}
           keyExtractor={(item, index) => `${index}`}
