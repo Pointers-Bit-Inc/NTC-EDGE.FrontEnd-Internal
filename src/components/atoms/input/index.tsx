@@ -53,7 +53,7 @@ const Input: ForwardRefRenderFunction<TextInputRef, Props> = ({
   }));
   return (
     <TextInput
-
+        allowFontScaling={false}
       ref={inputRef}
       style={[styles.input, style]}
       value={value}

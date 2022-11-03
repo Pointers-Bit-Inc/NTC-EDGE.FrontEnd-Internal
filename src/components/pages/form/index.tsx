@@ -132,12 +132,9 @@ const ServiceFormPage = (props) =>{
         }
     };
 
-    console.log(completed)
-
     const newForm = JSONfn.parse(JSONfn.stringify(NTCServicesConfig({formCode, user})));
     const dispatch = useDispatch();
     let generatedForm = JSONfn.parse(JSONfn.stringify(generateForm(applicationItem, newForm)));
-    const AT = !!applicationItem?.renew?.applicationType ? applicationItem?.renew?.applicationType : (applicationItem?.service?.applicationType || {});
 
     const [region, setRegion] = useState({});
     const [schedule, setSchedule] = useState({});
@@ -145,6 +142,8 @@ const ServiceFormPage = (props) =>{
     const renewApplication =true;
     const FOR_EDITING = editApplication || renewApplication;
     const [backPressed, setBackPressed] = useState(false);
+    const AT = renewApplication && !!applicationItem?.renew?.applicationType ? applicationItem?.renew?.applicationType : (applicationItem?.service?.applicationType || {});
+
     useEffect(() => {
         if (
             FOR_EDITING &&
