@@ -13,7 +13,8 @@ export default StyleSheet.create({
        },
       web: {
          backgroundColor: "#fff",
-         paddingHorizontal: 50
+         paddingHorizontal: 50,
+overflow: "auto"
       }
     }),
     flex: 1,
@@ -34,10 +35,12 @@ export default StyleSheet.create({
     marginBottom: 15,
   },
   flatlist: {
+
     ...Platform.select({
       native:{
         marginVertical: 15,
-      }
+      },
+
     })
   },
   scheduleContainer: {
@@ -58,7 +61,8 @@ export default StyleSheet.create({
     ...Platform.select({
       native:{
         marginTop: 15,
-      }
+      },
+
     }),
 
     flex: 1,
@@ -137,6 +141,7 @@ export default StyleSheet.create({
 
   },
   borderContainer:{
+
     /*paddingHorizontal: 30,
     borderRadius: 10,
     borderWidth: 1,

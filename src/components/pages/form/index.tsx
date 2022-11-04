@@ -80,10 +80,11 @@ const ServiceFormPage = (props) =>{
     const regions = useSelector((state: RootStateOrAny) => state.application?.regions);
     const soa = useSelector((state: RootStateOrAny) => state.application?.soa);
 
-    const [service, setService] = useState( applicationItem?.service);
+    const service = useMemo(() => applicationItem?.service, [applicationItem?.service]);
+
     const [applicationType, setApplicationType] = useState(applicationItem?.service?.applicationType || {});
     const [renew, setRenew] = useState({});
-    const formCode = applicationItem?.service?.applicationType?.formCode
+    const formCode = useMemo(() => applicationItem?.service?.applicationType?.formCode, [ applicationItem?.service?.applicationType?.formCode])
     let applicant = {
         "address": {
             "barangay": "",
@@ -123,7 +124,9 @@ const ServiceFormPage = (props) =>{
             (!_a[k] || k === '_id' || k === 'userId' || k === 'contactNumber' || k === 'email') && delete _a[k]);
         return _a;
     };
-    const _applicantItem = applicantFn(applicationItem.applicant)
+    const _applicantItem = useMemo(()=>{
+        return applicantFn(applicationItem.applicant)
+    }, [applicationItem.applican])
     const user = {
         ..._applicantItem,
         applicant: {
@@ -132,9 +135,17 @@ const ServiceFormPage = (props) =>{
         }
     };
 
-    const newForm = JSONfn.parse(JSONfn.stringify(NTCServicesConfig({formCode, user})));
+
+
+
+    const newForm = useMemo(() => JSONfn.parse(JSONfn.stringify(NTCServicesConfig({formCode, user, applicant: applicationItem?.applicant}))), [formCode, user,applicationItem?.applicant] );
     const dispatch = useDispatch();
-    let generatedForm = JSONfn.parse(JSONfn.stringify(generateForm(applicationItem, newForm)));
+    let generatedForm = useMemo(()=> JSONfn.parse(JSONfn.stringify(generateForm(applicationItem, newForm))), [applicationItem, newForm]) ;
+    const AT = !!applicationItem?.renew?.applicationType ? applicationItem?.renew?.applicationType : (applicationItem?.service?.applicationType || {});
+    useEffect(()=>{
+        setForm(generatedForm)
+        setApplicationType(applicationItem?.service?.applicationType)
+    }, [applicationItem._id])
 
     const [region, setRegion] = useState({});
     const [schedule, setSchedule] = useState({});
@@ -142,8 +153,6 @@ const ServiceFormPage = (props) =>{
     const renewApplication =true;
     const FOR_EDITING = editApplication || renewApplication;
     const [backPressed, setBackPressed] = useState(false);
-    const AT = renewApplication && !!applicationItem?.renew?.applicationType ? applicationItem?.renew?.applicationType : (applicationItem?.service?.applicationType || {});
-
     useEffect(() => {
         if (
             FOR_EDITING &&
@@ -155,19 +164,22 @@ const ServiceFormPage = (props) =>{
                 region,
             });
         }
-    }, [schedules]);
+    }, [schedules,  applicationItem?._id]);
+
+
 
     useEffect(() => {
-        if (!!applicationItem?.region) {
+        if (!!region?.value) {
 
-            let r = {regionCode:  applicationItem?.region?.code ? applicationItem?.region?.code :  applicationItem?.region};
+            let r = {regionCode: region?.value};
             if (service?.serviceCode === 'service-1') dispatch(fetchSchedules(r));
             dispatch(fetchProvinces(r));
 
-            if (!AT.element) AT.element = applicationItem?.service?.applicationType?.element;
-            handleChangeApplicationType(AT);
+
+              /*  if (!AT.element) AT.element = applicationItem?.service?.applicationType?.element;
+                handleChangeApplicationType(AT);*/
         }
-    }, [region]);
+    }, [region, applicationItem?._id]);
     const handleChangeApplicationType = (value: any) => {
         let { serviceCode, formCode, label, modificationDueTos } = value;
         let newForm = JSONfn.parse(JSONfn.stringify(NTCServicesConfig({formCode, user})));
@@ -721,7 +733,6 @@ const ServiceFormPage = (props) =>{
 
         setApplicationType(value);
         setForm(newForm);
-
         let __add = newForm?.findIndex(f => f?.id === 'address');
         if (__add > -1) setOrigAdd(newForm[__add]);
 
@@ -734,21 +745,14 @@ const ServiceFormPage = (props) =>{
         if (renewApplication) setRenew({...renew, renewedFrom: applicationItem?._id});
 
     };
-    const [form, setForm] = useState(generatedForm);
-
-
-
-    useEffect(()=>{
-        setForm(generatedForm)
-        setApplicationType(applicationItem?.service?.applicationType || {})
-    }, [applicationItem?._id])
-
-
+    const [form, setForm] = useState([]);
     const [formFilledIn, setFormFilledIn] = useState(false);
     const [useDifferentAddress, setUseDifferentAddress] = useState(false);
     const [alternateRequirements, setAlternateRequirements] = useState([]);
-    const onUseDifferentAddress = () => setUseDifferentAddress(!useDifferentAddress);
-    const requirements = useMemo(()=> alternateRequirements?.length > 0 ? alternateRequirements : (applicationType?.requirements || []), [alternateRequirements?.length > 0 ? alternateRequirements : (applicationType?.requirements || [])] );
+    const onUseDifferentAddress = () => {
+        setUseDifferentAddress(!useDifferentAddress);
+    }
+    const requirements = alternateRequirements?.length > 0 ? alternateRequirements : (applicationType?.requirements || []);
 
 
 
@@ -1236,7 +1240,35 @@ const ServiceFormPage = (props) =>{
             element: value,
         });
     };
+    useEffect(() => {
+        let _form = JSONfn.parse(JSONfn.stringify(form || []));
+        let _index = _form?.findIndex((p: any) => p?.id === 'address');
+        if (_index > -1) {
+            if (useDifferentAddress) {
+                let _address = _form?.[_index]?.data || [];
+                _address?.forEach((a: any) => {
+                    a.value = '';
+                    a.isValid = false;
+                });
+                if( _form[_index]?.data ){
+                    _form[_index].data = _address;
+                }
 
+            }
+
+            else _form = generatedForm;
+
+            setForm(_form);
+        }
+
+        if (useDifferentAddress && !udaAlert?.alerted) {
+            setUDAAlert({
+                ...udaAlert,
+                active: true,
+            });
+        }
+
+    }, [useDifferentAddress]);
     const [udaAlert, setUDAAlert] = useState({
         title: 'Use Different Address',
         message: 'Using a different address will not affect the original.',
@@ -1382,7 +1414,7 @@ const ServiceFormPage = (props) =>{
                 />
             case 'applicationType':
                 return  <Types
-                    types={service?.applicationTypes}
+                    types={JSONfn.parse(JSONfn.stringify(service?.applicationTypes || []))}
                     applicationType={applicationType}
                     onChangeValue={handleChangeApplicationType}
                     onSelect={handleChangeElement}
@@ -1840,6 +1872,8 @@ const ServiceFormPage = (props) =>{
             ..._application?.applicant,
             userType: user?.userType,
         };
+
+
         if (typeof(_application?.applicant?.dateOfBirth) === 'string') {
             const day = extractDate(_application.applicant.dateOfBirth, 'date');
             const month = extractDate(_application.applicant.dateOfBirth, 'month');

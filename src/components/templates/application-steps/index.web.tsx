@@ -63,7 +63,7 @@ const ApplicationSteps: FC<Props> = ({
         <View style={styles.mainContainer}>
 
           <NTCAlert
-              alertContainerStyle={{zIndex: 1,}}
+              alertContainerStyle={{zIndex: 2,}}
               visible={UDAAlert?.active}
               title={UDAAlert?.title || 'Alert'}
               message={UDAAlert?.message}

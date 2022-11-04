@@ -122,6 +122,7 @@ const Region: FC<Props> = ({
               </View>
             : <View style={Platform.OS === 'web' && styles.borderContainer}>
                 <FlatList
+
                   showsVerticalScrollIndicator={false}
                   style={styles?.flatlist}
                   data={schedules}
