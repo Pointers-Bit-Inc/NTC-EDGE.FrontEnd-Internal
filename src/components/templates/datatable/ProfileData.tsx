@@ -8,7 +8,7 @@ import NavBar from "@molecules/navbar";
 import ProfileImage from "@components/atoms/image/profile";
 import {fontValue} from "@pages/activities/fontValue";
 import {RootStateOrAny, useSelector} from "react-redux";
-import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
+import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous";
 
 const ProfileData = () => {
     const data = useSelector((state: RootStateOrAny) => {
