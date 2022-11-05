@@ -177,10 +177,22 @@ function useActivities(props) {
     const [searchTerm, setSearchTerm] = useState('');
     const [countRefresh, setCountRefresh] = useState(0);
     const [refreshing, setRefreshing] = React.useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const [pinnedHasMore, setPinnedHasMore] = useState(true);
+    const [isError, setIsError] = useState(false);
     const onRefresh = React.useCallback(() => {
+        setHasMore(true)
+        setHasMore(true)
+        setIsError(false)
+        setPage(0);
+        setTotal(0)
+        setSize(0)
+        setPinnedPage(0);
+        setPinnedTotal(0);
+        setPinnedSize(0);
         setRefreshing(true);
         setCountRefresh(countRefresh + 1)
-    }, [countRefresh, refreshing]);
+    }, [countRefresh, refreshing, page, total, size, pinnedTotal, pinnedPage, pinnedSize]);
 
     const selectedClone = selectedChangeStatus?.filter((status: string) => {
         return status != DATE_ADDED
@@ -407,9 +419,7 @@ function useActivities(props) {
             }}
         />
     };
-    const [hasMore, setHasMore] = useState(true);
-    const [pinnedHasMore, setPinnedHasMore] = useState(true);
-    const [isError, setIsError] = useState(false);
+
     const handleLoad=useCallback(async (page_, onPress = false) => {
         console.log(hasMore , pinnedHasMore, hasMore && pinnedHasMore)
         if(!(hasMore || pinnedHasMore ) || isError && !onPress ) {
