@@ -182,7 +182,7 @@ function useActivities(props) {
     const [isError, setIsError] = useState(false);
     const onRefresh = React.useCallback(() => {
         setHasMore(true)
-        setHasMore(true)
+        setPinnedHasMore(true)
         setIsError(false)
         setPage(0);
         setTotal(0)
