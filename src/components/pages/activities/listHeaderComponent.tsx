@@ -3,7 +3,6 @@ import {FlatList, Platform, ScrollView, Text, View} from "react-native";
 import {styles as styles1} from "@pages/activities/styles";
 import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
-import {FlashList} from "@shopify/flash-list";
 function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { date: string; activity: any; readableHuman: string }[], containerHeight: number, onScroll: (event) => void, ref: React.MutableRefObject<undefined>, callbackfn: (item: any, index: number) => any }) {
     const ActivityMemo = useMemo(()=> {
         return props.pnApplications

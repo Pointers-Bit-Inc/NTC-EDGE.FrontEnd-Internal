@@ -84,7 +84,6 @@ import RefreshRN from "@assets/svg/refreshRN";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
 import {Bold, Regular} from "@styles/font";
-import {FlashList} from "@shopify/flash-list";
 import CalendarIcon from "@assets/svg/calendarIcon";
 import CalendarView from "@pages/schedule/CalendarView";
 import modalStyle from "@styles/modal";

@@ -409,7 +409,7 @@ function ActivityModal(props: any) {
                 Authorization: "Bearer ".concat(user?.sessionToken)
             }
         }
-        let payload = {
+        let payload:any = {
             "id": "string",
             "service": "string",
             "subService": "string",
@@ -465,7 +465,9 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
-
+            if(!payload.discount) {
+                delete payload.discount
+            }
         const _flattenSoa = flatten.unflatten(cleanSoa).soa;
         let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
@@ -788,7 +790,7 @@ function ActivityModal(props: any) {
                                                 <ApprovedButton
                                                     user={user}
                                                     currentLoading={currentLoading}
-                                                    allButton={allButton}
+                                                    allButton={false}
                                                     onPress={() => {
                                                         if (getRole(user, [EVALUATOR])) {
                                                             setShowAlert1(true)

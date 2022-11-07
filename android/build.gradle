@@ -20,8 +20,12 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
-
 allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'com.facebook.react:react-native:0.64.3'
+        }
+    }
     repositories {
         mavenLocal()
         maven {
