@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
-import {Image, View} from 'react-native';
+import {Image, Platform, View} from 'react-native';
 import Text from '@atoms/text';
 import LogoutIcon from "@assets/svg/logout";
 import {ArrowRightIcon, CloseIcon, RightIcon, ToggleIcon} from '@atoms/icon';
@@ -181,9 +181,9 @@ export default ({
                 </View>
 
                 {separator}
-                <View style={[styles.sectionContainer, {paddingBottom: 10}]}>
+                {Platform.OS != "web" ? <View style={[styles.sectionContainer, {paddingBottom: 10}]}>
                     {renderRow({item: biometrics})}
-                </View>
+                </View> : <></>}
                 <View style={styles.sectionContainer}>
                     {renderRow({item: logout})}
                 </View>

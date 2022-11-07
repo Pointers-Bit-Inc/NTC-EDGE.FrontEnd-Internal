@@ -275,8 +275,21 @@ const ActivityItem = (props: any) => {
     const userActivity = propsMemo?.activity?.applicant?.user || propsMemo?.activity?.applicant;
 
     const getStatus = getActivityStatus(propsMemo, status);
-    const nameMemo = useMemo(() => (propsMemo?.activity?.applicant?.userType == "Individual") ? (`${userActivity?.firstName} ${userActivity?.lastName}`.trim() || userActivity?.applicantName) : (
-        propsMemo?.activity?.applicant?.companyName ? propsMemo?.activity?.applicant?.companyName : (propsMemo?.activity?.service?.applicationDetails?.clubName ? propsMemo?.activity?.service?.applicationDetails?.clubName : "")), [userActivity])
+    const nameMemo = useMemo(() => (propsMemo?.activity?.applicant?.userType == "Individual") ?
+        ((userActivity?.firstName || userActivity?.lastName || userActivity?.applicantName) ?
+            `${userActivity?.firstName || ""} ${userActivity?.lastName || ""}`.trim() || userActivity?.applicantName :
+            ((propsMemo?.activity?.service?.basic?.firstName || propsMemo?.activity?.service?.basic?.firstName) ?
+                `${propsMemo?.activity?.service?.basic?.firstName || ""} ${propsMemo?.activity?.service?.basic?.lastName || ""}` :
+                (propsMemo?.activity?.service?.basic?.companyName ?  propsMemo?.activity?.service?.basic?.companyName : "") )) :
+        ((propsMemo?.activity?.applicant?.companyName ||propsMemo?.activity?.service?.basic?.companyName)  ?
+            (propsMemo?.activity?.applicant?.companyName ||propsMemo?.activity?.service?.basic?.companyName ) :
+            (propsMemo?.activity?.service?.applicationDetails?.clubName ?
+                propsMemo?.activity?.service?.applicationDetails?.clubName :
+                ((userActivity?.firstName || userActivity?.lastName || userActivity?.applicantName) ?
+            `${userActivity?.firstName || ""} ${userActivity?.lastName || ""}`.trim() || userActivity?.applicantName :
+            ((propsMemo?.activity?.service?.basic?.firstName || propsMemo?.activity?.service?.basic?.firstName) ?
+                `${propsMemo?.activity?.service?.basic?.firstName || ""} ${propsMemo?.activity?.service?.basic?.lastName || ""}` :
+                (propsMemo?.activity?.service?.basic?.companyName ?  propsMemo?.activity?.service?.basic?.companyName : "") )))), [userActivity])
     useEffect(() => {
         let unsubscribe = true;
         unsubscribe && propsMemo?.isOpen == propsMemo?.index && row[propsMemo?.index]?.close();
