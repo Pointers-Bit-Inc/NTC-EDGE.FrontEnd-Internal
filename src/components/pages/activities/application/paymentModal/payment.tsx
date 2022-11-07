@@ -345,6 +345,7 @@ const Payment = (_props: any) => {
         delete state?.["soa." + id + ".item"];
         delete state?.["soa." + id + ".id"];
         delete state?.["soa." + id + ".isEdit"];
+        delete state?.["soa." + id + ".description"];
         dispatch(setUserProfileForm(state))
         setSoa(arr);
     }

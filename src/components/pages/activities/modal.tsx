@@ -468,7 +468,8 @@ function ActivityModal(props: any) {
             if(!payload.discount) {
                 delete payload.discount
             }
-        const _flattenSoa = flatten.unflatten(cleanSoa).soa;
+        const _flattenSoa = flatten.unflatten(cleanSoa).soa || [];
+            console.log(_flattenSoa, "_flattenSoa")
         let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
             ...payload,
@@ -499,8 +500,9 @@ function ActivityModal(props: any) {
                 cleanSoa = {
                     //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                     totalFee: response.data?.totalFee,
-                    soa: unionBy
+                    soa: _flattenSoa
                 }
+
 
 
             }).catch((error) => {
@@ -544,8 +546,6 @@ function ActivityModal(props: any) {
         }
 
 
-
-
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
 
@@ -557,6 +557,9 @@ function ActivityModal(props: any) {
              setMessageUpdate('The Application has been updated!')
              setTitleUpdate("Success")*/
             let _applicationItem = response.data?.doc
+
+            console.log(_applicationItem, "_applicationItem")
+
             if(_applicationItem?.region?.code){
                 _applicationItem.region = _applicationItem?.region?.code ? _applicationItem?.region?.code :  _applicationItem?.region
             }
@@ -790,7 +793,7 @@ function ActivityModal(props: any) {
                                                 <ApprovedButton
                                                     user={user}
                                                     currentLoading={currentLoading}
-                                                    allButton={allButton}
+                                                    allButton={false}
                                                     onPress={() => {
                                                         if (getRole(user, [EVALUATOR])) {
                                                             setShowAlert1(true)
