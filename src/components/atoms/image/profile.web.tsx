@@ -42,7 +42,7 @@ const ProfileImage = ({
   const imageSize = isOnline ? (isMobile && !(Platform?.isPad || isTablet())) ? RFValue(size - 5) : size - 5 : (isMobile && !Platform?.isPad) ? RFValue(size) : size
 
   const getBackgroundColor = useCallback(() => {
-      if (!backgroundColor) {
+      if (!(backgroundColor) && image) {
       return getColorFromName(name);
     }
     return backgroundColor;
@@ -61,7 +61,7 @@ const ProfileImage = ({
             },
             style
           ]}>
-            <View style={{ position: 'absolute' }}>
+            {<View style={{ position: 'absolute' }}>
               <Text
                 size={imageSize / 2.3}
                 color={'white'}
@@ -69,7 +69,7 @@ const ProfileImage = ({
               >
                 {others || getInitial(name)}
               </Text>
-            </View>
+            </View>}
             <Image
               width={imageSize}
               height={imageSize}

@@ -45,7 +45,7 @@ soa: [],
   calendarVisible: false,
   prevDateStart: null,
   prevDateEnd: null,
-reviewed: false
+reviewed: false,
 });
 
 export default InitialState;

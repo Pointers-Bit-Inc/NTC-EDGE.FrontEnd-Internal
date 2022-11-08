@@ -675,6 +675,12 @@ const DataTable = (props) => {
 
 
     const [userProfileForm, setUserProfileForm] = useState(originalForm.filter(u => u.hasOwnProperty("filter") ? u.filter == props.name  : true));
+
+    const userProfileFormMemo = useMemo(()=>{
+        console.log(userProfileForm)
+        return userProfileForm
+    }, [userProfileForm])
+
     useEffect(() => {
         let _userProfileForm = [...userProfileForm]
         let roleId = 6
@@ -701,26 +707,28 @@ const DataTable = (props) => {
     }, [])
 
 
-    const citiesMemo = useMemo(()=>{
+    useEffect(()=>{
         var cities = [];
-
         if( !userProfileForm?.[provincesIndexMemo]?.["value"] ) return []
-
         axios.get(BASE_URL + "/cities?province=" + userProfileForm?.[provincesIndexMemo]?.["value"] ).then(res =>{
             cities = res.data
             var _userProfileForm = [...userProfileForm]
             if(_userProfileForm[citiesIndexMemo].hasOwnProperty("data")){
-                console.log(res.data)
+
                 _userProfileForm[citiesIndexMemo].data = res.data.map(city => {
                   return {value: city.provinceCode, label: city.name}
                 })
-                setUserProfileForm(userProfileForm)
+
+
+
+
+
+                setUserProfileForm(_userProfileForm)
             }
 
         })
-        return cities
     }, [userProfileForm[provincesIndexMemo]?.["value"]])
-    const provincesMemo = useMemo(()=>{
+   useEffect(()=>{
         var provinces = [];
 
         if( !userProfileForm?.[regionIndexMemo]?.["value"] ) return []
@@ -732,12 +740,15 @@ const DataTable = (props) => {
                 _userProfileForm[provincesIndexMemo].data = res.data.map(city => {
                     return {value: city.provinceCode, label: city.name}
                 })
-                setUserProfileForm(userProfileForm)
+
+
+                console.log(_userProfileForm[provincesIndexMemo])
+
+                setUserProfileForm(_userProfileForm)
             }
 
         })
-        return provinces
-    }, [userProfileForm[regionIndexMemo]?.["value"]])
+    }, [userProfileForm[regionIndexMemo]?.["value"], userProfileForm[provincesIndexMemo]?.['value']])
 
     const [state, setState] = useState('add');
 
@@ -935,18 +946,28 @@ const DataTable = (props) => {
                             userProfileForm.map((e, index) => {
 
                                 for (const props in item) {
+
                                     if (_.isObject(item?.[props])) {
+
                                         recursionObject(item?.[props], (val, key) => {
-                                            if (key == newArr[index]?.subStateName) {
+
+                                            if(newArr[index]?.stateNameMain == props && key == newArr[index]?.subStateName &&  newArr[index]?.subStateName == e.subStateName){
+
                                                 newArr[index].value = val
+
+                                             //   console.log( "newArr[index].value",  newArr[index],  val)
+
+                                            } else if (key == newArr[index]?.subStateName) {
+                                                newArr[index].value = val
+                                              //  console.log( "else newArr[index].value",  newArr[index],  val)
                                             }
                                         })
                                     } else {
-
                                         if (newArr[index]['stateName'] === props && props === 'role') {
-                                            console.log(item?.[props]?.key)
+                                            //console.log( " newArr[index]['value'] = item?.[props]?.key;",  newArr[index])
                                             newArr[index]['value'] = item?.[props]?.key;
-                                        } else if (newArr[index]['stateName'] === props) {
+                                        } else if (!(newArr[index].hasOwnProperty('stateNameMain')  &&  newArr[index].hasOwnProperty('subStateName')) && newArr[index]['stateName'] === props) {
+                                           // console.log( " newArr[index]['value'] = item[props];",  newArr[index])
                                             newArr[index]['value'] = item[props];
                                         }
                                     }
@@ -954,6 +975,7 @@ const DataTable = (props) => {
                                 }
 
                             });
+
                             setUserProfileForm(newArr);
                             setModalClose(true)
                         } else if (value == "view") {
@@ -1102,7 +1124,6 @@ const DataTable = (props) => {
             let _signature = userProfileForm[signatureIndex]
             let tempBlob = userProfileForm?.[signatureIndex]?.tempBlob
 
-            console.log(tempBlob, "tempBlob")
             if (tempBlob) {
                 await fetch(tempBlob)
                     .then(res => {

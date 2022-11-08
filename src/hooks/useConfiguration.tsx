@@ -27,6 +27,8 @@ import useMemoizedFn from "./useMemoizedFn";
 import listEmpty from "@pages/activities/listEmpty";
 import _ from "lodash"
 import useSafeState from "./useSafeState";
+import {APPROVED} from "../reducers/activity/initialstate";
+import CustomAlert from "@pages/activities/alert/alert";
 
 const flatten = require('flat')
 
@@ -39,6 +41,7 @@ function useConfiguration(props: any) {
     const dispatch = useDispatch();
     const [value, setValue] = useState();
     const [page, setPage] = useState(1)
+    const [customAlertMessage, setCustomAlertMessage] = useState("")
     const [loading, setLoading] = useState(false)
     const sessionToken = useSelector((state: RootStateOrAny) => state.user.sessionToken);
     const [createRegion, setCreateRegion] = useState(false)
@@ -670,11 +673,12 @@ function useConfiguration(props: any) {
 
 
         axios["patch"](BASE_URL + (`/regions/` + updatedUser?._id), updatedUser, config).then(async (response) => {
-            showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
+            setCustomAlertMessage
+           // showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
             setLoading(false);
             dispatch(setRegion({}))
             setCommissionerVisible(false)
-setCommissionerOriginalForm(commissionerForm)
+            setCommissionerOriginalForm(commissionerForm)
 
 
 
@@ -781,7 +785,8 @@ setCommissionerOriginalForm(commissionerForm)
         onPressDropDownFee,
         feeVisible,
         setFeeVisible,
-        feeUpdateValid
+        feeUpdateValid,
+        customAlertMessage
     };
 }
 

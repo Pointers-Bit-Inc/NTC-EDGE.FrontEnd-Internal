@@ -21,6 +21,8 @@ import UploadQrCode from "@assets/svg/uploadQrCode";
 import {Bold} from "@styles/font";
 import {setRegion} from "../../../reducers/configuration/actions";
 import {setFeedVisible} from "../../../reducers/activity/actions";
+import CustomAlert from "@pages/activities/alert/alert";
+import {APPROVED} from "../../../reducers/activity/initialstate";
 
 export default function ConfigurationPage(props: any) {
     const {
@@ -56,7 +58,8 @@ export default function ConfigurationPage(props: any) {
         onPressDropDownFee,
         feeVisible,
         setFeeVisible,
-        feeUpdateValid
+        feeUpdateValid,
+        customAlertMessage
     } = useConfiguration(props);
 
 
@@ -328,6 +331,22 @@ export default function ConfigurationPage(props: any) {
                 </View> : <></>
 
             }
+            <CustomAlert
+                showClose={true}
+                type={  APPROVED }
+                onDismissed={()=>{
+
+                }}
+                onCancelPressed={()=>{
+
+
+                }}
+                onConfirmPressed={async () => {
+
+
+                }}
+                show={props.showAlert } title={""}
+                message={customAlertMessage}/>
         </View>
     )
 }

@@ -57,11 +57,12 @@ interface Props {
             return value
         }, [value])
         useEffect(() => {
+
             let isCurrent = true
             const _selectedIndex = data?.findIndex((item) => item.value == valueMemo)
 
             if(isCurrent) setSelectedIndex(_selectedIndex)
-            if(_selectedIndex != null && _selectedIndex != undefined ){
+            if(_selectedIndex != -1  ){
                 const _selected = data[_selectedIndex]
                 if(isCurrent) setSelected(data[_selectedIndex])
                 if(data[_selectedIndex]) onSelect(data[_selectedIndex])
@@ -70,7 +71,7 @@ interface Props {
               return () =>{
                   isCurrent = false
               }
-        }, [selectedIndex, valueMemo])
+        }, [selectedIndex, valueMemo, data?.length])
 
         useEffect(()=>{
             let timer1 = setTimeout(() => {
