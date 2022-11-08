@@ -20,6 +20,7 @@ import FormField from "@organisms/forms/form";
 import UploadQrCode from "@assets/svg/uploadQrCode";
 import {Bold} from "@styles/font";
 import {setRegion} from "../../../reducers/configuration/actions";
+import {setFeedVisible} from "../../../reducers/activity/actions";
 
 export default function ConfigurationPage(props: any) {
     const {
@@ -51,9 +52,12 @@ export default function ConfigurationPage(props: any) {
         onPressSignature,
         onPressCommissioner,
         commissionUpdateValid,
-        onPressDropDownCommissioner
+        onPressDropDownCommissioner,
+        onPressDropDownFee,
+        feeVisible,
+        setFeeVisible,
+        feeUpdateValid
     } = useConfiguration(props);
-
 
 
     return (
@@ -61,53 +65,9 @@ export default function ConfigurationPage(props: any) {
             <LeftSideWeb>
                 <View style={styles.header}>
                     <Header title={"Configurations"}>
-                        {!lodash.isEmpty(fee?.fees) ? (edit ? <View style={{flexDirection: "row", justifyContent: "space-between",  alignItems: "center"}}>
 
-                                {loading ? <ActivityIndicator/> : <TouchableOpacity onPress={updateApplication}>
-                                    <Text style={{fontFamily: Bold, color: successColor,  fontSize: fontValue(15)}}>Save</Text>
-                                </TouchableOpacity>}
-
-                                <View style={{paddingLeft: 10}}>
-                                    <TouchableOpacity onPress={()=> setEdit(false)}>
-                                        <Text style={{fontFamily: Bold, color: errorColor,  fontSize: fontValue(15)}}>Cancel</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View> :
-                            <TouchableOpacity onPress={() => {
-                                setEdit(edit => !edit)
-
-                            }}>
-                                <Text style={{ color: infoColor, fontFamily: Bold, fontSize: fontValue(15)}}>Edit</Text>
-                            </TouchableOpacity>) : <></>
-                        }
 
                     </Header>
-                    <View style={{marginHorizontal: 26,}}>
-
-                        <View style={{
-                            paddingTop: 14,
-                            paddingBottom: 12,
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            flexDirection: "row",
-                        }}>
-                            <View style={{flex: 1, paddingRight: 15}}>
-                                <DebounceInput value={value}
-                                               minLength={3}
-                                               inputRef={inputRef}
-                                               onChangeText={setValue}
-                                               delayTimeout={500}
-                                               style={styles.search}/>
-                                <View style={styles.searchIcon}>
-                                    <SearchIcon/>
-                                </View>
-                            </View>
-
-
-                        </View>
-
-
-                    </View>
 
                 </View>
                 <View style={{flex: 1}}>
@@ -119,17 +79,13 @@ export default function ConfigurationPage(props: any) {
                         {!lodash.isEmpty(fee?.fees) ?
 
                             <DropdownCard
-
+                                onPress={onPressDropDownFee}
                                 style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}}
                                 label={<>
                                     <Text style={{fontWeight: 'bold'}} color={"#113196"}
                                           size={16}>Fees</Text>
                                 </>}>
-                                <RenderFeeConfiguration hasChanges={hasChanges}
-                                                        updateApplication={updateApplication}
-                                                        updateForm={applicantFeeForm}
-                                                        userProfileForm={feeFlatten} search={value} edit={edit}
-                                                        service={fee.fees}/>
+
                             </DropdownCard> : <></>
                         }
                         {!lodash.isEmpty(regionsMemo) && false ? <DropdownCard
@@ -165,7 +121,7 @@ export default function ConfigurationPage(props: any) {
                 !(
                     (
                         isMobile && !(
-                            Platform?.isPad || isTablet()))) && (!commissionerVisible) && (!createRegion) && lodash.isEmpty(region) && dimensions?.width > 768 &&
+                            Platform?.isPad || isTablet()))) && (!commissionerVisible) && (!createRegion) && (!feeVisible) && lodash.isEmpty(region) && dimensions?.width > 768 &&
                 <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
                     <NoActivity/>
@@ -235,7 +191,7 @@ export default function ConfigurationPage(props: any) {
                         <TouchableOpacity onPress={()=>{
                             setCommissionerVisible(false)
                         }}>
-                            <Text>Close</Text>
+                            <Text style={{  fontFamily: Bold, fontSize: fontValue(15)}}>Close</Text>
                         </TouchableOpacity>
                     </Header>
                     <ScrollView style={{padding: 15}}  >
@@ -264,10 +220,83 @@ export default function ConfigurationPage(props: any) {
 
                         <TouchableOpacity disabled={!commissionUpdateValid}  onPress={() => { onPressCommissioner(commissioner.id) }} style={[styles.scheduleButton, {alignItems: "center", backgroundColor: commissionUpdateValid ? successColor : disabledColor}]}>
 
-                            <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Commissioner</Text>
+                            <Text style={[styles.text, {color: "#fff"}]} size={14}>Update</Text>
 
                         </TouchableOpacity>
                     </View>
+                </View> : <></>
+
+            }
+
+            {(feeVisible && !isMobile) ?
+                <View style={[{flex: 1, backgroundColor: "#fff",}]}>
+                    <Header size={24} title={"Fees"}>
+                        {!lodash.isEmpty(fee?.fees) ? (edit ? <View style={{flexDirection: "row", justifyContent: "space-between",  alignItems: "center"}}>
+
+                                {loading ? <ActivityIndicator/> : <TouchableOpacity onPress={updateApplication}>
+                                    <Text style={{fontFamily: Bold, color: successColor,  fontSize: fontValue(15)}}>Save</Text>
+                                </TouchableOpacity>}
+
+                                <View style={{paddingLeft: 10}}>
+                                    <TouchableOpacity onPress={()=> setEdit(false)}>
+                                        <Text style={{fontFamily: Bold, color: errorColor,  fontSize: fontValue(15)}}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View> :
+                            <View style={{flexDirection: "row", justifyContent: "space-between",  alignItems: "center"}}>
+                                <TouchableOpacity onPress={() => {
+                                    setEdit(edit => !edit)
+                                }}>
+                                    <Text style={{ color: infoColor, fontFamily: Bold, fontSize: fontValue(15)}}>Edit</Text>
+                                </TouchableOpacity>
+                                <View style={{paddingLeft: 10}}>
+                                <TouchableOpacity onPress={()=>{
+                                    setFeeVisible(false)
+                                }}>
+                                    <Text style={{  fontFamily: Bold, fontSize: fontValue(15)}}>Close</Text>
+                                </TouchableOpacity>
+                                </View>
+                            </View>
+                            ) : <></>
+                        }
+
+                    </Header>
+                    <View style={{marginHorizontal: 26,}}>
+
+                        <View style={{
+                            paddingTop: 14,
+                            paddingBottom: 12,
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            flexDirection: "row",
+                        }}>
+                            <View style={{flex: 1, paddingRight: 15}}>
+                                <DebounceInput value={value}
+                                               minLength={3}
+                                               inputRef={inputRef}
+                                               onChangeText={setValue}
+                                               delayTimeout={500}
+                                               style={styles.search}/>
+                                <View style={styles.searchIcon}>
+                                    <SearchIcon/>
+                                </View>
+                            </View>
+
+
+                        </View>
+
+
+                    </View>
+
+                    <ScrollView style={{padding: 15}}  >
+                        <RenderFeeConfiguration hasChanges={hasChanges}
+                                                updateApplication={updateApplication}
+                                                updateForm={applicantFeeForm}
+                                                userProfileForm={feeFlatten} search={value} edit={edit}
+                                                service={fee.fees}/>
+
+
+                    </ScrollView>
                 </View> : <></>
 
             }
@@ -275,7 +304,7 @@ export default function ConfigurationPage(props: any) {
                 <View style={[{flex: 1, backgroundColor: "#fff",}]}>
                     <Header size={24} title={"Create Region"}>
                         <TouchableOpacity onPress={onClose}>
-                            <Text>Close</Text>
+                            <Text style={{  fontFamily: Bold, fontSize: fontValue(15)}}>Close</Text>
                         </TouchableOpacity>
                     </Header>
 

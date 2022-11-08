@@ -595,6 +595,7 @@ function useConfiguration(props: any) {
         setCommissionerForm(newArr);
     };
     const [commissionerVisible, setCommissionerVisible] = useState(false)
+    const [feeVisible, setFeeVisible] = useState(false)
     const listEmptyComponent = useMemoizedFn(() => listEmpty(!loading, "", fee.length));
     const onPressCommissioner = async (id?: number, type?: string | number) => {
         var updatedUser = {...commissioner, password: ""}, subStateName = {}, prevSubStateName = null;
@@ -671,6 +672,14 @@ function useConfiguration(props: any) {
         axios["patch"](BASE_URL + (`/regions/` + updatedUser?._id), updatedUser, config).then(async (response) => {
             showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
             setLoading(false);
+            dispatch(setRegion({}))
+            setCommissionerVisible(false)
+setCommissionerOriginalForm(commissionerForm)
+
+
+
+
+
         }).catch((err) => {
             setLoading(false);
             var _err = err;
@@ -714,13 +723,27 @@ function useConfiguration(props: any) {
     const commissionUpdateValid = useMemo(() => {
         return isDiff(_.map(commissionerForm, 'value'), _.map(commissionerOriginalForm, 'value'));
     }, [commissionerForm, commissionerOriginalForm])
+    const feeUpdateValid = useMemo(() => {
+        return isDiff(_.map(commissionerForm, 'value'), _.map(commissionerOriginalForm, 'value'));
+    }, [commissionerForm, commissionerOriginalForm])
 
     const onPressDropDownCommissioner = ()=>{
         if (isMobile) {
             props.navigation.push('CommissionerConfigurationScreen')
         } else {
             dispatch(setRegion({}))
+            setFeeVisible(false)
             setCommissionerVisible(true)
+        }
+
+    }
+
+    const onPressDropDownFee = ()=>{
+        if (isMobile) {
+            props.navigation.push('CommissionerConfigurationScreen')
+        } else {
+            setCommissionerVisible(false)
+            setFeeVisible(true)
         }
 
     }
@@ -754,7 +777,11 @@ function useConfiguration(props: any) {
         onPressCommissioner,
         updateValid,
         commissionUpdateValid,
-        onPressDropDownCommissioner
+        onPressDropDownCommissioner,
+        onPressDropDownFee,
+        feeVisible,
+        setFeeVisible,
+        feeUpdateValid
     };
 }
 
