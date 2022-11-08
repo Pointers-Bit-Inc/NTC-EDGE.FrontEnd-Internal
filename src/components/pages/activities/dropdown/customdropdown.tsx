@@ -64,14 +64,14 @@ interface Props {
             if(isCurrent) setSelectedIndex(_selectedIndex)
             if(_selectedIndex != -1  ){
                 const _selected = data[_selectedIndex]
-                if(isCurrent) setSelected(data[_selectedIndex])
+                if(isCurrent) setSelected(_selected)
                 if(data[_selectedIndex]) onSelect(data[_selectedIndex])
             }
 
               return () =>{
                   isCurrent = false
               }
-        }, [selectedIndex, valueMemo, data?.length])
+        }, [selectedIndex, valueMemo, data?.length > 0])
 
         useEffect(()=>{
             let timer1 = setTimeout(() => {
