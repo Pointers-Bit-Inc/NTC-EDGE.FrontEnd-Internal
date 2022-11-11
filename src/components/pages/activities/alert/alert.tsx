@@ -171,12 +171,12 @@ export default class AwesomeAlert extends Component {
         };
 
         return (
-            <View style={{width: '100%',
+            <View style={[{width: '100%',
                 height: '100%',
                 alignItems: 'center',
                 justifyContent: 'center',
-                position: 'absolute', }}>
-                <View style={[alertStyle.container, alertContainerStyle]}>
+                position: 'absolute', }, alertContainerStyle]}>
+                <View style={[alertStyle.container]}>
                     <TouchableWithoutFeedback >
                         <View style={[alertStyle.overlay, {  backgroundColor: Platform.OS == "web" ? undefined : 'rgba(52,52,52,0.5)'},  overlayStyle]} />
                     </TouchableWithoutFeedback>
@@ -377,6 +377,7 @@ AwesomeAlert.propTypes = {
 };
 
 AwesomeAlert.defaultProps = {
+    alertContainerStyle:{},
     show: false,
     animatedValue: 0.3,
     useNativeDriver: true,

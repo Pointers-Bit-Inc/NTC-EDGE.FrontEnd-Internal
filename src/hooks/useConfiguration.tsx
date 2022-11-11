@@ -42,6 +42,7 @@ function useConfiguration(props: any) {
     const [value, setValue] = useState();
     const [page, setPage] = useState(1)
     const [customAlertMessage, setCustomAlertMessage] = useState("")
+    const [customAlertVisible, setCustomAlertVisible] = useState(false)
     const [loading, setLoading] = useState(false)
     const sessionToken = useSelector((state: RootStateOrAny) => state.user.sessionToken);
     const [createRegion, setCreateRegion] = useState(false)
@@ -128,7 +129,7 @@ function useConfiguration(props: any) {
             type: '',
         },
     ]);
-    const [commissionerOriginalForm, setCommissionerOriginalForm] = useSafeState([
+    const [commissionerOriginalForm, setCommissionerOriginalForm] = useState([
 
         {
             stateName: 'configuration',
@@ -673,12 +674,13 @@ function useConfiguration(props: any) {
 
 
         axios["patch"](BASE_URL + (`/regions/` + updatedUser?._id), updatedUser, config).then(async (response) => {
-            setCustomAlertMessage
-           // showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
+            setCustomAlertMessage( updatedUser?._id ? "Successfully updated!" : "Successfully created!")
+            setCustomAlertVisible(true)
+            // showToast(ToastType.Success, updatedUser?._id ? "Successfully updated!" : "Successfully created!");
             setLoading(false);
             dispatch(setRegion({}))
             setCommissionerVisible(false)
-            setCommissionerOriginalForm(commissionerForm)
+            setCommissionerOriginalForm(JSON.parse(JSON.stringify(commissionerForm)))
 
 
 
@@ -785,8 +787,10 @@ function useConfiguration(props: any) {
         onPressDropDownFee,
         feeVisible,
         setFeeVisible,
-        feeUpdateValid,
-        customAlertMessage
+
+        customAlertMessage,
+        setCustomAlertVisible,
+        customAlertVisible
     };
 }
 

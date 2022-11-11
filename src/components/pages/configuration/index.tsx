@@ -58,7 +58,8 @@ export default function ConfigurationPage(props: any) {
         onPressDropDownFee,
         feeVisible,
         setFeeVisible,
-        feeUpdateValid,
+        setCustomAlertVisible,
+        customAlertVisible,
         customAlertMessage
     } = useConfiguration(props);
 
@@ -106,7 +107,7 @@ export default function ConfigurationPage(props: any) {
                         </DropdownCard> : <></>}
 
                         {!lodash.isEmpty(commissioner) ? <DropdownCard onPress={onPressDropDownCommissioner} isChevronVisible={false}
-                            style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>
+                                                                       style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}} label={<>
                             <Text style={{fontWeight: 'bold'}} color={"#113196"}
                                   size={16}>Commissioner</Text>
                         </>}>
@@ -332,20 +333,21 @@ export default function ConfigurationPage(props: any) {
 
             }
             <CustomAlert
+                alertContainerStyle={{zIndex: 2}}
                 showClose={true}
                 type={  APPROVED }
                 onDismissed={()=>{
-
+                    setCustomAlertVisible(false)
                 }}
                 onCancelPressed={()=>{
 
-
+                    setCustomAlertVisible(false)
                 }}
                 onConfirmPressed={async () => {
 
-
+                    setCustomAlertVisible(false)
                 }}
-                show={props.showAlert } title={""}
+                show={customAlertVisible} title={""}
                 message={customAlertMessage}/>
         </View>
     )

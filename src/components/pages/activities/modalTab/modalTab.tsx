@@ -115,6 +115,7 @@ const ModalTab = props => {
     const [initialPage, setInitialPage] = useState(true);
     const [paymentIndex, setPaymentIndex] = useSafeState(undefined)
     const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
+    const [applicationDetailIndex, setApplicationDetailIndex] = useSafeState(undefined)
     useEffect(() => {
         setInitialPage(true)
         setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1)  ? 2 : 0)
@@ -129,9 +130,14 @@ const ModalTab = props => {
         return tabs.filter((tab, _index) => {
             return !(service?.applicationType?.isDirectProcess == true && service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
+            console.log(__tab.title, "__tab.title")
             if (__tab.title == 'SOA & Payment') {
                 setPaymentIndex(__index)
             }
+            if (__tab.title == 'Application Details') {
+                setApplicationDetailIndex(__index)
+            }
+
             if (__tab.title == 'Basic Info') {
                 setBasicInfoIndex(__index)
             }
@@ -146,19 +152,18 @@ const ModalTab = props => {
             console.log("setEditModalVisible", true)
             dispatch(setTabName("SOA & Payment"))
             dispatch(setEditModalVisible(true))
-        } else if (basicInfoIndex == index && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
-            console.log("setEditModalVisible", true)
+        } else if ((basicInfoIndex == index || applicationDetailIndex == index ) && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
 
             dispatch(setTabName('Basic Info'))
             dispatch(setEditModalVisible(true))
-        } else if (basicInfoIndex != index && paymentIndex != index ) {
+        } else if (basicInfoIndex != index && paymentIndex != index && applicationDetailIndex != index ) {
             console.log("setEditModalVisible", false)
             dispatch(setEdit(false))
             dispatch(setEditModalVisible(false))
         }
 
 
-    }, [index, props.details._id, tabName, basicInfoIndex, paymentIndex])
+    }, [index, props.details._id, tabName, basicInfoIndex, paymentIndex, applicationDetailIndex])
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
     const renderScene = useMemo(() => {

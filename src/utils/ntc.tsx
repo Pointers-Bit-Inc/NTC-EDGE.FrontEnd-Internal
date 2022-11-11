@@ -526,8 +526,12 @@ function isDiff(access: any[], originalAccess: any[]) {
 
 
     for (var k in a) {
-        diff.push(k);
+        if(k){
+            diff.push(k);
+        }
+
     }
+
 
     return diff.length;
 }
