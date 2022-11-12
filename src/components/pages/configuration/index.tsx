@@ -19,8 +19,6 @@ import useConfiguration from "../../../hooks/useConfiguration";
 import FormField from "@organisms/forms/form";
 import UploadQrCode from "@assets/svg/uploadQrCode";
 import {Bold} from "@styles/font";
-import {setRegion} from "../../../reducers/configuration/actions";
-import {setFeedVisible} from "../../../reducers/activity/actions";
 import CustomAlert from "@pages/activities/alert/alert";
 import {APPROVED} from "../../../reducers/activity/initialstate";
 
@@ -50,7 +48,6 @@ export default function ConfigurationPage(props: any) {
         setCommissionerVisible,
         commissionerForm,
         onUpdateForm,
-        commissionerOriginalForm,
         onPressSignature,
         onPressCommissioner,
         commissionUpdateValid,

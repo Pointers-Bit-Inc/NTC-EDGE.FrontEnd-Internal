@@ -746,7 +746,7 @@ function useConfiguration(props: any) {
 
     const onPressDropDownFee = ()=>{
         if (isMobile) {
-            props.navigation.push('CommissionerConfigurationScreen')
+            props.navigation.push('FeesConfigurationScreen')
         } else {
             setCommissionerVisible(false)
             setFeeVisible(true)
