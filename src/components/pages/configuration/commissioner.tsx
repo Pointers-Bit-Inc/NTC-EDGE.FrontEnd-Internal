@@ -11,6 +11,8 @@ import UploadQrCode from "@assets/svg/uploadQrCode";
 import {disabledColor, successColor, text} from "@styles/color";
 import useConfiguration from "../../../hooks/useConfiguration";
 import {isMobile} from "@pages/activities/isMobile";
+import CustomAlert from "@pages/activities/alert/alert";
+import {APPROVED} from "../../../reducers/activity/initialstate";
 
 const CommissionerConfigurationScreen = (props) => {
     const {
@@ -21,9 +23,12 @@ const CommissionerConfigurationScreen = (props) => {
         onUpdateForm,
         onPressSignature,
         onPressCommissioner,
-        commissionUpdateValid
+        commissionUpdateValid,
+        setCustomAlertVisible,
+        customAlertVisible,
+        customAlertMessage
     } = useConfiguration(props);
-   return  <View style={[{flex: 1, backgroundColor: "#fff",}]}>
+   return  <><View style={[{flex: 1, backgroundColor: "#fff",}]}>
         <Header size={24} title={"Commissioner"}>
             <TouchableOpacity onPress={()=>{
                 if (props.navigation.canGoBack() && isMobile) props.navigation.goBack()
@@ -63,6 +68,23 @@ const CommissionerConfigurationScreen = (props) => {
             </TouchableOpacity>
         </View>
     </View>
+       <CustomAlert
+           alertContainerStyle={{zIndex: 2}}
+           showClose={true}
+           type={  APPROVED }
+           onDismissed={()=>{
+               setCustomAlertVisible(false)
+           }}
+           onCancelPressed={()=>{
+               if (props.navigation.canGoBack() && isMobile) props.navigation.goBack()
+               setCustomAlertVisible(false)
+           }}
+           onConfirmPressed={async () => {
+               setCustomAlertVisible(false)
+           }}
+           show={customAlertVisible} title={""}
+           message={customAlertMessage}/>
+       </>
 }
 
 export default CommissionerConfigurationScreen

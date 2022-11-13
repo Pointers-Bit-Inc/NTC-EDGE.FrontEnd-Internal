@@ -553,6 +553,8 @@ function useConfiguration(props: any) {
             dispatch(setFee(res.data?.fees))
             dispatch(setFeeFlatten(_flatten))
             dispatch(setFeeOriginalFlatten(_flatten))
+            setCustomAlertMessage( fee?.id ? "Successfully updated!" : "Successfully created!")
+            setCustomAlertVisible(true)
         }).catch((error) => {
             setLoading(false)
             let _err = '';

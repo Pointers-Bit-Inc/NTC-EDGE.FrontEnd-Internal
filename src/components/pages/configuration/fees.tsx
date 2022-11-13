@@ -14,6 +14,8 @@ import DebounceInput from "@atoms/debounceInput";
 import SearchIcon from "@assets/svg/search";
 import RenderFeeConfiguration from "@pages/configuration/renderFeeConfiguration";
 import lodash from "lodash";
+import CustomAlert from "@pages/activities/alert/alert";
+import {APPROVED} from "../../../reducers/activity/initialstate";
 const FeesConfigurationScreen = (props) => {
     const {
         value,
@@ -28,8 +30,11 @@ const FeesConfigurationScreen = (props) => {
         updateApplication,
         applicantFeeForm,
         setFeeVisible,
+        setCustomAlertVisible,
+        customAlertVisible,
+        customAlertMessage
     } = useConfiguration(props);
-   return   <View style={[{flex: 1, backgroundColor: "#fff",}]}>
+   return   <><View style={[{flex: 1, backgroundColor: "#fff",}]}>
        <Header size={24} title={"Fees"}>
            {!lodash.isEmpty(fee?.fees) ? (edit ? <View style={{flexDirection: "row", justifyContent: "space-between",  alignItems: "center"}}>
 
@@ -38,7 +43,10 @@ const FeesConfigurationScreen = (props) => {
                        </TouchableOpacity>}
 
                        <View style={{paddingLeft: 10}}>
-                           <TouchableOpacity onPress={()=> setEdit(false)}>
+                           <TouchableOpacity onPress={()=> {
+
+                               setEdit(false)
+                           }}>
                                <Text style={{fontFamily: Bold, color: errorColor,  fontSize: fontValue(15)}}>Cancel</Text>
                            </TouchableOpacity>
                        </View>
@@ -51,6 +59,7 @@ const FeesConfigurationScreen = (props) => {
                        </TouchableOpacity>
                        <View style={{paddingLeft: 10}}>
                            <TouchableOpacity onPress={()=>{
+                               if (props.navigation.canGoBack() && isMobile) props.navigation.goBack()
                                setFeeVisible(false)
                            }}>
                                <Text style={{  fontFamily: Bold, fontSize: fontValue(15)}}>Close</Text>
@@ -98,6 +107,23 @@ const FeesConfigurationScreen = (props) => {
 
        </ScrollView>
    </View>
+       <CustomAlert
+           alertContainerStyle={{zIndex: 2}}
+           showClose={true}
+           type={  APPROVED }
+           onDismissed={()=>{
+               setCustomAlertVisible(false)
+           }}
+           onCancelPressed={()=>{
+               if (props.navigation.canGoBack() && isMobile) props.navigation.goBack()
+               setCustomAlertVisible(false)
+           }}
+           onConfirmPressed={async () => {
+               setCustomAlertVisible(false)
+           }}
+           show={customAlertVisible} title={""}
+           message={customAlertMessage}/>
+   </>
 }
 
 export default FeesConfigurationScreen

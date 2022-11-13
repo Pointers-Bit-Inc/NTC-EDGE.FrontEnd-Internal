@@ -80,6 +80,7 @@ export default function ConfigurationPage(props: any) {
                         {!lodash.isEmpty(fee?.fees) ?
 
                             <DropdownCard
+                                isChevronVisible={false}
                                 onPress={onPressDropDownFee}
                                 style={{margin: 10, borderWidth: 1, borderColor: defaultColor, borderRadius: 10,}}
                                 label={<>

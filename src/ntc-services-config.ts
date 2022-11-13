@@ -2265,8 +2265,8 @@ const NTCService = ({
                   template: [
                     {
                       id: 'frequency',
-                      label: 'Frequency',
-                      placeholder: 'Frequency',
+                      label: 'Frequency (KHz)',
+                      placeholder: 'Frequency (KHz)',
                       value: '',
                       hasValidation: true,
                       isValid: false,
@@ -2280,8 +2280,8 @@ const NTCService = ({
                     [
                       {
                         id: 'frequency',
-                        label: 'Frequency',
-                        placeholder: 'Frequency',
+                        label: 'Frequency (KHz)',
+                        placeholder: 'Frequency (KHz)',
                         value: '',
                         hasValidation: true,
                         isValid: false,
@@ -2305,8 +2305,8 @@ const NTCService = ({
                   template: [
                     {
                       id: 'tx',
-                      label: 'TX',
-                      placeholder: 'TX',
+                      label: 'TX (KHz)',
+                      placeholder: 'TX (KHz)',
                       value: '',
                       hasValidation: true,
                       isValid: false,
@@ -2317,8 +2317,8 @@ const NTCService = ({
                     },
                     {
                       id: 'rx',
-                      label: 'RX',
-                      placeholder: 'RX',
+                      label: 'RX (KHz)',
+                      placeholder: 'RX (KHz)',
                       value: '',
                       hasValidation: true,
                       isValid: false,
@@ -2332,8 +2332,8 @@ const NTCService = ({
                     [
                       {
                         id: 'tx',
-                        label: 'TX',
-                        placeholder: 'TX',
+                        label: 'TX (KHz)',
+                        placeholder: 'TX (KHz)',
                         value: '',
                         hasValidation: true,
                         isValid: false,
@@ -2344,8 +2344,8 @@ const NTCService = ({
                       },
                       {
                         id: 'rx',
-                        label: 'RX',
-                        placeholder: 'RX',
+                        label: 'RX (KHz)',
+                        placeholder: 'RX (KHz)',
                         value: '',
                         hasValidation: true,
                         isValid: false,
@@ -2537,7 +2537,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
-           // editable: false,
+            editable: false,
           },
           {
             type: 'unit',
@@ -3305,6 +3305,23 @@ const NTCService = ({
         ],
       },
       {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            required: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
+          },
+        ]
+      },
+      {
         id: 'stationEquipment',
         title: 'Station/Equipment',
         data: [
@@ -3329,6 +3346,17 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter emission',
+          },
+          {
+            id: 'frequencyBand',
+            label: 'Frequency Band',
+            placeholder: 'Frequency Band',
+            value: 'To be assigned by NTC',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter a valid frequency band',
+            editable: false,
           },
         ]
       },
@@ -3396,27 +3424,6 @@ const NTCService = ({
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
               },
-              {
-                id: 'callSign',
-                label: 'Call Sign',
-                placeholder: 'Call Sign',
-                value: '',
-                hasValidation: true,
-                required: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter call sign',
-              },
-              {
-                id: 'frequencyBand',
-                label: 'Frequency Band',
-                placeholder: 'Frequency Band',
-                value: 'To be assigned by NTC',
-                hasValidation: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter a valid frequency band',
-              },
             ],
             data: [
               [
@@ -3441,27 +3448,6 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
-                {
-                  id: 'frequencyBand',
-                  label: 'Frequency Band',
-                  placeholder: 'Frequency Band',
-                  value: 'To be assigned by NTC',
-                  hasValidation: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter a valid frequency band',
                 },
               ]
             ],
@@ -3528,27 +3514,6 @@ const NTCService = ({
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
                 },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
-                {
-                  id: 'frequencyBand',
-                  label: 'Frequency Band',
-                  placeholder: 'Frequency Band',
-                  value: 'To be assigned by NTC',
-                  hasValidation: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter a valid frequency band',
-                },
               ],
               data: [
                 [
@@ -3573,27 +3538,6 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                  },
-                  {
-                    id: 'callSign',
-                    label: 'Call Sign',
-                    placeholder: 'Call Sign',
-                    value: '',
-                    hasValidation: true,
-                    required: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter call sign',
-                  },
-                  {
-                    id: 'frequencyBand',
-                    label: 'Frequency Band',
-                    placeholder: 'Frequency Band',
-                    value: 'To be assigned by NTC',
-                    hasValidation: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter a valid frequency band',
                   },
                 ]
               ],
@@ -3914,6 +3858,23 @@ const NTCService = ({
         ],
       },
       {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            required: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
+          },
+        ]
+      },
+      {
         id: 'stationEquipment',
         title: 'Station/Equipment',
         data: [
@@ -3938,6 +3899,17 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter emission',
+          },
+          {
+            id: 'frequencyBand',
+            label: 'Frequency Band',
+            placeholder: 'Frequency Band',
+            value: 'To be assigned by NTC',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter a valid frequency band',
+            editable: false,
           },
         ]
       },
@@ -4005,27 +3977,6 @@ const NTCService = ({
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
               },
-              {
-                id: 'callSign',
-                label: 'Call Sign',
-                placeholder: 'Call Sign',
-                value: '',
-                hasValidation: true,
-                required: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter call sign',
-              },
-              {
-                id: 'frequencyBand',
-                label: 'Frequency Band',
-                placeholder: 'Frequency Band',
-                value: 'To be assigned by NTC',
-                hasValidation: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter a valid frequency band',
-              },
             ],
             data: [
               [
@@ -4050,27 +4001,6 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
-                {
-                  id: 'frequencyBand',
-                  label: 'Frequency Band',
-                  placeholder: 'Frequency Band',
-                  value: 'To be assigned by NTC',
-                  hasValidation: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter a valid frequency band',
                 },
               ]
             ],
@@ -4137,27 +4067,6 @@ const NTCService = ({
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
                 },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
-                {
-                  id: 'frequencyBand',
-                  label: 'Frequency Band',
-                  placeholder: 'Frequency Band',
-                  value: 'To be assigned by NTC',
-                  hasValidation: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter a valid frequency band',
-                },
               ],
               data: [
                 [
@@ -4182,27 +4091,6 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                  },
-                  {
-                    id: 'callSign',
-                    label: 'Call Sign',
-                    placeholder: 'Call Sign',
-                    value: '',
-                    hasValidation: true,
-                    required: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter call sign',
-                  },
-                  {
-                    id: 'frequencyBand',
-                    label: 'Frequency Band',
-                    placeholder: 'Frequency Band',
-                    value: 'To be assigned by NTC',
-                    hasValidation: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter a valid frequency band',
                   },
                 ]
               ],
@@ -4577,6 +4465,22 @@ const NTCService = ({
         ]
       },
       {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
+          },
+        ]
+      },
+      {
         id: 'stationEquipment',
         title: 'Station/Equipment',
         data: [
@@ -4599,7 +4503,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
-           // editable: false,
+            editable: false,
           },
           {
             type: 'unit',
@@ -4812,17 +4716,6 @@ const NTCService = ({
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
               },
-              {
-                id: 'callSign',
-                label: 'Call Sign',
-                placeholder: 'Call Sign',
-                value: '',
-                hasValidation: true,
-                required: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter call sign',
-              },
             ],
             data: [
               [
@@ -4847,17 +4740,6 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
                 },
               ]
             ],
@@ -5004,17 +4886,6 @@ const NTCService = ({
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
                 },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
               ],
               data: [
                 [
@@ -5039,17 +4910,6 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                  },
-                  {
-                    id: 'callSign',
-                    label: 'Call Sign',
-                    placeholder: 'Call Sign',
-                    value: '',
-                    hasValidation: true,
-                    required: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter call sign',
                   },
                 ]
               ],
@@ -5319,6 +5179,22 @@ const NTCService = ({
             error: '',
             errorResponse: 'Please enter a valid email',
             validate: validateEmail,
+          },
+        ]
+      },
+      {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
           },
         ]
       },
@@ -5593,6 +5469,22 @@ const NTCService = ({
         ]
       },
       {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
+          },
+        ]
+      },
+      {
         id: 'stationEquipment',
         title: 'Station/Equipment',
         data: [
@@ -5605,7 +5497,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
-           // editable: false,
+            editable: false,
           },
           {
             type: 'unit',
@@ -5818,17 +5710,6 @@ const NTCService = ({
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
               },
-              {
-                id: 'callSign',
-                label: 'Call Sign',
-                placeholder: 'Call Sign',
-                value: '',
-                hasValidation: true,
-                required: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter call sign',
-              },
             ],
             data: [
               [
@@ -5853,17 +5734,6 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
                 },
               ]
             ],
@@ -6100,17 +5970,6 @@ const NTCService = ({
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
                 },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
               ],
               data: [
                 [
@@ -6135,17 +5994,6 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                  },
-                  {
-                    id: 'callSign',
-                    label: 'Call Sign',
-                    placeholder: 'Call Sign',
-                    value: '',
-                    hasValidation: true,
-                    required: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter call sign',
                   },
                 ]
               ],
@@ -6541,13 +6389,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -6756,7 +6606,7 @@ const NTCService = ({
                 isValid: false,
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
-               // editable: false,
+                editable: false,
               },
               {
                 id: 'callSign',
@@ -6793,7 +6643,7 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                 // editable: false,
+                  editable: false,
                 },
                 {
                   id: 'callSign',
@@ -6946,7 +6796,7 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                 // editable: false,
+                  editable: false,
                 },
                 {
                   id: 'callSign',
@@ -6983,7 +6833,7 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                   // editable: false,
+                    editable: false,
                   },
                   {
                     id: 'callSign',
@@ -8458,6 +8308,18 @@ const NTCService = ({
         title: 'Station/Equipment',
         data: [
           {
+            id: 'frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
+            value: '',
+            hasValidation: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
+          },
+          {
             id: 'powerOutput',
             label: 'Power Output (watts)',
             placeholder: 'Power Output (watts)',
@@ -8774,7 +8636,7 @@ const NTCService = ({
                   errorResponse: 'Please enter a valid frequency',
                   validate: validateNumber,
                   keyboardType: 'decimal-pad',
-                 // editable: false,
+                  editable: false,
                   specification: true,
                 }
               },
@@ -9405,7 +9267,7 @@ const NTCService = ({
             isValid: false,
             error: '',
             errorResponse: 'Please enter source',
-           // editable: false,
+            editable: false,
           },
           {
             id: 'pointsOfCommServiceArea',
@@ -9419,13 +9281,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -9910,13 +9774,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -10794,6 +10660,23 @@ const NTCService = ({
         ],
       },
       {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            required: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
+          },
+        ]
+      },
+      {
         id: 'stationEquipment',
         title: 'Station/Equipment',
         data: [
@@ -10809,13 +10692,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -11004,17 +10889,6 @@ const NTCService = ({
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
               },
-              {
-                id: 'callSign',
-                label: 'Call Sign',
-                placeholder: 'Call Sign',
-                value: '',
-                hasValidation: true,
-                required: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter call sign',
-              },
             ],
             data: [
               [
@@ -11039,17 +10913,6 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
                 },
               ]
             ],
@@ -11262,17 +11125,6 @@ const NTCService = ({
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
                 },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
               ],
               data: [
                 [
@@ -11297,17 +11149,6 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                  },
-                  {
-                    id: 'callSign',
-                    label: 'Call Sign',
-                    placeholder: 'Call Sign',
-                    value: '',
-                    hasValidation: true,
-                    required: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter call sign',
                   },
                 ]
               ],
@@ -11637,6 +11478,23 @@ const NTCService = ({
         ],
       },
       {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            required: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
+          },
+        ]
+      },
+      {
         id: 'stationEquipment',
         title: 'Station/Equipment',
         data: [
@@ -11652,13 +11510,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -11847,17 +11707,6 @@ const NTCService = ({
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
               },
-              {
-                id: 'callSign',
-                label: 'Call Sign',
-                placeholder: 'Call Sign',
-                value: '',
-                hasValidation: true,
-                required: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter call sign',
-              },
             ],
             data: [
               [
@@ -11882,17 +11731,6 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
                 },
               ]
             ],
@@ -12105,17 +11943,6 @@ const NTCService = ({
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
                 },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
               ],
               data: [
                 [
@@ -12140,17 +11967,6 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                  },
-                  {
-                    id: 'callSign',
-                    label: 'Call Sign',
-                    placeholder: 'Call Sign',
-                    value: '',
-                    hasValidation: true,
-                    required: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter call sign',
                   },
                 ]
               ],
@@ -13173,8 +12989,8 @@ const NTCService = ({
                   template: [
                     {
                       id: 'frequency',
-                      label: 'Frequency',
-                      placeholder: 'Frequency',
+                      label: 'Frequency (KHz)',
+                      placeholder: 'Frequency (KHz)',
                       value: '',
                       hasValidation: true,
                       required: true,
@@ -13189,8 +13005,8 @@ const NTCService = ({
                     [
                       {
                         id: 'frequency',
-                        label: 'Frequency',
-                        placeholder: 'Frequency',
+                        label: 'Frequency (KHz)',
+                        placeholder: 'Frequency (KHz)',
                         value: '',
                         hasValidation: true,
                         required: true,
@@ -13215,8 +13031,8 @@ const NTCService = ({
                   template: [
                     {
                       id: 'tx',
-                      label: 'TX',
-                      placeholder: 'TX',
+                      label: 'TX (KHz)',
+                      placeholder: 'TX (KHz)',
                       value: '',
                       hasValidation: true,
                       required: true,
@@ -13228,8 +13044,8 @@ const NTCService = ({
                     },
                     {
                       id: 'rx',
-                      label: 'RX',
-                      placeholder: 'RX',
+                      label: 'RX (KHz)',
+                      placeholder: 'RX (KHz)',
                       value: '',
                       hasValidation: true,
                       required: true,
@@ -13244,8 +13060,8 @@ const NTCService = ({
                     [
                       {
                         id: 'tx',
-                        label: 'TX',
-                        placeholder: 'TX',
+                        label: 'TX (KHz)',
+                        placeholder: 'TX (KHz)',
                         value: '',
                         hasValidation: true,
                         required: true,
@@ -13257,8 +13073,8 @@ const NTCService = ({
                       },
                       {
                         id: 'rx',
-                        label: 'RX',
-                        placeholder: 'RX',
+                        label: 'RX (KHz)',
+                        placeholder: 'RX (KHz)',
                         value: '',
                         hasValidation: true,
                         required: true,
@@ -14119,8 +13935,8 @@ const NTCService = ({
         template: [
           {
             id: 'tx',
-            label: 'TX',
-            placeholder: 'TX',
+            label: 'TX (KHz)',
+            placeholder: 'TX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -14132,8 +13948,8 @@ const NTCService = ({
           },
           {
             id: 'rx',
-            label: 'RX',
-            placeholder: 'RX',
+            label: 'RX (KHz)',
+            placeholder: 'RX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -14148,8 +13964,8 @@ const NTCService = ({
           [
             {
               id: 'tx',
-              label: 'TX',
-              placeholder: 'TX',
+              label: 'TX (KHz)',
+              placeholder: 'TX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -14161,8 +13977,8 @@ const NTCService = ({
             },
             {
               id: 'rx',
-              label: 'RX',
-              placeholder: 'RX',
+              label: 'RX (KHz)',
+              placeholder: 'RX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -15013,8 +14829,8 @@ const NTCService = ({
         template: [
           {
             id: 'tx',
-            label: 'TX',
-            placeholder: 'TX',
+            label: 'TX (KHz)',
+            placeholder: 'TX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -15026,8 +14842,8 @@ const NTCService = ({
           },
           {
             id: 'rx',
-            label: 'RX',
-            placeholder: 'RX',
+            label: 'RX (KHz)',
+            placeholder: 'RX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -15042,8 +14858,8 @@ const NTCService = ({
           [
             {
               id: 'tx',
-              label: 'TX',
-              placeholder: 'TX',
+              label: 'TX (KHz)',
+              placeholder: 'TX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -15055,8 +14871,8 @@ const NTCService = ({
             },
             {
               id: 'rx',
-              label: 'RX',
-              placeholder: 'RX',
+              label: 'RX (KHz)',
+              placeholder: 'RX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -15915,8 +15731,8 @@ const NTCService = ({
         template: [
           {
             id: 'tx',
-            label: 'TX',
-            placeholder: 'TX',
+            label: 'TX (KHz)',
+            placeholder: 'TX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -15928,8 +15744,8 @@ const NTCService = ({
           },
           {
             id: 'rx',
-            label: 'RX',
-            placeholder: 'RX',
+            label: 'RX (KHz)',
+            placeholder: 'RX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -15944,8 +15760,8 @@ const NTCService = ({
           [
             {
               id: 'tx',
-              label: 'TX',
-              placeholder: 'TX',
+              label: 'TX (KHz)',
+              placeholder: 'TX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -15957,8 +15773,8 @@ const NTCService = ({
             },
             {
               id: 'rx',
-              label: 'RX',
-              placeholder: 'RX',
+              label: 'RX (KHz)',
+              placeholder: 'RX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -16809,8 +16625,8 @@ const NTCService = ({
         template: [
           {
             id: 'tx',
-            label: 'TX',
-            placeholder: 'TX',
+            label: 'TX (KHz)',
+            placeholder: 'TX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -16822,8 +16638,8 @@ const NTCService = ({
           },
           {
             id: 'rx',
-            label: 'RX',
-            placeholder: 'RX',
+            label: 'RX (KHz)',
+            placeholder: 'RX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -16838,8 +16654,8 @@ const NTCService = ({
           [
             {
               id: 'tx',
-              label: 'TX',
-              placeholder: 'TX',
+              label: 'TX (KHz)',
+              placeholder: 'TX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -16851,8 +16667,8 @@ const NTCService = ({
             },
             {
               id: 'rx',
-              label: 'RX',
-              placeholder: 'RX',
+              label: 'RX (KHz)',
+              placeholder: 'RX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -17705,8 +17521,8 @@ const NTCService = ({
         template: [
           {
             id: 'tx',
-            label: 'TX',
-            placeholder: 'TX',
+            label: 'TX (KHz)',
+            placeholder: 'TX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -17718,8 +17534,8 @@ const NTCService = ({
           },
           {
             id: 'rx',
-            label: 'RX',
-            placeholder: 'RX',
+            label: 'RX (KHz)',
+            placeholder: 'RX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -17734,8 +17550,8 @@ const NTCService = ({
           [
             {
               id: 'tx',
-              label: 'TX',
-              placeholder: 'TX',
+              label: 'TX (KHz)',
+              placeholder: 'TX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -17747,8 +17563,8 @@ const NTCService = ({
             },
             {
               id: 'rx',
-              label: 'RX',
-              placeholder: 'RX',
+              label: 'RX (KHz)',
+              placeholder: 'RX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -18591,8 +18407,8 @@ const NTCService = ({
         template: [
           {
             id: 'tx',
-            label: 'TX',
-            placeholder: 'TX',
+            label: 'TX (KHz)',
+            placeholder: 'TX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -18604,8 +18420,8 @@ const NTCService = ({
           },
           {
             id: 'rx',
-            label: 'RX',
-            placeholder: 'RX',
+            label: 'RX (KHz)',
+            placeholder: 'RX (KHz)',
             value: '',
             hasValidation: true,
             required: true,
@@ -18620,8 +18436,8 @@ const NTCService = ({
           [
             {
               id: 'tx',
-              label: 'TX',
-              placeholder: 'TX',
+              label: 'TX (KHz)',
+              placeholder: 'TX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -18633,8 +18449,8 @@ const NTCService = ({
             },
             {
               id: 'rx',
-              label: 'RX',
-              placeholder: 'RX',
+              label: 'RX (KHz)',
+              placeholder: 'RX (KHz)',
               value: '',
               hasValidation: true,
               required: true,
@@ -18887,6 +18703,23 @@ const NTCService = ({
         ],
       },
       {
+        id: 'callSign',
+        title: 'Call Sign',
+        data: [
+          {
+            id: 'callSign',
+            label: 'Call Sign',
+            placeholder: 'Call Sign',
+            value: '',
+            hasValidation: true,
+            required: true,
+            isValid: false,
+            error: '',
+            errorResponse: 'Please enter call sign',
+          },
+        ]
+      },
+      {
         id: 'stationEquipment',
         title: 'Station/Equipment',
         data: [
@@ -18941,13 +18774,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -19135,17 +18970,6 @@ const NTCService = ({
                 error: '',
                 errorResponse: 'Please enter a valid frequency range',
               },
-              {
-                id: 'callSign',
-                label: 'Call Sign',
-                placeholder: 'Call Sign',
-                value: '',
-                hasValidation: true,
-                required: true,
-                isValid: false,
-                error: '',
-                errorResponse: 'Please enter call sign',
-              },
             ],
             data: [
               [
@@ -19170,17 +18994,6 @@ const NTCService = ({
                   isValid: false,
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
-                },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
                 },
               ]
             ],
@@ -19392,17 +19205,6 @@ const NTCService = ({
                   error: '',
                   errorResponse: 'Please enter a valid frequency range',
                 },
-                {
-                  id: 'callSign',
-                  label: 'Call Sign',
-                  placeholder: 'Call Sign',
-                  value: '',
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: 'Please enter call sign',
-                },
               ],
               data: [
                 [
@@ -19427,17 +19229,6 @@ const NTCService = ({
                     isValid: false,
                     error: '',
                     errorResponse: 'Please enter a valid frequency range',
-                  },
-                  {
-                    id: 'callSign',
-                    label: 'Call Sign',
-                    placeholder: 'Call Sign',
-                    value: '',
-                    hasValidation: true,
-                    required: true,
-                    isValid: false,
-                    error: '',
-                    errorResponse: 'Please enter call sign',
                   },
                 ]
               ],
@@ -19580,13 +19371,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -20241,13 +20034,15 @@ const NTCService = ({
           },
           {
             id: 'frequency',
-            label: 'Frequency',
-            placeholder: 'Frequency',
+            label: 'Frequency (KHz)',
+            placeholder: 'Frequency (KHz)',
             value: '',
             hasValidation: true,
             isValid: false,
             error: '',
             errorResponse: 'Please enter a valid frequency',
+            validate: validateNumber,
+            keyboardType: 'decimal-pad',
           },
           {
             type: 'unit',
@@ -22022,7 +21817,7 @@ const NTCService = ({
             placeholder: 'Type of Equipment/Device',
             value: '',
             hasValidation: true,
-            required: false,
+            required: true,
             isValid: true,
             error: '',
             errorResponse: 'Please select type of equipment/device',
@@ -22120,7 +21915,7 @@ const NTCService = ({
               placeholder: 'Type of Equipment/Device',
               value: '',
               hasValidation: true,
-              required: false,
+              required: true,
               isValid: true,
               error: '',
               errorResponse: 'Please select type of equipment/device',
@@ -22513,7 +22308,7 @@ const NTCService = ({
             isValid: true,
             error: '',
             errorResponse: 'Please enter BSD number',
-           // editable: false,
+            editable: false,
           },
         ]
       },
@@ -23686,7 +23481,7 @@ const NTCService = ({
             isValid: true,
             error: '',
             errorResponse: 'Please enter BSD number',
-           // editable: false,
+            editable: false,
           },
         ]
       },
@@ -25857,7 +25652,7 @@ const NTCService = ({
             isValid: true,
             error: '',
             errorResponse: 'Please enter BSD number',
-           // editable: false,
+            editable: false,
           },
         ]
       },
