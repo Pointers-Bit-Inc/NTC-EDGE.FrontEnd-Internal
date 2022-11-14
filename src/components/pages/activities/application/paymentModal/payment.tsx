@@ -29,7 +29,7 @@ import FileIcon from "@assets/svg/file";
 import Card from "@pages/activities/application/card";
 import useSafeState from "../../../../../hooks/useSafeState";
 import CloseIcon from "@assets/svg/close";
-import {isNumber, numberBetween1And100} from "../../../../../utils/ntc";
+import {currency, isNumber, numberBetween1And100} from "../../../../../utils/ntc";
 import {infoColor} from "@styles/color";
 import {PlusIcon} from "@atoms/icon";
 import LoadingModal from "@pages/activities/loading/loadingModal";
@@ -600,7 +600,7 @@ const Payment = (_props: any) => {
                                                 style={{fontSize: fontValue(16), fontFamily: Bold}}
                                                 color="#37405B"
                                             >
-                                                ₱{getTotal()}
+                                                ₱{currency(getTotal())}
                                             </Text>
                                         </View>
 
