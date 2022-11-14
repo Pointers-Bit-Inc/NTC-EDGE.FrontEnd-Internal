@@ -211,10 +211,18 @@ const transformToFeePayload = (application: any) => {
          * frequency that is a section
          * [{frequency: 1}]
          *
-         * frequency that is inside stationEquipment
+         * frequency that is inside stationEquipment.stationKind specification
          * could be string (pre-filled) or number
+         *
+         * frequency that is inside stationEquipment
+         * [{frequency: 1}]
          */
-        return service?.frequency || [{frequency: service?.stationEquipment?.stationKind?.split(' • ')?.[1]}];
+        let _frequencies = [];
+        if (service?.frequency) _frequencies?.push(service?.frequency);
+        if (service?.stationEquipment?.stationKind?.split(' • ')?.[1]) _frequencies?.push([{frequency: service?.stationEquipment?.stationKind?.split(' • ')?.[1]}]);
+        if (service.proposedStationEquipment?.frequency) _frequencies?.push([{frequency: service.proposedStationEquipment?.frequency}]);
+        if (service.stationEquipment?.frequency) _frequencies?.push([{frequency: service.stationEquipment?.frequency}]);
+        return _frequencies;
     };
     let tranmissionFn = () => {
         let _t = stationEquipment?.transmission?.split(' • ');
