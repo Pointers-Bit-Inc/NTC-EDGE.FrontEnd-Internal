@@ -600,7 +600,7 @@ const Payment = (_props: any) => {
                                                 style={{fontSize: fontValue(16), fontFamily: Bold}}
                                                 color="#37405B"
                                             >
-                                                ₱{currency(getTotal())}
+                                                {currency(getTotal())}
                                             </Text>
                                         </View>
 

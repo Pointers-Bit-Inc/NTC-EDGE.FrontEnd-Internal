@@ -638,7 +638,7 @@ const BasicInfo = (_props: any) => {
                                                      display={userProfileForm?.["officialReceipt.orBy.firstName"] + " " +  userProfileForm?.["officialReceipt.orBy.lastName"]}/>
 
                                         </View> : <></>}
-                                        {(applicant?.applicantName ||
+                                        {(props?.service.basic)  ? <></> : (applicant?.applicantName ||
                                             applicant?.companyName ||
                                             applicant?.suffix ||
                                             applicant?.dateOfBirth ||
@@ -808,7 +808,7 @@ const BasicInfo = (_props: any) => {
                                                                     updateForm={applicantForm}
                                                                     userProfileForm={userProfileForm}
                                                                     //edit={props.edit}
-                                                                    exclude={["basic", "createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
+                                                                    exclude={["createdAt","applicationTypes",  "about", '_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
 
 

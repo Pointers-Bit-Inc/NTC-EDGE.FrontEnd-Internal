@@ -65,6 +65,7 @@ import Settings from "@pages/settings";
 import RoleAndPermissionNavigator from "../../../navigations/role-and-permission";
 import ConfigurationNavigator from "../../../navigations/configuration";
 import ScheduleNavigator from "../../../navigations/schedule";
+import RoleAndPermissionIcon from "@assets/svg/roleandpermission";
 
 const {width}=Dimensions.get('window');
 
@@ -206,116 +207,149 @@ export default function TabBar({navigation,route}){
         const hidden=currentRoute.find((route:string)=>route==SEARCH);
 
         return (
-            <View onLayout={(event)=>{
-                if(tabBarHeight==0){
-                    dispatch(setTabBarHeight(event.nativeEvent.layout.height))
-                }
+            <>
+                <View onLayout={(event)=>{
+                    if(tabBarHeight==0){
+                        dispatch(setTabBarHeight(event.nativeEvent.layout.height))
+                    }
 
-            }} style={{
-                display:hidden ? "none" : "flex",flexDirection:'row',justifyContent:'space-around',
-                alignItems:'center',
-                paddingHorizontal:20,
-                backgroundColor:'white',
-                paddingBottom:10,
-                paddingTop:5,
-                borderWidth:1,
-                borderColor:'#E5E5E5'
-            }}>
-                {state.routes.map((route:any,index:number)=>{
+                }}
+                      style={{
+                          display:hidden ? "none" : "flex",flexDirection:'row',justifyContent:'space-around',
+                          alignItems:'center',
+                          paddingHorizontal:20,
+                          backgroundColor:'white',
+                          paddingBottom:10,
+                          paddingTop:5,
+                          borderWidth:1,
+                          borderColor:'#E5E5E5'
+                      }}>
+                    {state.routes.map((route:any,index:number)=>{
 
 
-                    const {options}=descriptors[route.key];
+                        const {options}=descriptors[route.key];
 
-                    const label=
-                        options.tabBarLabel!==undefined
-                        ? options.tabBarLabel
-                        : options.title!==undefined
-                          ? options.title
-                          : route.name;
+                        const label=
+                            options.tabBarLabel!==undefined
+                                ? options.tabBarLabel
+                                : options.title!==undefined
+                                    ? options.title
+                                    : route.name;
 
-                    const isFocused=state.index===index;
+                        const isFocused=state.index===index;
 
-                    const onPress=()=>{
-                        const event=navigation.emit({
-                            type:'tabPress',
-                            target:route.key,
-                            canPreventDefault:true,
-                        });
+                        const onPress=()=>{
+                            const event=navigation.emit({
+                                type:'tabPress',
+                                target:route.key,
+                                canPreventDefault:true,
+                            });
 
-                        if(!isFocused&& !event.defaultPrevented){
-                            navigation.navigate({name:route.name,merge:true});
-                        }
-                    };
-                    const onLongPress=()=>{
-                        navigation.emit({
-                            type:'tabLongPress',
-                            target:route.key,
-                        });
-                    };
-                    const focused="#2863D6";
-                    const unfocused="#606A80";
-                    return (
-                        <View key={route.key} style={{flex:1}}>
-                            <TouchableOpacity
-                                //disabled={((label == CHAT && !isMobile)  || (label == MEET && !isMobile) || (label == SCANQR && !isMobile)  ) }
-                                accessibilityRole="button"
-                                accessibilityState={isFocused ? {selected:true} : {}}
-                                accessibilityLabel={options.tabBarAccessibilityLabel}
-                                testID={options.tabBarTestID}
-                                onPress={onPress}
-                                onLongPress={onLongPress}>
-                                <View style={{
-                                    justifyContent:'center',
-                                    alignItems:'center',
-                                }}>
-                                    {label==ACTIVITIES
-                                     ? (
-                                         <ActivityTabbar notification={false} width={fontValue(30)}
-                                                         height={fontValue(30)}
-                                                         fill={isFocused ? focused : unfocused}/>) :
-                                     label==CHAT
-                                     ?
-                                     (
-                                         <ChatIcon notification={hasNewChat} width={fontValue(30)}
-                                                   height={fontValue(30)} fill={isFocused ? focused : unfocused}/>)
-                                     : label==MEET
-                                       ?
-                                       (
-                                           <MeetIcon notification={hasMeet} width={fontValue(30)} height={fontValue(30)}
-                                                     fill={isFocused ? focused : unfocused}/>)
+                            if(!isFocused&& !event.defaultPrevented){
+                                navigation.navigate({name:route.name,merge:true});
+                            }
+                        };
+                        const onLongPress=()=>{
+                            navigation.emit({
+                                type:'tabLongPress',
+                                target:route.key,
+                            });
+                        };
+                        const focused="#2863D6";
+                        const unfocused="#606A80";
+                        return (
+                            <View key={route.key} style={{flex:1}}>
+                                <TouchableOpacity
+                                    //disabled={((label == CHAT && !isMobile)  || (label == MEET && !isMobile) || (label == SCANQR && !isMobile)  ) }
+                                    accessibilityRole="button"
+                                    accessibilityState={isFocused ? {selected:true} : {}}
+                                    accessibilityLabel={options.tabBarAccessibilityLabel}
+                                    testID={options.tabBarTestID}
+                                    onPress={onPress}
+                                    onLongPress={onLongPress}>
+                                    <View style={{
+                                        justifyContent:'center',
+                                        alignItems:'center',
+                                    }}>
+                                        {label==ACTIVITIES
+                                            ? (
+                                                <ActivityTabbar notification={false} width={fontValue(30)}
+                                                                height={fontValue(30)}
+                                                                fill={isFocused ? focused : unfocused}/>) :
+                                            label==CHAT
+                                                ?
+                                                (
+                                                    <ChatIcon notification={hasNewChat} width={fontValue(30)}
+                                                              height={fontValue(30)} fill={isFocused ? focused : unfocused}/>)
+                                                : label==MEET
+                                                    ?
+                                                    (
+                                                        <MeetIcon notification={hasMeet} width={fontValue(30)} height={fontValue(30)}
+                                                                  fill={isFocused ? focused : unfocused}/>)
 
-                                       :
-                                       label==SCANQR
-                                       ?
-                                       (
-                                           <ScanQrIcon notification={false} width={fontValue(30)} height={fontValue(30)}
-                                                       fill={isFocused ? focused : unfocused}/>)
-                                       :
+                                                    :
+                                                    label==SCANQR
+                                                        ?
+                                                        (
+                                                            <ScanQrIcon notification={false} width={fontValue(30)} height={fontValue(30)}
+                                                                        fill={isFocused ? focused : unfocused}/>)
+                                                        :
 
-                                       label==MORE
-                                       ?
-                                       (
-                                           <MoreTabBarIcon notification={false} width={fontValue(30)}
-                                                           height={fontValue(30)}
-                                                           fill={isFocused ? focused : unfocused}/>)
+                                                        label==MORE
+                                                            ?
+                                                            (
+                                                                <MoreTabBarIcon notification={false} width={fontValue(30)}
+                                                                                height={fontValue(30)}
+                                                                                fill={isFocused ? focused : unfocused}/>)
 
-                                       :
-                                       <Ionicons color={isFocused ? focused : unfocused} size={fontValue(28)}  name="apps"></Ionicons>}
+                                                            :
+                                                            <Ionicons color={isFocused ? focused : unfocused} size={fontValue(28)}  name="apps"></Ionicons>}
 
-                                    <Text style={[{
-                                        fontSize:fontValue(14),
-                                        fontFamily:isFocused ? Bold : Regular,
-                                        color:isFocused ? '#2863d6' : '#606a80'
-                                    }]}>{label}</Text>
-                                </View>
+                                        <Text style={[{
+                                            fontSize:fontValue(14),
+                                            fontFamily:isFocused ? Bold : Regular,
+                                            color:isFocused ? '#2863d6' : '#606a80'
+                                        }]}>{label}</Text>
+                                    </View>
 
-                            </TouchableOpacity>
+                                </TouchableOpacity>
+                            </View>
+
+
+                        );
+                    })}
+                </View>
+              {/*  <View style={{ padding: 10,  backgroundColor: "#fff", justifyContent: "space-between",  flexDirection:'row'}}>
+
+                    <View style={{flexShrink: 1, padding: 10,}}>
+                        <View style={{ padding: 10, flexShrink: 1, flexDirection: 'column', justifyContent: "center",  alignItems: "center",  borderRadius: 10,backgroundColor: "#f4f4f4"}}>
+
+                            <RoleAndPermissionIcon  fill={ "#6E7191"}/>
+                            <Text >Role and Permission</Text>
+
                         </View>
+                    </View>
+                    <View style={{flexShrink: 1, padding: 10,}}>
+                        <View style={{ padding: 10, flexShrink: 1, flexDirection: 'column', justifyContent: "center",  alignItems: "center",  borderRadius: 10,backgroundColor: "#f4f4f4"}}>
 
+                            <RoleAndPermissionIcon  fill={ "#6E7191"}/>
+                            <Text >Role and Permission</Text>
 
-                    );
-                })}
-            </View>
+                        </View>
+                    </View>
+
+                    <View style={{flexShrink: 1, padding: 10,}}>
+                        <View style={{ padding: 10, flexShrink: 1, flexDirection: 'column', justifyContent: "center",  alignItems: "center",  borderRadius: 10,backgroundColor: "#f4f4f4"}}>
+
+                            <RoleAndPermissionIcon  fill={ "#6E7191"}/>
+                            <Text >Role and Permission</Text>
+
+                        </View>
+                    </View>
+
+                </View>*/}
+            </>
+
         );
     }
 
