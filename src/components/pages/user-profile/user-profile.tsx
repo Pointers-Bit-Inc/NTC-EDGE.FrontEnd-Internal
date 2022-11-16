@@ -487,46 +487,77 @@ const UserProfileScreen=({navigation}:any)=>{
                         keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"}
                         style={styles.scrollview}
                         showsVerticalScrollIndicator={false}>
-                <View style={[styles.row,{marginBottom:20}]}>
-                    <View>
-                        <ProfileImage
-                            size={isMobile ? width/4 : width * 0.1}
-                            textSize={25}
-                            image={photo}
-                            name={`${user.firstName} ${user.lastName}`}
-                        />
-                        {loading?.photo&&
-                        <ActivityIndicator style={styles.activityIndicator} size='large' color='#fff'/>}
-                    </View>
-                    <TouchableOpacity onPress={()=>onPress(11,'image-picker')}>
-                        <View style={styles.row}>
-                            <UploadIcon color={text.info}/>
-                            <Text style={styles.change2}>Upload image</Text>
+                <View style={Platform.select({
+                    web: { flexDirection: "row"},
+                    native: { flexDirection: "column"}
+                })}>
+                    <View style={Platform.select({
+                        web: {flex: 0.2}
+                    })}>
+                    <View style={[Platform.select({
+                        web: styles.column,
+                        native: styles.row
+                    })]}>
+                        <View style={{paddingBottom: 10}}>
+                            <ProfileImage
+                                size={isMobile ? width/4 : width * 0.1}
+                                textSize={25}
+                                image={photo}
+                                name={`${user.firstName} ${user.lastName}`}
+                            />
+                            {loading?.photo&&
+                                <ActivityIndicator style={styles.activityIndicator} size='large' color='#fff'/>}
                         </View>
-                    </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>onPress(11,'image-picker')}>
+                            <View style={styles.row}>
+                                <UploadIcon color={text.info}/>
+                                <Text style={styles.change2}>Upload image</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <FormField
-                    formElements={userProfileForm}
-                    onChange={onUpdateForm}
-                    onSubmit={onPress}
-                    handleEvent={(event)=>{
-                        if(isKeyboardVisible){
-                            scrollView?.current?.scrollTo({
-                                x:0,
-                                y:event?.y,
-                                animated:true,
-                            })
-                        }
-                    }}
-                    // editable={editable}
-                />
-                <TouchableOpacity onPress={()=>navigation.navigate('ResetPassword')}>
-                    <Text style={styles.changePassword}>Change Password</Text>
-                </TouchableOpacity>
-                {Platform.select({
-                    web: <View style={{height:width* 0.02}}/>,
-                    native: <View style={{height:width/3}}/>
-                })}
+                    <View style={Platform.select({
+                        web: {
+                            flex: 0.8,
+                            backgroundColor: "#fff",
+                            padding: 20,
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 2,
+                            },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 3.84,
+
+                            elevation: 5,
+                            borderRadius: 10
+                        },
+                        native: {flex: 1}
+                    })}>
+                   <FormField
+                       formElements={userProfileForm}
+                       onChange={onUpdateForm}
+                       onSubmit={onPress}
+                       handleEvent={(event)=>{
+                           if(isKeyboardVisible){
+                               scrollView?.current?.scrollTo({
+                                   x:0,
+                                   y:event?.y,
+                                   animated:true,
+                               })
+                           }
+                       }}
+                       // editable={editable}
+                   />
+                   <TouchableOpacity onPress={()=>navigation.navigate('ResetPassword')}>
+                       <Text style={styles.changePassword}>Change Password</Text>
+                   </TouchableOpacity>
+                   {Platform.select({
+                       web: <View style={{height:width* 0.02}}/>,
+                       native: <View style={{height:width/3}}/>
+                   })}
+               </View>
+                </View>
             </ScrollView>
 
             <Button
@@ -573,19 +604,30 @@ const UserProfileScreen=({navigation}:any)=>{
 
 const styles=StyleSheet.create({
     container:{
-        backgroundColor:'#fff',
+        ...Platform.select({
+            web: {
+
+            },
+            native: {  backgroundColor: '#fff',}
+        }),
+
         flex:1
     },
     statusBar:{
         height:STATUSBAR_HEIGHT,
     },
     scrollview:{
-        padding:20,
+
+        padding: 20,
     },
     row:{
         flexDirection:'row',
         alignItems:'center',
         marginLeft:15,
+    },
+    column:{
+        flexDirection:'column',
+        alignItems:'center',
     },
     group:{
         flexDirection:'row',
