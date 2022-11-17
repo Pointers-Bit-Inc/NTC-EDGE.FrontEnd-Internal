@@ -153,6 +153,9 @@ const ServiceFormPage = (props) =>{
     const renewApplication =true;
     const FOR_EDITING = editApplication || renewApplication;
     const [backPressed, setBackPressed] = useState(false);
+
+
+
     useEffect(() => {
         if (
             FOR_EDITING &&
@@ -180,9 +183,12 @@ const ServiceFormPage = (props) =>{
                 handleChangeApplicationType(AT);*/
         }
     }, [region, applicationItem?._id]);
+
+
+
     const handleChangeApplicationType = (value: any) => {
         let { serviceCode, formCode, label, modificationDueTos } = value;
-        let newForm = JSONfn.parse(JSONfn.stringify(NTCServicesConfig({formCode, user})));
+        let newForm = JSONfn.parse(JSONfn.stringify(NTCServicesConfig({formCode, user, applicant: savedApplication?.applicant}))) || [];
         let isModify = label?.toLowerCase()?.match('modification') || label?.toLowerCase()?.match('modify');
         let isRenewal = label?.toLowerCase()?.match('renewal') || label?.toLowerCase()?.match('renew');
         let isNew = label?.toLowerCase()?.match('new') && !isRenewal;
@@ -446,7 +452,7 @@ const ServiceFormPage = (props) =>{
 
         if (
             formCode === 'ntc1-18' &&
-            applicationItem?.serviceCode === 'service-14' &&
+            application?.serviceCode === 'service-14' &&
             label?.toLowerCase()?.match('dealer')
         ) {
             insert(
@@ -720,7 +726,7 @@ const ServiceFormPage = (props) =>{
                 if (equipmentsIndex > -1) {
                     let _callSignIndex = newForm?.[particularsIndex]?.template?.[equipmentsIndex]?.template?.findIndex(s => s?.id === 'callSign');
                     if (_callSignIndex > -1) {
-                        let oldCallSign = JSONfn.parse(JSONfn.stringify(newForm?.[particularsIndex]?.template?.[equipmentsIndex]?.template?.[_callSignIndex]));
+                        let oldCallSign = JSONfn.parse(JSONfn.stringify(newForm?.[particularsIndex]?.template?.[equipmentsIndex]?.template?.[_callSignIndex] || {}));
                         let newCSObj = {...oldCallSign, ...newCallSign};
                         if (newForm?.[particularsIndex]?.template?.[equipmentsIndex]?.template?.[_callSignIndex]) newForm[particularsIndex].template[equipmentsIndex].template[_callSignIndex] = newCSObj;
                         if (newForm?.[particularsIndex]?.template?.[equipmentsIndex]?.data?.[0]?.[_callSignIndex]) newForm[particularsIndex].template[equipmentsIndex].data[0][_callSignIndex] = newCSObj;
@@ -731,18 +737,64 @@ const ServiceFormPage = (props) =>{
             }
         }
 
-        setApplicationType(value);
-        setForm(newForm);
         let __add = newForm?.findIndex(f => f?.id === 'address');
         if (__add > -1) setOrigAdd(newForm[__add]);
 
         /**for service renewal */
         if (isNew || isModify) {
             let renewLabel = label?.replace(`(${isNew ? 'NEW' : 'MODIFICATION'})`, '(RENEWAL)');
-            let renewAT = service?.applicationTypes?.find((i: any) => i.label === renewLabel);
+            let renewAT = service?.applicationTypes?.find((i: any) => renewLabel.indexOf(i?.label) > -1);
             if (renewAT) setRenew({...renew, applicationType: renewAT});
         }
-        if (renewApplication) setRenew({...renew, renewedFrom: applicationItem?._id});
+        if (renewApplication) setRenew({...renew, renewedFrom: savedApplication?._id});
+
+        if (isGuest) {
+            let basicIndex = newForm?.findIndex((i: any) => i?.id === 'basic');
+            let insertId = () => {
+                insert(
+                    'basic',
+                    'Basic Info',
+                    'Basic Info',
+                    [{
+                        id: 'userId',
+                        value: user?._id,
+                        required: true,
+                        isValid: true,
+                        error: '',
+                        hidden: true,
+                    }]
+                );
+            };
+            let insertCompanyName = () => {
+                insert(
+                    'basic',
+                    'Basic Info',
+                    'Basic Info',
+                    [{
+                        id: 'companyName',
+                        label: 'Applicant',
+                        placeholder: 'Applicant',
+                        value: '',
+                        hasValidation: true,
+                        required: true,
+                        isValid: false,
+                        error: '',
+                        errorResponse: 'Please enter applicant',
+                    }]
+                );
+            };
+            if (basicIndex > -1) {
+                let companyNameIndex = newForm[basicIndex]?.data?.findIndex((i: any) => i?.id === 'companyName');
+                let lastNameIndex = newForm[basicIndex]?.data?.findIndex((i: any) => i?.id === 'lastName');
+                let idIndex = newForm[basicIndex]?.data?.findIndex((i: any) => i?.id === 'userId');
+                if (companyNameIndex < 0 && lastNameIndex < 0) insertCompanyName();
+                if (idIndex < 0) insertId();
+            }
+            else insertCompanyName();
+        }
+
+        setApplicationType(value);
+        setForm(newForm);
 
     };
     const [form, setForm] = useState([]);

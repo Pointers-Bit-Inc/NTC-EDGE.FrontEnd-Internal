@@ -1,67 +1,58 @@
 import React, { FC } from 'react'
-import { FontAwesome5, Feather, Octicons, AntDesign } from '@expo/vector-icons'; 
+import { FontAwesome, FontAwesome5, Octicons } from '@expo/vector-icons';
+import {RNValue as RFValue} from "@utils/formatting";
 
 interface Props {
   type?: string;
   size?: number;
   color?: string;
   [x: string]: any;
-}
+};
 
 const CheckIcon: FC<Props> = ({
-  type = '',
-  size = 24,
-  color = 'black',
-  ...otherProps
-}) => {
-
+                            type = '',
+                            size = 24,
+                            color = '#000',
+                            ...otherProps
+                          }) => {
   switch(type) {
-    case 'check':
+    case 'circle':
       return (
-        <Feather
-          name="check"
-          size={size}
-          color={color}
-          {...otherProps}
-        />
+          <FontAwesome5
+              name='check-circle'
+              size={RFValue(size)}
+              color={color}
+              {...otherProps}
+          />
       );
-    case 'check1':
+    case 'block-circle':
       return (
-        <Octicons
-          name="check"
-          size={size}
-          color={color}
-          {...otherProps}
-        />
+          <FontAwesome
+              name='check-circle'
+              size={RFValue(size)}
+              color={color}
+              {...otherProps}
+          />
       );
-    case 'check2':
+    case 'square':
       return (
-        <AntDesign
-          name="check"
-          size={size}
-          color={color}
-          {...otherProps}
-        />
-      );
-    case 'check-square':
-      return (
-        <FontAwesome5
-          name="check-square"
-          size={size}
-          color={color}
-          {...otherProps}
-        />
+          <FontAwesome5
+              name='check-square'
+              size={RFValue(size)}
+              color={color}
+              {...otherProps}
+          />
       );
     default:
       return (
-        <FontAwesome5
-          name="check-circle"
-          size={size}
-          color={color}
-          {...otherProps}
-        />
+          <Octicons
+              name='check'
+              size={RFValue(size)}
+              color={color}
+              {...otherProps}
+          />
       );
   }
 }
 
-export default CheckIcon
+export default CheckIcon;

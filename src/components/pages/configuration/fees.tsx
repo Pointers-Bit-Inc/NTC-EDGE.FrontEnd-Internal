@@ -16,6 +16,7 @@ import RenderFeeConfiguration from "@pages/configuration/renderFeeConfiguration"
 import lodash from "lodash";
 import CustomAlert from "@pages/activities/alert/alert";
 import {APPROVED} from "../../../reducers/activity/initialstate";
+import EditIcon from "@assets/svg/editIcon";
 const FeesConfigurationScreen = (props) => {
     const {
         value,
@@ -55,7 +56,8 @@ const FeesConfigurationScreen = (props) => {
                        <TouchableOpacity onPress={() => {
                            setEdit(edit => !edit)
                        }}>
-                           <Text style={{ color: infoColor, fontFamily: Bold, fontSize: fontValue(15)}}>Edit</Text>
+                          {/* <Text style={{ color: infoColor, fontFamily: Bold, fontSize: fontValue(15)}}>Edit</Text>*/}
+                           <EditIcon color={infoColor} />
                        </TouchableOpacity>
                        <View style={{paddingLeft: 10}}>
                            <TouchableOpacity onPress={()=>{

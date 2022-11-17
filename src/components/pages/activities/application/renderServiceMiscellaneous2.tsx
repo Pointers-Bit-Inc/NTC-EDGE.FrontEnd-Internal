@@ -73,7 +73,7 @@ function Title(props: { nextValue, index, value }) {
         title = transformText(props.nextValue || props.index);
         arr = []
         arr.push(props.value)
-        console.log(arr, "arr", title?.toUpperCase(), "uppercase", title?.toUpperCase() && !!arr?.join("")?.toString())
+        //console.log(arr, "arr", title?.toUpperCase(), "uppercase", title?.toUpperCase() && !!arr?.join("")?.toString())
         return <>{title?.toUpperCase() && !!arr?.join("")?.toString() ? <View style={{paddingVertical: 5}}>
             <View style={styles.rect}>
                 <Text style={styles.file}>{title?.toUpperCase()}</Text>

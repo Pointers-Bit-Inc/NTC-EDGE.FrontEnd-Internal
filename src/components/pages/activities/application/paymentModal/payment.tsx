@@ -283,7 +283,12 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 const Payment = (_props: any) => {
 
     const props = useMemo(() => _props, [_props])
-
+    useEffect(()=>{
+        const isValid = handleValidation([_props?.amnesty]);
+        if(isValid || _props?.amnesty){
+            dispatch(setAmnesty(_props?.amnesty))
+        }
+    }, [_props?.id])
     const dispatch = useDispatch();
     const amnesty = useSelector((state: RootStateOrAny) => state.soa.amnesty);
     const userProfileForm = useSelector((state: RootStateOrAny) => state.application.userProfileForm);
@@ -585,7 +590,7 @@ const Payment = (_props: any) => {
                                             paddingVertical: fontValue(5)
                                         }}
                                     >
-                                        {(props.edit && (['service-8', 'service-9'])?.indexOf(props?.serviceCode ) != -1 )? <View style={{  justifyContent: "center", flex: 1, marginHorizontal: 20}}>
+                                        {(props.edit )? <View style={{  justifyContent: "center", flex: 1, marginHorizontal: 20}}>
                                             <InputField mainContainerStyle={{marginBottom: 0}} value={amnesty} onChange={getOnChange}  placeholder={"Amnesty"}/>
                                         </View> : <></>}
                                         <View style={{marginRight: 30, flexDirection: "row"}}>

@@ -147,7 +147,7 @@ const transformText = (text: string) => {
     return text?.replace(/([a-z])([A-Z])/g, '$1 $2')?.split(' ')?.map((word: string) => word?.charAt(0)?.toUpperCase() + word?.substring?.(1))?.join(' ');
 };
 const transformToFeePayload = (application: any) => {
-    let { service = {}, region = '' } = application;
+    let { service = {}, isModified } = application;
     let {
         applicationDetails,
         applicationType,
@@ -224,6 +224,10 @@ const transformToFeePayload = (application: any) => {
         if (service.stationEquipment?.frequency) _frequencies?.push([{frequency: service.stationEquipment?.frequency}]);
         return _frequencies;
     };
+    let frequencyTXFn = () => {
+        let f = frequencyFn()?.[0]?.tx || frequencyFn()?.[0]?.frequency;
+        return (isNaN(f)) ? 0 : f;
+    };
     let tranmissionFn = () => {
         let _t = stationEquipment?.transmission?.split(' • ');
         return {
@@ -232,10 +236,10 @@ const transformToFeePayload = (application: any) => {
         };
     };
     let channelFn = () => {
-        let _frequency = frequencyFn();
+        let frequencies = frequencyFn();
         let _frequencies = [];
-        if (_frequency?.length > 0) {
-            _frequency?.forEach((f: any) => {
+        if (frequencies?.length > 0) {
+            frequencies?.forEach((f: any) => {
                 if (f?.tx > -1) _frequencies?.push(f?.tx);
                 if (f?.rx > -1) _frequencies?.push(f?.rx);
                 if (f?.frequency > -1) _frequencies?.push(f?.frequency);
@@ -358,6 +362,7 @@ const transformToFeePayload = (application: any) => {
         radioStationLicense = 'VSAT';
       }
       else radioStationLicense = '';
+
       if (radioStationLicense === 'FB') {
         if (bandwidth < 1) {}
         else if (bandwidth > 0 && bandwidth < 10) spectrum = '1-10';
@@ -370,6 +375,7 @@ const transformToFeePayload = (application: any) => {
       // wll
       // pointtomultipoint
       else if (radioStationLicense === 'FX') spectrum = 'pointtopoint';
+
       if (stationClass?.RT > 0) _station = 'repeater';
       else if (stationClass?.FX > 0) _station = 'fixed';
       else if (stationClass?.FB > 0) _station = 'landbase';
@@ -380,6 +386,7 @@ const transformToFeePayload = (application: any) => {
       // FA
       // MA
       else if (stationClass?.TC > 0) _station = 'TC-VSAT';
+
       return {
         spectrum,
         station: _station,
@@ -403,6 +410,7 @@ const transformToFeePayload = (application: any) => {
         power: Number(stationEquipment?.powerOutput || 0), //
         transmission: tranmissionFn()?.transmission, //
         frequency: tranmissionFn()?.frequency, //
+        frequencyTX: frequencyTXFn(), //
         bandwidth: bandwidthFn(), //
         mode: transmissionType?.transmissionType?.toLowerCase() || '', //
         stationClassUnits: classOfStation(), //
@@ -412,10 +420,12 @@ const transformToFeePayload = (application: any) => {
         updatedAt: new Date()?.toISOString(),
         typeOfEquipmentDevice: typeOfEquipmentDeviceFn(),
         natureOfService: natureOfService?.type || '',
+        isModified,
     };
 
     return feePayload;
 };
+
 const generatePassword = () =>{
     var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     var charsarr = chars.split('');

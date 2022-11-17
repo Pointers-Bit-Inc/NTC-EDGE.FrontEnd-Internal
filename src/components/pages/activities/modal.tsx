@@ -358,7 +358,7 @@ function ActivityModal(props: any) {
     const {showToast, hideToast} = useToast();
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
-
+    const soa = useSelector((state: RootStateOrAny) => state.soa?.soa);
 
 
     const updateApplication =(async (callback, isLoading = true) => {
@@ -404,6 +404,9 @@ function ActivityModal(props: any) {
                 cleanSoa = {...cleanSoa, ...{[key]: value}}
             }
         }
+
+
+
         let config = {
             headers: {
                 Authorization: "Bearer ".concat(user?.sessionToken)
@@ -465,43 +468,51 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
-            if(!payload.discount) {
-                delete payload.discount
+            if(!payload?.discount) {
+                delete payload?.discount
             }
-        const _flattenSoa = flatten.unflatten(cleanSoa).soa || [];
-            console.log(_flattenSoa, "_flattenSoa")
-        let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
+        const _flattenSoa = removeEmpty(flatten.unflatten(cleanSoa))?.soa?.filter(v => v?.item || v?.amount);
+
+            let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
             ...payload,
             ...feePayload
         }, config)
             .then((response) => {
-
                 if (isLoading)setLoading(false)
                 const diff =  _.differenceBy(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
                 let arr2 = (response.data?.statement_Of_Account || response.data?.soa)
-
-                let arr1 = removeEmpty(tabName == "Basic Info" ? diff  : _flattenSoa.filter(v => v.item || v.amount))
-
-                let unionWith = _.unionWith(arr1, arr2, (a, b) => a.item == b.item && a.amount == b.amount);
-
+                let arr1 = _flattenSoa ? removeEmpty( _flattenSoa?.filter(v => v?.item || v?.amount)) : []
+                let unionWith = _.unionWith(arr1 || [], arr2, (a, b) => a?.item == b?.item && a?.amount == b?.amount);
                 let exclude = [];
-                for (let i = 0; i < unionWith.length; i++) {
-                    let ubItem = unionWith[i].item
-                    let ubAmount = unionWith[i].amount
+
+                for (let i = 0; i < unionWith?.length; i++) {
+                    let ubItem = unionWith[i]?.item
+                    let ubAmount = unionWith[i]?.amount
                     for (let j = 0; j < arr2.length; j++) {
-                        if((arr2[j].item == ubItem && arr2[j].amount == ubAmount)){
-                            exclude.push(unionWith[i])
+                        if((arr2?.[j]?.item == ubItem && arr2?.[j]?.amount == ubAmount)){
+                            if(unionWith?.[i]){
+                                exclude.push(unionWith?.[i])
+                            }
                         }
                     }
                 }
-                const unionBy = _.unionBy(arr1,exclude, "item");
 
+                for (let b = 0; b < arr1.length; b++) {
+                    for (let a = 0; a < exclude.length; a++) {
+                        if(!(arr1?.[b]?.item == exclude?.[a]?.item) ){
+                            exclude.splice(b, 1)
+                        }
+                    }
+                }
+
+               const unionBy = arr1.length > 0 ? _.unionBy(arr1,exclude, "item") : [];
                 cleanSoa = {
                     //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                     totalFee: response.data?.totalFee,
-                    soa: _flattenSoa
+                    soa: unionBy
                 }
+
 
 
 
@@ -544,7 +555,6 @@ function ActivityModal(props: any) {
         if(amnesty){
             profileFormUnflatten!.amnesty = amnesty
         }
-
 
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
@@ -793,7 +803,7 @@ function ActivityModal(props: any) {
                                                 <ApprovedButton
                                                     user={user}
                                                     currentLoading={currentLoading}
-                                                    allButton={allButton}
+                                                    allButton={false}
                                                     onPress={() => {
                                                         if (getRole(user, [EVALUATOR])) {
                                                             setShowAlert1(true)

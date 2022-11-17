@@ -224,6 +224,8 @@ const ModalTab = props => {
                                         key={index}/>
                 case 'SOA & Payment':
                     return <Payment
+                        id={ props.details._id}
+                        amnesty={props.details.amnesty}
                         serviceCode={service?.serviceCode}
                         setPaymentIndex={setPaymentIndex}
                         saved={props.saved}
