@@ -118,15 +118,15 @@ const ModalTab = props => {
     const [applicationDetailIndex, setApplicationDetailIndex] = useSafeState(undefined)
     useEffect(() => {
         setInitialPage(true)
-        setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1)  ? 2 : 0)
-    }, [props.details._id]);
+        setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
+    }, [props.details._id, initialPage,  service]);
     const layout = useWindowDimensions();
 
-    const [index, setIndex] = React.useState(user?.role?.key == ACCOUNTANT && service?.serviceCode != "service-22"  ? 2 : 0);
+    const [index, setIndex] = React.useState(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0);
 
 
     const routes = useMemo(() => {
-
+        setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0)
         return tabs.filter((tab, _index) => {
             return !(service?.applicationType?.isDirectProcess == true && service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
@@ -145,7 +145,7 @@ const ModalTab = props => {
         })
 
 
-    }, [tabs])
+    }, [tabs, service, props.details?._id, index])
     useEffect(() => {
         dispatch(setEditModalVisible(false))
         if (paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
@@ -169,7 +169,7 @@ const ModalTab = props => {
     const renderScene = useMemo(() => {
         return ({route, jumpTo}) => {
             if (initialPage && Platform?.isPad) {
-                jumpTo(([ACCOUNTANT, CASHIER]?.indexOf(user?.role?.key) != -1)  ? 2 : 0)
+                jumpTo(([ACCOUNTANT, CASHIER]?.indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"   ? 2 : 0)
                 setInitialPage(false)
             }
 
@@ -224,7 +224,7 @@ const ModalTab = props => {
                                         key={index}/>
                 case 'SOA & Payment':
                     return <Payment
-                        id={ props.details._id}
+                        id={ props.details?._id}
                         amnesty={props.details.amnesty}
                         serviceCode={service?.serviceCode}
                         setPaymentIndex={setPaymentIndex}
@@ -255,7 +255,7 @@ const ModalTab = props => {
         props.saved,
         props.loading,
         props.edit,
-        index, props.details._id
+        index, props.details?._id
     ]);
     const getTranslateX = (
         position: Animated.AnimatedInterpolation,
@@ -302,7 +302,6 @@ const ModalTab = props => {
                 }),
         }
 
-        const width = getTabWidth(index) - 24
         return <TabBarIndicator   {...indicatorProps}
                                   style={indicatorStyle}
         />;
@@ -344,6 +343,7 @@ const ModalTab = props => {
                 );
             }}
             {...tabProp}
+            indicatorStyle={{ backgroundColor: 'white' }}
             renderIndicator={renderIndicator}
             tabStyle={{width: fontValue(180)}}
             scrollEnabled={true}
