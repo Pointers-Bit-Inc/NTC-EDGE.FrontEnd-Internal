@@ -53,7 +53,8 @@ const {
     SAVING_APPLICATION,
     ADD_APPLICATION,
     SET_REVIEWED,
-    SET_COMPLETED
+    SET_COMPLETED,
+    SET_REALTIME_COUNT
 } = require('./types').default;
 export function setSOA(payload: any) {
     return {
@@ -118,6 +119,11 @@ export function uploadRequirement(payload: any) {
 export function setFetchingSchedules(payload: boolean) {
     return {
         type: FETCHING_SCHEDULES,
+        payload,
+    }
+};export function setRealtimeCounts(payload: any) {
+    return {
+        type: SET_REALTIME_COUNT,
         payload,
     }
 };

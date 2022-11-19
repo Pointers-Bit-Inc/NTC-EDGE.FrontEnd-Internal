@@ -56,11 +56,11 @@ import {setSelectedChannel} from "../../../reducers/channel/actions";
 import {fontValue} from "@pages/activities/fontValue";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {setVisible} from "../../../reducers/activity/actions";
-import {infoColor, primaryColor} from "@styles/color";
+import {errorColor, infoColor, primaryColor} from "@styles/color";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {MeetingNotif} from '@components/molecules/list-item';
 import {
-    setApplicationItem,
+    setApplicationItem, setApplications,
     setCalendarVisible,
     setDateEnd,
     setDateStart,
@@ -93,9 +93,15 @@ import {SuccessButton} from "@atoms/button/successButton";
 import {DeclineButton} from "@atoms/button/errorButton";
 import hairlineWidth = StyleSheet.hairlineWidth;
 import moment from "moment";
+import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
+import {BASE_URL} from "../../../services/config";
+import useApplicationSignalr from "../../../hooks/useApplicationSignalr";
+import Badge from "@atoms/badge";
 
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
+
+
 
 const ActivitiesPage = (props) => {
     const dimensions = useWindowDimensions();
@@ -148,6 +154,24 @@ const ActivitiesPage = (props) => {
         prevDateEnd,
         infiniteLoad
     } = useActivities(props);
+
+    const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
+    const {
+        initSignalR,
+        destroySignalR,
+        onConnection,
+        onAddApplication,
+    } = useApplicationSignalr();
+
+
+    useEffect(() => {
+        initSignalR();
+        onConnection('onAddApplication', onAddApplication);
+        return () => destroySignalR();
+    }, []);
+
+
+
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
     const applicationItemId = useSelector((state: RootStateOrAny) => state.application.applicationItemId);
@@ -359,7 +383,7 @@ const ActivitiesPage = (props) => {
                     })*/
                     dispatch(setEdit(false))
                     dispatch(setHasChange(false))
-                    dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
+                    dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}${ act?.item?._id}`}));
                     //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                     if (event?.icon == 'more') {
                         setMoreModalVisible(true)
@@ -377,7 +401,7 @@ const ActivitiesPage = (props) => {
 
                     dispatch(setSelectedYPos({yPos, type: 1}))
 
-                }} index={`pin${i}${index}`}
+                }} index={`pin${i}${index}${ act?.item?._id}`}
                 swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
     }, [countRefresh, updateModal, user._id])
 
@@ -446,7 +470,7 @@ const ActivitiesPage = (props) => {
                                 dispatch(setSelectedYPos({yPos, type: 0}))
                                 dispatch(setApplicationItem({
                                     ...activity,
-                                    isOpen: `${index}${i}`
+                                    isOpen: `${index}${i}${ activity?._id}`
                                 }));
 
 
@@ -472,7 +496,7 @@ const ActivitiesPage = (props) => {
 
                             }}
 
-                            index={`${index}${i}`}
+                            index={`${index}${i}${ activity?._id}`}
                             swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                     )
                 }}/>
@@ -532,12 +556,15 @@ const ActivitiesPage = (props) => {
                     onRefresh={onRefresh}
                 />
             }
+
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyAssigned}
             data={pnApplications}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) => {
+                return item?.data + index.toString()
+            }}
             ListFooterComponent={bottomLoader}
             onEndReached={onEndReached}
             ref={pendingRef}
@@ -851,7 +878,11 @@ const ActivitiesPage = (props) => {
                                 {user?.role?.permission?.tabPermission?.all ?
                                     <Tab.Screen name="All">{renderAllActivities}</Tab.Screen> : null}
                                 {user?.role?.permission?.tabPermission?.pending ?
-                                    <Tab.Screen name="Pending">{renderPending}</Tab.Screen> : null}
+                                    <Tab.Screen options={{
+
+                                        tabBarBadge: () => <Badge  text={realtimecounts}>
+                                        </Badge>
+                                    }} name="Pending">{renderPending}</Tab.Screen> : null}
                                 {user?.role?.permission?.tabPermission?.history ?
                                     <Tab.Screen name="History">{renderHistory}</Tab.Screen> : null}
                             </Tab.Navigator> : <></>}

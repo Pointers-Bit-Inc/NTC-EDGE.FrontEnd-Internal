@@ -8,6 +8,7 @@ const InitialState = Record({
   selectedYPos: {yPos: 0, type: 0},
   notPinnedApplications:[],
   applications: [],
+  realtimecounts: 0,
   tabBarHeight: 0,
   hasChange: false,
   edit: false,

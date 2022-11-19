@@ -116,28 +116,30 @@ const ModalTab = props => {
     const [paymentIndex, setPaymentIndex] = useSafeState(undefined)
     const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
     const [applicationDetailIndex, setApplicationDetailIndex] = useSafeState(undefined)
+    const [index, setIndex] = React.useState(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0);
+
     useEffect(() => {
         setInitialPage(true)
         setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
-    }, [props.details._id, initialPage,  service]);
+    }, [props.details._id, initialPage, tabs,  service, ]);
     const layout = useWindowDimensions();
 
-    const [index, setIndex] = React.useState(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0);
 
 
     const routes = useMemo(() => {
-        setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0)
+        if([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1){
+            setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
+        }
+
         return tabs.filter((tab, _index) => {
             return !(service?.applicationType?.isDirectProcess == true && service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
-            console.log(__tab.title, "__tab.title")
             if (__tab.title == 'SOA & Payment') {
                 setPaymentIndex(__index)
             }
             if (__tab.title == 'Application Details') {
                 setApplicationDetailIndex(__index)
             }
-
             if (__tab.title == 'Basic Info') {
                 setBasicInfoIndex(__index)
             }
@@ -145,8 +147,9 @@ const ModalTab = props => {
         })
 
 
-    }, [tabs, service, props.details?._id, index])
+    }, [tabs, paymentIndex, applicationDetailIndex, basicInfoIndex, service, props.details?._id, index])
     useEffect(() => {
+        console.log(basicInfoIndex , index,applicationDetailIndex )
         dispatch(setEditModalVisible(false))
         if (paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
             console.log("setEditModalVisible", true)
@@ -163,7 +166,7 @@ const ModalTab = props => {
         }
 
 
-    }, [index, props.details._id, tabName, basicInfoIndex, paymentIndex, applicationDetailIndex])
+    }, [tabs, paymentIndex, applicationDetailIndex, basicInfoIndex, service, props.details?._id, index])
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
     const renderScene = useMemo(() => {

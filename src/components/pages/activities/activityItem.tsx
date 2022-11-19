@@ -270,7 +270,7 @@ const ActivityItem = (props: any) => {
     const propsMemo = useMemo(() => props, [props])
     const selected =useMemo(() => {
         return Platform.OS == "web" ? applicationItemId == propsMemo.selected : false
-    }, [applicationItemId] )
+    }, [applicationItemId,  propsMemo.selected] )
     const status = [CASHIER].indexOf(propsMemo?.role) != -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);
     const userActivity = propsMemo?.activity?.applicant?.user || propsMemo?.activity?.applicant;
 

@@ -31,6 +31,7 @@ import SettingIcon from "@assets/svg/SettingIcon";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import ScheduleIcon from "@assets/svg/scheduleIcon";
 import {isMobile} from "@pages/activities/isMobile";
+import Badge from "@atoms/badge";
 
 const CustomSidebarMenu=(props:any)=>{
     const dispatch=useDispatch();
@@ -79,7 +80,7 @@ const CustomSidebarMenu=(props:any)=>{
 
                     switch(route.name){
                         case ACTIVITIES:
-                            tabIcon=<ActivitySidebar focused={focused} fill={focused ? "#113196" : "#6E7191"} height={25} width={24}/>;
+                            tabIcon= <ActivitySidebar focused={focused} fill={focused ? "#113196" : "#6E7191"} height={25} width={24}/>
                             break;
                         case CHAT:
                             tabIcon=<ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;

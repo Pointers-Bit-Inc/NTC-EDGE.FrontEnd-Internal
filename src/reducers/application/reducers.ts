@@ -59,7 +59,8 @@ const {
     SAVE_APPLICATION_ERROR,
     SAVE_APPLICATION_SUCCESS,
     SET_REVIEWED,
-    SET_COMPLETED
+    SET_COMPLETED,
+    SET_REALTIME_COUNT
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -240,7 +241,12 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case SET_PINNED_APPLICATION: {
-            state = state.set('pinnedApplications', action.payload);
+            const pinned = [...state.pinnedApplications, action.payload];
+            state = state.set('pinnedApplications',pinned);
+            return state;
+        }
+        case SET_REALTIME_COUNT: {
+            state = state.set('realtimecounts', action.payload );
             return state;
         }
         case SET_NOT_PINNED_APPLICATION: {

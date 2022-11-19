@@ -29,6 +29,7 @@ import HelpTopBar from "@assets/svg/helpTopbar";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import {isMobile} from "@pages/activities/isMobile";
 import Login from "@screens/login/login";
+import SignalR from "@pages/signalr";
 import FloatingVideo from '@components/pages/chat-modal/floating-video';
 import {useComponentLayout} from "../hooks/useComponentLayout";
 import {
@@ -78,6 +79,7 @@ type RootStackParamList = {
     EditApplication: undefined;
     UserEdit: undefined;
     ChooseNewPassword: undefined;
+    SignalR: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -87,6 +89,7 @@ const linking = {
         screens: {
             App: '',
             AppIntro: 'Intro',
+            SignalR: 'SignalR',
             Login: 'Login',
             ForgotPassword: 'Forgot-Password',
             HomeScreen: 'Home',
@@ -223,6 +226,7 @@ const RootNavigator = () => {
                     }
                 }/>
 
+                <Stack.Screen name="SignalR" component={ SignalR }/>
                 <Stack.Screen name="UserProfileScreen" component={ UserProfile }/>
                 <Stack.Screen name="Settings" component={ Settings }/>
                 <Stack.Screen name="Meeting" component={ Meeting }/>
