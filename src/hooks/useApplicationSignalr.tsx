@@ -2,7 +2,12 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {BASE_URL} from "../services/config";
-import {setPinnedApplication, setRealtimeCounts} from "../reducers/application/actions";
+import {
+    setDecrementRealtimeCount,
+    setDeletePinnedApplication,
+    setPinnedApplication,
+    setRealtimeCounts
+} from "../reducers/application/actions";
 
 function useApplicationSignalr() {
     const dispatch = useDispatch();
@@ -34,11 +39,15 @@ function useApplicationSignalr() {
 
 
     function onAddApplication (id, data) {
-        let _r = JSON.parse(JSON.stringify(realtimecounts))
 
-
-        dispatch(setRealtimeCounts(_r))
+        dispatch(setRealtimeCounts(1))
         dispatch(setPinnedApplication(JSON.parse(data)))
+    }
+
+    function onDeleteApplication (id) {
+
+        dispatch(setDecrementRealtimeCount(1))
+        dispatch(setDeletePinnedApplication(id))
     }
 
     return {
@@ -46,6 +55,7 @@ function useApplicationSignalr() {
         onAddApplication,
         onConnection,
         destroySignalR,
+        onDeleteApplication
     };
 }
 

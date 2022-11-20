@@ -61,7 +61,9 @@ const {
     SET_REVIEWED,
     SET_COMPLETED,
     SET_REALTIME_COUNT,
-    RESET_REALTIME_COUNT
+    RESET_REALTIME_COUNT,
+    SET_DECREMENT_REALTIME_COUNT,
+    SET_DELETE_PINNED_APPLICATION
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -246,8 +248,21 @@ export default function basket(state = initialState, action = {}) {
             state = state.set('pinnedApplications',pinned);
             return state;
         }
+
+        case SET_DELETE_PINNED_APPLICATION: {
+
+
+
+            const pinned = [...state.pinnedApplications];
+            console.log("SET_DELETE_PINNED_APPLICATION", action.payload)
+            console.log("pinned",pinned.some(o => o._id == action.payload))
+            if (pinned.some(o => o._id == action.payload)) {
+                state = state.set('pinnedApplications', pinned.filter(o => o._id !== action.payload));
+            }
+            return state;
+        }
         case SET_REALTIME_COUNT: {
-            const realtimecounts = (+state.realtimecounts)  + (++action.payload);
+            const realtimecounts = (+state.realtimecounts)  + (action.payload);
 
             console.log(realtimecounts, "realtimecounts", action.payload, "action.payload")
 
@@ -256,6 +271,15 @@ export default function basket(state = initialState, action = {}) {
         }
         case RESET_REALTIME_COUNT: {
             state = state.set('realtimecounts', 0 );
+            return state;
+        }
+        case SET_DECREMENT_REALTIME_COUNT: {
+
+            const realtimecounts = (+state.realtimecounts)  - (action.payload);
+            if(realtimecounts > -1){
+                state = state.set('realtimecounts', realtimecounts );
+            }
+
             return state;
         }
         case SET_NOT_PINNED_APPLICATION: {

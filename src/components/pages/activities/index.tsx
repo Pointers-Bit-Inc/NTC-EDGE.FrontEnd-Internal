@@ -161,12 +161,14 @@ const ActivitiesPage = (props) => {
         destroySignalR,
         onConnection,
         onAddApplication,
+        onDeleteApplication,
     } = useApplicationSignalr();
 
 
     useEffect(() => {
         initSignalR();
         onConnection('OnAddApplication', onAddApplication);
+        onConnection('OnDeleteApplication', onDeleteApplication);
         return () => destroySignalR();
     }, []);
 
