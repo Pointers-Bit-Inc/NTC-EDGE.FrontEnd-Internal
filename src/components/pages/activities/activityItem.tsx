@@ -12,7 +12,7 @@ import {
     remarkColor,
     StatusText
 } from "@pages/activities/script";
-
+import * as Animatable from 'react-native-animatable'
 import {APPROVED, CASHIER, DECLINED,} from "../../../reducers/activity/initialstate";
 import {infoColor, outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -412,7 +412,8 @@ const ActivityItem = (props: any) => {
                         }
                     >
 
-                        <View
+                        <Animatable.View
+                            animation={'fadeIn'}
                             style={container}>
 
                             <View style={applicationContainer}>
@@ -553,7 +554,7 @@ const ActivityItem = (props: any) => {
                             </View>
 
 
-                        </View>
+                        </Animatable.View>
 
 
                     </ActivitySwipeable>
