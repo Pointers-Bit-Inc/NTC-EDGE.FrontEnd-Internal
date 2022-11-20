@@ -33,16 +33,14 @@ function useApplicationSignalr() {
         []);
 
 
-    const onAddApplication = (id, data) => {
-        const _r = realtimecounts+1
+    function onAddApplication (id, data) {
+        let _r = JSON.parse(JSON.stringify(realtimecounts))
+
+
         dispatch(setRealtimeCounts(_r))
         dispatch(setPinnedApplication(JSON.parse(data)))
     }
 
-    useEffect(() => {
-        initSignalR();
-        return () => destroySignalR();
-    }, []);
     return {
         initSignalR,
         onAddApplication,

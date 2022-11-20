@@ -21,11 +21,11 @@ import axios, { CancelTokenSource } from "axios";
 import {BASE_URL} from "../services/config";
 import {Alert, Animated, FlatList, Image, TouchableOpacity, View} from "react-native";
 import {
-    handleInfiniteLoad, setactivitySizeComponent, setApplicationItem,
+    handleInfiniteLoad, resetRealtimeCounts, setactivitySizeComponent, setApplicationItem,
     setApplications,
     setFilterRect,
     setNotPinnedApplication,
-    setPinnedApplication
+    setPinnedApplication, setRealtimeCounts
 } from "../reducers/application/actions";
 import Loader from "@pages/activities/bottomLoad";
 import {useComponentLayout} from "./useComponentLayout";
@@ -192,6 +192,7 @@ function useActivities(props) {
         setPinnedSize(0);
         setRefreshing(true);
         setCountRefresh(countRefresh + 1)
+        dispatch(resetRealtimeCounts())
     }, [countRefresh, refreshing, page, total, size, pinnedTotal, pinnedPage, pinnedSize]);
 
     const selectedClone = selectedChangeStatus?.filter((status: string) => {

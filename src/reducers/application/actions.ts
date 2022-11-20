@@ -54,7 +54,8 @@ const {
     ADD_APPLICATION,
     SET_REVIEWED,
     SET_COMPLETED,
-    SET_REALTIME_COUNT
+    SET_REALTIME_COUNT,
+    RESET_REALTIME_COUNT
 } = require('./types').default;
 export function setSOA(payload: any) {
     return {
@@ -125,6 +126,10 @@ export function setFetchingSchedules(payload: boolean) {
     return {
         type: SET_REALTIME_COUNT,
         payload,
+    }
+};export function resetRealtimeCounts() {
+    return {
+        type: RESET_REALTIME_COUNT
     }
 };
 export function addApplication(payload: any) {
