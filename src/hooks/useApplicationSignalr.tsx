@@ -8,6 +8,8 @@ import {
     setPinnedApplication,
     setRealtimeCounts
 } from "../reducers/application/actions";
+import {Audio} from "expo-av";
+import * as React from "react";
 
 function useApplicationSignalr() {
     const dispatch = useDispatch();
@@ -15,6 +17,8 @@ function useApplicationSignalr() {
     const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
     const signalr = useRef<HubConnection | null>(null);
     const [connectionStatus, setConnectionStatus] = useState('');
+    const soundRef:any=React.useRef(new Audio.Sound());
+
     const initSignalR = useCallback(async () => {
         signalr.current = new HubConnectionBuilder()
             .withUrl(`${BASE_URL}/applicationhub`, {
@@ -38,8 +42,13 @@ function useApplicationSignalr() {
         []);
 
 
-    function onAddApplication (id, data) {
+    async function onAddApplication(id, data) {
+        try {
+            await soundRef.current?.loadAsync(require('@assets/sound/notification_sound.mp3'), {shouldPlay: true});
+            await soundRef.current?.setIsLoopingAsync(false);
+        } catch (e) {
 
+        }
         dispatch(setRealtimeCounts(1))
         dispatch(setPinnedApplication(JSON.parse(data)))
     }
