@@ -19,7 +19,7 @@ import {
 } from "../../../reducers/activity/initialstate";
 import {fontValue} from "@pages/activities/fontValue";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
-import {useDispatch} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setDrawerLayout} from "../../../reducers/layout/actions";
 import DashboardIcon from "@assets/svg/DashboardIcon";
 import ReportIcon from "@assets/svg/ReportsIcon";
@@ -38,6 +38,7 @@ const CustomSidebarMenu=(props:any)=>{
     const {state}=props;
     const {routes,index}=state; //Not sure about the name of index property. Do check it out by logging the 'state' variable.
     const focusedRoute=routes[index];
+    const realtimecounts = useSelector((state: RootStateOrAny) => state.application?.realtimecounts);
     const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
     useEffect(()=>{
         dispatch(setDrawerLayout(activitySizeComponent))
@@ -80,7 +81,9 @@ const CustomSidebarMenu=(props:any)=>{
 
                     switch(route.name){
                         case ACTIVITIES:
-                            tabIcon= <ActivitySidebar focused={focused} fill={focused ? "#113196" : "#6E7191"} height={25} width={24}/>
+                            tabIcon= <Badge type="dot" text={realtimecounts} >
+                                <ActivitySidebar focused={focused} fill={focused ? "#113196" : "#6E7191"} height={25} width={24}/>
+                            </Badge>
                             break;
                         case CHAT:
                             tabIcon=<ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;

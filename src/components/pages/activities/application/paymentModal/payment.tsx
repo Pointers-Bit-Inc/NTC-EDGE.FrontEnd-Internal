@@ -443,6 +443,9 @@ const Payment = (_props: any) => {
             }
 
     })
+
+    console.log(props?.applicationTypeLabel, "props?.applicationTypeLabel")
+
     return <View style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardShift>
@@ -590,7 +593,7 @@ const Payment = (_props: any) => {
                                             paddingVertical: fontValue(5)
                                         }}
                                     >
-                                        {(props.edit )? <View style={{  justifyContent: "center", flex: 1, marginHorizontal: 20}}>
+                                        {(props.edit && props?.applicationTypeLabel?.toLowerCase()?.indexOf( "renewal" ) != -1 )? <View style={{  justifyContent: "center", flex: 1, marginHorizontal: 20}}>
                                             <InputField mainContainerStyle={{marginBottom: 0}} value={amnesty} onChange={getOnChange}  placeholder={"Amnesty"}/>
                                         </View> : <></>}
                                         <View style={{marginRight: 30, flexDirection: "row"}}>

@@ -353,7 +353,7 @@ export default function TabBar({navigation,route}){
         );
     }
 
-
+    const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
     const dimensions=useWindowDimensions();
     return (
         <>
@@ -362,6 +362,7 @@ export default function TabBar({navigation,route}){
                     Platform?.isPad||isTablet())) ? <Tab.Navigator   tabBar={(props)=><ActivityTab  {...props} />}>
                  <Tab.Screen options={({route})=>(
                      {
+                         tabBarBadge:  realtimecounts || 0,
                          headerShown:false,
                      })} name={ACTIVITIES} component={ActivitiesNavigator}/>
                  <Tab.Screen options={{headerShown:false}} name={CHAT} component={ChatScreen}/>
