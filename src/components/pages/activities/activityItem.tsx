@@ -280,7 +280,7 @@ const ActivityItem = (props: any) => {
         let basicLastName = propsMemo?.activity?.service?.basic?.lastName;
         let basicCompanyName = propsMemo?.activity?.service?.basic?.companyName;
         let basicClubName = propsMemo?.activity?.service?.basic?.clubName;
-        return propsMemo?.activity?.applicant?.userId == "2b2957c9-c604-4d0e-ad31-14466f172c06" ? (basicFirstName || basicLastName ?  `${basicFirstName || ""} ${basicLastName || ""}` : basicCompanyName ? basicCompanyName : basicClubName  ): ((propsMemo?.activity?.applicant?.userType == "Individual") ?
+        return propsMemo?.activity?.applicant?.userId == "2b2957c9-c604-4d0e-ad31-14466f172c06" || (basicFirstName || basicLastName) ? (basicFirstName || basicLastName ?  `${basicFirstName || ""} ${basicLastName || ""}` : basicCompanyName ? basicCompanyName : basicClubName  ): ((propsMemo?.activity?.applicant?.userType == "Individual") ?
             ((userActivity?.firstName || userActivity?.lastName || userActivity?.applicantName) ?
                 `${userActivity?.firstName || ""} ${userActivity?.lastName || ""}`.trim() || userActivity?.applicantName :
                 ((basicFirstName || basicFirstName) ?
