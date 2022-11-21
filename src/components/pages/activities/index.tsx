@@ -878,7 +878,7 @@ const ActivitiesPage = (props) => {
                         {user?.role?.permission?.tabPermission?.all || user?.role?.permission?.tabPermission?.pending || user?.role?.permission?.tabPermission?.history ?
                             <Tab.Navigator screenOptions={tabBarOptions}>
                                 {user?.role?.permission?.tabPermission?.all ?
-                                    <Tab.Screen name="All">{renderAllActivities}</Tab.Screen> : null}
+                                    <Tab.Screen  name="All">{renderAllActivities}</Tab.Screen> : null}
                                 {user?.role?.permission?.tabPermission?.pending ?
                                     <Tab.Screen options={{
 

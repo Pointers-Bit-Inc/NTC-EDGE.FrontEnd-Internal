@@ -76,6 +76,10 @@ function useApplicationSignalr() {
         dispatch(setRealtimeCounts(1))
         dispatch(setPinnedApplication(pinnedApplication))
     }
+    useEffect(()=>{
+        return  playbackInstance.current?.unloadAsync()
+    }, [])
+
 
     function onDeleteApplication (id) {
 

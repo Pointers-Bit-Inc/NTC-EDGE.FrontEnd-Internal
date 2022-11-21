@@ -35,7 +35,7 @@ import {
     SEARCH, SETTINGS, USERS,
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
-import {setTabBarHeight} from "../../../reducers/application/actions";
+import {resetRealtimeCounts, setTabBarHeight} from "../../../reducers/application/actions";
 import lodash from 'lodash';
 import {getRole} from "@pages/activities/script";
 import {Bold,Regular} from "@styles/font";
@@ -250,6 +250,8 @@ export default function TabBar({navigation,route}){
                             if(!isFocused&& !event.defaultPrevented){
                                 navigation.navigate({name:route.name,merge:true});
                             }
+
+                            dispatch(resetRealtimeCounts())
                         };
                         const onLongPress=()=>{
                             navigation.emit({

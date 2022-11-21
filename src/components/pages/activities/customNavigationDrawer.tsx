@@ -32,6 +32,7 @@ import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import ScheduleIcon from "@assets/svg/scheduleIcon";
 import {isMobile} from "@pages/activities/isMobile";
 import Badge from "@atoms/badge";
+import {resetRealtimeCounts} from "../../../reducers/application/actions";
 
 const CustomSidebarMenu=(props:any)=>{
     const dispatch=useDispatch();
@@ -59,7 +60,7 @@ const CustomSidebarMenu=(props:any)=>{
                     const onPress=()=>{
 
                         //if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
-
+                        dispatch(resetRealtimeCounts())
                         const event=props.navigation.emit({
                             type:'drawerItemPress',
                             target:route.key,
