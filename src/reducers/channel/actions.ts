@@ -39,6 +39,8 @@ const {
 
   UPDATE_PARTICIPANTS,
   UPDATE_PARTICIPANTS_STATUS,
+
+  SET_HAS_NEW_CHAT
 } = require('./types').default;
 
 export function setSelectedChannel(payload:IRooms | {}, isChannelExist = false) {
@@ -227,4 +229,12 @@ export function updateParticipantStatus(payload:any) {
     payload
   }
 }
+
+export function setHasNewChat(payload:boolean) {
+  return {
+    type: SET_HAS_NEW_CHAT,
+    payload,
+  };
+}
+
 

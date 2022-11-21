@@ -38,4 +38,6 @@ export default keyMirror({
 
   UPDATE_PARTICIPANTS: null,
   UPDATE_PARTICIPANTS_STATUS: null,
+
+  SET_HAS_NEW_CHAT: null
 });

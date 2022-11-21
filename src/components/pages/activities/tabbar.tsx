@@ -121,13 +121,41 @@ export default function TabBar({navigation,route}){
         checkVersion,
     }=useSignalr();
 
+    const hasNewChat=useSelector((state:RootStateOrAny)=>{
+        try {
+            const normalizedChannelList = Object?.values(state.channel?.normalizedChannelList)
+            for(let i=0; i<normalizedChannelList?.length; i++)
+            {
+                if(!normalizedChannelList?.[i]?.lastMessage?.hasSeen){
+                    return true ;
+                }
+            }
+        }catch (e) {
+
+        }
+
+        return false
+
+    });
     const pinnedApplications=useSelector((state:RootStateOrAny)=>state.application?.pinnedApplications);
     const notPinnedApplications=useSelector((state:RootStateOrAny)=>state.application?.notPinnedApplications);
     const tabBarHeight=useSelector((state:RootStateOrAny)=>state.application?.tabBarHeight);
     const currentMeeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
-    const hasNewChat = false;
+
+
+    console.log(hasNewChat)
+
     const hasMeet = false;
+    const { participants} =
+        useSelector((state: RootStateOrAny) => {
+            const { selectedChannel } = state.channel;
+            selectedChannel.otherParticipants = lodash.reject(
+                selectedChannel.participants,
+                (p:IParticipants) => p._id === user._id
+            );
+            return selectedChannel;
+        });
     const newMeeting = useMemo(() => {
       const meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
       const hasMeet = lodash.reject(meetingList, (mt:IMeetings) => mt.ended);
@@ -290,13 +318,20 @@ export default function TabBar({navigation,route}){
                                             label==CHAT
                                                 ?
                                                 (
-                                                    <ChatIcon notification={hasNewChat} width={fontValue(30)}
-                                                              height={fontValue(30)} fill={isFocused ? focused : unfocused}/>)
+                                                    <Badge noflex={true} type={'dot'} text={hasNewChat ? 1 : 0}>
+                                                        <ChatIcon notification={hasNewChat} width={fontValue(30)}
+                                                                  height={fontValue(30)} fill={isFocused ? focused : unfocused}/>
+                                                    </Badge>
+                                                    )
                                                 : label==MEET
                                                     ?
                                                     (
-                                                        <MeetIcon notification={hasMeet} width={fontValue(30)} height={fontValue(30)}
-                                                                  fill={isFocused ? focused : unfocused}/>)
+                                                        <Badge noflex={true} type={'dot'} text={hasMeet ? 1 : 0}>
+                                                            <MeetIcon notification={hasMeet} width={fontValue(30)} height={fontValue(30)}
+                                                                      fill={isFocused ? focused : unfocused}/>
+
+                                                        </Badge>
+                                                        )
 
                                                     :
                                                     label==SCANQR
@@ -394,7 +429,7 @@ export default function TabBar({navigation,route}){
                      },
                  }}
                  backBehavior='none'
-                 drawerContent={(props)=><CustomSidebarMenu {...props} />} initialRouteName={ACTIVITIES}>
+                 drawerContent={(props)=><CustomSidebarMenu hasMeet={hasMeet} hasNewChat={hasNewChat}  {...props} />} initialRouteName={ACTIVITIES}>
                  <Drawer.Screen options={{drawerLabel:ACTIVITIES,headerShown:false}} name={ACTIVITIES}
                                 component={ActivitiesNavigator}/>
                 {user?.role?.permission?.chatPermission ?<Drawer.Screen options={{drawerLabel:CHAT,headerShown:false}} name={CHAT} component={ChatScreen}/> : <></>}

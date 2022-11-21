@@ -36,6 +36,9 @@ const {
 
   UPDATE_PARTICIPANTS,
   UPDATE_PARTICIPANTS_STATUS,
+
+    SET_HAS_NEW_CHAT
+
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -140,6 +143,11 @@ export default function basket(state = initialState, action:any) {
 
       return newState;
     }
+
+
+    case SET_HAS_NEW_CHAT: {
+      return state.setIn(['hasNewChat'], action.payload);
+    }
     case SET_FILES: {
       return state.setIn(['files'], action.payload);
     }
@@ -226,7 +234,7 @@ export default function basket(state = initialState, action:any) {
         .setIn(['selectedChannel', 'lastMessage'], action.message)
         .setIn(['selectedChannel', 'updatedAt'], action.message.updatedAt);
       }
-      
+
       return newState;
     }
     case RESET_PENDING_MESSAGES: {

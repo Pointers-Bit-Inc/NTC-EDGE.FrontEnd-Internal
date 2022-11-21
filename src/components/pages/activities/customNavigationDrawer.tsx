@@ -35,6 +35,8 @@ import Badge from "@atoms/badge";
 import {resetRealtimeCounts} from "../../../reducers/application/actions";
 
 const CustomSidebarMenu=(props:any)=>{
+
+
     const dispatch=useDispatch();
     const {state}=props;
     const {routes,index}=state; //Not sure about the name of index property. Do check it out by logging the 'state' variable.
@@ -87,10 +89,14 @@ const CustomSidebarMenu=(props:any)=>{
                             </Badge>
                             break;
                         case CHAT:
-                            tabIcon=<ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            tabIcon= <Badge type="dot" text={props.hasNewChat ? 1 : 0} >
+                                <ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>
+                            </Badge>;
                             break;
                         case MEET:
-                            tabIcon=<MeetIcon fill={focused ? "#113196" : "#6E7191"}/>;
+                            tabIcon=<Badge type="dot" text={props.hasMeet ? 1 : 0} >
+                                <MeetIcon fill={focused ? "#113196" : "#6E7191"}/>
+                            </Badge>;
                             break;
                         case DASHBOARD:
                             tabIcon=<DashboardIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;

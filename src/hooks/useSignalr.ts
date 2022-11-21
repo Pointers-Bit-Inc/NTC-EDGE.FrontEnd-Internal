@@ -8,7 +8,17 @@ import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
 import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList, setToggle, endCall, updateMeetingParticipants } from 'src/reducers/meeting/actions';
-import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles, updateParticipants, updateParticipantStatus } from 'src/reducers/channel/actions';
+import {
+  addMessages,
+  updateMessages,
+  addChannel,
+  removeChannel,
+  updateChannel,
+  addFiles,
+  updateParticipants,
+  updateParticipantStatus,
+  setHasNewChat
+} from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -43,6 +53,7 @@ const useSignalr = () => {
   }
 
   const onChatUpdate = (users:Array<string>, type:string, data:any) => {
+
     if (data) {
       switch(type) {
         case 'create': {
@@ -307,7 +318,7 @@ const useSignalr = () => {
       return callback(err);
     });
   }, []);
-  
+
   const meetingLobby = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
     api.post(`/meetings/${meetingId}/lobby`, config)
     .then(res => {
@@ -418,7 +429,7 @@ const useSignalr = () => {
     }
     return callback();
   }, [])
-  
+
   return {
     connectionStatus,
     initSignalR,
