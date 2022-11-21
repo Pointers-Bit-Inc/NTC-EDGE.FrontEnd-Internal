@@ -3,7 +3,7 @@ import {TextStyle, View, ViewStyle} from 'react-native';
 import {errorColor} from "@styles/color";
 import Text from "@atoms/text"
 export interface BadgeProps {
-    /** 徽标内容 */
+   noflex?: false,
     text?: string | number;
     /** 展示封顶的数值 */
     max?: number;

@@ -66,6 +66,7 @@ import RoleAndPermissionNavigator from "../../../navigations/role-and-permission
 import ConfigurationNavigator from "../../../navigations/configuration";
 import ScheduleNavigator from "../../../navigations/schedule";
 import RoleAndPermissionIcon from "@assets/svg/roleandpermission";
+import Badge from "@atoms/badge";
 
 const {width}=Dimensions.get('window');
 
@@ -201,6 +202,7 @@ export default function TabBar({navigation,route}){
         setNotPnApplication(notPinnedApplications.reduce((n,e)=>!e?.dateRead ? n+1 : n,0))
 
     },[pinnedApplications,notPinnedApplications,pnApplication,notPnApplication]);
+    const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
 
     function ActivityTab({state,descriptors,navigation}:any){
         const currentRoute=state.routes.map((route:any,index:number)=>getFocusedRouteNameFromRoute(route));
@@ -273,9 +275,16 @@ export default function TabBar({navigation,route}){
                                     }}>
                                         {label==ACTIVITIES
                                             ? (
-                                                <ActivityTabbar notification={false} width={fontValue(30)}
-                                                                height={fontValue(30)}
-                                                                fill={isFocused ? focused : unfocused}/>) :
+                                                <>
+                                                    <Badge noflex={true} type={'dot'} text={realtimecounts}>
+                                                        <ActivityTabbar notification={false} width={fontValue(30)}
+                                                                        height={fontValue(30)}
+                                                                        fill={isFocused ? focused : unfocused}/>
+                                                    </Badge>
+
+                                                </>
+
+                                                ) :
                                             label==CHAT
                                                 ?
                                                 (
@@ -353,7 +362,6 @@ export default function TabBar({navigation,route}){
         );
     }
 
-    const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
     const dimensions=useWindowDimensions();
     return (
         <>
@@ -362,7 +370,6 @@ export default function TabBar({navigation,route}){
                     Platform?.isPad||isTablet())) ? <Tab.Navigator   tabBar={(props)=><ActivityTab  {...props} />}>
                  <Tab.Screen options={({route})=>(
                      {
-                         tabBarBadge:  realtimecounts || 0,
                          headerShown:false,
                      })} name={ACTIVITIES} component={ActivitiesNavigator}/>
                  <Tab.Screen options={{headerShown:false}} name={CHAT} component={ChatScreen}/>
