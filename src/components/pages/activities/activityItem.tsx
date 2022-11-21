@@ -275,26 +275,37 @@ const ActivityItem = (props: any) => {
     const userActivity = propsMemo?.activity?.applicant?.user || propsMemo?.activity?.applicant;
 
     const getStatus = getActivityStatus(propsMemo, status);
+    let userType = propsMemo?.activity?.applicant?.userType;
     const nameMemo = useMemo(() => {
         let basicFirstName = propsMemo?.activity?.service?.basic?.firstName;
         let basicLastName = propsMemo?.activity?.service?.basic?.lastName;
         let basicCompanyName = propsMemo?.activity?.service?.basic?.companyName;
         let basicClubName = propsMemo?.activity?.service?.basic?.clubName;
-        return propsMemo?.activity?.applicant?.userId == "2b2957c9-c604-4d0e-ad31-14466f172c06" || (basicFirstName || basicLastName) ? (basicFirstName || basicLastName ?  `${basicFirstName || ""} ${basicLastName || ""}` : basicCompanyName ? basicCompanyName : basicClubName  ): ((propsMemo?.activity?.applicant?.userType == "Individual") ?
-            ((userActivity?.firstName || userActivity?.lastName || userActivity?.applicantName) ?
-                `${userActivity?.firstName || ""} ${userActivity?.lastName || ""}`.trim() || userActivity?.applicantName :
-                ((basicFirstName || basicFirstName) ?
-                    `${basicFirstName || ""} ${basicLastName || ""}` :
-                    (basicCompanyName ?  basicCompanyName : "") )) :
-            ((propsMemo?.activity?.applicant?.companyName ||basicCompanyName)  ?
-                (propsMemo?.activity?.applicant?.companyName ||basicCompanyName ) :
-                (propsMemo?.activity?.service?.applicationDetails?.clubName ?
-                    propsMemo?.activity?.service?.applicationDetails?.clubName :
-                    ((userActivity?.firstName || userActivity?.lastName || userActivity?.applicantName) ?
-                        `${userActivity?.firstName || ""} ${userActivity?.lastName || ""}`.trim() || userActivity?.applicantName :
-                        ((basicFirstName || basicFirstName) ?
-                            `${basicFirstName || ""} ${basicLastName || ""}` :
-                            (basicCompanyName ?  basicCompanyName : "") )))))
+        let companyName = propsMemo?.activity?.applicant?.companyName;
+        let clubName = propsMemo?.activity?.service?.applicationDetails?.clubName;
+        let firstName = userActivity?.firstName;
+        let lastName = userActivity?.lastName;
+        let applicantName = userActivity?.applicantName;
+        return propsMemo?.activity?.applicant?.userId == "2b2957c9-c604-4d0e-ad31-14466f172c06"
+        || (basicFirstName || basicLastName) ?
+            (basicFirstName || basicLastName ?
+                `${basicFirstName || ""} ${basicLastName || ""}`
+                : basicCompanyName ? basicCompanyName : basicClubName)
+            : ((userType == "Individual") ?
+                ((firstName || lastName || applicantName) ?
+                    `${firstName || ""} ${lastName || ""}`.trim() || applicantName :
+                    ((basicFirstName || basicFirstName) ?
+                        `${basicFirstName || ""} ${basicLastName || ""}` :
+                        (basicCompanyName ? basicCompanyName : ""))) :
+                ((companyName || basicCompanyName) ?
+                    (companyName || basicCompanyName) :
+                    (clubName ? clubName :
+                        ((firstName || lastName || applicantName) ?
+                            `${firstName || ""} ${lastName || ""}`.trim() || applicantName :
+                            ((basicFirstName || basicFirstName) ?
+                                `${basicFirstName || ""} ${basicLastName || ""}` :
+                                (basicCompanyName ? basicCompanyName :
+                                    ""))))))
     }, [userActivity])
     useEffect(() => {
         let unsubscribe = true;
@@ -444,7 +455,7 @@ const ActivityItem = (props: any) => {
                                                         />
                                                         <View>
                                                             <Text style={{fontSize: fontValue(12,), color: "#606A80"}}>
-                                                                {propsMemo?.activity?.applicant?.userType ? propsMemo?.activity?.applicant?.userType : "Individual" }
+                                                                {userType ? userType : "Individual" }
                                                             </Text>
                                                         </View>
 
