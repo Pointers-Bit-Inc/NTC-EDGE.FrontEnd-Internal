@@ -8,7 +8,7 @@ import {
     setPinnedApplication,
     setRealtimeCounts
 } from "../reducers/application/actions";
-import {Audio} from "expo-av";
+import {Audio, } from "expo-av";
 import * as React from "react";
 
 function useApplicationSignalr() {
@@ -17,7 +17,7 @@ function useApplicationSignalr() {
     const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
     const signalr = useRef<HubConnection | null>(null);
     const [connectionStatus, setConnectionStatus] = useState('');
-    const soundRef:any=React.useRef(new Audio.Sound());
+    const playbackInstance:any=React.useRef(null);
 
     const initSignalR = useCallback(async () => {
         signalr.current = new HubConnectionBuilder()
@@ -44,10 +44,26 @@ function useApplicationSignalr() {
 
     async function onAddApplication(id, data) {
         try {
-            await soundRef.current?.loadAsync(require('@assets/sound/notification_sound.mp3'), {shouldPlay: true});
-            await soundRef.current?.setIsLoopingAsync(false);
-        } catch (e) {
+            try {
+                if (playbackInstance?.current != null) {
+                    await playbackInstance?.current?.unloadAsync();
+                    // this.playbackInstance.setOnPlaybackStatusUpdate(null);
+                    playbackInstance.current = null;
+                }
+                const { sound, status } = await Audio.Sound.createAsync(
+                    require('@assets/sound/notification_sound.mp3'),
+                    {shouldPlay: true}
+                );
 
+                console.log(status, "status")
+                playbackInstance.current = sound;
+            }catch (e){
+                console.log(e)
+            }
+
+
+        } catch (e) {
+            console.log(e)
         }
         dispatch(setRealtimeCounts(1))
         dispatch(setPinnedApplication(JSON.parse(data)))
