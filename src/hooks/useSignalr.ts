@@ -19,6 +19,8 @@ import {
   updateParticipantStatus,
   setHasNewChat
 } from 'src/reducers/channel/actions';
+import {Audio} from "expo-av";
+import * as React from "react";
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -26,7 +28,7 @@ const useSignalr = () => {
   const [connectionStatus, setConnectionStatus] = useState('');
   const signalr = useRef<HubConnection|null>(null);
   const api = useApi(user.sessionToken);
-
+  const playbackInstance:any=React.useRef(null);
   const initSignalR = useCallback(async () => {
     signalr.current = new HubConnectionBuilder()
         .withUrl(`${BASE_URL}/chathub`, {
@@ -80,27 +82,57 @@ const useSignalr = () => {
       }
     }
   };
+  const playSound = async (del?:any) => {
+    try {
+      try {
+        if (playbackInstance?.current != null) {
+          await playbackInstance?.current?.unloadAsync();
+          // this.playbackInstance.setOnPlaybackStatusUpdate(null);
+          playbackInstance.current = null;
+        }
+        const {sound, status} = await Audio.Sound.createAsync(
+              del ? require('@assets/sound/delete.mp3') : require('@assets/sound/notification_sound.mp3'),
+            {shouldPlay: true}
+        );
 
+        console.log(status, "status")
+        playbackInstance.current = sound;
+      } catch (e) {
+        console.log(e)
+      }
+
+
+    } catch (e) {
+      console.log(e)
+    }
+  }
   const onRoomUpdate = (users:Array<string>, type:string, data:any) => {
     if (data) {
       switch(type) {
         case 'create': {
+          playSound()
           dispatch(addChannel(data));
           if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
           if (data?.lastMessage?.attachment !== null) dispatch(addFiles(data.lastMessage));
           break;
         }
         case 'update': {
+          playSound()
           dispatch(updateChannel(data));
           if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
           break;
         }
         case 'updateParticipants': {
+          playSound()
           dispatch(updateParticipants(data));
           break;
         }
-        case 'delete': dispatch(removeChannel(data._id)); break;
+        case 'delete': {
+          playSound(true)
+          dispatch(removeChannel(data._id));
+        } break;
         case 'remove': {
+          playSound(true)
           dispatch(removeChannel(data._id));
           Alert.alert('Alert', 'You have been removed from the chat.');
           break;

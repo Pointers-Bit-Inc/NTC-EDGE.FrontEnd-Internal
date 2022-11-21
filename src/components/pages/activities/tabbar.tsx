@@ -143,19 +143,7 @@ export default function TabBar({navigation,route}){
     const currentMeeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
 
-
-    console.log(hasNewChat)
-
     const hasMeet = false;
-    const { participants} =
-        useSelector((state: RootStateOrAny) => {
-            const { selectedChannel } = state.channel;
-            selectedChannel.otherParticipants = lodash.reject(
-                selectedChannel.participants,
-                (p:IParticipants) => p._id === user._id
-            );
-            return selectedChannel;
-        });
     const newMeeting = useMemo(() => {
       const meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
       const hasMeet = lodash.reject(meetingList, (mt:IMeetings) => mt.ended);
