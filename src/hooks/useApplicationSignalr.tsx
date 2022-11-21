@@ -65,8 +65,16 @@ function useApplicationSignalr() {
         } catch (e) {
             console.log(e)
         }
+
+
+        let pinnedApplication = JSON.parse(data)
+
+        if(pinnedApplication?.region?.value){
+            pinnedApplication.region = pinnedApplication.region?.value
+        }
+
         dispatch(setRealtimeCounts(1))
-        dispatch(setPinnedApplication(JSON.parse(data)))
+        dispatch(setPinnedApplication(pinnedApplication))
     }
 
     function onDeleteApplication (id) {
