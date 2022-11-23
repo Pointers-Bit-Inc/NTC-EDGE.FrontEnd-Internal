@@ -84,8 +84,29 @@ function useApplicationSignalr() {
     }, [])
 
 
-    function onDeleteApplication (id) {
+    async function onDeleteApplication(id) {
+        try {
+            try {
+                if (playbackInstance?.current != null) {
+                    await playbackInstance?.current?.unloadAsync();
+                    // this.playbackInstance.setOnPlaybackStatusUpdate(null);
+                    playbackInstance.current = null;
+                }
+                const {sound, status} = await Audio.Sound.createAsync(
+                    require('@assets/sound/delete.mp3'),
+                    {shouldPlay: true}
+                );
 
+                console.log(status, "status")
+                playbackInstance.current = sound;
+            } catch (e) {
+                console.log(e)
+            }
+
+
+        } catch (e) {
+            console.log(e)
+        }
         dispatch(setDecrementRealtimeCount(1))
         dispatch(setDeletePinnedApplication(id))
     }
