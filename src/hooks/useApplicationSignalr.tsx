@@ -77,7 +77,10 @@ function useApplicationSignalr() {
         dispatch(setPinnedApplication(pinnedApplication))
     }
     useEffect(()=>{
-        return  playbackInstance.current?.unloadAsync()
+        return  () => {
+            destroySignalR()
+            playbackInstance.current?.unloadAsync()
+        }
     }, [])
 
 
