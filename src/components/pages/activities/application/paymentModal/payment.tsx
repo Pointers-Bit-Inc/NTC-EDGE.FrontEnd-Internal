@@ -594,7 +594,7 @@ const Payment = (_props: any) => {
                                         }}
                                     >
                                         {(props.edit && props?.applicationTypeLabel?.toLowerCase()?.indexOf( "renewal" ) != -1 )? <View style={{  justifyContent: "center", flex: 1, marginHorizontal: 20}}>
-                                            <InputField mainContainerStyle={{marginBottom: 0}} value={amnesty} onChange={getOnChange}  placeholder={"Amnesty"}/>
+                                            <InputField mainContainerStyle={{marginBottom: 0}} value={amnesty} onChange={getOnChange} label={"Amnesty (%)"}  placeholder={"Amnesty"}/>
                                         </View> : <></>}
                                         <View style={{marginRight: 30, flexDirection: "row"}}>
                                             <Text

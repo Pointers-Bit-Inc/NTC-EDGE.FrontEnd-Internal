@@ -52,6 +52,7 @@ const Login = ({ navigation }: any) => {
 
                         <View style={ styles.bottomContainer }>
                             <Button
+                                testID={'login-button'}
                                 style={ [
                                     styles.loginButton ,
                                     {

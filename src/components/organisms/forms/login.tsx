@@ -95,6 +95,7 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
     return (
         <View style={[styles.container]}>
             <InputField
+                testID={"email-input"}
                 onKeyPress={(event)=>{
                     if(Platform?.OS==="web"&&event?.nativeEvent?.key=="Tab"){
                         event?.preventDefault();
@@ -121,6 +122,7 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
                 }}
             />
             <PasswordField
+                testID={"password-input"}
                 ref={passwordRef}
                 inputStyle={InputStyles.text}
                 label={'Password'}

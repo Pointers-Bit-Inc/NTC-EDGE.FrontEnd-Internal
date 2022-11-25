@@ -138,7 +138,7 @@ export function SearchActivity(props: { navigation: any, setApplications: any, i
                         <View style={styles.group}>
 
                             <InputField ref={inputRef}
-
+                                        testID="search-input"
                                         inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                         value={props.value}
                                         onEndEditing={props.onEndEditing}

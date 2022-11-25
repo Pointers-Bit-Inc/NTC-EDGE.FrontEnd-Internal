@@ -13,7 +13,7 @@ import {isMobile} from "@pages/activities/isMobile";
         //onLayout={ props.onSearchLayoutComponent}
         style={[styles.searcg, props.animated]}>
         <View style={[styles.rect26, {paddingVertical: isMobile || dimensions?.width < 800 ?  10 : undefined } ]}>
-            <TouchableOpacity onPress={props.onPress}>
+            <TouchableOpacity testID={'fake-search'} onPress={props.onPress}>
                 <View style={[styles.rect7, {marginTop: 0, width: "100%", marginLeft: 0}]}>
                         <View style={styles.iconRow}>
 

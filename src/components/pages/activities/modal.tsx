@@ -493,10 +493,13 @@ function ActivityModal(props: any) {
                         if((arr2?.[j]?.item == ubItem && arr2?.[j]?.amount == ubAmount)){
                             if(unionWith?.[i]){
                                 exclude.push(unionWith?.[i])
+                                console.log(unionWith?.[i], "exclude")
                             }
                         }
                     }
                 }
+
+
 
                 for (let b = 0; b < arr1.length; b++) {
                     for (let a = 0; a < exclude.length; a++) {
@@ -506,7 +509,10 @@ function ActivityModal(props: any) {
                     }
                 }
 
-               const unionBy = arr1.length > 0 ? _.unionBy(arr1,exclude, "item") : [];
+
+
+
+               const unionBy = arr1.length > 0 ? _.unionBy(arr1, exclude, "item") : [];
                 cleanSoa = {
                     //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                     totalFee: response.data?.totalFee,
