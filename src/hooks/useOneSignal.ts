@@ -1,7 +1,7 @@
 import OneSignal from 'react-native-onesignal'
 import Constants from "expo-constants";
 import IUser from 'src/interfaces/IUser';
-import {useNavigation} from "@react-navigation/native";
+import {StackActions, useNavigation} from "@react-navigation/native";
 import {ACTIVITYITEM} from "../reducers/activity/initialstate";
 import axios from "axios";
 import {BASE_URL} from "../services/config";
@@ -30,9 +30,19 @@ const useOneSignal = (user:IUser) => {
             Authorization: "Bearer ".concat(user?.sessionToken)
           }
         }).then((response) => {
-          dispatch(setApplicationItem(response.data))
+          let _response = response.data
+          if(_response?.region?.code){
+            _response.region = _response?.region?.code
+          }
+          dispatch(setApplicationItem(_response))
           navigation.navigate(ACTIVITYITEM, {
-            onDismissed: () => {},
+            onDismissed: () => {
+             if(navigation.canGoBack()){
+               navigation.goBack()
+             }else{
+               navigation.dispatch(StackActions.replace('ActivitiesScreen'));
+             }
+            },
             onChangeEvent: () => {},
             onChangeAssignedId: () => {}
           })
