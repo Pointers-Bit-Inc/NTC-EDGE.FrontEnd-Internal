@@ -468,11 +468,6 @@ PODS:
   - RNScreens (3.8.0):
     - React-Core
     - React-RCTImage
-  - RNSound (0.11.2):
-    - React-Core
-    - RNSound/Core (= 0.11.2)
-  - RNSound/Core (0.11.2):
-    - React-Core
   - RNSVG (12.1.1):
     - React
   - SDWebImage (5.11.1):
@@ -567,7 +562,6 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNSound (from `../node_modules/react-native-sound`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -732,8 +726,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  RNSound:
-    :path: "../node_modules/react-native-sound"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   Yoga:
@@ -819,7 +811,6 @@ SPEC CHECKSUMS:
   RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
   RNReanimated: 024eff8202342abf4b24e11575a16afc441dabfe
   RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
-  RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
