@@ -10,6 +10,7 @@ import {
 } from "../reducers/application/actions";
 import {Audio, } from "expo-av";
 import * as React from "react";
+import {Platform} from "react-native";
 
 function useApplicationSignalr() {
     const dispatch = useDispatch();
@@ -55,10 +56,31 @@ function useApplicationSignalr() {
                     {shouldPlay: true}
                 );
 
-                console.log(status, "status")
                 playbackInstance.current = sound;
+
+
             }catch (e){
                 console.log(e)
+            }
+            if(Platform.OS == "web"){
+                if (!("Notification" in window)) {
+
+                    alert("This browser does not support desktop notification");
+                } else if (Notification.permission === "granted") {
+
+                    // if so, create a notification
+                    const notification = new Notification(`New Application ${(id?.slice(0,6))} added`);
+                    // …
+                } else if (Notification.permission !== "denied") {
+
+                    Notification.requestPermission().then((permission) => {
+
+                        if (permission === "granted") {
+                            const notification = new Notification(`New Application ${(id?.slice(0,6))} added`);
+                            // …
+                        }
+                    });
+                }
             }
 
 
