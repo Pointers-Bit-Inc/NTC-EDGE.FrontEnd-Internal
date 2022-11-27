@@ -69,14 +69,14 @@ function useApplicationSignalr() {
                 } else if (Notification.permission === "granted") {
 
                     // if so, create a notification
-                    const notification = new Notification(`New Application ${(id?.slice(0,6))} added`);
+                    const notification = new Notification(`New Application ${(id?.slice(0,6))} added`, {icon:  require('@assets/electron.png')});
                     // …
                 } else if (Notification.permission !== "denied") {
 
                     Notification.requestPermission().then((permission) => {
 
                         if (permission === "granted") {
-                            const notification = new Notification(`New Application ${(id?.slice(0,6))} added`);
+                            const notification = new Notification(`New Application ${(id?.slice(0,6))} added`, {icon:  require('@assets/electron.png')});
                             // …
                         }
                     });
