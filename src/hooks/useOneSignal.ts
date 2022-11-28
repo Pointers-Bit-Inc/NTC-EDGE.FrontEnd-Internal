@@ -13,6 +13,7 @@ import {useDispatch} from "react-redux";
 const useOneSignal = (user:IUser) => {
   const navigation = useNavigation();
   const dispatch=useDispatch();
+
   const initialize = () => {
     OneSignal.setAppId(Constants.manifest?.extra?.oneSignalAppId);
     OneSignal.provideUserConsent(true);
@@ -22,6 +23,8 @@ const useOneSignal = (user:IUser) => {
     if (user.email) OneSignal.setEmail(user.email);
     if (user.contactNumber) OneSignal.setSMSNumber(user.contactNumber);
     if (user.role?.key) OneSignal.sendTag("role", user.role.key);
+
+
     OneSignal.setNotificationOpenedHandler(notification => {
       const id = notification?.notification?.additionalData?.id;
       if (id) {
