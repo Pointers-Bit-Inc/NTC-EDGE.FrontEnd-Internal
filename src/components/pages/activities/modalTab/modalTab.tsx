@@ -86,7 +86,7 @@ const ModalTab = props => {
             title: 'SOA & Payment',
             key: 'SOA & Payment',
             active: false,
-            isShow: [CASHIER, ACCOUNTANT, EVALUATOR]
+            isShow: [DIRECTOR, CASHIER, ACCOUNTANT, EVALUATOR]
         },
     ]);
     const loading = useMemo(() => props.loading, [props.loading])
@@ -116,17 +116,17 @@ const ModalTab = props => {
     const [paymentIndex, setPaymentIndex] = useSafeState(undefined)
     const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
     const [applicationDetailIndex, setApplicationDetailIndex] = useSafeState(undefined)
-    const [index, setIndex] = React.useState(([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0);
+    const [index, setIndex] = React.useState(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0);
 
     useEffect(() => {
         setInitialPage(true)
-        setIndex(([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
+        setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
     }, [props.details._id, initialPage, tabs,  service, ]);
     const layout = useWindowDimensions();
 
     const routes = useMemo(() => {
-        if([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1){
-            setIndex(([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
+        if([ ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1){
+            setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
         }
 
         return tabs.filter((tab, _index) => {
@@ -147,10 +147,8 @@ const ModalTab = props => {
 
     }, [tabs, paymentIndex, applicationDetailIndex, basicInfoIndex, service, props.details?._id, index])
     useEffect(() => {
-        console.log(basicInfoIndex , index,applicationDetailIndex )
         dispatch(setEditModalVisible(false))
         if (paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
-            console.log("setEditModalVisible", true)
             dispatch(setTabName("SOA & Payment"))
             dispatch(setEditModalVisible(true))
         } else if ((basicInfoIndex == index || applicationDetailIndex == index ) && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
