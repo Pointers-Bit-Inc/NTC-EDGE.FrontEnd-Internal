@@ -124,8 +124,6 @@ const ModalTab = props => {
     }, [props.details._id, initialPage, tabs,  service, ]);
     const layout = useWindowDimensions();
 
-
-
     const routes = useMemo(() => {
         if([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1){
             setIndex(([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
