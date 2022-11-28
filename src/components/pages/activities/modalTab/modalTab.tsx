@@ -116,19 +116,19 @@ const ModalTab = props => {
     const [paymentIndex, setPaymentIndex] = useSafeState(undefined)
     const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
     const [applicationDetailIndex, setApplicationDetailIndex] = useSafeState(undefined)
-    const [index, setIndex] = React.useState(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0);
+    const [index, setIndex] = React.useState(([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"  ? 2 : 0);
 
     useEffect(() => {
         setInitialPage(true)
-        setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
+        setIndex(([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
     }, [props.details._id, initialPage, tabs,  service, ]);
     const layout = useWindowDimensions();
 
 
 
     const routes = useMemo(() => {
-        if([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1){
-            setIndex(([ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
+        if([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1){
+            setIndex(([DIRECTOR, ACCOUNTANT, CASHIER].indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22" ? 2 : 0)
         }
 
         return tabs.filter((tab, _index) => {
