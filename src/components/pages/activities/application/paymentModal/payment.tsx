@@ -309,19 +309,19 @@ const Payment = (_props: any) => {
     };
 
 
-    const [soa, setSoa] = useSafeState(props?.soa?.map(((s, index) => {
-        return {...s, ...{error: false, isEdit: false, id: index}}
+    const [soa, setSoa] = useSafeState(props?.soa?.filter(s => !(['delete'].indexOf(s?.type ) > -1))?.map(((s, index) => {
+        return {...s, error: false, isEdit: false, id: index}
     })) || [])
 
     useEffect(() => {
-        setSoa(props?.soa?.map(((s, index) => {
-            return {...s, ...{error: false, isEdit: false, id: index}}
+        setSoa(props?.soa?.filter(s => !(['delete'].indexOf(s?.type ) > -1))?.map(((s, index) => {
+            return {...s, error: false, isEdit: false, id: index}
         })) || [])
     }, [props.soa, props.edit])
 
     const getTotal = () => {
         let total = 0;
-        soa?.map(s => total += isNumber(parseFloat(s.amount)) ? parseFloat(s.amount) : 0);
+        soa?.filter(s => !(['delete'].indexOf(s?.type ) > -1))?.map(s => total += isNumber(parseFloat(s.amount)) ? parseFloat(s.amount) : 0);
         return props.totalFee?.toFixed(2);
     };
     const largestNumber = (array) => {
@@ -335,22 +335,21 @@ const Payment = (_props: any) => {
 
         const obj = {id: largestNumber(soa), type: 'add', error: false, 'item': "", 'amount': "" + 0,};
         setSoa((s) => {
-
             return [...s, obj]
         })
-
     }
     const closeItem = (id, index) => {
         let state = {...userProfileForm};
         let arr = soa.filter((el, i) => {
             return el.id !== id
         });
-
+/*
         delete state?.["soa." + id + ".amount"];
         delete state?.["soa." + id + ".item"];
         delete state?.["soa." + id + ".id"];
         delete state?.["soa." + id + ".isEdit"];
-        delete state?.["soa." + id + ".description"];
+        delete state?.["soa." + id + ".description"];*/
+        state["soa." + id + ".type"]  = "delete"
         dispatch(setUserProfileForm(state))
         setSoa(arr);
     }
@@ -367,8 +366,7 @@ const Payment = (_props: any) => {
         setSoa(prevState => {
             const newState = prevState.map((obj, i) => {
                 if (obj.id === index) {
-
-                    return {...obj, [stateName]: value};
+                    return {...obj, type: "edit",  [stateName]: value};
                 }
 
                 return obj;
@@ -387,8 +385,13 @@ const Payment = (_props: any) => {
          }
 
      }, [])*/
-    const applicantForm = (stateName, value) => {
+    const applicantForm = (stateName, value, s?) => {
         let newForm = {...userProfileForm}
+
+        if(s?.id){
+            newForm["soa." + s.id + ".type"] = s?.type
+        }
+
         newForm[stateName] = value
         dispatch(setUserProfileForm(newForm))
     }
@@ -444,8 +447,6 @@ const Payment = (_props: any) => {
 
     })
 
-    console.log(props?.applicationTypeLabel, "props?.applicationTypeLabel")
-
     return <View style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardShift>
@@ -490,8 +491,9 @@ const Payment = (_props: any) => {
                                     </Text>
                                 </View>
                                 {
-                                    soa.length ? soa?.map((s, index) => {
-                                            return <View key={index} style={{
+                                    soa.length ? soa?.filter(s => !(['delete'].indexOf(s?.type ) > -1))?.map((s, index) => {
+
+                                        return <View key={index} style={{
                                                 borderBottomColor: "#E5E5E5",
                                                 borderBottomWidth: 2,
                                                 width: "100%"
@@ -515,7 +517,7 @@ const Payment = (_props: any) => {
 
                                                                       s.error = false
                                                                   }
-                                                                  applicantForm(stateName, value)
+                                                                  applicantForm(stateName, value, s)
                                                               }}
                                                               error={s.error}
                                                               stateName={"soa." + s.id + ".item"}
@@ -536,7 +538,7 @@ const Payment = (_props: any) => {
                                                               updateForm={(stateName, value) => {
                                                                   updateSoa('amount', parseFloat(value), s.id)
                                                                   applicantForm('totalFee', getTotal(soa))
-                                                                  applicantForm(stateName, value)
+                                                                  applicantForm(stateName, value, s)
                                                               }}
                                                               touchableStyle={{alignSelf: "flex-end"}}
                                                               stateName={"soa." + s.id + ".amount"}

@@ -91,6 +91,8 @@ function ActivityModal(props: any) {
 
         }
 */
+
+        console.log(_applicationItem)
         return _applicationItem
     });
     const sceneIndex = useSelector((state: RootStateOrAny) => {
@@ -398,14 +400,11 @@ function ActivityModal(props: any) {
         // /^soa.+(?:\[\d+])?(?:\.\w+(?:\[\d+])?)*$/;
         let pattern = /^soa\.\d+\.\w+$/
         let cleanSoa = {}
-
         for (const [key, value] of Object.entries(profileForm)) {
-            if (key.match(pattern) && value) {
+            if (key.match(pattern)) {
                 cleanSoa = {...cleanSoa, ...{[key]: value}}
             }
         }
-
-
 
         let config = {
             headers: {
@@ -493,7 +492,6 @@ function ActivityModal(props: any) {
                         if((arr2?.[j]?.item == ubItem && arr2?.[j]?.amount == ubAmount)){
                             if(unionWith?.[i]){
                                 exclude.push(unionWith?.[i])
-                                console.log(unionWith?.[i], "exclude")
                             }
                         }
                     }
@@ -503,7 +501,7 @@ function ActivityModal(props: any) {
 
                 for (let b = 0; b < arr1.length; b++) {
                     for (let a = 0; a < exclude.length; a++) {
-                        if(!(arr1?.[b]?.item == exclude?.[a]?.item) ){
+                        if(!(arr1?.[b]?.item == exclude?.[a]?.item) &&  (['add', 'edit'].indexOf(arr1?.[b]?.type) > -1) ){
                             exclude.splice(b, 1)
                         }
                     }
@@ -512,13 +510,15 @@ function ActivityModal(props: any) {
 
 
 
-               const unionBy = arr1.length > 0 ? _.unionBy(arr1, exclude, "item") : [];
+                const unionBy = arr1.length > 0 ? _.unionBy(arr1, exclude, "item"): [];
+
+
+
                 cleanSoa = {
                     //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                     totalFee: response.data?.totalFee,
-                    soa: unionBy
+                    soa: unionBy?.filter((s) => s?.type != "delete")
                 }
-
 
 
 
@@ -574,7 +574,6 @@ function ActivityModal(props: any) {
              setTitleUpdate("Success")*/
             let _applicationItem = response.data?.doc
 
-            console.log(_applicationItem, "_applicationItem")
 
             if(_applicationItem?.region?.code){
                 _applicationItem.region = _applicationItem?.region?.code ? _applicationItem?.region?.code :  _applicationItem?.region
