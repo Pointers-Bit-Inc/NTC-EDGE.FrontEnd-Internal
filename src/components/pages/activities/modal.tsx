@@ -92,7 +92,6 @@ function ActivityModal(props: any) {
         }
 */
 
-        console.log(_applicationItem)
         return _applicationItem
     });
     const sceneIndex = useSelector((state: RootStateOrAny) => {
