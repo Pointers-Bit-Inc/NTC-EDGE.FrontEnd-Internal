@@ -151,7 +151,7 @@ export default function QrCodeScan(props: any) {
                 hasPermission && (
                     <RNCamera
                         onBarCodeRead={handleBarCodeScanned}
-                        type={type ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
+                        type={cameraType ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
                         barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
                         style={[StyleSheet.absoluteFillObject, styles.container]}
                     >
@@ -164,6 +164,7 @@ export default function QrCodeScan(props: any) {
             }
                 <View style={styles.topButtons}>
                     <TouchableOpacity onPress={()=>{
+
                         setCameraType((type) => !type)
                     }}>
                         <CameraRear width={fontValue(26)} height={fontValue(26)}/>
