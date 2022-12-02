@@ -523,9 +523,17 @@ const Payment = (_props: any) => {
                                                               stateName={"soa." + s.id + ".item"}
                                                               edit={props.edit}
                                                               display={userProfileForm?.["soa." + s.id + ".item"] || "Item"}
+                                                              description={userProfileForm?.["soa." + s.id + ".description" || ""]}
+                                                              descriptionStyle={{
+                                                                  paddingBottom: 14,
+                                                                  color: "#37405B",
+                                                                  fontSize: fontValue(10),
+                                                                    fontStyle: "italic"
+                                                              }}
                                                               label={"Item:"}
                                                               style={{
-                                                                  paddingVertical: 14,
+                                                                  paddingTop:14,
+
                                                                   color: "#37405B",
                                                                   fontSize: fontValue(12)
                                                               }}

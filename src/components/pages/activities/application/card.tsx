@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         textAlign : "left"
     } ,
 })
-const Card = (_props: {error?:any, inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+const Card = (_props: {description?:any, error?:any, inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, descriptionStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
    const props = useMemo(()=> _props, [_props] )
     const isNum = props.keyboardType == 'number-pad' ||props.keyboardType == 'decimal-pad' || props.keyboardType == 'numeric'
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
@@ -44,6 +44,7 @@ const Card = (_props: {error?:any, inputFieldStyle?:any, keyboardType?:string, t
     }
     }>
         <Text style={[props.style,]}>{isNum ? toFixedTrunc(currency(props.display || props.applicant), 2): (props.display || props.applicant)}</Text>
+        {props.description ? <Text style={[props.descriptionStyle]}>{`  ${props.description}`}</Text> : <View style={[props.descriptionStyle]}></View>}
     </TouchableOpacity> : <>
         {((props.edit && props.editable && props.showEdit) )? <InputField description={"Duplicate Entry"} error={props.error} hasValidation={props.error} keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
             if(!props.edit) props?.updateApplication()
