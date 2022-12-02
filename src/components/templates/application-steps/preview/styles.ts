@@ -10,6 +10,7 @@ export default StyleSheet.create({
     ...Platform.select({
      web:{
         width: "100%",
+
      }
     }),
     backgroundColor: '#fff',
@@ -170,7 +171,7 @@ export default StyleSheet.create({
     fontFamily: Bold,
     fontSize: RFValue(16),
   },
-  
+
   gggChildContainer: {
     marginHorizontal: 5
   },
