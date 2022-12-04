@@ -23,7 +23,7 @@ import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import Constants from "expo-constants";
 import PdfDownload from "./download/pdfDownload";
-import {PAID} from "../../../../reducers/activity/initialstate";
+import {ACCOUNTANT, CASHIER, EVALUATOR, PAID} from "../../../../reducers/activity/initialstate";
 import Moment from 'moment';
 import Timeline from "@molecules/timeline/timeline";
 import Card from "@pages/activities/application/card";
@@ -125,7 +125,7 @@ const ApplicationDetails = (props: any) => {
                        applicant={userProfileForm?.["service.applicationType.element"]}/>
 
                 {
-                    ((props?.documents && (props?.applicantType || props?.service?.name)) || (props?.paymentStatus == PAID)) &&
+                    (((props?.documents || (([EVALUATOR]?.indexOf(props.user?.role?.key) != -1) ? !!props?.tempdocuments : false)) && (props?.applicantType || props?.service?.name)) || (props?.paymentStatus == PAID)) &&
                     <View style={{paddingVertical: 10}}>
                         <Pressable onPress={() => setModalVisible(true)}>
                             <View style={{flexDirection: "row"}}>
@@ -137,7 +137,7 @@ const ApplicationDetails = (props: any) => {
                             </View>
 
                         </Pressable>
-                        <PdfDownload url={props?.documents}/>
+                        <PdfDownload url={ props?.documents || props?.tempdocuments}/>
                     </View>
                 }
 

@@ -15,6 +15,7 @@ export default function useApplicant(props) {
         createdAt = props?.createdAt ,
         proofOfPayment = props?.proofOfPayment,
         documents = props?.document,
+        tempdocuments = props?.tempdocument,
         remarks=  props?.remarks,
         paymentStatus = props?.paymentStatus,
         saved = props.saved
@@ -33,6 +34,7 @@ export default function useApplicant(props) {
         createdAt,
         schedule,
         documents,
+        tempdocuments,
         remarks,
         paymentStatus,
         paymentHistory,

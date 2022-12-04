@@ -106,6 +106,7 @@ const ModalTab = props => {
         assignedPersonnel,
         createdAt,
         documents,
+        tempdocuments,
         proofOfPayment,
         remarks,
         paymentStatus,
@@ -202,7 +203,7 @@ const ModalTab = props => {
                                       key={index}/>;
 
                 case 'Application Details':
-                    return <ApplicationDetails saved={props.saved}
+                    return <ApplicationDetails user={user} saved={props.saved}
                                                loading={props.loading}
                                                edit={props.edit}
                                                setEditAlert={props.setEditAlert}
@@ -214,6 +215,8 @@ const ModalTab = props => {
                                                createdAt={createdAt}
                                                service={service}
                                                documents={documents}
+                                               assignedPersonnel={assignedPersonnel}
+                                               tempdocuments={tempdocuments}
                                                selectedType={selectedTypes}
                                                applicantType={applicationType}
                                                key={index}/>;
