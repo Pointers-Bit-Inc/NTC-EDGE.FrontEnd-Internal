@@ -1,4 +1,4 @@
-const {SET_UPDATE_INCREMENT, SET_TAB_NAME, SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS,SET_EDIT_MODAL_VISIBLE, ADD_ACTIVITY} = require('./types').default;
+const {ON_CHECKED_FILTER, SET_UPDATE_INCREMENT, SET_TAB_NAME, SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS,SET_EDIT_MODAL_VISIBLE, ADD_ACTIVITY} = require('./types').default;
 
 export function setActivity(payload) {
   return {
@@ -18,6 +18,12 @@ export function addActivity(payload) {
 export function on_checked(payload) {
   return {
     type: ON_CHECKED,
+    payload,
+  };
+}
+export function onCheckedFilter(payload) {
+  return {
+    type: ON_CHECKED_FILTER,
     payload,
   };
 }

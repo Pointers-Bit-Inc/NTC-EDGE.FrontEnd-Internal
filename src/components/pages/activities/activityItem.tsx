@@ -158,13 +158,13 @@ const RenderStatus = ({trigger, status}: any) => {
         >
             {/* {statusIcon(status,{marginRight:3})}*/}
 
-            <Text
-                style={{color: "#fff"}}
-                size={fontValue(10)}
-                numberOfLines={1}
-            >
-                {status?.toUpperCase()}
-            </Text>
+                <Text
+                    style={{color: "#fff"}}
+                    size={fontValue(10)}
+                    numberOfLines={1}
+                >
+                    {status?.toUpperCase()}
+                </Text>
         </View>
     )
 };

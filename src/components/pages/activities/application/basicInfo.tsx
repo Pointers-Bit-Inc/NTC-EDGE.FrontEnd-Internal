@@ -107,11 +107,11 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
                 getStatusText(props.props, props?.personnel) == APPROVED ? getStatusText(props.props, props?.personnel) : (!excludeStatus(props.props, props?.personnel) || ([CASHIER].indexOf(props.user?.role?.key) != -1 ? !!(props.paymentHistory1?.remarks || props.paymentHistory1?.[0]?.remarks) : (props.approvalHistory?.remarks || props.approvalHistory?.[0]?.remarks)))) ?
                 <View style={{alignItems: "flex-end"}}>
 
-                    <Text style={{color: "#808196"}}>by</Text>
+                    <Text style={{color: "#808196"}}>{ props?.personnel ? "by" : ""}</Text>
                     <CustomText
                         style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                         {(
-                            props?.personnel !== undefined ? `${props?.personnel?.firstName} ${props?.personnel?.lastName}` : ``)}
+                            props?.personnel ? `${props?.personnel?.firstName} ${props?.personnel?.lastName}` : ``)}
 
                     </CustomText>
                 </View>
@@ -168,7 +168,10 @@ const BasicInfo = (_props: any) => {
             _personnel = props?.assignedPersonnel
         } else if (props?.paymentStatus == APPROVED || props?.paymentStatus == DECLINED) {
             _personnel = props?.paymentHistory?.[0]?.personnel || props?.paymentHistory?.personnel;
+        } else if ((props?.approvalHistory?.action == APPROVED || props?.approvalHistory?.[0]?.action == APPROVED)) {
+            _personnel = ""
         } else {
+
             _personnel = props?.approvalHistory?.[0]?.personnel || props?.approvalHistory?.personnel;
 
         }

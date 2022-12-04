@@ -357,11 +357,10 @@ export default function basket(state = initialState, action = {}) {
             const isPinned = []
             const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;
 
-
             for (let i = 0; i < action.payload?.data?.length; i++) {
 
                 if ((
-                        (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel) == action.payload?.user?._id) &&
+                        (action.payload?.data?.[i]?.assignedPersonnel?.role || action.payload?.data?.[i]?.assignedPersonnel) == (action.payload?.user?.role?.key )) &&
                     !isCashier(cashier, action, i)) {
 
                     isPinned.push(action.payload?.data?.[i])
@@ -371,10 +370,10 @@ export default function basket(state = initialState, action = {}) {
             }
 
             state = state.set('notPinnedApplications', [
-                ...isNotPinned
+                ..._.uniqBy(isNotPinned, "_id"),
             ]);
             state = state.set('pinnedApplications', [
-                ...isPinned
+                ..._.uniqBy(isPinned, "_id"),
             ]);
 
             return state
@@ -385,7 +384,8 @@ export default function basket(state = initialState, action = {}) {
             const isPinned = []
             const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;
             for (let i = 0; i < action.payload?.data.length; i++) {
-                if (((action.payload?.data[i]?.assignedPersonnel?._id || action.payload?.data[i]?.assignedPersonnel) === action.payload?.user?._id) &&
+
+                if (((action.payload?.data[i]?.assignedPersonnel?.role || action.payload?.data[i]?.assignedPersonnel) === action.payload?.user?.role?.key ) &&
                     !isCashier(cashier, action, i)) {
                     isPinned.push(action.payload?.data[i])
                 } else {

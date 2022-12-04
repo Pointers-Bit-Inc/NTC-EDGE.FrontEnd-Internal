@@ -64,6 +64,6 @@ export default StyleSheet.create({
   },
   requiredText: {
     color: text?.error,
-    fontSize: RFValue(16),
+    fontSize: 16,
   }
 });

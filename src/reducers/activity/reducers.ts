@@ -1,6 +1,6 @@
 import {CASHIER, DIRECTOR, EVALUATOR} from "./initialstate";
 
-const {SET_UPDATE_INCREMENT, SET_TAB_NAME, SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SET_RESET_FILTER_STATUS,  SET_EDIT_MODAL_VISIBLE, SET_VISIBLE, ADD_ACTIVITY } = require('./types').default;
+const {ON_CHECKED_FILTER, SET_UPDATE_INCREMENT, SET_TAB_NAME, SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SET_RESET_FILTER_STATUS,  SET_EDIT_MODAL_VISIBLE, SET_VISIBLE, ADD_ACTIVITY } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 const initialState = new InitialState();
@@ -38,6 +38,27 @@ export default function basket(state = initialState, action = {}) {
       }
       state = state.set("selectedChangeStatus", selectChangeStatus)
 
+      return state
+    }
+
+    case ON_CHECKED_FILTER:{
+
+      const newArr = state.get("filterCode");
+      const index = newArr.findIndex((app:any) => {
+        return app.id == action.payload.id
+      })
+      newArr[index].checked = !newArr[index].checked
+      state = state.set("filterCode", newArr)
+
+
+
+      let selectChangeStatus = []
+      for (let i = 0; i < newArr.length; i++) {
+        if (newArr[i].checked) {
+          selectChangeStatus.push(newArr[i].status)
+        }
+      }
+      state = state.set("selectedChangeFilter", selectChangeStatus)
       return state
     }
     case SET_VISIBLE:{

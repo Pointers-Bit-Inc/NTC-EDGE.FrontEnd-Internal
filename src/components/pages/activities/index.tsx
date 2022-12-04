@@ -55,7 +55,7 @@ import {openUrl} from "../../../utils/web-actions";
 import {setSelectedChannel} from "../../../reducers/channel/actions";
 import {fontValue} from "@pages/activities/fontValue";
 import HomeMenuIcon from "@assets/svg/homemenu";
-import {setVisible} from "../../../reducers/activity/actions";
+import {on_checked, onCheckedFilter, selectChangeStatus, setVisible} from "../../../reducers/activity/actions";
 import {errorColor, infoColor, primaryColor} from "@styles/color";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {MeetingNotif} from '@components/molecules/list-item';
@@ -93,10 +93,11 @@ import {SuccessButton} from "@atoms/button/successButton";
 import {DeclineButton} from "@atoms/button/errorButton";
 import hairlineWidth = StyleSheet.hairlineWidth;
 import moment from "moment";
-import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
-import {BASE_URL} from "../../../services/config";
+import { RNChipView } from 'react-native-chip-view'
 import useApplicationSignalr from "../../../hooks/useApplicationSignalr";
 import Badge from "@atoms/badge";
+import {getRole, remarkColor} from "@pages/activities/script";
+import CloseCircleo from "@assets/svg/closecircleo";
 
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
@@ -154,7 +155,8 @@ const ActivitiesPage = (props) => {
         prevDateEnd,
         infiniteLoad
     } = useActivities(props);
-
+    const filterCode=useSelector((state:RootStateOrAny)=>state.activity?.filterCode);
+    const statusCode=useSelector((state:RootStateOrAny)=>state.activity?.statusCode);
     const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
     const {
         initSignalR,
@@ -755,6 +757,57 @@ const ActivitiesPage = (props) => {
             useNativeDriver: false,
         }).start();
     }
+
+    const renderStatusItem = ({ item }) => (
+       <View style={{alignItems: "center", flexDirection: "row",
+           marginLeft: 5, justifyContent: "space-between",  backgroundColor: "#F79E1B",
+           paddingHorizontal: fontValue(10),
+           paddingVertical: fontValue(5),
+           borderRadius: fontValue(30)}}>
+           <View style={{ paddingRight: 10}}>
+               <Text
+                   style={{color: "#fff"}}
+                   size={fontValue(10)}
+                   numberOfLines={1}
+               >
+                   {item?.label?.toUpperCase() || item?.status?.toUpperCase()}
+               </Text>
+           </View>
+           <View>
+               <TouchableOpacity onPress={ () => {
+
+                   dispatch(on_checked(item))
+               } }>
+               <CloseCircleo color={"#f3f3f3"}/>
+               </TouchableOpacity>
+           </View>
+       </View>
+    );
+    const renderFilterStatusItem = ({ item }) => (
+        <View style={{alignItems: "center", flexDirection: "row",
+            marginLeft: 5, justifyContent: "space-between",  backgroundColor: "#F79E1B",
+            paddingHorizontal: fontValue(10),
+            paddingVertical: fontValue(5),
+            borderRadius: fontValue(30)}}>
+            <View style={{ paddingRight: 10}}>
+                <Text
+                    style={{color: "#fff"}}
+                    size={fontValue(10)}
+                    numberOfLines={1}
+                >
+                    {item?.label?.toUpperCase() || item?.status?.toUpperCase()}
+                </Text>
+            </View>
+            <View>
+                <TouchableOpacity onPress={ () => {
+
+                    dispatch(onCheckedFilter(item))
+                } }>
+                    <CloseCircleo color={"#f3f3f3"}/>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -847,6 +900,53 @@ const ActivitiesPage = (props) => {
                                 }
 
                             </View>
+                            {
+                                statusCode.filter((item: any) => {
+                                    return getRole(user , item?.isShow) && item.checked
+                                }).length > 0 ?
+                                    <View style={{backgroundColor: "#fff"}}>
+                                        <View  style={{paddingVertical: 5, paddingHorizontal: 10}}>
+                                            <Text style={{fontFamily: Bold}}>
+                                                Sort By:
+                                            </Text>
+                                        </View>
+                                        <FlatList
+                                            contentContainerStyle={{padding: 5}}
+                                            showsHorizontalScrollIndicator={false}
+                                            horizontal={true}
+
+                                            data={statusCode.filter((item: any) => {
+                                                return getRole(user , item?.isShow) && item.checked
+                                            })}
+                                            renderItem={renderStatusItem}
+                                            keyExtractor={item => item.id}
+                                        />
+                                    </View>
+                                    : <></>
+                            }
+                            {
+                                filterCode.filter((item: any) => {
+                                    return getRole(user , item?.isShow) && item.checked
+                                }).length > 0 ?
+                                    <View style={{backgroundColor: "#fff"}} >
+                                            <View style={{paddingVertical: 5, paddingHorizontal: 10}}>
+                                                <Text style={{fontFamily: Bold}}>
+                                                    Filter By:
+                                                </Text>
+                                            </View>
+                                    <FlatList
+                                        contentContainerStyle={{padding: 5}}
+                                        showsHorizontalScrollIndicator={false}
+                                        horizontal={true}
+                                        data={filterCode.filter((item: any) => {
+                                            return getRole(user , item?.isShow) && item.checked
+                                        })}
+
+                                        renderItem={renderFilterStatusItem}
+                                        keyExtractor={item => item.id}
+                                    />
+                                </View>: <></>
+                            }
 
                             <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}
                                            animated={{}} onPress={() => {
@@ -856,6 +956,8 @@ const ActivitiesPage = (props) => {
 
                                 props.navigation.navigate(isMobile ? SEARCHMOBILE : SEARCH);
                             }} searchVisible={searchVisible}/>
+
+
                             {calendarVisible ? <View style={styles.calendarView}>
                                 <View style={{padding: 10}}>
                                     <Text style={{fontSize: 16, fontFamily: Bold}}>Date Filter: </Text>
@@ -872,6 +974,8 @@ const ActivitiesPage = (props) => {
                                               endDate={dateEnd}
                                               onPress1={props.onPress1}/>
                             </View> : <></>}
+
+
                         </View>
 
 

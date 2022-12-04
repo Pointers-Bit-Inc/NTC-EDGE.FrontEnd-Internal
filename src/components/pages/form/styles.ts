@@ -2,6 +2,7 @@ import {button, infoColor,input, lightPrimaryColor} from '@styles/color';
 import {Bold} from '@styles/font';
 import {Dimensions,Platform,StyleSheet} from 'react-native';
 import {RNValue as RFValue} from "../../../utils/formatting";
+
 const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
@@ -35,7 +36,7 @@ export default StyleSheet.create({
       web: {
         paddingHorizontal: 50,
         gap: 60
-       // minWidth: ((width * 0.60978835978) - 30) / 4,
+        // minWidth: ((width * 0.60978835978) - 30) / 4,
         // alignItems: 'flex-start',
       }
     }),
@@ -45,12 +46,12 @@ export default StyleSheet.create({
   tabViewContainerMoreThan4: {
     paddingHorizontal: 10,
     ...Platform.select({
-         native: {
-           alignItems: 'center',
-         },
+      native: {
+        alignItems: 'center',
+      },
       web: {
 
-       // alignItems: 'flex-start',
+        // alignItems: 'flex-start',
       }
 
     })
@@ -74,12 +75,6 @@ export default StyleSheet.create({
     color: input?.text?.defaultColor,
     fontSize: RFValue(16),
     fontFamily: Bold,
-    ...Platform.select({
-      web: {
-        padding: 10,
-       // backgroundColor: "#F4F4F4",
-      }
-    }),
     marginBottom: 10,
   },
   headerTextTouch: {
@@ -94,10 +89,10 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   listFieldContainer: {
-   backgroundColor: '#f9f9f9',
-   padding: 20,
-   marginBottom: 20,
-   borderRadius: 10,
+    backgroundColor: '#f9f9f9',
+    padding: 20,
+    marginBottom: 20,
+    borderRadius: 10,
   },
   footerContainer: {
     flexDirection: 'row',
@@ -130,13 +125,10 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   sectionHeaderContainer:{
-    ...Platform.select({
-      web: {
-        paddingVertical: 20
-      }
-    }),
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    alignContent: 'center',
   },
   infoTitle: {
     color: input?.text?.defaultColor,

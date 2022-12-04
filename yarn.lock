@@ -11923,6 +11923,11 @@ react-native-chart-kit@^6.12.0:
     paths-js "^0.4.10"
     point-in-polygon "^1.0.1"
 
+react-native-chip-view@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/react-native-chip-view/-/react-native-chip-view-0.0.12.tgz#4e7fc7b45220a14803d2c50cf331ca6d9b788fb0"
+  integrity sha512-9AshvLilm91ICl7iJrqsKvvrC6/QU5/q5oRO9IaK4dhBVgQbXPjqgVNWZdbA+iLeXmsS+xwvxDHSfJsnztBJFg==
+
 react-native-codegen@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/react-native-codegen/-/react-native-codegen-0.0.6.tgz#b3173faa879cf71bfade8d030f9c4698388f6909"

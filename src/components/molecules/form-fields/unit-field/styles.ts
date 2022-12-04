@@ -10,14 +10,25 @@ export default StyleSheet.create({
     marginBottom: -5
   },
   dropdownContainer: {
-    width: Platform.select({
-      native: (width - 50) / 2,
+     ...Platform.select({
+      native: {
+        width: (width - 50)/ 2
+     } ,
+      web: {
+        flex: 0.495,
+      }
     }),
+
     marginBottom: 15,
   },
   dropdownContainer3: {
-    width: Platform.select({
-      native: (width - 110) / 2,
+    ...Platform.select({
+      native: {
+        width: (width - 50)/ 2
+      } ,
+      web: {
+        flex: 0.495,
+      }
     }),
   },
   dropdownContainer2: {

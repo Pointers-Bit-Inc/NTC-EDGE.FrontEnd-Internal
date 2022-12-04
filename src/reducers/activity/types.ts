@@ -12,5 +12,6 @@ export default keyMirror({
   SET_EDIT_MODAL_VISIBLE: null,
   SET_FEED_VISIBLE: null,
   SET_TAB_NAME: null,
-  SET_UPDATE_INCREMENT: null
+  SET_UPDATE_INCREMENT: null,
+  ON_CHECKED_FILTER: null
 });

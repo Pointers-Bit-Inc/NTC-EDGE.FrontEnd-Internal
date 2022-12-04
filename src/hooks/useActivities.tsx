@@ -83,6 +83,7 @@ function useActivities(props) {
 
 
     const selectedChangeStatus = useSelector((state: RootStateOrAny) => state.activity?.selectedChangeStatus);
+    const selectedChangeFilter = useSelector((state: RootStateOrAny) => state.activity?.selectedChangeFilter);
     const visible = useSelector((state: RootStateOrAny) => state.activity?.visible);
     const calendarVisible = useSelector((state: RootStateOrAny) => state.application?.calendarVisible);
     const prevDateEnd = useSelector((state: RootStateOrAny) => state.application?.prevDateEnd);
@@ -203,6 +204,9 @@ function useActivities(props) {
         return status == DATE_ADDED
     });
 
+
+
+
     const dateEndMemo = useMemo(() => {
         return dateEnd?.toISOString()
     }, [dateEnd?.toISOString()])
@@ -233,6 +237,9 @@ function useActivities(props) {
                     sort: checkDateAdded.length ? "asc" : "desc",
                     region: user?.employeeDetails?.region
                 }),
+            ...(selectedChangeFilter.length > 0 && {
+                filters: selectedChangeFilter?.toString()
+            }),
             ...(
                 selectedClone.length > 0 && {
                     [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
@@ -310,12 +317,19 @@ function useActivities(props) {
             })
         ).catch((err) => {
             console.log("fnApplications", "refreshing, infinite")
-            setRefreshing(false);
+
             if(err?.message != "Operation canceled due to new request."){
                 Alert.alert('Alert', err?.message || 'Something went wrong.');
 
             }
-
+            if (axios.isCancel(err)) {
+                setRefreshing(true)
+                setInfiniteLoad(true);
+            } else {
+                setIsError(true)
+                setRefreshing(false)
+                setInfiniteLoad(false);
+            }
             setInfiniteLoad(false)
             if (err?.request?.status == "401") {
                 const api = Api(user.sessionToken);
@@ -347,7 +361,7 @@ function useActivities(props) {
             url: BASE_URL + `/users/${user._id}/assigned-applications`,
             pinned: 1
         }, {url: BASE_URL + `/users/${user._id}/unassigned-applications`, pinned: 0}])
-    }, [countRefresh, searchTerm, selectedChangeStatus.length, ]);
+    }, [countRefresh,  selectedChangeFilter.length, searchTerm, selectedChangeStatus.length, ]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -362,12 +376,12 @@ function useActivities(props) {
     const pnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(pinnedApplications)
-    }, [updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage]);
+    }, [updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length,  selectedChangeFilter?.length, pinnedApplications?.length, currentPage]);
 
     const notPnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(notPinnedApplications)
-    }, [updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage]);
+    }, [updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length,  selectedChangeFilter?.length ,notPinnedApplications?.length, currentPage]);
 
     const userPress = (index: number) => {
         let newArr = [...numberCollapsed];
@@ -491,7 +505,8 @@ function useActivities(props) {
                 })
             ).catch((err) => {
                 if (axios.isCancel(err)) {
-
+                    // setRefreshing(false)
+                    setInfiniteLoad(true);
                 } else {
                     setIsError(true)
                    // setRefreshing(false)
