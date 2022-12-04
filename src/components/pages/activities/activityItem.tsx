@@ -318,6 +318,24 @@ const ActivityItem = (props: any) => {
     useEffect(() => {
         setSelectedMoreCircle(propsMemo.activityMore == propsMemo.index)
     }, [propsMemo.activityMore]);
+    const [isAdd, setIsAdd] = useState(false)
+    useEffect(() => {
+        let state = null;
+       if(props?.activity?.state == "add"){
+           setIsAdd(true)
+           state = new Promise((resolve, reject) => {
+               setTimeout(() => {
+
+
+                   resolve() // when this fires, .then gets called
+
+               }, 3000)
+           }).then(() => {
+               console.log("setIsAdd false")
+             setIsAdd(false)
+           })
+       }
+    }, []);
     const [selectedMoreCircle, setSelectedMoreCircle] = useState(false);
     const onMoreCircle = () => {
 
@@ -406,10 +424,10 @@ const ActivityItem = (props: any) => {
             {(isHovered => (
 
                 <View style={{
-                    backgroundColor: selected && !(
+                    backgroundColor:  isAdd ? "#90EE90"  : selected && !(
                         (
                             isMobile && !(
-                                Platform?.isPad || isTablet()))) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
+                                Platform?.isPad || isTablet()))) ? "#D4D3FF" : isHovered ? "#EEF3F6" : isAdd ? "#90EE90"  :"#fff"
                 }}>
                     <ActivitySwipeable
                         ref={ref => row[propsMemo.index] = ref}

@@ -90,7 +90,7 @@ function useApplicationSignalr() {
 
 
         let pinnedApplication = JSON.parse(data)
-
+        pinnedApplication.state = "add"
         if(pinnedApplication?.region?.value){
             pinnedApplication.region = pinnedApplication.region?.value
         }
@@ -129,6 +129,7 @@ function useApplicationSignalr() {
         } catch (e) {
             console.log(e)
         }
+
         dispatch(setDecrementRealtimeCount(1))
         dispatch(setDeletePinnedApplication(id))
     }
