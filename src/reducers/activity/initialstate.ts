@@ -167,6 +167,8 @@ const InitialState = Record({
 
   selectedChangeFilter:[],
   selectedChangeStatus:[],
+
+
   activities:[],
 
 });

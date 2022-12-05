@@ -63,7 +63,8 @@ const {
     SET_REALTIME_COUNT,
     RESET_REALTIME_COUNT,
     SET_DECREMENT_REALTIME_COUNT,
-    SET_DELETE_PINNED_APPLICATION
+    SET_DELETE_PINNED_APPLICATION,
+    UPDATE_PINNED_APPLICATIONS_COUNT
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -243,8 +244,25 @@ export default function basket(state = initialState, action = {}) {
             state = state.set('applicationItem', action.payload);
             return state
         }
+
+
         case SET_PINNED_APPLICATION: {
-            const pinned = [...state.pinnedApplications, action.payload];
+            let pinned = [...state.pinnedApplications];
+            const _updatePinnedCount = state.updatePinnedCount + 1;
+            const pinnedIndex = pinned.findIndex((app: any) => {
+                return app._id == action.payload._id
+            })
+
+            console.log(_updatePinnedCount, "_updatePinnedCount")
+
+            if(pinnedIndex > -1){
+                pinned[pinnedIndex] = action.payload
+
+            }else{
+                pinned = [...state.pinnedApplications, action.payload];
+            }
+
+            state = state.set('updatePinnedCount',_updatePinnedCount);
             state = state.set('pinnedApplications',pinned);
             return state;
         }

@@ -41,7 +41,18 @@ function useApplicationSignalr() {
         }) =>
             signalr.current?.on(connection, callback),
         []);
+    async function onUpdateApplication(id, data) {
 
+
+
+        let pinnedApplication = JSON.parse(data)
+        pinnedApplication.state = "update"
+        if(pinnedApplication?.region?.value){
+            pinnedApplication.region = pinnedApplication.region?.value
+        }
+
+        dispatch(setPinnedApplication(pinnedApplication))
+    }
 
     async function onAddApplication(id, data) {
         try {
@@ -137,6 +148,7 @@ function useApplicationSignalr() {
     return {
         initSignalR,
         onAddApplication,
+        onUpdateApplication,
         onConnection,
         destroySignalR,
         onDeleteApplication

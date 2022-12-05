@@ -60,6 +60,12 @@ function useActivities(props) {
     const updateIncrement = useSelector((state: RootStateOrAny) => {
         return state.activity.updateIncrement
     });
+
+    const updatePinnedCount = useSelector((state: RootStateOrAny) => {
+        return state.application.updatePinnedCount
+    });
+
+
     const [infiniteLoad, setInfiniteLoad] = useState(false);
     const scrollViewRef = useRef()
     const flatListViewRef = useRef()
@@ -374,9 +380,10 @@ function useActivities(props) {
     const [searchVisible, setSearchVisible] = useState(false);
 
     const pnApplications = useMemo(() => {
+        console.log("pnApplications")
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(pinnedApplications)
-    }, [updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length,  selectedChangeFilter?.length, pinnedApplications?.length, currentPage]);
+    }, [updatePinnedCount, updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length,  selectedChangeFilter?.length, pinnedApplications?.length, currentPage]);
 
     const notPnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false);

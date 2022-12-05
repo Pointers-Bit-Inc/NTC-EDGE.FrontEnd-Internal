@@ -106,6 +106,9 @@ const Tab = createMaterialTopTabNavigator();
 
 const ActivitiesPage = (props) => {
     const dimensions = useWindowDimensions();
+    const updatePinnedCount = useSelector((state: RootStateOrAny) => {
+        return state.activity.updatePinnedCount
+    });
     const Filter = (
         isMobile && !(
             Platform?.isPad || isTablet()))  ? FilterIcon : FilterPressIcon;
@@ -163,6 +166,7 @@ const ActivitiesPage = (props) => {
         destroySignalR,
         onConnection,
         onAddApplication,
+        onUpdateApplication,
         onDeleteApplication,
     } = useApplicationSignalr();
 
@@ -170,6 +174,7 @@ const ActivitiesPage = (props) => {
     useEffect(() => {
         initSignalR();
         onConnection('OnAddApplication', onAddApplication);
+        onConnection('OnUpdateApplication', onUpdateApplication);
         onConnection('OnDeleteApplication', onDeleteApplication);
         return () => destroySignalR();
     }, []);
