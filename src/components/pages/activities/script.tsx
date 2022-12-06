@@ -2,6 +2,7 @@ import {
     ACCOUNTANT,
     APPROVED,
     CASHIER,
+    DATE_ADDED,
     DECLINE,
     DECLINED,
     DIRECTOR,
@@ -10,7 +11,8 @@ import {
     FOREVALUATION,
     FORVERIFICATION,
     PAID,
-    PENDING, RETURNED,
+    PENDING,
+    RETURNED,
     UNVERIFIED,
     VERIFICATION,
     VERIFIED
@@ -146,6 +148,8 @@ export const remarkColor = (status: string) => {
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
         return "#CF0327"
     } else if(status == RETURNED ) {
+        return infoColor
+    } else if(status == DATE_ADDED ) {
         return infoColor
     } else {
         return "#F79E1B"

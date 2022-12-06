@@ -51,6 +51,7 @@ import ActivityModal from "@pages/activities/modal";
 import ChooseNewPassword from "@screens/ChooseNewPassword";
 import * as Linking from 'expo-linking';
 import EditApplication from "@pages/activities/application/editApplication";
+import useApplicationSignalr from "../hooks/useApplicationSignalr";
 const prefix = Linking.createURL('/');
 type RootStackParamList = {
     App: undefined;
@@ -187,7 +188,28 @@ const HeaderRight = ({ setVisible = () => {}, visible }:any) => {
 
 const RootNavigator = () => {
     const [visible, setVisible] = useState(false);
+    const {
+        initSignalR,
+        destroySignalR,
+        onConnection,
+        onAddApplication,
+        onUpdateApplication,
+        onDeleteApplication,
+    } = useApplicationSignalr();
 
+
+    useEffect(() => {
+        try {
+            initSignalR();
+            onConnection('OnAddApplication', onAddApplication);
+            onConnection('OnUpdateApplication', onUpdateApplication);
+            onConnection('OnDeleteApplication', onDeleteApplication);
+        }catch (e) {
+
+        }
+
+        return () => destroySignalR();
+    }, []);
     return (
         <NavigationContainer linking={linking}>
 

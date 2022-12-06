@@ -161,23 +161,7 @@ const ActivitiesPage = (props) => {
     const filterCode=useSelector((state:RootStateOrAny)=>state.activity?.filterCode);
     const statusCode=useSelector((state:RootStateOrAny)=>state.activity?.statusCode);
     const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
-    const {
-        initSignalR,
-        destroySignalR,
-        onConnection,
-        onAddApplication,
-        onUpdateApplication,
-        onDeleteApplication,
-    } = useApplicationSignalr();
 
-
-    useEffect(() => {
-        initSignalR();
-        onConnection('OnAddApplication', onAddApplication);
-        onConnection('OnUpdateApplication', onUpdateApplication);
-        onConnection('OnDeleteApplication', onDeleteApplication);
-        return () => destroySignalR();
-    }, []);
 
 
 
@@ -931,7 +915,7 @@ const ActivitiesPage = (props) => {
                                     </View>
                                     : <></>
                             }
-                            {[EVALUATOR].indexOf(user.role.key) > -1 ?
+                            {[EVALUATOR].indexOf(user?.role?.key) > -1 ?
                                 filterCode.filter((item: any) => {
                                     return getRole(user , item?.isShow) && item.checked
                                 }).length > 0 ?
