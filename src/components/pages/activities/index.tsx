@@ -96,7 +96,7 @@ import moment from "moment";
 import { RNChipView } from 'react-native-chip-view'
 import useApplicationSignalr from "../../../hooks/useApplicationSignalr";
 import Badge from "@atoms/badge";
-import {getRole, remarkColor} from "@pages/activities/script";
+import {getRole, remarkColor, statusColor} from "@pages/activities/script";
 import CloseCircleo from "@assets/svg/closecircleo";
 
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -763,34 +763,36 @@ const ActivitiesPage = (props) => {
         }).start();
     }
 
-    const renderStatusItem = ({ item }) => (
-       <View style={{alignItems: "center", flexDirection: "row",
-           marginLeft: 5, justifyContent: "space-between",  backgroundColor: "#F79E1B",
-           paddingHorizontal: fontValue(10),
-           paddingVertical: fontValue(5),
-           borderRadius: fontValue(30)}}>
-           <View style={{ paddingRight: 10}}>
-               <Text
-                   style={{color: "#fff"}}
-                   size={fontValue(10)}
-                   numberOfLines={1}
-               >
-                   {item?.label?.toUpperCase() || item?.status?.toUpperCase()}
-               </Text>
-           </View>
-           <View>
-               <TouchableOpacity onPress={ () => {
+    const renderStatusItem = ({ item }) => {
+        return <View style={{
+            alignItems: "center", flexDirection: "row",
+            marginLeft: 5, justifyContent: "space-between", backgroundColor: remarkColor(item?.status),
+            paddingHorizontal: fontValue(10),
+            paddingVertical: fontValue(5),
+            borderRadius: fontValue(30)
+        }}>
+            <View style={{paddingRight: 10}}>
+                <Text
+                    style={{color: "#fff"}}
+                    size={fontValue(10)}
+                    numberOfLines={1}
+                >
+                    {item?.label?.toUpperCase() || item?.status?.toUpperCase()}
+                </Text>
+            </View>
+            <View>
+                <TouchableOpacity onPress={() => {
 
-                   dispatch(on_checked(item))
-               } }>
-               <CloseCircleo color={"#f3f3f3"}/>
-               </TouchableOpacity>
-           </View>
-       </View>
-    );
+                    dispatch(on_checked(item))
+                }}>
+                    <CloseCircleo color={"#f3f3f3"}/>
+                </TouchableOpacity>
+            </View>
+        </View>
+    };
     const renderFilterStatusItem = ({ item }) => (
         <View style={{alignItems: "center", flexDirection: "row",
-            marginLeft: 5, justifyContent: "space-between",  backgroundColor: "#F79E1B",
+            marginLeft: 5, justifyContent: "space-between",  backgroundColor: errorColor,
             paddingHorizontal: fontValue(10),
             paddingVertical: fontValue(5),
             borderRadius: fontValue(30)}}>

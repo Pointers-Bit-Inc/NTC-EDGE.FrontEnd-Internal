@@ -119,7 +119,6 @@ export const checkFormatIso = (date: string, separator?: string) => {
 };
 
 export const statusColor = (status: string) => {
-
     if (status == FOREVALUATION) {
 
         return {color: "#F79E1B", fontFamily: Regular500}
