@@ -42,7 +42,7 @@ function useApplicationSignalr() {
             signalr.current?.on(connection, callback),
         []);
     async function onUpdateApplication(id, data) {
-
+        console.log("onUpdateApplication")
 
 
         let pinnedApplication = JSON.parse(data)
@@ -55,6 +55,7 @@ function useApplicationSignalr() {
     }
 
     async function onAddApplication(id, data) {
+        console.log("onAddApplication")
         try {
             try {
                 if (playbackInstance?.current != null) {
@@ -118,6 +119,7 @@ function useApplicationSignalr() {
 
 
     async function onDeleteApplication(id) {
+        console.log("onDeleteApplication")
         try {
             try {
                 if (playbackInstance?.current != null) {

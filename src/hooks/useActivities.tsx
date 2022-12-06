@@ -380,7 +380,6 @@ function useActivities(props) {
     const [searchVisible, setSearchVisible] = useState(false);
 
     const pnApplications = useMemo(() => {
-        console.log("pnApplications")
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(pinnedApplications)
     }, [updatePinnedCount, updateIncrement, updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length,  selectedChangeFilter?.length, pinnedApplications?.length, currentPage]);

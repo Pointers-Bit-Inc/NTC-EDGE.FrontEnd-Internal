@@ -585,7 +585,7 @@ const ActivitiesPage = (props) => {
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [pnApplications, refreshing, infiniteLoad]
+        [updatePinnedCount, pnApplications, refreshing, infiniteLoad]
     );
 
     const renderHistory = useCallback(

@@ -393,7 +393,7 @@ const ModalTab = props => {
                 />
 
             </View>
-            { (((applicationItem?.assignedPersonnel?._id == user?._id) || (applicationItem?.assignedPersonnel?.length > 0  ? applicationItem?.assignedPersonnel?.findIndex( assignment => assignment?._id == user?._id) != -1 : false) )  && (applicationItem?.approvalHistory?.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ?
+            { (((applicationItem?.assignedPersonnel?._id == user?._id || applicationItem?.assignedPersonnel?.role == user?.role?.key ) || (applicationItem?.assignedPersonnel?.length > 0  ? applicationItem?.assignedPersonnel?.findIndex( assignment => assignment?._id == user?._id) != -1 : false) )  && (applicationItem?.approvalHistory?.action == FOREVALUATION || applicationItem?.approvalHistory?.[0]?.action == FOREVALUATION ))  ?
                 <View style={{flexDirection: "row", alignItems: "center",}}>
                     {props.edit ? <TouchableOpacity onPress={() => {
                             props.updateApplication(() => {

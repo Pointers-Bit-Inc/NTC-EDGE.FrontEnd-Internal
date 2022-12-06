@@ -262,20 +262,28 @@ export default function basket(state = initialState, action = {}) {
                 pinned = [...state.pinnedApplications, action.payload];
             }
 
-            state = state.set('updatePinnedCount',_updatePinnedCount);
+
             state = state.set('pinnedApplications',pinned);
+            state = state.set('updatePinnedCount',_updatePinnedCount);
             return state;
         }
 
         case SET_DELETE_PINNED_APPLICATION: {
 
-
+            const _updatePinnedCount = state.updatePinnedCount + 1;
 
             const pinned = [...state.pinnedApplications];
+            console.log("SET_DELETE_PINNED_APPLICATION", state.pinnedApplications)
             console.log("SET_DELETE_PINNED_APPLICATION", action.payload)
+            console.log("PINNED", pinned)
             console.log("pinned",pinned.some(o => o._id == action.payload))
+            console.log("filter", pinned.filter(o => o._id !== action.payload))
+
             if (pinned.some(o => o._id == action.payload)) {
-                state = state.set('pinnedApplications', pinned.filter(o => o._id !== action.payload));
+                const pinnedApplications =  pinned.filter(o => o._id !== action.payload)
+                console.log(pinnedApplications, "pinnedApplications")
+                state = state.set('pinnedApplications', pinnedApplications );
+                state = state.set('updatePinnedCount', _updatePinnedCount );
             }
             return state;
         }
@@ -371,6 +379,7 @@ export default function basket(state = initialState, action = {}) {
             return state;
         }
         case SET_APPLICATIONS: {
+            console.log("SET_APPLICATIONS")
             const isNotPinned = []
             const isPinned = []
             const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;
