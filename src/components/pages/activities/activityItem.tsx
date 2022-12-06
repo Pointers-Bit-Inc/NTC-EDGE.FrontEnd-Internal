@@ -320,6 +320,7 @@ const ActivityItem = (props: any) => {
     }, [propsMemo.activityMore]);
     const [isAdd, setIsAdd] = useState(false)
     const [isUpdate, setIsUpdate] = useState(false)
+    const [isDelete, setIsDelete] = useState(false)
     useEffect(() => {
         let state = null;
        if(props?.activity?.state == "add"){
@@ -334,6 +335,19 @@ const ActivityItem = (props: any) => {
            }).then(() => {
                console.log("setIsAdd false")
              setIsAdd(false)
+           })
+       }  else if( props?.activity?.state == "delete"){
+           setIsDelete(true)
+           state = new Promise((resolve, reject) => {
+               setTimeout(() => {
+
+
+                   resolve() // when this fires, .then gets called
+
+               }, 3000)
+           }).then(() => {
+               console.log("setIsAdd false")
+               setIsDelete(false)
            })
        }else if( props?.activity?.state == "update"){
            setIsUpdate(true)
@@ -438,7 +452,7 @@ const ActivityItem = (props: any) => {
             {(isHovered => (
 
                 <View style={{
-                    backgroundColor:  isUpdate ? "#8ab9f6"  : isAdd ? "#cef3ce"  : selected && !(
+                    backgroundColor:  isDelete ? "#ff9e9e"  : isUpdate ? "#8ab9f6"  : isAdd ? "#cef3ce"  : selected && !(
                         (
                             isMobile && !(
                                 Platform?.isPad || isTablet()))) ? "#D4D3FF" : isHovered ? "#EEF3F6" : isAdd ? "#cef3ce"  :"#fff"

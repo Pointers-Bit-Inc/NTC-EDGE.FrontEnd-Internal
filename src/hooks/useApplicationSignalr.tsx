@@ -19,7 +19,9 @@ function useApplicationSignalr() {
     const signalr = useRef<HubConnection | null>(null);
     const [connectionStatus, setConnectionStatus] = useState('');
     const playbackInstance:any=React.useRef(null);
-
+    const pinnedApplications = useSelector((state: RootStateOrAny) => {
+        return state.application?.pinnedApplications
+    });
     const initSignalR = useCallback(async () => {
         signalr.current = new HubConnectionBuilder()
             .withUrl(`${BASE_URL}/applicationhub`, {
@@ -118,8 +120,7 @@ function useApplicationSignalr() {
     }, [])
 
 
-    async function onDeleteApplication(id) {
-        console.log("onDeleteApplication")
+    async function onDeleteApplication(id, data) {
         try {
             try {
                 if (playbackInstance?.current != null) {
@@ -142,9 +143,29 @@ function useApplicationSignalr() {
         } catch (e) {
             console.log(e)
         }
+        try {
 
-        dispatch(setDecrementRealtimeCount(1))
-        dispatch(setDeletePinnedApplication(id))
+            let pinnedApplication = JSON.parse(data)
+            pinnedApplication.state = "delete"
+            if(pinnedApplication?.region?.value){
+                pinnedApplication.region = pinnedApplication.region?.value
+            }
+            dispatch(setPinnedApplication(pinnedApplication))
+        } catch (e) {
+            console.log(e, "catch")
+        }
+        new Promise((resolve, reject) => {
+            setTimeout(() => {
+
+
+                resolve() // when this fires, .then gets called
+
+            }, 3000)
+        }).then(() => {
+            dispatch(setDecrementRealtimeCount(1))
+            dispatch(setDeletePinnedApplication(id))
+        })
+
     }
 
     return {

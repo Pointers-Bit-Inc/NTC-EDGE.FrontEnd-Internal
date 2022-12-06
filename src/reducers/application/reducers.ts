@@ -253,13 +253,17 @@ export default function basket(state = initialState, action = {}) {
                 return app._id == action.payload._id
             })
 
-            console.log(_updatePinnedCount, "_updatePinnedCount")
+            console.log(_updatePinnedCount, "SET_PINNED_APPLICATION - _updatePinnedCount")
 
             if(pinnedIndex > -1){
                 pinned[pinnedIndex] = action.payload
 
             }else{
-                pinned = [...state.pinnedApplications, action.payload];
+
+                if(( action.payload instanceof Object && !( action.payload instanceof Array))){
+                    pinned = [...state.pinnedApplications, action.payload];
+                }
+
             }
 
 
@@ -273,11 +277,7 @@ export default function basket(state = initialState, action = {}) {
             const _updatePinnedCount = state.updatePinnedCount + 1;
 
             const pinned = [...state.pinnedApplications];
-            console.log("SET_DELETE_PINNED_APPLICATION", state.pinnedApplications)
-            console.log("SET_DELETE_PINNED_APPLICATION", action.payload)
-            console.log("PINNED", pinned)
-            console.log("pinned",pinned.some(o => o._id == action.payload))
-            console.log("filter", pinned.filter(o => o._id !== action.payload))
+
 
             if (pinned.some(o => o._id == action.payload)) {
                 const pinnedApplications =  pinned.filter(o => o._id !== action.payload)

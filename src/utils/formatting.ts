@@ -12,6 +12,7 @@ const getInitial = (value:any) => {
 export const isMobile = Platform?.OS === 'ios' || Platform?.OS === 'android';
 export const isPad = Platform?.isPad;
 
+
 const getChannelName = (channel:any) => {
   if (channel.hasRoomName) {
     return channel.name;
