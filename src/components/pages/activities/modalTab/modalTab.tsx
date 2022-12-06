@@ -430,7 +430,12 @@ const ModalTab = props => {
 
                     </View>
                 </View>
-            : <></>}
+            : <View><TouchableOpacity onPress={() => {
+                    dispatch(setFeedVisible(true))
+                    props.dismissed()
+                }}>
+                    <CloseIcon width={12} height={12}/>
+                </TouchableOpacity></View>}
         </View>
     }
 

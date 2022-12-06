@@ -74,7 +74,7 @@ import {renderSwiper} from "@pages/activities/swiper";
 import ActivityItem from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
 import FakeSearchBar from "@pages/activities/fakeSearchBar";
-import {ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
+import {ACTIVITYITEM, EVALUATOR, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
@@ -931,7 +931,7 @@ const ActivitiesPage = (props) => {
                                     </View>
                                     : <></>
                             }
-                            {
+                            {[EVALUATOR].indexOf(user.role.key) > -1 ?
                                 filterCode.filter((item: any) => {
                                     return getRole(user , item?.isShow) && item.checked
                                 }).length > 0 ?
@@ -952,7 +952,7 @@ const ActivitiesPage = (props) => {
                                         renderItem={renderFilterStatusItem}
                                         keyExtractor={item => item.id}
                                     />
-                                </View>: <></>
+                                </View>: <></>  : <></>
                             }
 
                             <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}
