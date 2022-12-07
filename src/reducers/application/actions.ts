@@ -57,7 +57,8 @@ const {
     SET_REALTIME_COUNT,
     RESET_REALTIME_COUNT,
     SET_DELETE_PINNED_APPLICATION,
-    SET_DECREMENT_REALTIME_COUNT
+    SET_DECREMENT_REALTIME_COUNT,
+    SET_MODAL_VISIBLE
 } = require('./types').default;
 export function setSOA(payload: any) {
     return {
@@ -138,6 +139,12 @@ export function setFetchingSchedules(payload: boolean) {
 export function setDeletePinnedApplication(payload: any) {
     return {
         type: SET_DELETE_PINNED_APPLICATION,
+        payload
+    }
+};
+export function setModalVisible(payload: any) {
+    return {
+        type: SET_MODAL_VISIBLE,
         payload
     }
 };

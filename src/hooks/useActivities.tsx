@@ -23,7 +23,7 @@ import {Alert, Animated, FlatList, Image, TouchableOpacity, View} from "react-na
 import {
     handleInfiniteLoad, resetRealtimeCounts, setactivitySizeComponent, setApplicationItem,
     setApplications,
-    setFilterRect,
+    setFilterRect, setModalVisible,
     setNotPinnedApplication,
     setPinnedApplication, setRealtimeCounts
 } from "../reducers/application/actions";
@@ -88,6 +88,7 @@ function useActivities(props) {
     };
 
 
+    const modalVisible = useSelector((state: RootStateOrAny) => state.application?.modalVisible);
     const selectedChangeStatus = useSelector((state: RootStateOrAny) => state.activity?.selectedChangeStatus);
     const selectedChangeFilter = useSelector((state: RootStateOrAny) => state.activity?.selectedChangeFilter);
     const visible = useSelector((state: RootStateOrAny) => state.activity?.visible);
@@ -399,10 +400,10 @@ function useActivities(props) {
         newArr[index].child[i] = newArr[index].child[i] ? 0 : 1;
         setNumberCollapsed(newArr)
     };
-    const [modalVisible, setModalVisible] = useState(false);
+
     const [moreModalVisible, setMoreModalVisible] = useState(false);
     const onDismissed = () => {
-        setModalVisible(false)
+        dispatch(setModalVisible(false))
     };
 
     const initialMove = new Animated.Value(-400);

@@ -30,7 +30,8 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {isTablet} from "react-native-device-info";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
+import {setModalVisible} from "../../../reducers/application/actions";
 
 const styles = StyleSheet.create({
 
@@ -346,7 +347,7 @@ const ActivityItem = (props: any) => {
 
                }, 3000)
            }).then(() => {
-               console.log("setIsAdd false")
+
                setIsDelete(false)
            })
        }else if( props?.activity?.state == "update"){

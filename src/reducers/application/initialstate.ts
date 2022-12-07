@@ -48,6 +48,7 @@ soa: [],
   prevDateStart: null,
   prevDateEnd: null,
 reviewed: false,
+  modalVisible: false
 });
 
 export default InitialState;

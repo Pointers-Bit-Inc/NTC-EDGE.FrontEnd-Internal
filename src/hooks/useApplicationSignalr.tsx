@@ -3,8 +3,9 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {BASE_URL} from "../services/config";
 import {
+    setApplicationItem,
     setDecrementRealtimeCount,
-    setDeletePinnedApplication,
+    setDeletePinnedApplication, setModalVisible,
     setPinnedApplication,
     setRealtimeCounts
 } from "../reducers/application/actions";
@@ -22,7 +23,7 @@ function useApplicationSignalr() {
     const pinnedApplications = useSelector((state: RootStateOrAny) => {
         return state.application?.pinnedApplications
     });
-    const initSignalR = useCallback(async () => {
+    const initAppSignalR = useCallback(async () => {
         signalr.current = new HubConnectionBuilder()
             .withUrl(`${BASE_URL}/applicationhub`, {
                 transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
@@ -35,11 +36,11 @@ function useApplicationSignalr() {
         signalr.current.onreconnecting(() => setConnectionStatus('reconnecting'));
         signalr.current.start().then(() => setConnectionStatus('connected'));
     }, []);
-    const destroySignalR = useCallback(() => {
+    const destroyAppSignalR = useCallback(() => {
         signalr.current?.stop();
     }, []);
 
-    const onConnection = useCallback((connection, callback = () => {
+    const onAppConnection = useCallback((connection, callback = () => {
         }) =>
             signalr.current?.on(connection, callback),
         []);
@@ -114,7 +115,7 @@ function useApplicationSignalr() {
     }
     useEffect(()=>{
         return  () => {
-            destroySignalR()
+            destroyAppSignalR()
             playbackInstance.current?.unloadAsync()
         }
     }, [])
@@ -150,7 +151,9 @@ function useApplicationSignalr() {
             if(pinnedApplication?.region?.value){
                 pinnedApplication.region = pinnedApplication.region?.value
             }
+
             dispatch(setPinnedApplication(pinnedApplication))
+
         } catch (e) {
             console.log(e, "catch")
         }
@@ -169,11 +172,11 @@ function useApplicationSignalr() {
     }
 
     return {
-        initSignalR,
+        initAppSignalR,
         onAddApplication,
         onUpdateApplication,
-        onConnection,
-        destroySignalR,
+        onAppConnection,
+        destroyAppSignalR,
         onDeleteApplication
     };
 }

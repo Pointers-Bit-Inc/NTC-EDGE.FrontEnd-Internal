@@ -48,7 +48,7 @@ const App = ({ navigation }:any) => {
           navigation.replace('ActivitiesScreen');
         } else {
           if (Platform.OS === 'web') {
-            navigation.replace('Login');
+            navigation.replace( 'Login');
           } else {
             navigation.replace('AppIntro');
           }

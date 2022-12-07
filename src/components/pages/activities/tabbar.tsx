@@ -122,6 +122,9 @@ export default function TabBar({navigation,route}){
         checkVersion,
     }=useSignalr();
     const {
+        initAppSignalR,
+        destroyAppSignalR,
+        onAppConnection,
         onAddApplication,
         onUpdateApplication,
         onDeleteApplication,
@@ -206,12 +209,25 @@ export default function TabBar({navigation,route}){
         onConnection('OnMeetingUpdate',onMeetingUpdate);
         onConnection('OnMeetingNotification',OnMeetingNotification);
 
-
-        onConnection('OnAddApplication', onAddApplication);
-        onConnection('OnUpdateApplication', onUpdateApplication);
-        onConnection('OnDeleteApplication', onDeleteApplication);
         return ()=>destroySignalR();
     },[]);
+
+
+
+
+
+    useEffect(() => {
+        try {
+            initAppSignalR();
+            onAppConnection('OnAddApplication', onAddApplication);
+            onAppConnection('OnUpdateApplication', onUpdateApplication);
+            onAppConnection('OnDeleteApplication', onDeleteApplication);
+        }catch (e) {
+
+        }
+
+        return () => destroyAppSignalR();
+    }, []);
 
     useEffect(() => {
         if (lodash.size(newMeeting) && !currentMeeting?._id && Platform.OS != 'web') {

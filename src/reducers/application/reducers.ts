@@ -64,7 +64,7 @@ const {
     RESET_REALTIME_COUNT,
     SET_DECREMENT_REALTIME_COUNT,
     SET_DELETE_PINNED_APPLICATION,
-    UPDATE_PINNED_APPLICATIONS_COUNT
+    SET_MODAL_VISIBLE
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -210,6 +210,10 @@ export default function basket(state = initialState, action = {}) {
             state = state.set('topBarNav', action.payload);
             return state
         }
+        case SET_MODAL_VISIBLE: {
+            state = state.set('modalVisible', action.payload);
+            return state
+        }
         case SET_USER_PROFILE_FORM: {
             state = state.set('userProfileForm', action.payload);
             return state
@@ -287,6 +291,7 @@ export default function basket(state = initialState, action = {}) {
             }
             return state;
         }
+
         case SET_REALTIME_COUNT: {
             const realtimecounts = (+state.realtimecounts)  + (action.payload);
 
