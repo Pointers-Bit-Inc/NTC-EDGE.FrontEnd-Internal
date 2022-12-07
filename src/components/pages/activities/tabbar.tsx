@@ -67,6 +67,7 @@ import ConfigurationNavigator from "../../../navigations/configuration";
 import ScheduleNavigator from "../../../navigations/schedule";
 import RoleAndPermissionIcon from "@assets/svg/roleandpermission";
 import Badge from "@atoms/badge";
+import useApplicationSignalr from "../../../hooks/useApplicationSignalr";
 
 const {width}=Dimensions.get('window');
 
@@ -120,6 +121,11 @@ export default function TabBar({navigation,route}){
         OnMeetingNotification,
         checkVersion,
     }=useSignalr();
+    const {
+        onAddApplication,
+        onUpdateApplication,
+        onDeleteApplication,
+    } = useApplicationSignalr();
 
     const hasNewChat=useSelector((state:RootStateOrAny)=>{
         try {
@@ -200,6 +206,10 @@ export default function TabBar({navigation,route}){
         onConnection('OnMeetingUpdate',onMeetingUpdate);
         onConnection('OnMeetingNotification',OnMeetingNotification);
 
+
+        onConnection('OnAddApplication', onAddApplication);
+        onConnection('OnUpdateApplication', onUpdateApplication);
+        onConnection('OnDeleteApplication', onDeleteApplication);
         return ()=>destroySignalR();
     },[]);
 

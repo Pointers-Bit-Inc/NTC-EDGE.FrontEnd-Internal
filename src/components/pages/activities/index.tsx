@@ -161,7 +161,28 @@ const ActivitiesPage = (props) => {
     const filterCode=useSelector((state:RootStateOrAny)=>state.activity?.filterCode);
     const statusCode=useSelector((state:RootStateOrAny)=>state.activity?.statusCode);
     const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
+    const {
+        initSignalR,
+        destroySignalR,
+        onConnection,
+        onAddApplication,
+        onUpdateApplication,
+        onDeleteApplication,
+    } = useApplicationSignalr();
 
+
+    useEffect(() => {
+        try {
+            initSignalR();
+            onConnection('OnAddApplication', onAddApplication);
+            onConnection('OnUpdateApplication', onUpdateApplication);
+            onConnection('OnDeleteApplication', onDeleteApplication);
+        }catch (e) {
+
+        }
+
+        return () => destroySignalR();
+    }, []);
 
 
 
