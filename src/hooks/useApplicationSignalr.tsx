@@ -165,6 +165,8 @@ function useApplicationSignalr() {
 
             }, 3000)
         }).then(() => {
+            dispatch(setModalVisible(false))
+            dispatch(setApplicationItem({}));
             dispatch(setDecrementRealtimeCount(1))
             dispatch(setDeletePinnedApplication(id))
         })
