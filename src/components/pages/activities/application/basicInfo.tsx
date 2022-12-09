@@ -313,6 +313,7 @@ const BasicInfo = (_props: any) => {
     const [isRemarkMore, setIsRemarkMore] = useState(false)
     const [isEditNote, setIsEditNote] = useState(false)
     const RemarkFn = useMemoizedFn(() => {
+        console.log( getStatusText(props, personnel),personnel,  " getStatusText(props, personnel)")
         return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
 
                <ContainerRemarkStyle>
@@ -348,7 +349,7 @@ const BasicInfo = (_props: any) => {
 
                                        alignItems: "center",
                                        justifyContent: "center",
-                                       backgroundColor: !!(personnel?.firstName && personnel?.lastName) ?  remarkColor(
+                                       backgroundColor: !!(getStatusText(props, personnel)) ?  remarkColor(
                                            getStatusText(props, personnel)
                                        ) : undefined,
                                        borderRadius: fontValue(30),
