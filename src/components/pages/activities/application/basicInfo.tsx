@@ -46,6 +46,7 @@ import {
     setUserOriginalProfileForm,
     setUserProfileForm, updateChangeEvent
 } from "../../../../reducers/application/actions";
+import {isTablet} from "react-native-device-info";
 const flatten = require('flat')
 
 function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
@@ -182,7 +183,7 @@ const BasicInfo = (_props: any) => {
     const [showAlert, setShowAlert] = useSafeState(false)
     const applicant = useMemo(()=>props?.applicant?.user || props?.applicant, [props?.applicant?.user ,props?.id]);
     useEffect(() => {
-        if (Platform.isPad || Platform.OS == "web") {
+        if (Platform.isPad || isTablet() || Platform.OS == "web") {
             scrollRef?.current?.scrollTo({
                 y: 0,
                 animated: true,

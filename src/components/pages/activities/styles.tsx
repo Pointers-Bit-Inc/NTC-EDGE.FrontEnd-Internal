@@ -3,6 +3,7 @@ import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
 import {disabledColor, errorColor, infoColor, outline, primaryColor, successColor, text} from "@styles/color";
+import {isTablet} from "react-native-device-info";
 const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     container: {
@@ -606,7 +607,7 @@ export const styles = StyleSheet.create({
         flex:1
     },
     search:{
-        fontSize: Platform.isPad ? 24 :16,
+        fontSize: Platform.isPad || isTablet() ? 24 :16,
         paddingLeft:fontValue(35 ),
         borderRadius:10,
         padding:12,

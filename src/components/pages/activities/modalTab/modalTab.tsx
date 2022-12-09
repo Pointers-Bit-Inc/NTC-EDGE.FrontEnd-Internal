@@ -40,6 +40,7 @@ import ApplicationDetailWebIcon from "@assets/svg/applicationDetailWebIcon";
 import RequirementWebIcon from "@assets/svg/requirementWebIcon";
 import SoaPaymentWebIcon from "@assets/svg/soaPaymentWebIcon";
 import {isMobile} from "@pages/activities/isMobile";
+import {isTablet} from "react-native-device-info";
 
 const ModalTab = props => {
     const dispatch = useDispatch();
@@ -168,7 +169,7 @@ const ModalTab = props => {
     const [yPos, setYPos] = useSafeState(undefined)
     const renderScene = useMemo(() => {
         return ({route, jumpTo}) => {
-            if (initialPage && Platform?.isPad) {
+            if (initialPage && (Platform?.isPad || isTablet())) {
                 jumpTo(([ACCOUNTANT, CASHIER]?.indexOf(user?.role?.key) != -1) && service?.serviceCode != "service-22"   ? 2 : 0)
                 setInitialPage(false)
             }

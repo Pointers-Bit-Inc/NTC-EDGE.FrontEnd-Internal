@@ -718,7 +718,7 @@ function ActivityModal(props: any) {
 
                     <View onLayout={onActivityModalScreenComponent} style={{flex: 1, backgroundColor: "#FFF"}}>
                         {(
-                            isMobile || (Platform?.isPad)) && <View style={{
+                            isMobile || (Platform?.isPad || isTablet())) && <View style={{
                             flexDirection: "row",
                             alignItems: "center",
 

@@ -828,8 +828,8 @@ const ActivitiesPage = (props) => {
                                     <View style={{flex: 1, justifyContent: "center"}}/>
                                     <View style={{paddingHorizontal: 15}}>
                                         <TouchableOpacity onPress={calendarPress}>
-                                            <CalendarIcon color={(Platform.OS == "web" || Platform.isPad)? "#4E4B66"  :"white"} pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
-                                                          height={fontValue(Platform.OS == "web" || Platform.isPad ? 20 : 23)}/>
+                                            <CalendarIcon color={(Platform.OS == "web" || Platform.isPad || isTablet())? "#4E4B66"  :"white"} pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
+                                                          height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 20 : 23)}/>
                                         </TouchableOpacity>
                                     </View>
 
@@ -838,13 +838,13 @@ const ActivitiesPage = (props) => {
                                     }
 
                                     }>
-                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 30 : 21)}
-                                                height={fontValue(Platform.OS == "web" || Platform.isPad ? 30 : 21)}/>
+                                        <Filter pressed={visible} width={fontValue(isTablet() || Platform.OS == "web" || Platform.isPad ? 30 : 21)}
+                                                height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 30 : 21)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
 
-                                            {Platform.OS == "web" || Platform.isPad ?
+                                            {isTablet() || Platform.OS == "web" || Platform.isPad ?
                                                 <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
                                                             height={fontValue(24)} fill={"#fff"}/> :
                                                 <View style={{paddingLeft: 15}}><RefreshRN/></View>}

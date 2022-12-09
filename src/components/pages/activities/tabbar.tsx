@@ -435,7 +435,7 @@ export default function TabBar({navigation,route}){
                      drawerStyle:{
                          width:108
                      },
-                     drawerType: !(Platform.OS == "web" && Platform?.isPad)? 'permanent' : 'front',
+                     drawerType: !(Platform.OS == "web" && (Platform?.isPad || isTablet()))? 'permanent' : 'front',
                      drawerItemStyle:{
                          backgroundColor:'rgba(0,0,0,0)',
                          marginLeft:20,
