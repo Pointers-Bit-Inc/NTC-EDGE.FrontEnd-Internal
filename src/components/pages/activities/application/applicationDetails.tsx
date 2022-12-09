@@ -89,6 +89,7 @@ const ApplicationDetails = (props: any) => {
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalORVisible, setModalORVisible] = useState(false);
+   console.log(props, "props?.documents || props?.tempdocuments")
     return <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -224,7 +225,7 @@ const ApplicationDetails = (props: any) => {
                                     backgroundColor: "rgba(0, 0, 0, 0.5)"
                                 }} onPressOut={() => setModalVisible(!modalVisible)}/>
                             <PdfViewr width={rightLayoutComponent?.width}
-                                      height={rightLayoutComponent?.height} requirement={props?.documents}/>
+                                      height={rightLayoutComponent?.height} requirement={props?.documents || props?.tempdocuments}/>
                         </ScrollView>
 
                     </View>
