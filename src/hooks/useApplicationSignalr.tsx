@@ -23,6 +23,21 @@ function useApplicationSignalr() {
     const pinnedApplications = useSelector((state: RootStateOrAny) => {
         return state.application?.pinnedApplications
     });
+    const applicationItem = useSelector((state: RootStateOrAny) => {
+        let _applicationItem = state.application?.applicationItem
+        /* for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
+
+             let _split = _applicationItem?.service?.stationClass[i]?.stationClass?.split(" • ")
+             if (_split?.length == 2) {
+                 _applicationItem.service.stationClass[i].stationClass = _split[0]
+                 _applicationItem.service.stationClass[i].unit = _split[1]
+             }
+
+         }
+ */
+
+        return _applicationItem
+    });
     const initAppSignalR = useCallback(async () => {
         signalr.current = new HubConnectionBuilder()
             .withUrl(`${BASE_URL}/applicationhub`, {
@@ -153,23 +168,26 @@ function useApplicationSignalr() {
             }
 
             dispatch(setPinnedApplication(pinnedApplication))
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
 
+
+                    resolve() // when this fires, .then gets called
+
+                }, 3000)
+            }).then(() => {
+
+                    dispatch(setModalVisible(false, pinnedApplication?._id))
+                    dispatch(setApplicationItem({}, pinnedApplication?._id));
+
+
+                dispatch(setDecrementRealtimeCount(1))
+                dispatch(setDeletePinnedApplication(id))
+            })
         } catch (e) {
             console.log(e, "catch")
         }
-        new Promise((resolve, reject) => {
-            setTimeout(() => {
 
-
-                resolve() // when this fires, .then gets called
-
-            }, 3000)
-        }).then(() => {
-            dispatch(setModalVisible(false))
-            dispatch(setApplicationItem({}));
-            dispatch(setDecrementRealtimeCount(1))
-            dispatch(setDeletePinnedApplication(id))
-        })
 
     }
 

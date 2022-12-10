@@ -142,10 +142,11 @@ export function setDeletePinnedApplication(payload: any) {
         payload
     }
 };
-export function setModalVisible(payload: any) {
+export function setModalVisible(payload: any, id?:any) {
     return {
         type: SET_MODAL_VISIBLE,
-        payload
+        payload,
+        id
     }
 };
 export function setDecrementRealtimeCount(payload: any) {
@@ -390,10 +391,11 @@ export function setRightLayoutComponent(payload) {
     };
 }
 
-export function setApplicationItem(payload) {
+export function setApplicationItem(payload, id?:any) {
     return {
         type: SET_APPLICATION_ITEM,
         payload,
+        id
     };
 }
 export function setUserProfileForm(payload) {

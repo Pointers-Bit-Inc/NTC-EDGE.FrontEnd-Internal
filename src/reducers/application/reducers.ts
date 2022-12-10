@@ -211,7 +211,15 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case SET_MODAL_VISIBLE: {
-            state = state.set('modalVisible', action.payload);
+
+            if(action?.id == state.applicationItem?._id ) {
+                state = state.set('modalVisible', action.payload);
+            }else if(!action?.id){
+                state = state.set('modalVisible', action.payload);
+            }
+
+
+
             return state
         }
         case SET_USER_PROFILE_FORM: {
@@ -244,8 +252,14 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case SET_APPLICATION_ITEM: {
-            state = state.set('applicationItemId', action.payload._id);
-            state = state.set('applicationItem', action.payload);
+            if(action.id == state.applicationItem?._id ) {
+                state = state.set('applicationItemId', action.payload._id);
+                state = state.set('applicationItem', action.payload);
+            }else if(!action?.id){
+                state = state.set('applicationItemId', action.payload._id);
+                state = state.set('applicationItem', action.payload);
+            }
+
             return state
         }
 

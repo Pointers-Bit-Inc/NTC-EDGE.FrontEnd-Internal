@@ -116,25 +116,25 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
 
                     </CustomText>
                 </View>
-                : (props.assignedPersonnel ? <View style={{alignItems: "flex-end"}}>
+                : (props.assignedPersonnel?.firstName || props.assignedPersonnel?.lastName ? <View style={{alignItems: "flex-end"}}>
 
                     <Text style={{color: "#808196"}}>Assigned to</Text>
                     <CustomText
                         style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                         {(
-                            props.assignedPersonnel !== undefined ? `${props.assignedPersonnel?.firstName} ${props.assignedPersonnel?.lastName}` : ``)}
+                            props.assignedPersonnel !== undefined ? `${props.assignedPersonnel?.firstName || ""} ${props.assignedPersonnel?.lastName || ""}` : ``)}
 
                     </CustomText>
-                </View> : <View style={{alignItems: "flex-end"}}>
+                </View> : (props?.personnel?.firstName || props?.personnel?.lastName ?  <View style={{alignItems: "flex-end"}}>
 
                     <Text style={{color: "#808196"}}>Assigned to</Text>
                     <CustomText
                         style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                         {(
-                            props?.personnel !== undefined ? `${props?.personnel?.firstName} ${props?.personnel?.lastName}` : ``)}
+                            props?.personnel !== undefined ? `${props?.personnel?.firstName || ""} ${props?.personnel?.lastName || ""}` : ``)}
 
                     </CustomText>
-                </View>)}
+                </View> : <></>))}
 
         </View>
     </View>;
