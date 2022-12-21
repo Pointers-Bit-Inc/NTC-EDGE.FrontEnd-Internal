@@ -181,8 +181,10 @@ function useApplicationSignalr() {
                 }, 3000)
             }).then(() => {
                 if(pinnedApplication?._id == applicationItem?._id){
-                    if(applicationModalGoBack?.canGoBack()){
-                        applicationModalGoBack?.goBack();
+                    if(Platform.OS != "web"){
+                        if(applicationModalGoBack?.canGoBack()){
+                            applicationModalGoBack?.goBack();
+                        }
                     }
                 }
 
