@@ -180,14 +180,9 @@ function useApplicationSignalr() {
 
                 }, 3000)
             }).then(() => {
-                if(Platform.OS == "web"){
+
                     dispatch(setApplicationItem({}, pinnedApplication?._id));
                     dispatch(setModalVisible(false, pinnedApplication?._id))
-                }else{
-                    if(applicationModalGoBack?.canGoBack()){
-                        applicationModalGoBack?.goBack();
-                    }
-                }
 
 
 

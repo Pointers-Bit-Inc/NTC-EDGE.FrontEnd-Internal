@@ -673,7 +673,6 @@ function ActivityModal(props: any) {
     const [initialPage, setInitialPage] = useState(true);
     useEffect(() => {
         setInitialPage(true)
-
     }, [applicationItem._id]);
 
 
