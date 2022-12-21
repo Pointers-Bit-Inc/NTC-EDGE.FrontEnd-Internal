@@ -260,8 +260,9 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case SET_APPLICATION_ITEM: {
-            if(action.id == state.applicationItem?._id ) {
+            if(action.id == state.applicationItem?._id && action.id && state.applicationItem?._id ) {
                 if(Platform.OS != "web"){
+
                     state = state.set('applicationModalGoBack', true);
                 }
                     state = state.set('applicationItemId', action.payload._id);
