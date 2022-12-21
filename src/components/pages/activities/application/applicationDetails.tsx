@@ -89,7 +89,6 @@ const ApplicationDetails = (props: any) => {
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalORVisible, setModalORVisible] = useState(false);
-   console.log(props, "props?.documents || props?.tempdocuments")
     return <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
         <KeyboardAvoidingView
