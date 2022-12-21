@@ -180,6 +180,11 @@ function useApplicationSignalr() {
 
                 }, 3000)
             }).then(() => {
+                if(pinnedApplication?._id == applicationItem?._id){
+                    if(applicationModalGoBack?.canGoBack()){
+                        applicationModalGoBack?.goBack();
+                    }
+                }
 
                     dispatch(setApplicationItem({}, pinnedApplication?._id));
                     dispatch(setModalVisible(false, pinnedApplication?._id))
