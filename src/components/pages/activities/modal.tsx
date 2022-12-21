@@ -34,7 +34,6 @@ import {
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
 import {
-    setApplicationGoBack,
     setApplicationItem, setApplicationModalGoBack, setDecrementRealtimeCount, setDeletePinnedApplication,
     setEdit,
     setHasChange, setModalVisible,
