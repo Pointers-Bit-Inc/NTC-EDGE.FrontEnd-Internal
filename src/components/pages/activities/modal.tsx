@@ -114,6 +114,9 @@ function ActivityModal(props: any) {
     const userOriginalProfileForm = useSelector((state: RootStateOrAny) => {
         return state.application.userOriginalProfileForm
     });
+    const applicationModalGoBack = useSelector((state: RootStateOrAny) => {
+        return state.application.applicationModalGoBack
+    });
     const hasChange = useSelector((state: RootStateOrAny) => state.application.hasChange);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
 
@@ -673,22 +676,16 @@ function ActivityModal(props: any) {
     const [initialPage, setInitialPage] = useState(true);
     useEffect(() => {
         setInitialPage(true)
-
+        if(applicationModalGoBack){
+            if(Platform.OS != "web"){
+                if(props?.navigation?.canGoBack()){
+                    props.navigation?.goBack();
+                    dispatch(setApplicationModalGoBack(false))
+                }
+            }
+        }
     }, [applicationItem._id]);
 
-
-    useEffect(() => {
-
-
-        try{
-            if(Platform.OS != "web"){
-                dispatch(setApplicationModalGoBack( props.navigation));
-            }
-        }catch (e) {
-
-        }
-
-    }, []);
     let buttonLabel;
     const renderScene = ({ route, jumpTo }) => {
         if (initialPage) {
