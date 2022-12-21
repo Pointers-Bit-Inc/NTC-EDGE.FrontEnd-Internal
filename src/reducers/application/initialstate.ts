@@ -51,7 +51,7 @@ reviewed: false,
   modalVisible: false,
 
 
-  applicationModalGoBack: null
+  applicationModalGoBack: false
 });
 
 export default InitialState;
