@@ -64,7 +64,8 @@ const {
     RESET_REALTIME_COUNT,
     SET_DECREMENT_REALTIME_COUNT,
     SET_DELETE_PINNED_APPLICATION,
-    SET_MODAL_VISIBLE
+    SET_MODAL_VISIBLE,
+    SET_APPLICATION_MODAL_GOBACK
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -213,6 +214,7 @@ export default function basket(state = initialState, action = {}) {
         case SET_MODAL_VISIBLE: {
 
             if(action?.id == state.applicationItem?._id ) {
+
                 state = state.set('modalVisible', action.payload);
             }else if(!action?.id){
                 state = state.set('modalVisible', action.payload);
@@ -224,6 +226,11 @@ export default function basket(state = initialState, action = {}) {
         }
         case SET_USER_PROFILE_FORM: {
             state = state.set('userProfileForm', action.payload);
+            return state
+        }
+
+        case SET_APPLICATION_MODAL_GOBACK: {
+            state = state.set('applicationModalGoBack', action.payload);
             return state
         }
         case SET_CALENDAR_VISIBLE: {

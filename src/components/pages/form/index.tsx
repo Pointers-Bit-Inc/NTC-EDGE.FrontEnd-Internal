@@ -120,7 +120,7 @@ const ServiceFormPage = (props) =>{
     };
     let applicantFn = (_a: any) => {
         if(!_a) return
-        Object.keys(_a).forEach((k) =>
+        Object.keys(_a)?.forEach((k) =>
             (!_a[k] || k === '_id' || k === 'userId' || k === 'contactNumber' || k === 'email') && delete _a[k]);
         return _a;
     };

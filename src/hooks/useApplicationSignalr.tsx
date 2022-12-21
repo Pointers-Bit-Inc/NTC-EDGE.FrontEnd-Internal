@@ -23,6 +23,10 @@ function useApplicationSignalr() {
     const pinnedApplications = useSelector((state: RootStateOrAny) => {
         return state.application?.pinnedApplications
     });
+
+    const applicationModalGoBack = useSelector((state: RootStateOrAny) => {
+        return state.application?.applicationModalGoBack
+    });
     const applicationItem = useSelector((state: RootStateOrAny) => {
         let _applicationItem = state.application?.applicationItem
         /* for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
@@ -176,9 +180,17 @@ function useApplicationSignalr() {
 
                 }, 3000)
             }).then(() => {
-
-                    dispatch(setModalVisible(false, pinnedApplication?._id))
+                if(Platform.OS == "web"){
                     dispatch(setApplicationItem({}, pinnedApplication?._id));
+                    dispatch(setModalVisible(false, pinnedApplication?._id))
+                }else{
+                    if(applicationModalGoBack?.canGoBack()){
+                        applicationModalGoBack?.goBack();
+                    }
+                }
+
+
+
 
 
                 dispatch(setDecrementRealtimeCount(1))

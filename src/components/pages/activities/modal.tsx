@@ -34,9 +34,10 @@ import {
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
 import {
-    setApplicationItem,
+    setApplicationGoBack,
+    setApplicationItem, setApplicationModalGoBack, setDecrementRealtimeCount, setDeletePinnedApplication,
     setEdit,
-    setHasChange,
+    setHasChange, setModalVisible,
     setRightLayoutComponent, setSceneIndex,
     setUserOriginalProfileForm,
     setUserProfileForm,
@@ -274,6 +275,20 @@ function ActivityModal(props: any) {
              setEdit(false)
          }
  */
+
+       /* new Promise((resolve, reject) => {
+            setTimeout(() => {
+
+
+                resolve() // when this fires, .then gets called
+
+            }, 3000)
+        }).then(() => {
+            dispatch(setApplicationItem({}, applicationItem?._id));
+            dispatch(setModalVisible(false, applicationItem?._id))
+
+
+        })*/
         return () => {
             setChange(false);
             setStatus("");
@@ -640,14 +655,14 @@ function ActivityModal(props: any) {
         };
     }
     const goBackAsync = () => {
-        console.log("goback")
+
         const promise = new Promise<void>(resolve => {
             const subscription = Platform.OS == "web" ? resolve() : props.navigation?.addListener('didBlur', () => {
                 subscription.remove();
                 resolve();
             });
         });
-        console.log("goback")
+
         if(props?.navigation?.canGoBack()){
             props.navigation?.goBack();
         }
@@ -658,10 +673,22 @@ function ActivityModal(props: any) {
     const [initialPage, setInitialPage] = useState(true);
     useEffect(() => {
         setInitialPage(true)
+
     }, [applicationItem._id]);
 
 
+    useEffect(() => {
 
+
+        try{
+            if(Platform.OS != "web"){
+                dispatch(setApplicationModalGoBack( props.navigation));
+            }
+        }catch (e) {
+
+        }
+
+    }, []);
     let buttonLabel;
     const renderScene = ({ route, jumpTo }) => {
         if (initialPage) {
@@ -1096,7 +1123,7 @@ function ActivityModal(props: any) {
                 renderTabBar={() => null}
                 navigationState={{ index: sceneIndex, routes }}
                 renderScene={renderScene}
-                onIndexChange={(index) =>dispatch(setSceneIndex(index))}
+                onIndexChange={(index) => dispatch(setSceneIndex(index))}
                 initialLayout={{ width: dimensions.width }}
             />
 
