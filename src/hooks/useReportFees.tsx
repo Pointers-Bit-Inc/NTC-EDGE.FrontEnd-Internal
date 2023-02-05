@@ -39,6 +39,20 @@ export function useReportFees() {
         }
     }
 
+    const renderDot = color => {
+        return (
+            <View
+                style={{
+                    height: 10,
+                    width: 10,
+                    borderRadius: 5,
+                    backgroundColor: color,
+                    marginRight: 10,
+                }}
+            />
+        );
+    };
+
     useMemo(() => {
         return axios.get(BASE_URL + "/reports", {
             ...{cancelToken: cancelToken.current?.token},
@@ -223,7 +237,8 @@ export function useReportFees() {
         renderItem,
         renderFeeItem,
         fees,
-        servicesMemo
+        servicesMemo,
+        renderDot
     };
 }
 const style = StyleSheet.create({
