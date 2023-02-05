@@ -1,4 +1,4 @@
-import {Animated as RNAnimated, Dimensions, StyleSheet, Text, useWindowDimensions, View} from "react-native";
+import {Animated as RNAnimated, Dimensions, Platform, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {useEffect, useMemo, useRef, useState} from "react";
 import axios, {CancelTokenSource} from "axios";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
@@ -120,6 +120,13 @@ export function useReportFees() {
             useNativeDriver: false,
         }).start();
     }
+    function onDownloadDocument(doc) {
+        var link = document.createElement('a');
+        link.href = doc;
+        link.download = 'file.pdf';
+        link.dispatchEvent(new MouseEvent('click'));
+        link?.remove();
+    }
 
 
     const calendarConfirm = () => {
@@ -128,7 +135,12 @@ export function useReportFees() {
             ...config,
             params: {...query()}
         }).then((res) => {
-            dispatch(setServices(res.data))
+            if(Platform.OS == "web" ){
+                onDownloadDocument(res.data)
+            }
+
+
+
         })
     }
 
