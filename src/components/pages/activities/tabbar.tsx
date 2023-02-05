@@ -451,8 +451,8 @@ export default function TabBar({navigation,route}){
                 {(user?.role?.permission?.qrCodePermission && Platform.OS != "web") &&
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
 
-                 {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
-                 {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}
+                {/* user?.role?.name == "Admin" ?  <Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/> : <></> */}
+                 {user?.role?.name == "Admin" ? <Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/> : <></>}
                 {user?.role?.permission?.rolePermission?.view ? <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/> : <></>}
                  {/*<Drawer.Screen options={{drawerLabel:GROUP,headerShown:false}} name={GROUP} component={GroupNavigator}/>*/}
                 {user?.role?.permission?.schedulePermission?.view ? <Drawer.Screen options={{drawerLabel:SCHEDULE,headerShown:false}} name={SCHEDULE} component={ScheduleNavigator}/> : <></>}

@@ -7,7 +7,7 @@ import UploadIcon from "@assets/svg/uploadReport";
 import {fontValue} from "@pages/activities/fontValue";
 
 const  Header =({title, size = 24, children}) => {
-    return <View style={styles.headerContent}>
+    return <View style={[styles.headerContent, ]}>
 
             <View style={styles.titleContainer}>
                 <Text

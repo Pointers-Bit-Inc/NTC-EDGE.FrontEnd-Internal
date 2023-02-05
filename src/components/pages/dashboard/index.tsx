@@ -64,58 +64,58 @@ import {
 
 
                                     {/*Example of Bezier LineChart*/}
-                                    <Text
-                                        style={{
-                                            textAlign: 'center',
-                                            fontSize: 18,
-                                            padding: 16,
-                                            marginTop: 16,
-                                        }}>
-                                        Bezier Line Chart
-                                    </Text>
-                                    <LineChart
-                                        data={{
-                                            labels: ['January', 'February', 'March', 'April'],
-                                            datasets: [
-                                                {
-                                                    data: [
-                                                        Math.random() * 100,
-                                                        Math.random() * 100,
-                                                        Math.random() * 100,
-                                                        Math.random() * 100,
-                                                        Math.random() * 100,
-                                                        Math.random() * 100,
-                                                    ],
+                                        <Text
+                                            style={{
+                                                textAlign: 'center',
+                                                fontSize: 18,
+                                                padding: 16,
+                                                marginTop: 16,
+                                            }}>
+                                            Bezier Line Chart
+                                        </Text>
+                                        <LineChart
+                                            data={{
+                                                labels: ['January', 'February', 'March', 'April'],
+                                                datasets: [
+                                                    {
+                                                        data: [
+                                                            Math.random() * 100,
+                                                            Math.random() * 100,
+                                                            Math.random() * 100,
+                                                            Math.random() * 100,
+                                                            Math.random() * 100,
+                                                            Math.random() * 100,
+                                                        ],
+                                                    },
+                                                ],
+                                            }}
+                                            width={dimensions.width * 0.55} // from react-native
+                                            height={220}
+                                            yAxisLabel={'$'}
+                                            chartConfig={{
+                                                backgroundColor: '#1cc910',
+                                                backgroundGradientFrom: '#eff3ff',
+                                                backgroundGradientTo: '#efefef',
+                                                decimalPlaces: 2, // optional, defaults to 2dp
+                                                color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
+                                                style: {
+                                                    borderRadius: 16,
                                                 },
-                                            ],
-                                        }}
-                                        width={dimensions.width * 0.55} // from react-native
-                                        height={220}
-                                        yAxisLabel={'$'}
-                                        chartConfig={{
-                                            backgroundColor: '#1cc910',
-                                            backgroundGradientFrom: '#eff3ff',
-                                            backgroundGradientTo: '#efefef',
-                                            decimalPlaces: 2, // optional, defaults to 2dp
-                                            color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
-                                            style: {
+                                                propsForDots: {
+                                                    r: '6',
+                                                    strokeWidth: '2',
+                                                    stroke: '#ffa726',
+                                                },
+                                                propsForBackgroundLines: {
+                                                    strokeDasharray: '', // solid background lines with no dashes
+                                                },
+                                            }}
+                                            bezier
+                                            style={{
+                                                marginVertical: 8,
                                                 borderRadius: 16,
-                                            },
-                                            propsForDots: {
-                                                r: '6',
-                                                strokeWidth: '2',
-                                                stroke: '#ffa726',
-                                            },
-                                            propsForBackgroundLines: {
-                                                strokeDasharray: '', // solid background lines with no dashes
-                                            },
-                                        }}
-                                        bezier
-                                        style={{
-                                            marginVertical: 8,
-                                            borderRadius: 16,
-                                        }}
-                                    />
+                                            }}
+                                        />
 
 
 
@@ -178,7 +178,10 @@ import {
                                         Progress Chart
                                     </Text>
                                     <ProgressChart
-                                        data={[0.4, 0.6, 0.8]}
+                                        data={
+
+                                            [0.4, 0.6, 0.8]
+                                        }
                                         width={dimensions.width * 0.55}
                                         height={220}
                                         chartConfig={{

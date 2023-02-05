@@ -13,6 +13,7 @@ import schedule from "./schedule/reducers";
 import configuration from "./configuration/reducers";
 import soa from "./soa/reducers";
 import service from './service/reducers';
+import dashboard from './dashboard/reducers';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
@@ -30,5 +31,6 @@ export default combineReducers({
   schedule,
   configuration,
   soa,
-  service
+  service,
+  dashboard
 });

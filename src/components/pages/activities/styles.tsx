@@ -656,7 +656,23 @@ export const styles = StyleSheet.create({
     scheduleInnerSeparator: {
         height: 10,
     }, uploadSignature: {paddingVertical: 10, flexDirection: "row", alignItems: "center"},
-    border: {borderRadius: 10, borderWidth: 1, borderColor: disabledColor}
+    border: {borderRadius: 10, borderWidth: 1, borderColor: disabledColor},
+    calendarView: { backgroundColor: "rgba(255,255,255,1)",
+        ...Platform.select({
+            native: {
+                height: undefined,
+                paddingHorizontal: 30,
+                paddingVertical: 10
+            },
+            default: {
+
+                height: undefined,
+                paddingHorizontal: 30,
+                paddingBottom: 21,
+                borderBottomWidth: hairlineWidth,
+                borderBottomColor: "#EFEFEF"
+            }
+        })}
 
 
 });

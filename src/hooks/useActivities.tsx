@@ -278,7 +278,6 @@ function useActivities(props) {
             cancelToken.current?.cancel("Operation canceled due to new request.")
 
         }
-
         //Save the cancel token for the current request
         cancelToken.current = axios.CancelToken.source()
         let isCurrent = true;
@@ -293,7 +292,6 @@ function useActivities(props) {
             axios.spread((pinned, notPinned) => {
                 if (pinned?.data?.message) Alert.alert(pinned.data.message);
                 if (notPinned?.data?.message) Alert.alert(notPinned.data.message);
-
                 if (count == 0) {
                     count = 1;
                     if (count) {
@@ -315,8 +313,6 @@ function useActivities(props) {
                             data: [...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],
                             user: user
                         }))
-
-
                     }
                 }setRefreshing(false);
                 setInfiniteLoad(false)
