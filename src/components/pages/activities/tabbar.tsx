@@ -433,7 +433,8 @@ export default function TabBar({navigation,route}){
                  screenOptions={{
 
                      drawerStyle:{
-                         width:108
+                         width:108,
+                         overflow: Platform.OS == "web" ? "auto" : "scroll"
                      },
                      drawerType: !(Platform.OS == "web" && (Platform?.isPad || isTablet()))? 'permanent' : 'front',
                      drawerItemStyle:{
