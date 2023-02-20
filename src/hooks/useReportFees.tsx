@@ -3,16 +3,26 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import axios, {CancelTokenSource} from "axios";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {BASE_URL} from "../services/config";
-import {setCalendarVisible, setDateEnd, setDateStart, setGetReport, setServices} from "../reducers/dashboard/actions";
+import {
+    setCalendarVisible,
+    setDateEnd,
+    setDateStart,
+    setFeesHighlight,
+    setGetReport,
+    setServices, setServicesHighlight
+} from "../reducers/dashboard/actions";
 import {setPrevDateEnd, setPrevDateStart} from "../reducers/application/actions";
 import moment from "moment";
-import {_colors} from "../utils/ntc";
+import {_colors, currency} from "../utils/ntc";
 import * as React from "react";
+import {lightPrimaryColor, primaryColor} from "@styles/color";
 
 export function useReportFees() {
     const dimensions = useWindowDimensions();
     const cancelToken = useRef<CancelTokenSource>()
     const dispatch = useDispatch();
+    const feesHighlight = useSelector((state: RootStateOrAny) => state.dashboard?.feesHighlight);
+    const servicesHighlight = useSelector((state: RootStateOrAny) => state.dashboard?.servicesHighlight);
     const services = useSelector((state: RootStateOrAny) => state.dashboard?.services);
     const getReport = useSelector((state: RootStateOrAny) => state.dashboard?.getReport);
     const calendarVisible = useSelector((state: RootStateOrAny) => state.dashboard?.calendarVisible);
@@ -29,6 +39,8 @@ export function useReportFees() {
             Authorization: "Bearer ".concat(user?.sessionToken)
         }
     };
+
+
 
     function query() {
         return {
@@ -130,11 +142,17 @@ export function useReportFees() {
 
 
     const calendarConfirm = () => {
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         axios.post(BASE_URL + "/reports/pdf", {
-            ...{cancelToken: cancelToken.current?.token},
+
+        },  {...{cancelToken: cancelToken.current?.token},
             ...config,
-            params: {...query()}
-        }).then((res) => {
+            params: {...query()}}).then((res) => {
             if(Platform.OS == "web" ){
                 onDownloadDocument(res.data)
             }
@@ -145,6 +163,12 @@ export function useReportFees() {
     }
 
     const calendarChangeData = () => {
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
         axios.get(BASE_URL + "/reports", {
             ...{cancelToken: cancelToken.current?.token},
             ...config,
@@ -153,6 +177,11 @@ export function useReportFees() {
             dispatch(setServices(res.data))
         })
     }
+
+
+    useMemo(() => {
+        calendarChangeData()
+    }, [dateStart?.toISOString(), dateEnd?.toISOString()])
 
     const minCols = 2;
 
@@ -187,45 +216,85 @@ export function useReportFees() {
         }
         return (
             <View style={[style.item, {margin: 6, padding: 15, borderRadius: 10,}, style.shadow]}>
-        <View style={{backgroundColor: item.color, height: 30, width: 30, borderRadius: 30 / 2}}></View>
-        <Text style={style.itemText}><Text style={{fontWeight: "bold"}}>Service: </Text>{item.service}</Text>
+        <View style={{backgroundColor:  item.svg.fill, height: 30, width: 30, borderRadius: 30 / 2}}></View>
+        <Text style={style.itemText}><Text style={{fontWeight: "bold"}}>{item.service}</Text></Text>
         <Text>Count: {item.value}</Text>
-        <Text>Total Fee: {item.totalFee}</Text>
+        <Text>Total Fee: {currency(item.totalFee)}</Text>
         </View>
     );
     };
-
     const renderFeeItem = ({item, index}) => {
         if (item.empty) {
             return <View style={[style.item, style.itemTransparent]}/>;
         }
         return (
-            <View style={[style.item, {margin: 6, padding: 15, borderRadius: 10,}, style.shadow]}>
-        <View style={{backgroundColor: item.color, height: 30, width: 30, borderRadius: 30 / 2}}></View>
-        <Text style={style.itemText}><Text style={{fontWeight: "bold"}}>Name: </Text>{item.name}</Text>
-        <Text>Total: {item.value}</Text>
+            <View style={[style.item, {margin: 6, padding: 15, borderRadius: 10,   borderWidth: 1,
+                borderColor: feesHighlight == index ?  '#BFBEFC' : "transparent" },  style.shadow]}>
+        <View style={{backgroundColor: item.svg.fill, height: 30, width: 30, borderRadius: 30 / 2}}></View>
+        <Text style={style.itemText}><Text style={{fontWeight: "bold"}}>{item.name}</Text></Text>
+        <Text>Total: {currency(item.value)}</Text>
         </View>
     );
     };
 
 
-    const fees = useMemo(() => {
-
-        return services.fees.map((c, i) => {
-            c.color = _colors[i]
+    const noService = useMemo(() => {
+        var noservices = [
+            {
+                svg: {
+                    fill: lightPrimaryColor
+                },
+                key: 1,
+                value: 1
+            }
+        ]
+        return noservices.map((c, i) => {
             return c
         })
     }, [services.fees, dimensions.width])
 
 
+    const fees = useMemo(() => {
+
+        return services.fees.map((c, i) => {
+            c.svg = {
+                fill: _colors[i],
+                    onPress: () => dispatch(setFeesHighlight(i)),
+            }
+            c.key =`pie-${i}`
+            return c
+        }).sort((a, b) => b.value - a.value)
+    }, [services.fees, dimensions.width])
+
+
+
+    const feesTotal = useMemo(() => {
+
+        return fees.reduce((total, service) => {
+            return total + service.value
+        }, 0)
+    }, [fees, dimensions.width])
+
+
     const servicesMemo = useMemo(() => {
 
         return services.services.map((c, i) => {
-            c.color = _colors[i]
+            c.svg = {
+                fill: _colors[i],
+                onPress: () => dispatch(setServicesHighlight(i)),
+            }
+            c.key =`pie-service-${i}`
             c.name = c.service
             return c
-        })
+        }).sort((a, b) => b.value - a.value)
     }, [services.services, dimensions.width])
+    const servicesTotal = useMemo(() => {
+
+        return servicesMemo.reduce((total, service) => {
+            return total + service.value
+        }, 0)
+    }, [servicesMemo, dimensions.width])
+
     return {
         dimensions,
         dispatch,
@@ -250,7 +319,12 @@ export function useReportFees() {
         renderFeeItem,
         fees,
         servicesMemo,
-        renderDot
+        renderDot,
+        feesTotal,
+        servicesTotal,
+        noService,
+        feesHighlight,
+        servicesHighlight
     };
 }
 const style = StyleSheet.create({
@@ -283,6 +357,7 @@ const style = StyleSheet.create({
         backgroundColor: 'transparent',
     },
     itemText: {
+        textAlign: "center"
     },
 
 

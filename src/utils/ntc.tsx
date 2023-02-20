@@ -819,6 +819,8 @@ const ampmArray = [
     }
 ]
 const permission = {
+    "reportCashierPermission": false,
+    "reportEvaluatorPermission": false,
     "chatPermission": false,
     "activityPermission": false,
     "meetPermission": false,

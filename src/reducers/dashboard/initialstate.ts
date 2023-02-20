@@ -1186,6 +1186,8 @@ const InitialState = Record({
       }
     ]
   },
+  feesHighlight: null,
+  servicesHighlight: null,
   visible: false,
   dateStart: null,
   dateEnd: null,

@@ -3,8 +3,8 @@ import Svg, { Path } from "react-native-svg";
 
 const ScheduleIcon = (props) => (
     <Svg
-        width={props.width || "48px"}
-        height={props.height || "48px"}
+        width={props.width || 48}
+        height={props.height || 48}
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

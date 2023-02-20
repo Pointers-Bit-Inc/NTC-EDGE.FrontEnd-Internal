@@ -17,7 +17,7 @@ import {
     employeeEdit,
     employeeView,
     meet,
-    qrCodePermission,
+    qrCodePermission, reportCashierPermission, reportEvaluatorPermission,
     resetPasswordPermission,
     rolePermissionCreate,
     rolePermissionDelete,
@@ -155,13 +155,15 @@ const useRoleAndPermission =(navigation) => {
     const parseAccess = (_permission: {
         configurationPermission: any,
         schedulePermission: any;
+        reportCashierPermission: boolean,
+        reportEvaluatorPermission: boolean,
         tabPermission: any; chatPermission: any; qrCodePermission: any; resetPasswordPermission: any; rolePermission: any; userPermission: any; activityPermission: any; meetPermission: any; employeePermission: any; }) => {
         if (lodash.isEmpty(role)) return
+
 
         let p = []
 
         if (_permission?.chatPermission) {
-
             p.push(chat)
         }
         if (_permission?.meetPermission) {
@@ -247,8 +249,13 @@ const useRoleAndPermission =(navigation) => {
         if(_permission?.tabPermission?.history){
             p.push(tabHistoryPermission)
         }
+        if(_permission?.reportCashierPermission){
+            p.push(reportCashierPermission)
+        }
 
-
+        if(_permission?.reportEvaluatorPermission){
+            p.push(reportEvaluatorPermission)
+        }
 
 
         setOriginalAccess(p)
@@ -263,6 +270,8 @@ const useRoleAndPermission =(navigation) => {
         schedulePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean };
         tabPermission: {pending: boolean, all: boolean, history: boolean};
         chatPermission: boolean;
+        reportCashierPermission: boolean;
+        reportEvaluatorPermission: boolean;
         qrCodePermission: boolean;
         resetPasswordPermission: boolean;
         rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean };
@@ -270,6 +279,12 @@ const useRoleAndPermission =(navigation) => {
         activityPermission: boolean;
         meetPermission: boolean;
         employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
+        if (_access.indexOf(reportCashierPermission) !== -1) {
+            _permission.reportCashierPermission = true
+        }
+        if (_access.indexOf(reportEvaluatorPermission) !== -1) {
+            _permission.reportEvaluatorPermission = true
+        }
         if (_access.indexOf(chat) !== -1) {
             _permission.chatPermission = true
         }

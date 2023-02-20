@@ -6,7 +6,9 @@ const {
   SET_DATE_START,
   SET_PREV_DATE_END,
   SET_PREV_DATE_START,
-  SET_GETREPORT
+  SET_GETREPORT,
+  SET_SERVICESHIGHLIGHT,
+  SET_FEESSHIGHLIGHT
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -23,7 +25,15 @@ export default function basket(state = initialState, action = {}) {
       state = state.set('services', action.payload);
       return state
     }
+    case SET_SERVICESHIGHLIGHT: {
+      state = state.set('servicesHighlight', action.payload);
+      return state
+    }
 
+    case SET_FEESSHIGHLIGHT: {
+      state = state.set('feesHighlight', action.payload);
+      return state
+    }
     case SET_GETREPORT: {
       state = state.set('getReport', action.payload);
       return state

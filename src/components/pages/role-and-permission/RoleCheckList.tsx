@@ -12,6 +12,8 @@ import {
     employeeView,
     meet,
     qrCodePermission,
+    reportCashierPermission,
+    reportEvaluatorPermission,
     resetPasswordPermission,
     rolePermissionCreate,
     rolePermissionDelete,
@@ -35,6 +37,7 @@ import React, {memo} from "react";
 import {CheckboxList} from "@atoms/checkboxlist/CheckboxList";
 
 function RoleChecklist(props: { value: any[], onChange: (value) => void }) {
+   console.log(props.value, "value")
     return <View style={{padding: 20}}>
 
         <View>
@@ -137,6 +140,20 @@ function RoleChecklist(props: { value: any[], onChange: (value) => void }) {
                 {label: "Delete", value: scheduleDelete},
             ]}
         />
+
+        <Text size={14} style={styles.text}>Report</Text>
+        <CheckboxList
+            size={12}
+            showCheckAll={false}
+            value={props.value}
+            onChange={props.onChange
+            }
+            options={[
+                {label: "Cashier", value: reportCashierPermission},
+                {label: "Evaluator", value: reportEvaluatorPermission},
+            ]}
+        />
+
         <Text size={14} style={styles.text}>Configuration</Text>
         <CheckboxList
             size={12}

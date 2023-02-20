@@ -28,6 +28,7 @@ import {useReportFees} from "../../../hooks/useReportFees";
 import CalendarPicker from 'react-native-calendar-picker';
 import {setVisible} from "../../../reducers/activity/actions";
 import Filter from "@atoms/icon/filter";
+import PrintIcon from "@assets/svg/PrintnIcon";
 const  Dashboard = (props) => {
 
 
@@ -61,14 +62,19 @@ const  Dashboard = (props) => {
     <View style={[styles.header, {backgroundColor: "#fff"}]}>
         <Header title={"Reports"}>
             <View style={{flexDirection: "row", paddingHorizontal: 15}}>
-                <TouchableOpacity onPress={() => calendarPress(false)}>
-                    <CalendarIcon color={(Platform.OS == "web" || Platform.isPad || isTablet())? "#4E4B66"  :"white"} pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
-                                  height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 20 : 23)}/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => calendarPress(true)}>
-                    <Filter  width={fontValue(isTablet() || Platform.OS == "web" || Platform.isPad ? 30 : 21)}
-                            height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 30 : 21)}/>
-                </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => calendarPress(false)}>
+                        <CalendarIcon color={(Platform.OS == "web" || Platform.isPad || isTablet())? "#4E4B66"  :"white"} pressed={visible} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
+                                      height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 20 : 23)}/>
+                    </TouchableOpacity>
+
+                <View style={{ marginHorizontal: 10}}>
+                    <TouchableOpacity onPress={() => calendarPress(true)}>
+                        <PrintIcon color={(Platform.OS == "web" || Platform.isPad || isTablet())? "#4E4B66"  :"white"} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
+                                   height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 20 : 23)}/>
+                    </TouchableOpacity>
+                </View>
+
             </View>
         </Header>
         <View style={{marginHorizontal:26,}}>
@@ -91,9 +97,11 @@ const  Dashboard = (props) => {
                         <CalendarView onPress={()=> dispatch(setCalendarVisible(true))}
                                       isCloseable={true}
                                       onCloseable={() => {
-                                          dispatch(setDateEnd(null));
+                                         dispatch(setDateEnd(null));
                                           dispatch(setDateStart(null));
+
                                           dispatch(setCalendarVisible(!calendarVisible))
+
 
                                       }}
                                       startDate={dateStart}
