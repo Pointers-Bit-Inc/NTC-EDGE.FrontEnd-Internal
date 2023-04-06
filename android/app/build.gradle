@@ -152,7 +152,7 @@ android {
         applicationId 'portalapp.ntcedge.com'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
+        versionCode 8
         versionName "1.1.25"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
@@ -237,7 +237,7 @@ dependencies {
         // exclude group: 'com.google.android.gms'
         exclude group: 'com.google.firebase'  // -->> Only exclude this group
     }
-
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
