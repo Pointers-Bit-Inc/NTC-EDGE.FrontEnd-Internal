@@ -6,6 +6,23 @@ import {disabledColor, errorColor, infoColor, outline, primaryColor, successColo
 import {isTablet} from "react-native-device-info";
 const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
+    modalBackground: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        backgroundColor: '#rgba(0, 0, 0, 0.5)',
+        zIndex: 1000
+    },
+    activityIndicatorWrapper: {
+        backgroundColor: '#FFFFFF',
+        height: 100,
+        width: 100,
+        borderRadius: 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around'
+    },
     container: {
         flex: 1,
         backgroundColor: 'tomato',

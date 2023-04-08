@@ -32,6 +32,7 @@ export function useReportFees() {
     const dateEnd = useSelector((state: RootStateOrAny) => state.dashboard?.dateEnd);
     const dateStart = useSelector((state: RootStateOrAny) => state.dashboard?.dateStart);
     const [animation] = useState(() => new RNAnimated.Value(0));
+    const [modalVisible, setModalVisible] = useState(false);
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const config = {
@@ -103,7 +104,7 @@ export function useReportFees() {
             let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
             dispatch(setDateEnd(_date));
         } else {
-            let _date = date?.set({"hour": 0, "minute": 0})
+            let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
             dispatch(setDateEnd(null));
             dispatch(setDateStart(_date));
         }
@@ -114,12 +115,15 @@ export function useReportFees() {
         dispatch(setPrevDateStart(dateStart));
         if (!(dateEnd && dateStart)) {
             let _dateEnd = moment()?.set({"hour": 23, "minute": 59, "second": 59})
-            let _dateStart = moment()?.set({"hour": 0, "minute": 0})
+            let _dateStart = moment()?.set({"hour": 23, "minute": 59, "second": 59})
             dispatch(setDateEnd(_dateEnd));
             dispatch(setDateStart(_dateStart));
         }
+        console.log(getReport)
+        if(getReport == "cashier" ){
 
-        if(getReport){
+            dispatch(setGetReport("cashier"))
+        }else if(getReport){
             dispatch(setGetReport(true))
         }else{
             dispatch(setGetReport(false))
@@ -146,9 +150,10 @@ export function useReportFees() {
             cancelToken.current?.cancel("Operation canceled due to new request.")
 
         }
+        setModalVisible(true)
         //Save the cancel token for the current request
         cancelToken.current = axios.CancelToken.source()
-        axios.post(BASE_URL + "/reports/pdf", {
+        axios.post(BASE_URL + "/reports/MISReport", {
 
         },  {...{cancelToken: cancelToken.current?.token},
             ...config,
@@ -156,10 +161,35 @@ export function useReportFees() {
             if(Platform.OS == "web" ){
                 onDownloadDocument(res.data)
             }
-
+            setModalVisible(false)
 
 
         })
+    }
+    const cashierReportConfirm = () => {
+        if (typeof cancelToken != typeof undefined) {
+            cancelToken.current?.cancel("Operation canceled due to new request.")
+
+        }
+        setModalVisible(true)
+        //Save the cancel token for the current request
+        cancelToken.current = axios.CancelToken.source()
+        try {
+            axios.post(BASE_URL + "/reports/CashierReport", {
+
+            },  {...{cancelToken: cancelToken.current?.token},
+                ...config,
+                params: {...query()}}).then((res) => {
+                if(Platform.OS == "web" ){
+                    onDownloadDocument(res.data)
+                }
+            })
+        }catch (e) {
+            setModalVisible(false)
+        }finally {
+            setModalVisible(false)
+        }
+
     }
 
     const calendarChangeData = () => {
@@ -296,6 +326,7 @@ export function useReportFees() {
     }, [servicesMemo, dimensions.width])
 
     return {
+        cashierReportConfirm,
         dimensions,
         dispatch,
         calendarVisible,
@@ -324,7 +355,8 @@ export function useReportFees() {
         servicesTotal,
         noService,
         feesHighlight,
-        servicesHighlight
+        servicesHighlight,
+        modalVisible
     };
 }
 const style = StyleSheet.create({

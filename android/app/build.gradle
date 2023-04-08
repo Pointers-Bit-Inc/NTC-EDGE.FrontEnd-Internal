@@ -149,7 +149,7 @@ android {
 
     defaultConfig {
 
-        applicationId 'portalapp.ntcedge.com'
+        applicationId 'com.ntcedge.portal'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 8

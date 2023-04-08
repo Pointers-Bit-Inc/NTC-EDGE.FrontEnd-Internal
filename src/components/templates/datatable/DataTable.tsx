@@ -901,7 +901,7 @@ const DataTable = (props) => {
             }
             }>
                 <View style={style.cellStyle}>
-                    <Text style={[style.tableHeader, {color: "#000000"}]}>{item._id.slice(0, 8)}</Text>
+                    <Text style={[style.tableHeader, {color: "#000000"}]}>{item?._id?.slice(0, 8)}</Text>
                 </View>
                 <View style={style.cellStyle}>
                     <View style={{flexDirection: "row", alignItems: "center",}}>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
-    Animated as RNAnimated,
+    ActivityIndicator,
+    Animated as RNAnimated, Modal,
     Platform,
     StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
@@ -26,9 +27,8 @@ import {DeclineButton} from "@atoms/button/errorButton";
 import {SuccessButton} from "@atoms/button/successButton";
 import {useReportFees} from "../../../hooks/useReportFees";
 import CalendarPicker from 'react-native-calendar-picker';
-import {setVisible} from "../../../reducers/activity/actions";
-import Filter from "@atoms/icon/filter";
 import PrintIcon from "@assets/svg/PrintnIcon";
+import CashierViewIcon from "@assets/svg/cashierView";
 const  Dashboard = (props) => {
 
 
@@ -50,6 +50,8 @@ const  Dashboard = (props) => {
         calendarChangeData,
         getReport,
         calendarConfirm,
+        cashierReportConfirm,
+        modalVisible
     } = useReportFees();
 
 
@@ -60,6 +62,7 @@ const  Dashboard = (props) => {
     return (
 <>
     <View style={[styles.header, {backgroundColor: "#fff"}]}>
+
         <Header title={"Reports"}>
             <View style={{flexDirection: "row", paddingHorizontal: 15}}>
 
@@ -71,6 +74,13 @@ const  Dashboard = (props) => {
                 <View style={{ marginHorizontal: 10}}>
                     <TouchableOpacity onPress={() => calendarPress(true)}>
                         <PrintIcon color={(Platform.OS == "web" || Platform.isPad || isTablet())? "#4E4B66"  :"white"} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
+                                   height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 20 : 23)}/>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ marginHorizontal: 10}}>
+                    <TouchableOpacity onPress={() =>  calendarPress("cashier")}>
+                        <CashierViewIcon color={(Platform.OS == "web" || Platform.isPad || isTablet())? "#4E4B66"  :"white"} width={fontValue(Platform.OS == "web" || Platform.isPad ? 26 : 23)}
                                    height={fontValue(Platform.OS == "web" || isTablet() || Platform.isPad ? 20 : 23)}/>
                     </TouchableOpacity>
                 </View>
@@ -122,7 +132,18 @@ const  Dashboard = (props) => {
         <Tab.Screen name="Fees" component={FeesScreen} />
         <Tab.Screen name="Services" component={ServicesScreen} />
     </Tab.Navigator>
-
+    <Modal
+        transparent={true}
+        animationType={'none'}
+        visible={modalVisible}
+        style={{ zIndex: 1100 }}
+        onRequestClose={() => { }}>
+        <View style={styles.modalBackground}>
+            <View style={styles.activityIndicatorWrapper}>
+                <ActivityIndicator animating={modalVisible} color="black" />
+            </View>
+        </View>
+    </Modal>
     {calendarVisible ? <RNAnimated.View
         pointerEvents="box-none"
         style={[
@@ -178,7 +199,10 @@ const  Dashboard = (props) => {
                     </View>
                     <View style={{flex: 0.9,  paddingHorizontal: 10}}>
                         <SuccessButton disabled={!(dateStart && dateEnd)} onPress={()=>{
-                            if(getReport){
+                            console.log(getReport)
+                            if(getReport == "cashier"){
+                                cashierReportConfirm()
+                            }else if(getReport){
                                 calendarChangeData()
                             }else{
                                 calendarConfirm()
