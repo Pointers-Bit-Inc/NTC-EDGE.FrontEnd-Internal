@@ -412,7 +412,6 @@ export default function TabBar({navigation,route}){
 
         );
     }
-
     const dimensions=useWindowDimensions();
     return (
         <>
@@ -453,7 +452,7 @@ export default function TabBar({navigation,route}){
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
 
                 {/* user?.role?.name == "Admin" ?  <Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/> : <></> */}
-                 {user?.role?.name == "Admin" || user?.role?.name?.toLower?.includes("report")  ? <Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/> : <></>}
+                 {user?.role?.name == "Admin" || user?.role?.name?.toLowerCase()?.includes("report") || user?.role?.name?.toLowerCase()?.includes("reports")  ? <Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/> : <></>}
                 {user?.role?.permission?.rolePermission?.view ? <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/> : <></>}
                  {/*<Drawer.Screen options={{drawerLabel:GROUP,headerShown:false}} name={GROUP} component={GroupNavigator}/>*/}
                 {user?.role?.permission?.schedulePermission?.view ? <Drawer.Screen options={{drawerLabel:SCHEDULE,headerShown:false}} name={SCHEDULE} component={ScheduleNavigator}/> : <></>}

@@ -214,6 +214,7 @@ interface FilterList {
     checker: boolean;
     evaluator: boolean;
     accountant: boolean;
+    admin: boolean;
 }
 
 export const getFilter = ({
@@ -224,7 +225,8 @@ export const getFilter = ({
                               director = null,
                               checker = null,
                               evaluator = null,
-                              accountant = null
+                              accountant = null,
+                              admin = null
                           }: FilterList) => list?.filter((item: any) => {
     let _approvalHistory = false;
     _approvalHistory = (item?.approvalHistory?.[0]?.userId || item?.approvalHistory?.userId) == user?._id
@@ -244,7 +246,7 @@ export const getFilter = ({
             (
                 (
                     item?.assignedPersonnel?._id || item?.assignedPersonnel)) == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
-    } else if (evaluator) {
+    } else if (evaluator || admin) {
         return item?.status?.length > 0 || (
             item?.assignedPersonnel?._id || item?.assignedPersonnel) == user?._id || item?.assignedPersonnel === null || _approvalHistory
     }
@@ -288,7 +290,7 @@ export const unreadReadApplication = ({
         console.warn(err)
     })
 };
-export const getRole = (user, arr) => arr.indexOf(user?.role?.key) != -1;
+export const getRole = (user, arr) => arr?.includes(user?.role?.key) ;
 
 
 export const excludeStatus = (props: any, personnel: UserApplication) => getStatusText(props, personnel) == FORVERIFICATION ||

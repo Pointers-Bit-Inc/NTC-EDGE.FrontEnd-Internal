@@ -4,6 +4,7 @@ import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import useSignalr from "./useSignalr";
 import {formatDate,getActivityStatus,getFilter,PaymentStatusText,unreadReadApplication} from "@pages/activities/script";
 import {
+    ADMIN,
     APPROVED,
     CASHIER,
     DATE_ADDED,
@@ -139,7 +140,8 @@ function useActivities(props) {
             director: director,
             checker: checker,
             evaluator: evaluator,
-            accountant: accountant
+            accountant: accountant,
+            admin: [ADMIN].indexOf(user?.role?.key) != -1
         });
     }
 

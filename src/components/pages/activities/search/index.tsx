@@ -9,7 +9,7 @@ import {styles} from '@pages/activities/search/styles'
 import axios, {CancelTokenSource} from "axios";
 import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
-import {ACTIVITIESLIST,DATE_ADDED} from "../../../../reducers/activity/initialstate";
+import {ACTIVITIESLIST, ADMIN, DATE_ADDED} from "../../../../reducers/activity/initialstate";
 import {formatDate,getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
@@ -55,7 +55,8 @@ function Search(props:any){
             director:director,
             checker:checker,
             evaluator:evaluator,
-            accountant:accountant
+            accountant:accountant,
+            admin: [ADMIN].indexOf(user?.role?.key) != -1
         });
 
         const groups=list?.reduce((groups:any,activity:any)=>{
