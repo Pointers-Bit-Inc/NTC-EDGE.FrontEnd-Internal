@@ -50,7 +50,7 @@ const ModalTab = props => {
     const tabName = useSelector((state: RootStateOrAny) => state.activity.tabName);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
     const [_scrollX, set_scrollX] = useState(new Animated.Value(0));
-    // 6 is a quantity of tabs
+console.log(props.details, "props.details.")
     const [interpolators, setInterpolators] = useState(Array.from({length: 6}, (_, i) => i).map(idx => (
         {
             scale: _scrollX.interpolate({
@@ -230,6 +230,7 @@ const ModalTab = props => {
                         applicationTypeLabel={service?.applicationType?.label}
                         id={ props.details?._id}
                         amnesty={props.details.amnesty}
+                        amnestyTotalFee={props.details.amnestyTotalFee}
                         serviceCode={service?.serviceCode}
                         setPaymentIndex={setPaymentIndex}
                         saved={props.saved}

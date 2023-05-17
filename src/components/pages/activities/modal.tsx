@@ -94,6 +94,8 @@ function ActivityModal(props: any) {
 
         return _applicationItem
     });
+
+
     const sceneIndex = useSelector((state: RootStateOrAny) => {
         return state.application.sceneIndex
     });
@@ -532,6 +534,7 @@ function ActivityModal(props: any) {
 
                 cleanSoa = {
                     //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
+                    amnestyTotalFee: response.data?.totalFee,
                     totalFee: response.data?.totalFee,
                     soa: unionBy?.filter((s) => s?.type != "delete")
                 }
@@ -576,6 +579,7 @@ function ActivityModal(props: any) {
 
         if(amnesty){
             profileFormUnflatten!.amnesty = amnesty
+            profileFormUnflatten!.amnestyTotalFee = cleanSoa?.amnestyTotalFee
         }
 
         if (isLoading) setLoading(true)
@@ -686,6 +690,7 @@ function ActivityModal(props: any) {
     }, [applicationItem._id]);
 
     let buttonLabel;
+
     const renderScene = ({ route, jumpTo }) => {
         if (initialPage) {
             jumpTo( 0)
@@ -830,7 +835,7 @@ function ActivityModal(props: any) {
                                                 <ApprovedButton
                                                     user={user}
                                                     currentLoading={currentLoading}
-                                                    allButton={allButton}
+                                                    allButton={false}
                                                     onPress={() => {
                                                         if (getRole(user, [EVALUATOR])) {
                                                             setShowAlert1(true)

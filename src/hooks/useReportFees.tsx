@@ -263,6 +263,7 @@ export function useReportFees() {
         <View style={{backgroundColor: item.svg.fill, height: 30, width: 30, borderRadius: 30 / 2}}></View>
         <Text style={style.itemText}><Text style={{fontWeight: "bold"}}>{item.name}</Text></Text>
         <Text>Total: {currency(item.value)}</Text>
+
         </View>
     );
     };

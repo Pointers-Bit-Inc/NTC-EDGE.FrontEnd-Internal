@@ -324,6 +324,10 @@ const Payment = (_props: any) => {
         soa?.filter(s => !(['delete'].indexOf(s?.type ) > -1))?.map(s => total += isNumber(parseFloat(s.amount)) ? parseFloat(s.amount) : 0);
         return props.totalFee?.toFixed(2);
     };
+    const getAmnestyTotal = () => {
+        let total = 0;
+        return !isNaN(props.amnestyTotalFee) ? parseInt(props.amnestyTotalFee)?.toFixed(2) : 0 ;
+    };
     const largestNumber = (array) => {
         if (!array.length) return 1
         return Math.max.apply(Math, array.map(function (o) {
@@ -606,24 +610,40 @@ const Payment = (_props: any) => {
                                         {(props.edit && props?.applicationTypeLabel?.toLowerCase()?.indexOf( "renewal" ) != -1 )? <View style={{  justifyContent: "center", flex: 1, marginHorizontal: 20}}>
                                             <InputField mainContainerStyle={{marginBottom: 0}} value={amnesty} onChange={getOnChange} label={"Amnesty (%)"}  placeholder={"Amnesty"}/>
                                         </View> : <></>}
-                                        <View style={{marginRight: 30, flexDirection: "row"}}>
-                                            <Text
+                                        <View >
+                                            <View style={{flex: 0.5,marginRight: 30, flexDirection: "row"}}>
+                                                <Text
 
-                                                color="#37405B"
-                                                style={{fontSize: fontValue(14), fontFamily: Regular, marginRight: 30}}
-                                            >
-                                                {"Total".toUpperCase()}
-                                            </Text>
-                                            <Text
-                                                style={{fontSize: fontValue(16), fontFamily: Bold}}
-                                                color="#37405B"
-                                            >
-                                                {currency(getTotal())}
-                                            </Text>
+                                                    color="#37405B"
+                                                    style={{fontSize: fontValue(14), fontFamily: Regular, marginRight: 30}}
+                                                >
+                                                    {"Total".toUpperCase()}
+                                                </Text>
+                                                <Text
+                                                    style={{fontSize: fontValue(16), fontFamily: Bold}}
+                                                    color="#37405B"
+                                                >
+                                                    {currency(getTotal())}
+                                                </Text>
+                                            </View>
+                                            {getAmnestyTotal() > 0 ? <View style={{flex: 0.5, marginRight: 30, flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                                                <Text
+
+                                                    color="#37405B"
+                                                    style={{fontStyle: "italic", fontSize: fontValue(12), fontFamily: Regular, marginRight: 30}}
+                                                >
+                                                    {"With Amnesty".toUpperCase()}
+                                                </Text>
+                                                <Text
+                                                    style={{fontSize: fontValue(16), fontFamily: Bold}}
+                                                    color="#37405B"
+                                                >
+                                                    {currency(getAmnestyTotal())}
+                                                </Text>
+                                            </View> : null}
+                                        </View>
                                         </View>
 
-
-                                    </View>
                                 </View>
 
 

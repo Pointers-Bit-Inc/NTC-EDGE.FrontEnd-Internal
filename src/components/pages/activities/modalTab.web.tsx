@@ -119,6 +119,7 @@ export const ModalTab = props => {
                                         applicant={applicant}
                                         totalFee={totalFee}
                                         soa={soa}
+                                        amnestyTotalFee={ props.details?.amnestyTotalFee }
                                         key={index}/>}
                     </Tab.Screen>
                 }

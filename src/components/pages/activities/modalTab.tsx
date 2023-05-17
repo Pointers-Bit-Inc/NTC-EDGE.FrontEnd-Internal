@@ -47,6 +47,8 @@ export const ModalTab = props => {
             }) ,
 
         })));
+
+    console.log(props.details?.amnestyTotalFee, "props.details?.amnestyTotalFee")
     const [tabs , setTabs] = useState([
         {
             id : 1 ,
@@ -87,6 +89,9 @@ export const ModalTab = props => {
         createdAt = props?.details?.createdAt ,
         proofOfPayment = props?.details?.proofOfPayment,
         documents = props?.details?.document;
+
+
+
     return <ScrollableTabView
         onScroll={ (x) => _scrollX.setValue(x) }
         renderTabBar={ () => <TabBar
@@ -143,6 +148,7 @@ export const ModalTab = props => {
                                     paymentMethod={ paymentMethod }
                                     applicant={ applicant }
                                     totalFee={ totalFee }
+                                    amnestyTotalFee={ props.details?.amnestyTotalFee }
                                     soa={ soa }
                                     key={ index }/>
                 }
