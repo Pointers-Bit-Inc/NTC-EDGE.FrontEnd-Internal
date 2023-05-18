@@ -626,7 +626,7 @@ const Payment = (_props: any) => {
                                                     {currency(getTotal())}
                                                 </Text>
                                             </View>
-                                            {getAmnestyTotal() > 0 ? <View style={{flex: 0.5, marginRight: 30, flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                                            {/*{getAmnestyTotal() > 0 ? <View style={{flex: 0.5, marginRight: 30, flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
                                                 <Text
 
                                                     color="#37405B"
@@ -640,7 +640,7 @@ const Payment = (_props: any) => {
                                                 >
                                                     {currency(getAmnestyTotal())}
                                                 </Text>
-                                            </View> : null}
+                                            </View> : null}*/}
                                         </View>
                                         </View>
 
