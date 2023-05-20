@@ -42,12 +42,11 @@ const ProfileImage = ({
   const imageSize = isOnline ? (isMobile && !(Platform?.isPad || isTablet())) ? RFValue(size - 5) : size - 5 : (isMobile && !Platform?.isPad) ? RFValue(size) : size
 
   const getBackgroundColor = useCallback(() => {
-      if (!(backgroundColor) && image) {
+      if (!(backgroundColor)) {
       return getColorFromName(name);
     }
     return backgroundColor;
   }, [name]);
-
   if (image) {
     return (
       <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 1.5 }, onlineStyle]}>
@@ -86,7 +85,6 @@ const ProfileImage = ({
       </View>
     );
   }
-
   return (
     <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 2 }, onlineStyle]}>
       <View

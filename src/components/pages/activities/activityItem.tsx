@@ -261,7 +261,7 @@ function ProfileImageMemo(props: { userActivity: any, name: any }) {
 
     return  useMemo(() => <ProfileImage
         size={fontValue(45)}
-        image={props.userActivity?.profilePicture?.thumb ? props.userActivity?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? props.userActivity?.profilePicture?.thumb : props.userActivity?.profilePicture?.thumb + ".png" : null}
+        image={props.userActivity?.profilePicture?.thumb != "https://ui-avatars.com/api/?name=Guest+EDGE&background=3b82f6&color=fff&size=75" ? props.userActivity?.profilePicture?.thumb ? props.userActivity?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? props.userActivity?.profilePicture?.thumb : props.userActivity?.profilePicture?.thumb + ".png" : null : null}
         name={props.name}
     />, [props])
 }
@@ -274,9 +274,11 @@ const ActivityItem = (props: any) => {
     }, [applicationItemId,  propsMemo.selected] )
     const status = [CASHIER].indexOf(propsMemo?.role) != -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);
     const userActivity = propsMemo?.activity?.applicant?.user || propsMemo?.activity?.applicant;
-
-    const getStatus = getActivityStatus(propsMemo, status);
+ const getStatus = getActivityStatus(propsMemo, status);
     let userType = propsMemo?.activity?.applicant?.userType;
+
+console.log(propsMemo, "propsMemo?.activity?.service?.basic?.firstName;")
+
     const nameMemo = useMemo(() => {
         let basicFirstName = propsMemo?.activity?.service?.basic?.firstName;
         let basicLastName = propsMemo?.activity?.service?.basic?.lastName;
@@ -287,12 +289,14 @@ const ActivityItem = (props: any) => {
         let firstName = userActivity?.firstName;
         let lastName = userActivity?.lastName;
         let applicantName = userActivity?.applicantName;
-        return propsMemo?.activity?.applicant?.userId == "2b2957c9-c604-4d0e-ad31-14466f172c06"
+
+
+        return propsMemo?.activity?.applicant?.userId == "2b2957c9-c604-4d0e-ad31-14466f172c06" || propsMemo?.activity?.applicant?.userId ==  "41b17694-119a-4d3c-b996-7aa4ab6e9b91"
         || (basicFirstName || basicLastName) ?
             (basicFirstName || basicLastName ?
                 `${basicFirstName || ""} ${basicLastName || ""}`
-                : basicCompanyName ? basicCompanyName : basicClubName)
-            : ((userType == "Individual") ?
+                : basicCompanyName ? basicCompanyName : basicClubName ?? companyName)
+            : ((userType == "Individual" ) ?
                 ((firstName || lastName || applicantName) ?
                     `${firstName || ""} ${lastName || ""}`.trim() || applicantName :
                     ((basicFirstName || basicFirstName) ?
