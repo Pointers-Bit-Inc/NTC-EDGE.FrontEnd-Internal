@@ -5,7 +5,7 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React, {memo, useEffect, useMemo, useState} from "react";
 import {
-    ACCOUNTANT,
+    ACCOUNTANT, ADMIN,
     CASHIER,
     CHECKER,
     DIRECTOR,
@@ -66,28 +66,28 @@ console.log(props.details, "props.details.")
             title: 'Basic Info',
             key: 'Basic Info',
             active: true,
-            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [ADMIN, CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 2,
             title: 'Application Details',
             key: 'Application Details',
             active: false,
-            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [ADMIN, CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 3,
             title: 'Requirements',
             key: 'Requirements',
             active: false,
-            isShow: [CHECKER, DIRECTOR, EVALUATOR]
+            isShow: [ADMIN, CHECKER, DIRECTOR, EVALUATOR]
         },
         {
             id: 4,
             title: 'SOA & Payment',
             key: 'SOA & Payment',
             active: false,
-            isShow: [DIRECTOR, CASHIER, ACCOUNTANT, EVALUATOR]
+            isShow: [ADMIN, DIRECTOR, CASHIER, ACCOUNTANT, EVALUATOR]
         },
     ]);
     const loading = useMemo(() => props.loading, [props.loading])

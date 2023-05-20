@@ -5,7 +5,7 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
+import {ACCOUNTANT, ADMIN, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
 import {primaryColor, text} from "@styles/color";
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Poppins_400Regular , Poppins_500Medium} from "@expo-google-fonts/poppins";
@@ -24,25 +24,25 @@ export const ModalTab = props => {
             id: 1,
             name: 'Basic Info',
             active: true,
-            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [ADMIN, CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 2,
             name: 'Application Details',
             active: false,
-            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [ADMIN, CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 3,
             name: 'Requirements',
             active: false,
-            isShow: [CHECKER, DIRECTOR, EVALUATOR]
+            isShow: [ADMIN,CHECKER, DIRECTOR, EVALUATOR]
         },
         {
             id: 4,
             name: 'SOA & Payment',
             active: false,
-            isShow: [CASHIER, ACCOUNTANT]
+            isShow: [ADMIN,CASHIER, ACCOUNTANT]
         },
     ]);
 

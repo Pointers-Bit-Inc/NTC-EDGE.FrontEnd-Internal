@@ -20,7 +20,7 @@ import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {getRole, PaymentStatusText, removeEmpty, StatusText} from "@pages/activities/script";
 import {
-    ACCOUNTANT,
+    ACCOUNTANT, ADMIN,
     APPROVED,
     CASHIER,
     DECLINED,
@@ -719,7 +719,7 @@ function ActivityModal(props: any) {
                         }}
                         onConfirmPressed={() => {
                             let status = "";
-                            if ([CASHIER, DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
+                            if ([CASHIER, DIRECTOR, EVALUATOR,ADMIN].indexOf(user?.role?.key) != -1) {
                                 status = APPROVED
                             } else {
                                 status = DECLINED
@@ -830,14 +830,14 @@ function ActivityModal(props: any) {
                                     alignSelf: "flex-end"
                                 }}>
                                     <View style={styles.footer}>
-                                        {getRole(user, [DIRECTOR, EVALUATOR, CASHIER, ACCOUNTANT]) ?
+                                        {getRole(user, [ADMIN, DIRECTOR, EVALUATOR, CASHIER, ACCOUNTANT]) ?
                                             <View style={styles.groupButton}>
                                                 <ApprovedButton
                                                     user={user}
                                                     currentLoading={currentLoading}
                                                     allButton={allButton}
                                                     onPress={() => {
-                                                        if (getRole(user, [EVALUATOR])) {
+                                                        if (getRole(user, [ADMIN, EVALUATOR])) {
                                                             setShowAlert1(true)
                                                             setApproveVisible(true)
                                                         } else {
@@ -853,7 +853,7 @@ function ActivityModal(props: any) {
                                                     }}/>
 
                                             </View> :<></>}
-                                        {getRole(user, [EVALUATOR]) && applicationItem?.service?.serviceCode !== "service-22" ?
+                                        {getRole(user, [ADMIN, EVALUATOR]) && applicationItem?.service?.serviceCode !== "service-22" ?
                                             <EndorsedButton
                                                 currentLoading={currentLoading}
                                                 allButton={allButton}
@@ -880,7 +880,7 @@ function ActivityModal(props: any) {
                             setStatus(prevStatus);
                             setRemarks(prevRemarks);
                             setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
-                            if (getRole(user, [EVALUATOR])) {
+                            if (getRole(user, [ADMIN, EVALUATOR])) {
                                 onApproveDismissed();
 
                             }
@@ -912,7 +912,7 @@ function ActivityModal(props: any) {
                             setAssignId(event.cashier)
                             let status = "";
 
-                            if (getRole(user, [DIRECTOR, EVALUATOR])) {
+                            if (getRole(user, [ADMIN, DIRECTOR, EVALUATOR])) {
                                 if (applicationItem?.service?.serviceCode == "service-22") {
                                     status = APPROVED
                                 } else {

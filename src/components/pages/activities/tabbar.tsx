@@ -424,7 +424,7 @@ export default function TabBar({navigation,route}){
                      })} name={ACTIVITIES} component={ActivitiesNavigator}/>
                  <Tab.Screen options={{headerShown:false}} name={CHAT} component={ChatScreen}/>
                  <Tab.Screen options={{headerShown:false}} name={MEET} component={MeetScreen}/>
-                 {getRole(user,[CHECKER,EVALUATOR,DIRECTOR])&&
+                 {getRole(user,[CHECKER,EVALUATOR,DIRECTOR, ADMIN])&&
                  <Tab.Screen options={{headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
                  {/*<Tab.Screen options={{headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
              </Tab.Navigator> : <Drawer.Navigator
@@ -452,7 +452,7 @@ export default function TabBar({navigation,route}){
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
 
                 {/* user?.role?.name == "Admin" ?  <Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/> : <></> */}
-                 {user?.role?.name == "Admin" || user?.role?.name?.toLowerCase()?.includes("report") || user?.role?.name?.toLowerCase()?.includes("reports")  ? <Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/> : <></>}
+                 {user?.role?.name == "Admin" || user?.role?.permission?.reportEvaluatorPermission || user?.role?.permission?.reportCashierPermission  ? <Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/> : <></>}
                 {user?.role?.permission?.rolePermission?.view ? <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/> : <></>}
                  {/*<Drawer.Screen options={{drawerLabel:GROUP,headerShown:false}} name={GROUP} component={GroupNavigator}/>*/}
                 {user?.role?.permission?.schedulePermission?.view ? <Drawer.Screen options={{drawerLabel:SCHEDULE,headerShown:false}} name={SCHEDULE} component={ScheduleNavigator}/> : <></>}
