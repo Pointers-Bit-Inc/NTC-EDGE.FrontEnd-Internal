@@ -277,7 +277,6 @@ const ActivityItem = (props: any) => {
  const getStatus = getActivityStatus(propsMemo, status);
     let userType = propsMemo?.activity?.applicant?.userType;
 
-console.log(propsMemo, "propsMemo?.activity?.service?.basic?.firstName;")
 
     const nameMemo = useMemo(() => {
         let basicFirstName = propsMemo?.activity?.service?.basic?.firstName;

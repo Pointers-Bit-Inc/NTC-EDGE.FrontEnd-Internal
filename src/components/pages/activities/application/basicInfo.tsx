@@ -13,7 +13,14 @@ import {
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
-import {APPROVED, CASHIER, DECLINED, FORAPPROVAL, FOREVALUATION} from "../../../../reducers/activity/initialstate";
+import {
+    APPROVED,
+    CASHIER,
+    DECLINED,
+    EVALUATOR,
+    FORAPPROVAL,
+    FOREVALUATION
+} from "../../../../reducers/activity/initialstate";
 import moment from "moment";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -543,6 +550,40 @@ const BasicInfo = (_props: any) => {
         }
     }, [props.edit]);
     const dimension = useWindowDimensions()
+
+    const nameMemo = useMemo(() => {
+        let basicFirstName = props?.service?.basic?.firstName;
+        let basicLastName = props?.service?.basic?.lastName;
+        let basicCompanyName = props?.service?.basic?.companyName;
+        let basicClubName = props?.service?.basic?.clubName;
+        let companyName = props?.applicant?.companyName;
+        let clubName = props?.service?.applicationDetails?.clubName;
+        let firstName = applicant?.firstName;
+        let lastName = applicant?.lastName;
+        let applicantName = applicant?.applicantName;
+
+
+        return props?.applicant?.userId == "2b2957c9-c604-4d0e-ad31-14466f172c06" || props?.applicant?.userId ==  "41b17694-119a-4d3c-b996-7aa4ab6e9b91"
+        || (basicFirstName || basicLastName) ?
+            (basicFirstName || basicLastName ?
+                `${basicFirstName || ""} ${basicLastName || ""}`
+                : basicCompanyName ? basicCompanyName : basicClubName ?? companyName)
+            : ((props?.applicant.userType == "Individual" ) ?
+                ((firstName || lastName || applicantName) ?
+                    `${firstName || ""} ${lastName || ""}`.trim() || applicantName :
+                    ((basicFirstName || basicFirstName) ?
+                        `${basicFirstName || ""} ${basicLastName || ""}` :
+                        (basicCompanyName ? basicCompanyName : ""))) :
+                ((companyName || basicCompanyName) ?
+                    (companyName || basicCompanyName) :
+                    (clubName ? clubName :
+                        ((firstName || lastName || applicantName) ?
+                            `${firstName || ""} ${lastName || ""}`.trim() || applicantName :
+                            ((basicFirstName || basicFirstName) ?
+                                `${basicFirstName || ""} ${basicLastName || ""}` :
+                                (basicCompanyName ? basicCompanyName :
+                                    ""))))))
+    }, [applicant])
     return <View ref={containerRef} style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -585,8 +626,8 @@ const BasicInfo = (_props: any) => {
                             size={fontValue(150)}
 
                             textSize={22}
-                            image={applicant?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant?.profilePicture?.small : applicant?.profilePicture?.small + ".png"}
-                            name={applicant?.firstName && applicant?.lastName ? applicant?.firstName + (applicant?.middleName ? " " + applicant?.middleName?.charAt() + "." : "") + " " + applicant?.lastName : applicant?.applicantName ? applicant?.applicantName : ""}
+                            image={ applicant?.profilePicture?.small != "https://ui-avatars.com/api/?name=Guest+EDGE&background=3b82f6&color=fff&size=150" ? (applicant?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant?.profilePicture?.small : applicant?.profilePicture?.small + ".png") : null}
+                            name={nameMemo}
                         />
 
                         {(
@@ -627,6 +668,19 @@ const BasicInfo = (_props: any) => {
                                             <RemarkFn/>
 
                                         }
+                                        {(user?.role?.key == EVALUATOR && (userProfileForm?.["referenceNumber"] || userProfileForm?.["permitNumber"]) )  ? <View style={styles.group3}>
+                                            <View style={styles.group}>
+                                                <View style={styles.rect}>
+                                                    <Text style={styles.header}>Document Number</Text>
+                                                </View>
+                                            </View>
+
+                                            <RowText label={"Reference Number:"}
+                                                     applicant={userProfileForm?.["referenceNumber"]}/>
+                                            <RowText label={"Permit Number:"}
+                                                     display={userProfileForm?.["permitNumber"]}/>
+
+                                        </View> : <></>}
                                         {(props.or && user?.role?.key == CASHIER )  ? <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
@@ -893,10 +947,7 @@ const BasicInfo = (_props: any) => {
                                                </View>
                                            </View>
                                         <View style={{paddingVertical: 5}}>
-                                            <Row  /*show={true}
-
-                                      */
-
+                                            <Row
                                                 display={userProfileForm?.['note'] || "...."}
                                                 id={userProfileForm?.["_id"] }
                                                 multiline={true}
@@ -910,7 +961,7 @@ const BasicInfo = (_props: any) => {
                                                     //  borderColor: "rgba(202,210,225,1)",
                                                     paddingTop : 10 ,
                                                     height : dimension.height * 0.25
-                                                } }
+                                                }}
                                                 inputStyle={{
                                                     textAlignVertical: "top",
                                                     [Platform.OS=="android" ? "height" : "height"]: dimension.height*0.15,
@@ -922,6 +973,7 @@ const BasicInfo = (_props: any) => {
                                                 edit={isEditNote}
                                                 label={""}
                                                 applicant={userProfileForm?.["note"]}/>
+
                                         </View>
 
                                        </View>

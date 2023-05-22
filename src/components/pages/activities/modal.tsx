@@ -835,7 +835,7 @@ function ActivityModal(props: any) {
                                                 <ApprovedButton
                                                     user={user}
                                                     currentLoading={currentLoading}
-                                                    allButton={allButton}
+                                                    allButton={false}
                                                     onPress={() => {
                                                         if (getRole(user, [ADMIN, EVALUATOR])) {
                                                             setShowAlert1(true)
