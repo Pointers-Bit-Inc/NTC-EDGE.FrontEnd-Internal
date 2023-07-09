@@ -34,7 +34,7 @@ export default function basket(state = initialState, action = {}) {
         case SET_EDIT_SCHEDULE: {
             let schedules = [...state.schedules]
 
-            let exist = state.schedules.findIndex((schedule) => action.payload.id == schedule.id )
+            let exist = state.schedules?.findIndex((schedule) => action.payload.id == schedule.id )
             if (exist > -1) {
                 schedules[exist] = action.payload
             }

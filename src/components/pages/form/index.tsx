@@ -143,7 +143,10 @@ const ServiceFormPage = (props) =>{
     let generatedForm = useMemo(()=> JSONfn.parse(JSONfn.stringify(generateForm(applicationItem, newForm))), [applicationItem, newForm]) ;
     const AT = !!applicationItem?.renew?.applicationType ? applicationItem?.renew?.applicationType : (applicationItem?.service?.applicationType || {});
     useEffect(()=>{
+
+
         setForm(generatedForm)
+
         setApplicationType(applicationItem?.service?.applicationType)
     }, [applicationItem._id])
 
@@ -1294,6 +1297,9 @@ const ServiceFormPage = (props) =>{
     };
     useEffect(() => {
         let _form = JSONfn.parse(JSONfn.stringify(form || []));
+
+
+
         let _index = _form?.findIndex((p: any) => p?.id === 'address');
         if (_index > -1) {
             if (useDifferentAddress) {
@@ -1514,7 +1520,7 @@ const ServiceFormPage = (props) =>{
     const [currentStep, setCurrentStep] = useState(0);
     const formValid = () => {
         var valid = true;
-        form.forEach((parent: any) => {
+        form?.forEach((parent: any) => {
             let isParentList = parent?.type === 'list';
             if (parent?.data?.length > 0) {
                 parent?.data?.forEach((child: any) => {
@@ -1691,7 +1697,7 @@ const ServiceFormPage = (props) =>{
                 parent?.data?.forEach((child: any, index: number) => {
                     if (isParentList) { // any changes here should also reflect on ELSE below
                         var structuredSubChild = {};
-                        child.forEach((subChild: any) => {
+                        child?.forEach((subChild: any) => {
                             if (subChild?.isSet) {
                                 var structuredSetChild = subChild?.type === 'list' ? [] : {};
                                 subChild?.data?.forEach((setChild: any) => {
@@ -1721,7 +1727,7 @@ const ServiceFormPage = (props) =>{
                                             else {
                                                 if (typeof(value) === 'object' && !!value) {
                                                     var structuredGrandchild = {};
-                                                    value.forEach((grandchild: any) => {
+                                                    value?.forEach((grandchild: any) => {
                                                         structuredGrandchild = {
                                                             ...structuredGrandchild,
                                                             [grandchild?.id]: grandchild?.value,
@@ -1768,7 +1774,7 @@ const ServiceFormPage = (props) =>{
                                         else {
                                             if (typeof(value) === 'object' && !!value) {
                                                 var structuredGrandchild = {};
-                                                value.forEach((grandchild: any) => {
+                                                value?.forEach((grandchild: any) => {
                                                     structuredGrandchild = {
                                                         ...structuredGrandchild,
                                                         [grandchild?.id]: grandchild?.value,
@@ -1867,7 +1873,7 @@ const ServiceFormPage = (props) =>{
                         else {
                             if (typeof(value) === 'object' && !!value) {
                                 var structuredGrandchild = {};
-                                value.forEach((grandchild: any) => {
+                                value?.forEach((grandchild: any) => {
                                     structuredGrandchild = {
                                         ...structuredGrandchild,
                                         [grandchild?.id]: grandchild?.value,
@@ -1933,7 +1939,7 @@ const ServiceFormPage = (props) =>{
             _application.applicant.dateOfBirth = {day, month, year};
         }
         if (FOR_EDITING && _application?.schedule?.region?.value) _application.schedule.region = _application?.schedule?.region?.value;
-        Object.keys(structuredData).forEach((id: string) => {
+        Object.keys(structuredData)?.forEach((id: string) => {
             if (id === 'basic') {
                 _application.applicant = {
                     ..._application.applicant,

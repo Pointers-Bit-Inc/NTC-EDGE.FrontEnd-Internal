@@ -55,7 +55,7 @@ export default function useCheckbox({
         const newValue: ReactText[] = checkedValue ? [...checkedValue] : [];
 
         if (status === 'checked') {
-            const index = newValue.findIndex(item => item === value);
+            const index = newValue?.findIndex(item => item === value);
             newValue.splice(index, 1);
         } else {
             newValue.push(value);

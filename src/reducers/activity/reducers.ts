@@ -22,7 +22,7 @@ export default function basket(state = initialState, action = {}) {
     case ON_CHECKED:{
 
       const newArr = state.get("statusCode");
-      const index = newArr.findIndex((app:any) => {
+      const index = newArr?.findIndex((app:any) => {
         return app.id == action.payload.id
       })
 
@@ -44,7 +44,7 @@ export default function basket(state = initialState, action = {}) {
     case ON_CHECKED_FILTER:{
 
       const newArr = state.get("filterCode");
-      const index = newArr.findIndex((app:any) => {
+      const index = newArr?.findIndex((app:any) => {
         return app.id == action.payload.id
       })
       newArr[index].checked = !newArr[index].checked

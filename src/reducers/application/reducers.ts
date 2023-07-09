@@ -281,7 +281,7 @@ export default function basket(state = initialState, action = {}) {
         case SET_PINNED_APPLICATION: {
             let pinned = [...state.pinnedApplications];
             const _updatePinnedCount = state.updatePinnedCount + 1;
-            const pinnedIndex = pinned.findIndex((app: any) => {
+            const pinnedIndex = pinned?.findIndex((app: any) => {
                 return app._id == action.payload._id
             })
 
@@ -392,10 +392,10 @@ export default function basket(state = initialState, action = {}) {
         case READ_UNREAD_APPLICATIONS: {
             const notPinned = [...state.notPinnedApplications];
             const pinned = [...state.pinnedApplications];
-            const notPinnedIndex = notPinned.findIndex((app: any) => {
+            const notPinnedIndex = notPinned?.findIndex((app: any) => {
                 return app._id == action.payload.id
             })
-            const pinnedIndex = pinned.findIndex((app: any) => {
+            const pinnedIndex = pinned?.findIndex((app: any) => {
                 return app._id == action.payload.id
             })
 
@@ -483,10 +483,10 @@ export default function basket(state = initialState, action = {}) {
         case UPDATE_APPLICATION_STATUS: {
             const notPinned = [...state.notPinnedApplications];
             const pinned = [...state.pinnedApplications];
-            const index = notPinned.findIndex((app: any) => {
+            const index = notPinned?.findIndex((app: any) => {
                 return app._id == action.payload.application._id
             })
-            const pinnedIndex = pinned.findIndex((app: any) => {
+            const pinnedIndex = pinned?.findIndex((app: any) => {
                 return app._id == action.payload.application._id
             })
             const cashier = [CASHIER].indexOf(action.payload.userType) != -1;

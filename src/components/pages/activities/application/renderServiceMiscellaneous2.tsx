@@ -144,7 +144,7 @@ const RenderServiceMiscellaneous = (props) => {
         var index, prevValue, nextValue, findIndex, firstLabel;
         findIndex = keys?.split?.(".")?.reverse()?.map((key, index) => {
             return key
-        }).findIndex((name) => {
+        })?.findIndex((name) => {
             return !isNaN(parseInt(name))
         });
         if (findIndex != -1) {

@@ -38,7 +38,7 @@ export default function basket(state = initialState, action = {}) {
         case SET_EDIT_ROLE: {
             let roles = [...state.roles]
 
-            let exist = state.roles.findIndex((role) => action.payload.id == role.id )
+            let exist = state.roles?.findIndex((role) => action.payload.id == role.id )
             if (exist > -1) {
                 roles[exist].permission = action.payload.permission
             }

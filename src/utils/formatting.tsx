@@ -185,7 +185,7 @@ export const generateForm = (savedApplication: any, form: any) => {
             parent !== 'serviceCode'
         ) {
             const parentItem = service[parent];
-            const form_parentIndex = Form.findIndex((i: any) => i.id === parent);
+            const form_parentIndex = Form?.findIndex((i: any) => i.id === parent);
             const _specifyML = { /**will be temporarily not prefilled-in */
                 id: 'vehiclePlateNo',
                 label: 'Plate No.',

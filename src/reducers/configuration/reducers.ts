@@ -64,7 +64,7 @@ export default function basket(state = initialState, action = {}) {
         case SET_EDIT_CONFIGURATION: {
             let configurations = [...state.configurations]
 
-            let exist = state.configurations.findIndex((configuration) => action.payload.id == configuration.id )
+            let exist = state.configurations?.findIndex((configuration) => action.payload.id == configuration.id )
             if (exist > -1) {
                 configurations[exist].permission = action.payload.permission
             }

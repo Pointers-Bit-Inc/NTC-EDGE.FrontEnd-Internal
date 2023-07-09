@@ -258,17 +258,24 @@ export const extractDate = (date: any, d: any) => {
 export const generateForm = (savedApplication: any, form: any) => {
   const service = savedApplication?.service;
   const Form = JSONfn.parse(JSONfn.stringify(form));
+
+
+
   const gIndex = (d: string, v: any) => v?.findIndex((i: any) => i.id === d);
+
   if(service){
-    Object.keys(service).forEach((parent, index) => {
+
+
+    Object.keys(service)?.forEach((parent, index) => {
       if (
           parent !== '_id' &&
           parent !== 'applicationType' &&
           parent !== 'name' &&
           parent !== 'serviceCode'
       ) {
+
         const parentItem = service[parent];
-        const form_parentIndex = Form.findIndex((i: any) => i.id === parent);
+        const form_parentIndex = Form?.findIndex((i: any) => i.id === parent);
         const _specifyML = { /**will be temporarily not prefilled-in */
           id: 'vehiclePlateNo',
           label: 'Plate No.',
@@ -281,9 +288,12 @@ export const generateForm = (savedApplication: any, form: any) => {
           errorResponse: 'Please enter plate no.',
           title: 'Particulars of Vehicle',
         };
-        if (parentItem.length > 0 && form_parentIndex > -1) { // parentList, particulars ex. && field exists on form
-          parentItem.forEach((child: any, index: number) => {
+
+        if (parentItem?.length > 0 && form_parentIndex > -1) { // parentList, particulars ex. && field exists on form
+
+          parentItem?.forEach((child: any, index: number) => {
             const childIndex = index;
+
             if (Form?.[form_parentIndex]?.data?.length < childIndex + 1) { // add another obj inside the array, ex. multiple equipments
               Form?.[form_parentIndex]?.data?.push(Form[form_parentIndex].template)
             }
@@ -651,142 +661,276 @@ export const generateForm = (savedApplication: any, form: any) => {
             });
           });
         }
-
         else if (Object.keys(parentItem)?.length > 0 && form_parentIndex > -1) { // not parentList, stationEquipment ex. && field exists on form
           Object.keys(parentItem)?.forEach((child, index) => {
-            var childItem = parentItem[child];
-            const form_childIndex = Form?.[form_parentIndex]?.data?.findIndex((i: any) => i.id === child);
+            if(typeof parentItem?.[child] == "string"){
+              var childItem = parentItem[child];
+              const form_childIndex = Form?.[form_parentIndex]?.data?.findIndex((i: any) => i.id === child);
 
-            let formPath = Form?.[form_parentIndex]?.data?.[form_childIndex];
-            if (!!formPath) {
-              let { type, value, validate, required, error } = formPath || {}, specValue = '';
-              if (typeof(childItem) === 'string') {
-                specValue = childItem?.split(' • ')?.[1];
-                childItem = childItem?.split(' • ')?.[0];
-              }
-              if (type === 'date') {
-                let y = extractDate(childItem, 'year'), m = extractDate(childItem, 'month'), d = extractDate(childItem, 'date');
-                Form[form_parentIndex].data[form_childIndex].value[gIndex('year', value)] = {
-                  id: 'year',
-                  value: y,
-                  isValid: !!y,
-                };
-                Form[form_parentIndex].data[form_childIndex].value[gIndex('month', value)] = {
-                  id: 'month',
-                  value: m,
-                  isValid: !!m,
-                };
-                Form[form_parentIndex].data[form_childIndex].value[gIndex('day', value)] = {
-                  id: 'day',
-                  value: d,
-                  isValid: !!d,
-                };
-              }
-              else if (type === 'option') {
-                childItem?.forEach((grandchildItem: any, index: number) => {
-                  const form_grandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.findIndex((i: any) => i.value === grandchildItem?.value);
-                  Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].selected = true;
-                  const specification = grandchildItem.specification;
-                  if (specification) {
-                    let formPath = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.[form_grandchildIndex]?.specification;
-                    if (!!formPath) {
-                      let { type, value, validate, required, error } = formPath || {};
-                      if (type === 'date') {
-                        let y = extractDate(specification, 'year'), m = extractDate(specification, 'month'), d = extractDate(specification, 'date');
-                        Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('year', value)] = {
-                          id: 'year',
-                          value: y,
-                          isValid: !!y,
-                        };
-                        Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('month', value)] = {
-                          id: 'month',
-                          value: m,
-                          isValid: !!m,
-                        };
-                        Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('day', value)] = {
-                          id: 'day',
-                          value: d,
-                          isValid: !!d,
-                        };
-                      }
-                      else if (typeof(specification) === 'object') {
-                        Object.keys(specification)?.forEach((ggrandchild, index) => {
-                          const ggrandchildItem = specification[ggrandchild];
-                          const form_ggrandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.[form_grandchildIndex]?.specification?.value?.findIndex((i: any) => i.id === ggrandchild);
-                          Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[form_ggrandchildIndex].value = ggrandchildItem;
-                        });
-                      }
-                      else {
-                        let isValid = validate ? validate(specification) : validateText(specification);
-                        Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification = {
-                          ...formPath,
-                          value: specification,
-                          isValid,
-                          error: required
-                              ? isValid
-                                  ? ''
-                                  : (error || 'Please enter a valid value')
-                              : ''
-                        };
+              let formPath = Form?.[form_parentIndex]?.data?.[form_childIndex];
+              if (!!formPath) {
+                let { type, value, validate, required, error } = formPath || {}, specValue = '';
+                if (typeof(childItem) === 'string') {
+                  specValue = childItem?.split(' • ')?.[1];
+                  childItem = childItem?.split(' • ')?.[0];
+                }
+                if (type === 'date') {
+                  let y = extractDate(childItem, 'year'), m = extractDate(childItem, 'month'), d = extractDate(childItem, 'date');
+                  Form[form_parentIndex].data[form_childIndex].value[gIndex('year', value)] = {
+                    id: 'year',
+                    value: y,
+                    isValid: !!y,
+                  };
+                  Form[form_parentIndex].data[form_childIndex].value[gIndex('month', value)] = {
+                    id: 'month',
+                    value: m,
+                    isValid: !!m,
+                  };
+                  Form[form_parentIndex].data[form_childIndex].value[gIndex('day', value)] = {
+                    id: 'day',
+                    value: d,
+                    isValid: !!d,
+                  };
+                }
+                else if (type === 'option') {
+                  childItem?.forEach((grandchildItem: any, index: number) => {
+                    const form_grandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.findIndex((i: any) => i.value === grandchildItem?.value);
+                    Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].selected = true;
+                    const specification = grandchildItem.specification;
+                    if (specification) {
+                      let formPath = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.[form_grandchildIndex]?.specification;
+                      if (!!formPath) {
+                        let { type, value, validate, required, error } = formPath || {};
+                        if (type === 'date') {
+                          let y = extractDate(specification, 'year'), m = extractDate(specification, 'month'), d = extractDate(specification, 'date');
+                          Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('year', value)] = {
+                            id: 'year',
+                            value: y,
+                            isValid: !!y,
+                          };
+                          Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('month', value)] = {
+                            id: 'month',
+                            value: m,
+                            isValid: !!m,
+                          };
+                          Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('day', value)] = {
+                            id: 'day',
+                            value: d,
+                            isValid: !!d,
+                          };
+                        }
+                        else if (typeof(specification) === 'object') {
+                          Object.keys(specification)?.forEach((ggrandchild, index) => {
+                            const ggrandchildItem = specification[ggrandchild];
+                            const form_ggrandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.[form_grandchildIndex]?.specification?.value?.findIndex((i: any) => i.id === ggrandchild);
+                            Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[form_ggrandchildIndex].value = ggrandchildItem;
+                          });
+                        }
+                        else {
+                          let isValid = validate ? validate(specification) : validateText(specification);
+                          Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification = {
+                            ...formPath,
+                            value: specification,
+                            isValid,
+                            error: required
+                                ? isValid
+                                    ? ''
+                                    : (error || 'Please enter a valid value')
+                                : ''
+                          };
+                        }
                       }
                     }
-                  }
-                });
-              }
-              else if (typeof(childItem) === 'object') {
-                Object.keys(childItem)?.forEach((grandchild, index) => {
-                  const grandchildItem = childItem[grandchild];
-                  const form_grandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.value?.findIndex((i: any) => i.id === grandchild);
-                  Form[form_parentIndex].data[form_childIndex].value[form_grandchildIndex].value = grandchildItem;
-                });
-              }
-              else {
-                let isValid = validate ? validate(childItem) : validateText(childItem);
-                Form[form_parentIndex].data[form_childIndex] = {
-                  ...formPath,
-                  value: childItem,
-                  isValid,
-                  error: required
-                      ? isValid
-                          ? ''
-                          : (error || 'Please enter a valid value')
-                      : ''
-                };
-              }
+                  });
+                }
+                else if (typeof(childItem) === 'object') {
+                  Object.keys(childItem)?.forEach((grandchild, index) => {
+                    const grandchildItem = childItem[grandchild];
+                    const form_grandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.value?.findIndex((i: any) => i.id === grandchild);
+                    Form[form_parentIndex].data[form_childIndex].value[form_grandchildIndex].value = grandchildItem;
+                  });
+                }
+                else {
+                  let isValid = validate ? validate(childItem) : validateText(childItem);
+                  Form[form_parentIndex].data[form_childIndex] = {
+                    ...formPath,
+                    value: childItem,
+                    isValid,
+                    error: required
+                        ? isValid
+                            ? ''
+                            : (error || 'Please enter a valid value')
+                        : ''
+                  };
+                }
 
-              var item = {};
-              const itemIndex = formPath?.items?.findIndex((i: any) => i.value === childItem);
-              if (itemIndex > -1) {
-                item = formPath?.items[itemIndex];
-                if (item?.addSection) Form.splice(form_parentIndex + 1, 0, item?.section);
-              }
+                var item = {};
+                const itemIndex = formPath?.items?.findIndex((i: any) => i.value === childItem);
+                if (itemIndex > -1) {
+                  item = formPath?.items[itemIndex];
+                  if (item?.addSection) Form.splice(form_parentIndex + 1, 0, item?.section);
+                }
 
-              const hasSpecification = (formPath?.hasSpecification || item?.hasSpecification) && type !== 'option';
-              const baseSpecification = item?.specification ? item : formPath;
-              if (hasSpecification) {
-                let _specify = baseSpecification?.specification || {
-                  id: `for-${formPath?.id}`,
-                  label: baseSpecification?.specificationLabel || 'Please specify',
-                  placeholder: baseSpecification?.specificationLabel || 'Please specify',
-                  value: specValue,
-                  hasValidation: true,
-                  required: true,
-                  isValid: false,
-                  error: '',
-                  errorResponse: `Please enter a valid ${(baseSpecification?.specificationLabel || 'specification')?.toLowerCase()}`,
-                  validate: baseSpecification?.validate || validateText,
-                  keyboardType: baseSpecification?.keyboardType || 'default',
-                  specification: true,
-                };
-                Form[form_parentIndex].data[form_childIndex] = {...Form[form_parentIndex].data[form_childIndex], hasSpecification: true};
-                Form[form_parentIndex].data?.splice(form_childIndex + 1, 0, _specify);
-              }
-              // if (childItem === 'ML') Form[form_parentIndex].data?.splice(form_childIndex + (hasSpecification ? 2 : 1), 0, _specifyML);
+                const hasSpecification = (formPath?.hasSpecification || item?.hasSpecification) && type !== 'option';
+                const baseSpecification = item?.specification ? item : formPath;
+                if (hasSpecification) {
+                  let _specify = baseSpecification?.specification || {
+                    id: `for-${formPath?.id}`,
+                    label: baseSpecification?.specificationLabel || 'Please specify',
+                    placeholder: baseSpecification?.specificationLabel || 'Please specify',
+                    value: specValue,
+                    hasValidation: true,
+                    required: true,
+                    isValid: false,
+                    error: '',
+                    errorResponse: `Please enter a valid ${(baseSpecification?.specificationLabel || 'specification')?.toLowerCase()}`,
+                    validate: baseSpecification?.validate || validateText,
+                    keyboardType: baseSpecification?.keyboardType || 'default',
+                    specification: true,
+                  };
+                  Form[form_parentIndex].data[form_childIndex] = {...Form[form_parentIndex].data[form_childIndex], hasSpecification: true};
+                  Form[form_parentIndex].data?.splice(form_childIndex + 1, 0, _specify);
+                }
+                // if (childItem === 'ML') Form[form_parentIndex].data?.splice(form_childIndex + (hasSpecification ? 2 : 1), 0, _specifyML);
 
+              }
             }
+            else if(typeof parentItem?.[child] == "object") {
+              var parentItemChild = parentItem?.[child]
+              Object.keys(parentItem?.[child])?.forEach((child, index) => {
+                var childItem = parentItemChild?.[child];
+                const form_childIndex = Form?.[form_parentIndex]?.data?.findIndex((i: any) => i.id === child);
+                let formPath = Form?.[form_parentIndex]?.data?.[form_childIndex];
+                if (!!formPath) {
+                  let { type, value, validate, required, error } = formPath || {}, specValue = '';
+                  if (typeof(childItem) === 'string') {
+                    specValue = childItem?.split(' • ')?.[1];
+                    childItem = childItem?.split(' • ')?.[0];
+                  }
+                  if (type === 'date') {
+                    let y = extractDate(childItem, 'year'), m = extractDate(childItem, 'month'), d = extractDate(childItem, 'date');
+                    Form[form_parentIndex].data[form_childIndex].value[gIndex('year', value)] = {
+                      id: 'year',
+                      value: y,
+                      isValid: !!y,
+                    };
+                    Form[form_parentIndex].data[form_childIndex].value[gIndex('month', value)] = {
+                      id: 'month',
+                      value: m,
+                      isValid: !!m,
+                    };
+                    Form[form_parentIndex].data[form_childIndex].value[gIndex('day', value)] = {
+                      id: 'day',
+                      value: d,
+                      isValid: !!d,
+                    };
+                  }
+                  else if (type === 'option') {
+                    childItem?.forEach((grandchildItem: any, index: number) => {
+                      const form_grandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.findIndex((i: any) => i.value === grandchildItem?.value);
+                      Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].selected = true;
+                      const specification = grandchildItem.specification;
+                      if (specification) {
+                        let formPath = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.[form_grandchildIndex]?.specification;
+                        if (!!formPath) {
+                          let { type, value, validate, required, error } = formPath || {};
+                          if (type === 'date') {
+                            let y = extractDate(specification, 'year'), m = extractDate(specification, 'month'), d = extractDate(specification, 'date');
+                            Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('year', value)] = {
+                              id: 'year',
+                              value: y,
+                              isValid: !!y,
+                            };
+                            Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('month', value)] = {
+                              id: 'month',
+                              value: m,
+                              isValid: !!m,
+                            };
+                            Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[gIndex('day', value)] = {
+                              id: 'day',
+                              value: d,
+                              isValid: !!d,
+                            };
+                          }
+                          else if (typeof(specification) === 'object') {
+                            Object.keys(specification)?.forEach((ggrandchild, index) => {
+                              const ggrandchildItem = specification[ggrandchild];
+                              const form_ggrandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.items?.[form_grandchildIndex]?.specification?.value?.findIndex((i: any) => i.id === ggrandchild);
+                              Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification.value[form_ggrandchildIndex].value = ggrandchildItem;
+                            });
+                          }
+                          else {
+                            let isValid = validate ? validate(specification) : validateText(specification);
+                            Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification = {
+                              ...formPath,
+                              value: specification,
+                              isValid,
+                              error: required
+                                  ? isValid
+                                      ? ''
+                                      : (error || 'Please enter a valid value')
+                                  : ''
+                            };
+                          }
+                        }
+                      }
+                    });
+                  }
+                  else if (typeof(childItem) === 'object') {
+                    Object.keys(childItem)?.forEach((grandchild, index) => {
+                      const grandchildItem = childItem[grandchild];
+                      const form_grandchildIndex = Form?.[form_parentIndex]?.data?.[form_childIndex]?.value?.findIndex((i: any) => i.id === grandchild);
+                      Form[form_parentIndex].data[form_childIndex].value[form_grandchildIndex].value = grandchildItem;
+                    });
+                  }
+                  else {
+                    let isValid = validate ? validate(childItem) : validateText(childItem);
+                    Form[form_parentIndex].data[form_childIndex] = {
+                      ...formPath,
+                      value: childItem,
+                      isValid,
+                      error: required
+                          ? isValid
+                              ? ''
+                              : (error || 'Please enter a valid value')
+                          : ''
+                    };
+                  }
+
+                  var item = {};
+                  const itemIndex = formPath?.items?.findIndex((i: any) => i.value === childItem);
+                  if (itemIndex > -1) {
+                    item = formPath?.items[itemIndex];
+                    if (item?.addSection) Form.splice(form_parentIndex + 1, 0, item?.section);
+                  }
+
+                  const hasSpecification = (formPath?.hasSpecification || item?.hasSpecification) && type !== 'option';
+                  const baseSpecification = item?.specification ? item : formPath;
+                  if (hasSpecification) {
+                    let _specify = baseSpecification?.specification || {
+                      id: `for-${formPath?.id}`,
+                      label: baseSpecification?.specificationLabel || 'Please specify',
+                      placeholder: baseSpecification?.specificationLabel || 'Please specify',
+                      value: specValue,
+                      hasValidation: true,
+                      required: true,
+                      isValid: false,
+                      error: '',
+                      errorResponse: `Please enter a valid ${(baseSpecification?.specificationLabel || 'specification')?.toLowerCase()}`,
+                      validate: baseSpecification?.validate || validateText,
+                      keyboardType: baseSpecification?.keyboardType || 'default',
+                      specification: true,
+                    };
+                    Form[form_parentIndex].data[form_childIndex] = {...Form[form_parentIndex].data[form_childIndex], hasSpecification: true};
+                    Form[form_parentIndex].data?.splice(form_childIndex + 1, 0, _specify);
+                  }
+                  // if (childItem === 'ML') Form[form_parentIndex].data?.splice(form_childIndex + (hasSpecification ? 2 : 1), 0, _specifyML);
+
+                }
+              })
+              }
           });
         }
-
       }
     });
   }
@@ -825,6 +969,7 @@ export const generateForm = (savedApplication: any, form: any) => {
       }
     }
   };
+
   if (savedApplication?.renew?.applicationType?.label?.toLowerCase()?.match('renew')) {
     fillDocu('certificate');
     fillDocu('license');
@@ -832,6 +977,7 @@ export const generateForm = (savedApplication: any, form: any) => {
     fillDocu('accreditation');
     fillDocu('document');
   }
+
   return Form;
 };
 export {
