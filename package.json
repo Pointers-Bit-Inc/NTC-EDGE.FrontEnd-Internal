@@ -9,6 +9,7 @@
     "mac": "yarn electron-webpack && yarn electron-builder --mac",
     "win": "yarn electron-webpack && yarn electron-builder --win",
     "web-build": "expo build:web && echo '/* /index.html 200' >./web-build/_redirects",
+    "predeploy": "npm run web-build", 
     "web-deploy": "netlify deploy --prod --dir ./web-build",
     "eject": "expo eject",
     "prettier:write": "npx prettier --write **/*.{js,jsx,ts,tsx,json} && npx prettier --write *.{js,jsx,ts,tsx,json}",
