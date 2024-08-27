@@ -1,0 +1,27 @@
+---
+language: node_js
+node_js:
+  - node
+  - lts/*
+cache:
+  directories:
+    - ~/.npm
+before_script:
+  - npm install -g npm@latest
+
+notifications:
+  email:
+    - oninpaul15@gmail.com
+    - 11.j1yem@gmail.com
+
+branches:
+  only:
+    - testflight
+
+jobs:
+  include:
+    - stage: build
+      node_js: lts/*
+      script:
+        - npm ci
+        - npx eas-cli build --platform all --non-interactive
