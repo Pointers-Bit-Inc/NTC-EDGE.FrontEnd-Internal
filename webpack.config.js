@@ -2,51 +2,78 @@ const path = require('path');
 const createExpoWebpackConfigAsync = require('@expo/webpack-config');
 
 const aliases = {
-  "@assets": "./assets",
-  "@styles": "./src/styles",
-  "@components": "./src/components",
-  "@atoms": "./src/components/atoms",
-  "@molecules": "./src/components/molecules",
-  "@organisms": "./src/components/organisms",
-  "@templates": "./src/components/templates",
-  "@pages": "./src/components/pages",
-  "@screens": "./src/screens",
-  "@reducers": "./src/reducers",
-  "@utils": "./src/utils"
+  "@assets": path.resolve(__dirname, "assets"),
+  "@styles": path.resolve(__dirname, "src/styles"),
+  "@components": path.resolve(__dirname, "src/components"),
+  "@atoms": path.resolve(__dirname, "src/components/atoms"),
+  "@molecules": path.resolve(__dirname, "src/components/molecules"),
+  "@organisms": path.resolve(__dirname, "src/components/organisms"),
+  "@templates": path.resolve(__dirname, "src/components/templates"),
+  "@pages": path.resolve(__dirname, "src/components/pages"),
+  "@screens": path.resolve(__dirname, "src/screens"),
+  "@reducers": path.resolve(__dirname, "src/reducers"),
+  "@utils": path.resolve(__dirname, "src/utils")
 };
 
-const babelLoaderRules = [{
-  test: /\.ts/,
-  loader: 'babel-loader',
-  options: {
-    presets: ['babel-preset-expo'],
-  },
-}];
-
-// Expo CLI will await this method so you can optionally return a promise.
 module.exports = async function(env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
-  // If you want to add a new alias to the config.
+
+  // Add aliases
   config.resolve.alias = {
     ...config.resolve.alias,
     ...aliases
   };
+
+  // Add support for additional extensions
   config.resolve.extensions.push('.web.js', '.web.ts', '.web.tsx');
-  config.module.rules = [
-    ...config.module.rules,
-    ...babelLoaderRules,
-  ];
+
+  // Add Babel loader rules
+  config.module.rules.push({
+    test: /\.ts$/,
+    loader: 'babel-loader',
+    options: {
+      presets: ['babel-preset-expo'],
+    },
+  });
+
+  // Add ProvidePlugin for polyfills (if necessary)
+  config.plugins.push(
+
+  );
+
+
+  // Define the node property correctly
+  config.node = {
+    __dirname: true,
+    __filename: true,
+    global: true, // You can set this to false if you don't need global
+  };
+
+  // Disable source maps
   config.devtool = false;
+
+  // Optimization settings
   config.optimization = {
     splitChunks: {
       minSize: 10000,
       maxSize: 250000,
     }
   };
+
+  // Disable performance hints
   config.performance = {
     hints: false
-  }
+  };
+
+  // Set mode to production
   config.mode = 'production';
-  // Finally return the new config for the CLI to use.
+
+  // Configure webpack-dev-server if needed (example)
+  config.devServer = {
+    allowedHosts: 'all',
+    compress: true,
+    port: 3000, // example port
+  };
+
   return config;
 };

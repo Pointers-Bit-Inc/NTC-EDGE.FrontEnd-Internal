@@ -7,6 +7,7 @@ const api = (token:string) => {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      CreatedAt: 'ntc-region10'
     }
   });
 

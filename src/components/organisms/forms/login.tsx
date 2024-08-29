@@ -1,13 +1,14 @@
 import React,{FC,useEffect,useRef} from 'react';
 import {InteractionManager,Platform,StyleSheet,TouchableOpacity,View} from 'react-native';
 import {CheckIcon} from '@atoms/icon';
-import {InputField,PasswordField,} from '@molecules/form-fields';
+import {DropdownField, InputField, PasswordField,} from '@molecules/form-fields';
 import InputStyles from 'src/styles/input-style';
 import {text} from 'src/styles/color';
 import Text from '@atoms/text';
 import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import DropDown from "@atoms/dropdown";
 
 const styles=StyleSheet.create({
     container:{
@@ -94,6 +95,16 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
 
     return (
         <View style={[styles.container]}>
+            <DropdownField
+                items={
+                [
+                    {label: "Region 10",value: "ntc-region10",key:"10"},
+                    {label: "Region 7",value: "ntc-region7",key:"7"},
+                ]
+                }
+                onChangeText={(value:string)=>onChangeValue('CreatedAt',value)}
+                placeholder='Region'
+            />
             <InputField
                 testID={"email-input"}
                 onKeyPress={(event)=>{

@@ -48,7 +48,9 @@ export function useAuth(navigation) {
             email: data.email,
             phone: data.phone,
             password: data.password
-        })
+        }, { headers:{
+                CreatedAt: data.CreatedAt
+            }})
             .then(res => {
                 setLoading(false);
                 dispatch(setUser(res.data));
@@ -86,6 +88,7 @@ export function useAuth(navigation) {
             hasValidation: false,
            description: ''
         } ,
+        CreatedAt : "ntc-region10" ,
         password : {
             value : '' ,
             isValid : false ,
