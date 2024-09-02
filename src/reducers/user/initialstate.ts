@@ -18,6 +18,7 @@ const InitialState = Record({
   profilePictureObj: {},
   biometrics: null,
   sessionToken: null,
+  createdAt: null,
 });
 
 export default InitialState;

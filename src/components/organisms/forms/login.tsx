@@ -104,7 +104,7 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
                             {label: "Region 7",value: "ntc-region7",key:"7"},
                         ]
                     }
-                    value={form?.CreatedAt?.value}
+                    value={form?.CreatedAt?.value?.label ?? ""}
                     onChangeValue={(value:string)=>onChangeValue('CreatedAt',value)}
                     placeholder='Region'
                 />

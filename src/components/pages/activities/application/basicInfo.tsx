@@ -253,7 +253,7 @@ const BasicInfo = (_props: any) => {
         showToast(ToastType.Info, <ToastLoading/>)
         axios.get(BASE_URL + "/applications/" + props.id, {
             headers: {
-                Authorization: "Bearer ".concat(user?.sessionToken)
+                Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
             }
         }).then(() => {
             hideToast()
@@ -525,7 +525,7 @@ const BasicInfo = (_props: any) => {
 
     let config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken)
+            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
         }
     }
     const [measure, setMeasure] = useState(null);

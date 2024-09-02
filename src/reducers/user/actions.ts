@@ -1,4 +1,4 @@
-const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN, SET_SESSION_TOKEN, SET_PERMISSION, SET_PERMISSION_ITEM} = require('./types').default;
+const { SET_USER, SET_CREATED_AT, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN, SET_SESSION_TOKEN, SET_PERMISSION, SET_PERMISSION_ITEM} = require('./types').default;
 
 export function setUser(payload) {
   return {
@@ -12,7 +12,12 @@ export function resetUser() {
     type: RESET_USER,
   };
 }
-
+export function setCreatedAt(payload) {
+  return {
+    type: SET_CREATED_AT,
+    payload,
+  };
+}
 export function updateUser(payload) {
   return {
     type: UPDATE_USER,

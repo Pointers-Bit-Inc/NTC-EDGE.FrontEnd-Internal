@@ -162,7 +162,7 @@ function ActivityModal(props: any) {
     const onChangeApplicationStatus = async (status: string, callback = (err: any, appId?: any) => {
     }, event) => {
         setGrayedOut(true);
-        const api = Api(user.sessionToken);
+        const api = Api(user.sessionToken, user.createdAt);
         const applicationId = applicationItem?._id;
         let url = `/applications/${applicationId}/update-status`;
         let params: any = {
@@ -426,7 +426,7 @@ function ActivityModal(props: any) {
 
         let config = {
             headers: {
-                Authorization: "Bearer ".concat(user?.sessionToken)
+                Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
             }
         }
         let payload:any = {

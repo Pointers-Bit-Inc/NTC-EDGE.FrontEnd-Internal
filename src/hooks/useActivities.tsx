@@ -84,7 +84,7 @@ function useActivities(props) {
     const [onTouch, setOnTouch] = useState(true)
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken)
+            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt, 
         }
     };
 
@@ -337,7 +337,7 @@ function useActivities(props) {
             }
             setInfiniteLoad(false)
             if (err?.request?.status == "401") {
-                const api = Api(user.sessionToken);
+                const api = Api(user.sessionToken, user.createdAt );
                 dispatch(setApplications([]))
                 dispatch(setPinnedApplication([]))
                 dispatch(setNotPinnedApplication([]))

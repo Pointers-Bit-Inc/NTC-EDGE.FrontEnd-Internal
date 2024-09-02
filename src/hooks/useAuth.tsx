@@ -1,14 +1,12 @@
 import useApi from "../services/api";
 import {useDispatch} from "react-redux";
 import {useCallback } from "react";
-import {setUser} from "../reducers/user/actions";
+import {setCreatedAt, setUser} from "../reducers/user/actions";
 import {StackActions , useFocusEffect} from "@react-navigation/native";
 import {validateEmail , validatePassword, validatePhone} from "../utils/form-validations";
 import {Alert , BackHandler} from "react-native";
 import useSafeState from "./useSafeState";
 import useBiometrics from "./useBiometrics";
-import Axios from 'axios';
-import { BASE_URL } from "src/services/config";
 export function useAuth(navigation) {
     const errorResponse = {
         email : 'Enter a valid phone no./email address' ,
@@ -52,6 +50,7 @@ export function useAuth(navigation) {
             .then(res => {
                 setLoading(false);
                 dispatch(setUser(res.data));
+                dispatch(setCreatedAt(data.createdAt));
                 storeCredentials(res.data.email, data.password);
                 navigation.dispatch(StackActions.replace('ActivitiesScreen'));
             })
@@ -93,7 +92,7 @@ export function useAuth(navigation) {
             strength : 'Weak' ,
         } ,
         createdAt : {
-            value: ''
+            value: ""
         },
         showPassword : {
             value : false
@@ -103,10 +102,7 @@ export function useAuth(navigation) {
         }
     });
     const onChangeValue = (key: string , value: any) => {
-        // console.log('on change:', value)
 
-
-        console.log('APi', api.defaults)
         switch (key) {
             case 'email': {
                 const checkedEmail = validateEmail(value);
@@ -160,8 +156,9 @@ export function useAuth(navigation) {
                 return setFormValue({
                     ...formValue ,
                     [key] : {
-                        value: value,
+                        value : value ,
                         isValid : !!value ,
+                        error : '' ,
                     }
                 });
             }
@@ -180,7 +177,6 @@ export function useAuth(navigation) {
         // console.log('form value:', formValue)
         api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value;
 
-        console.log(api)
         if (!formValue.email.isValid) {
             return onChangeValue('email' , formValue.email.value);
         }

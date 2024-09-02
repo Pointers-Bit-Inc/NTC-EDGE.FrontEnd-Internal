@@ -37,7 +37,7 @@ export function useReportFees() {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken)
+            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
         }
     };
 

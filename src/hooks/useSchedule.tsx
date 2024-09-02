@@ -138,7 +138,7 @@ function useSchedule(props: any) {
     const config = useMemo(() => {
         return {
             headers: {
-                Authorization: "Bearer ".concat(user?.sessionToken)
+                Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
             }
         };
     }, [user?.sessionToken])

@@ -11,7 +11,7 @@ function ResetPassword({navigation}) {
     const [newPassword, setNewPassword] = React.useState("");
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken)
+            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
         }
     }
           const newPasswordFn = () =>{

@@ -30,7 +30,7 @@ const useOneSignal = (user:IUser) => {
       if (id) {
         axios.get(BASE_URL + "/applications/" + id, {
           headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken)
+            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
           }
         }).then((response) => {
           let _response = response.data

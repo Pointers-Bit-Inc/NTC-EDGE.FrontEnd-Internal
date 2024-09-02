@@ -27,7 +27,7 @@ const useSignalr = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const [connectionStatus, setConnectionStatus] = useState('');
   const signalr = useRef<HubConnection|null>(null);
-  const api = useApi(user.sessionToken);
+  const api = useApi(user.sessionToken,user.createdAt);
   const playbackInstance:any=React.useRef(null);
   const initSignalR = useCallback(async () => {
     signalr.current = new HubConnectionBuilder()

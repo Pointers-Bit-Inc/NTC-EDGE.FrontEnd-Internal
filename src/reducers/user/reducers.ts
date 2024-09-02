@@ -1,4 +1,4 @@
-  const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN, SET_SESSION_TOKEN, SET_PERMISSION, SET_PERMISSION_ITEM } = require('./types').default;
+  const { SET_USER, UPDATE_USER, RESET_USER,SET_CREATED_AT, SET_BIOMETRICS_LOGIN, SET_SESSION_TOKEN, SET_PERMISSION, SET_PERMISSION_ITEM } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 
@@ -14,6 +14,7 @@ export default function basket(state = initialState, action = {}) {
         ...action.payload,
         image: action?.payload?.profilePicture?.small || '',
       };
+
 
       if (biometrics !== newState._id) {
         newState.biometrics = null;
@@ -76,11 +77,17 @@ export default function basket(state = initialState, action = {}) {
         sessionToken: action.payload,
       }
     }
-
     case SET_BIOMETRICS_LOGIN: {
       return {
         ...state,
         biometrics: action.payload,
+      }
+    }
+    case SET_CREATED_AT: {
+      console.log(action)
+      return {
+        ...state,
+        createdAt: action.payload,
       }
     }
 

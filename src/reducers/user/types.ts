@@ -7,5 +7,6 @@ export default keyMirror({
   SET_BIOMETRICS_LOGIN: null,
   SET_SESSION_TOKEN: null,
   SET_PERMISSION: null,
+  SET_CREATED_AT: null,
   SET_PERMISSION_ITEM: null
 });

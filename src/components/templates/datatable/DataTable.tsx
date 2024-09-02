@@ -756,7 +756,7 @@ const DataTable = (props) => {
     const {showToast, hideToast} = useToast();
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken)
+            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
         }
     };
 

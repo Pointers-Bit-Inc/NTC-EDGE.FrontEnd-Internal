@@ -14,7 +14,7 @@ import {resetChannel} from "../reducers/channel/actions";
 function useLogout(user, dispatch){
     const { destroy } = useOneSignal(user);
     const logoutFn=()=>{
-        const api=Api(user.sessionToken);
+        const api=Api(user.sessionToken, user.createdAt);
 
         setTimeout(()=>{
             dispatch(setApplications([]))
