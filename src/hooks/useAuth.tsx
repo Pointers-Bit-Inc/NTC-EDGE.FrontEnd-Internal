@@ -7,9 +7,8 @@ import {validateEmail , validatePassword, validatePhone} from "../utils/form-val
 import {Alert , BackHandler} from "react-native";
 import useSafeState from "./useSafeState";
 import useBiometrics from "./useBiometrics";
-import {ACCOUNTANT, CASHIER} from "../reducers/activity/initialstate";
-import {setEditModalVisible, setFeedVisible} from "../reducers/activity/actions";
-
+import Axios from 'axios';
+import { BASE_URL } from "src/services/config";
 export function useAuth(navigation) {
     const errorResponse = {
         email : 'Enter a valid phone no./email address' ,
@@ -45,28 +44,22 @@ export function useAuth(navigation) {
     const onLogin = async (data) => {
         setLoading(true);
         api.post('/internal/signin' , {
-            email: data.email,
-            phone: data.phone,
-            password: data.password
-        }, { headers:{
-                CreatedAt: data.CreatedAt
-            }})
+                email: data.email,
+                phone: data.phone,
+                password: data.password,
+            }
+        )
             .then(res => {
                 setLoading(false);
                 dispatch(setUser(res.data));
-                dispatch(setFeedVisible(true))
-                if([CASHIER, ACCOUNTANT].indexOf(res?.data?.role?.key)){
-                    dispatch(setEditModalVisible(false))
-                }else{
-                    dispatch(setEditModalVisible(true))
-                }
-
                 storeCredentials(res.data.email, data.password);
                 navigation.dispatch(StackActions.replace('ActivitiesScreen'));
             })
             .catch(e => {
                 setLoading(false);
                 if (e) {
+
+
                     setFormValue({
                         ...formValue ,
                         email : {
@@ -86,9 +79,8 @@ export function useAuth(navigation) {
             error : '' ,
             isPhone: false,
             hasValidation: false,
-           description: ''
+            description: ''
         } ,
-        CreatedAt : "ntc-region10" ,
         password : {
             value : '' ,
             isValid : false ,
@@ -100,6 +92,9 @@ export function useAuth(navigation) {
             atLeastOneNumber : false ,
             strength : 'Weak' ,
         } ,
+        createdAt : {
+            value: ''
+        },
         showPassword : {
             value : false
         } ,
@@ -108,6 +103,10 @@ export function useAuth(navigation) {
         }
     });
     const onChangeValue = (key: string , value: any) => {
+        // console.log('on change:', value)
+
+
+        console.log('APi', api.defaults)
         switch (key) {
             case 'email': {
                 const checkedEmail = validateEmail(value);
@@ -153,18 +152,35 @@ export function useAuth(navigation) {
             case 'login': {
                 return onLogin(value);
             }
+            case 'CreatedAt': {
+                // const checkedEmail = validateEmail(value);
+                // const checkedPhone = validatePhone(value);
+                // const checked = checkedEmail || checkedPhone;
+
+                return setFormValue({
+                    ...formValue ,
+                    [key] : {
+                        value: value,
+                        isValid : !!value ,
+                    }
+                });
+            }
             default:
                 return setFormValue({
                     ...formValue ,
                     [key] : {
-                        value : value ,
-                        isValid : !!value ,
+                        value : value.label ,
+                        isValid : !!value.value ,
                         error : '' ,
                     }
                 });
         }
     };
     const onCheckValidation = () => {
+        // console.log('form value:', formValue)
+        api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value;
+
+        console.log(api)
         if (!formValue.email.isValid) {
             return onChangeValue('email' , formValue.email.value);
         }
@@ -174,11 +190,13 @@ export function useAuth(navigation) {
             let cred:any = {
                 email: formValue?.email?.value,
                 password: formValue?.password?.value,
+                createdAt: formValue?.CreatedAt?.value.value
             }
             if (formValue?.email?.isPhone) {
                 cred = {
                     phone: formValue?.email?.value,
                     password: formValue?.password?.value ,
+                    createdAt: formValue?.createdAt?.value
                 }
             }
             return onLogin(cred);

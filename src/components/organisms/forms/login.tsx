@@ -95,16 +95,20 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
 
     return (
         <View style={[styles.container]}>
-            <DropdownField
-                items={
-                [
-                    {label: "Region 10",value: "ntc-region10",key:"10"},
-                    {label: "Region 7",value: "ntc-region7",key:"7"},
-                ]
-                }
-                onChangeText={(value:string)=>onChangeValue('CreatedAt',value)}
-                placeholder='Region'
-            />
+            <View>
+                <DropdownField
+                    style= {{ width: 50}}
+                    items={
+                        [
+                            {label: "Region 10",value: "ntc-region10",key:"10"},
+                            {label: "Region 7",value: "ntc-region7",key:"7"},
+                        ]
+                    }
+                    value={form?.CreatedAt?.value}
+                    onChangeValue={(value:string)=>onChangeValue('CreatedAt',value)}
+                    placeholder='Region'
+                />
+            </View>
             <InputField
                 testID={"email-input"}
                 onKeyPress={(event)=>{
