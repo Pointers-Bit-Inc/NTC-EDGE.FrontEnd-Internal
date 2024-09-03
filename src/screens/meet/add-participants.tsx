@@ -103,7 +103,7 @@ const AddParticipants = ({ navigation }:any) => {
     getParticipantList,
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const api = useApi(user.sessionToken);
+  const api = useApi(user.sessionToken, user.createdAt);
   const [loading, setLoading] = useState(true);
   const [nextLoading, setNextLoading] = useState(false);
   const [selectedParticipants, setSelectedParticipants]:any = useState([]);

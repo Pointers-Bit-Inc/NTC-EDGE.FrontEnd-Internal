@@ -72,7 +72,7 @@ function ActivityModal(props: any) {
         const id = props?.details?.activityDetails?.application?._id,
             config = {
                 headers: {
-                    Authorization: "Bearer ".concat(user.sessionToken)
+                    Authorization: "Bearer ".concat(user.sessionToken),CreatedAt: user?.createdAt,
                 }
             }
 

@@ -205,6 +205,7 @@ const UserProfileScreen=({navigation}:any)=>{
 
                     fetch(API_URL,{
                         method:'POST',body:fd,headers:{
+                            CreatedAt: user?.createdAt,
                             'Authorization':`Bearer ${user?.sessionToken}`,
                         }
                     })
@@ -396,6 +397,7 @@ const UserProfileScreen=({navigation}:any)=>{
                 formData,
                 {
                     headers:{
+                        CreatedAt: user?.createdAt,
                         'Authorization':`Bearer ${user?.sessionToken}`,
                     }
                 },

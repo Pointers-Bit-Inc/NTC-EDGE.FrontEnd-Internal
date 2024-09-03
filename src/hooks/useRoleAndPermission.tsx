@@ -50,6 +50,7 @@ const useRoleAndPermission =(navigation) => {
     const dimensions = useWindowDimensions();
     const [value, setValue] = useState();
     const sessionToken = useSelector((state: RootStateOrAny) => state.user?.sessionToken);
+    const createdAt = useSelector((state: RootStateOrAny) => state.user?.createdAt);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const dispatch = useDispatch();
@@ -60,6 +61,7 @@ const useRoleAndPermission =(navigation) => {
         setLoading(true);
         axios.get(BASE_URL + "/roles?page=" + page, {
             headers: {
+                CreatedAt: createdAt,
                 Authorization: "Bearer ".concat(sessionToken)
             }
         }).then((response) => {
@@ -87,10 +89,11 @@ const useRoleAndPermission =(navigation) => {
     const config = useMemo(() => {
         return {
             headers: {
+                CreatedAt: createdAt,
                 Authorization: "Bearer ".concat(sessionToken)
             }
         };
-    }, [sessionToken])
+    }, [sessionToken, createdAt])
     const onDelete = (id) => {
         axios.delete(BASE_URL + "/roles/" + id, config).then(() => {
             showToast(ToastType.Success, "Success! ")

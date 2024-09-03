@@ -121,7 +121,7 @@ function useSchedule(props: any) {
         setLoading(true);
         axios.get(BASE_URL + `/schedules?${user?.employeeDetails?.region || "" ? "region=" + user?.employeeDetails?.region + "&" : ""}page=` + page, {
             headers: {
-                Authorization: "Bearer ".concat(user.sessionToken)
+                Authorization: "Bearer ".concat(user.sessionToken), CreatedAt: user?.createdAt
             }
         }).then((response) => {
             dispatch(setSchedules(response.data))
@@ -141,7 +141,7 @@ function useSchedule(props: any) {
                 Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
             }
         };
-    }, [user?.sessionToken])
+    }, [user?.sessionToken, user?.createdAt])
 
 
     const isValid = () => {

@@ -3,10 +3,6 @@ import { StackActions } from '@react-navigation/native';
 import ActivitiesPage from "@pages/activities/tabbar";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
-import AccountIcon from "@assets/svg/account";
-import BellIcon from "@assets/svg/bell";
-import DonutIcon from "@assets/svg/donut";
-import WarningIcon from "@assets/svg/warning";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import styles from "@screens/HomeScreen/DrawerNavigation/styles";
 import {button, outline} from "@styles/color";
@@ -68,7 +64,7 @@ const ActivitiesScreen = (props:any) => {
         checkVersion,
       } = useSignalr();
     const onLogout = useCallback(() => {
-        const api = Api(user.sessionToken);
+        const api = Api(user.sessionToken, user?.createdAt);
         onHide();
         setTimeout(() => {
             api.post('/user/logout')

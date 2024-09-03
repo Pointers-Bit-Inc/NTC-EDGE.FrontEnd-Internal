@@ -26,8 +26,10 @@ const ResetPasswordTab = () => {
     const [disabled, setDisabled] = useState(false)
     const [alert, setAlert] = useState(false)
     const sessionToken=useSelector((state:RootStateOrAny)=>state.user.sessionToken);
+    const createdAt=useSelector((state:RootStateOrAny)=>state.user.createdAt);
     const config={
         headers:{
+            CreatedAt: createdAt,
             Authorization:"Bearer ".concat(sessionToken)
         }
     };

@@ -15,20 +15,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
     const [isOpen,setIsOpen]=useState(true);
     const {springValue,_springHide}=useAlert(true,()=>{
     });
-    const chevronAnimate=()=>{
-        Animated.timing(
-            chevronValue,
-            {
-                useNativeDriver:true,
-                toValue:isOpen ? 1 : 0,
-                duration:200,
-            }
-        ).start((o)=>{
-            if(o?.finished){
-                setIsOpen(open=>!open)
-            }
-        });
-    };
+
     const container = useMemo(() => {
         return [styles.group26,]
     }, [])
@@ -92,14 +79,16 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
                 </View>
             </View>
         </View>
+        {
+            isOpen ? <View>
+                {ActivityMemo}
+                <View style={{height:30,backgroundColor:"white"}}/>
+            </View> : null
+        }
 
-        <Collapsible collapsed={!isOpen}>
-            {ActivityMemo}
-            <View style={{height:30,backgroundColor:"white"}}/>
-        </Collapsible>
 
     </View>;
 };
 
 
-export default memo(ApplicationList);
+export default (ApplicationList);

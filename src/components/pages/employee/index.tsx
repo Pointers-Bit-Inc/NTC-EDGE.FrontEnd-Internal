@@ -13,6 +13,7 @@ export default function EmployeePage(props:any){
     const [loading, setLoading] = useState(false)
     const [page, setPage] = useState(1)
     const sessionToken = useSelector((state:RootStateOrAny) => state.user.sessionToken);
+    const createdAt = useSelector((state:RootStateOrAny) => state.user.createdAt);
     const permission = useSelector((state:RootStateOrAny) => state.user.role.permission);
     const roles_select = useSelector((state:RootStateOrAny) => state.role.roles_select);
     const permissionName = 'employeePermission'
@@ -21,6 +22,7 @@ export default function EmployeePage(props:any){
         if(roles_select?.length != 0) return
         axios.get(BASE_URL + "/roles/select?page=" + page, {
             headers: {
+                CreatedAt: createdAt,
                 Authorization: "Bearer ".concat(sessionToken)
             }
         }).then((response) => {

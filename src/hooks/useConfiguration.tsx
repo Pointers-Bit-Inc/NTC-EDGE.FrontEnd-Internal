@@ -44,6 +44,7 @@ function useConfiguration(props: any) {
     const [customAlertMessage, setCustomAlertMessage] = useState("")
     const [customAlertVisible, setCustomAlertVisible] = useState(false)
     const [loading, setLoading] = useState(false)
+    const createdAt=useSelector((state:RootStateOrAny)=>state.user.createdAt);
     const sessionToken = useSelector((state: RootStateOrAny) => state.user.sessionToken);
     const [createRegion, setCreateRegion] = useState(false)
     const fee = useSelector((state: RootStateOrAny) => state.configuration.fee);
@@ -76,6 +77,7 @@ function useConfiguration(props: any) {
     }, [_.isEmpty(fee)])
     let config = {
         headers: {
+            CreatedAt: createdAt,
             Authorization: "Bearer ".concat(sessionToken)
         }
     }
@@ -277,7 +279,7 @@ function useConfiguration(props: any) {
 
                     fetch(API_URL, {
                         method: 'POST', body: fd, headers: {
-                            'Authorization': `Bearer ${sessionToken}`,
+                            'Authorization': `Bearer ${sessionToken}`,CreatedAt: createdAt,
                         }
                     })
                         .then(res => {
@@ -369,7 +371,7 @@ function useConfiguration(props: any) {
 
                         fetch(API_URL, {
                             method: 'POST', body: fd, headers: {
-                                'Authorization': `Bearer ${sessionToken}`,
+                                'Authorization': `Bearer ${sessionToken}`,CreatedAt: createdAt,
                             }
                         })
                             .then(res => {
@@ -660,7 +662,7 @@ function useConfiguration(props: any) {
 
                     fetch(API_URL, {
                         method: 'POST', body: fd, headers: {
-                            'Authorization': `Bearer ${sessionToken}`,
+                            'Authorization': `Bearer ${sessionToken}`,,CreatedAt: createdAt,
                         }
                     })
                         .then(res => {

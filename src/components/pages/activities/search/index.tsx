@@ -40,7 +40,7 @@ function Search(props:any){
     };
     const config={
         headers:{
-            Authorization:"Bearer ".concat(user?.sessionToken)
+            Authorization:"Bearer ".concat(user?.sessionToken),CreatedAt: user?.createdAt,
         }
     };
     const groupApplications=(app:any)=>{

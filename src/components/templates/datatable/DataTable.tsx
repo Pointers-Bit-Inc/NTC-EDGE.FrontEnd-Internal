@@ -1146,6 +1146,7 @@ const DataTable = (props) => {
 
                         fetch(API_URL, {
                             method: 'POST', body: fd, headers: {
+                                CreatedAt: user?.createdAt,
                                 'Authorization': `Bearer ${user?.sessionToken}`,
                             }
                         })

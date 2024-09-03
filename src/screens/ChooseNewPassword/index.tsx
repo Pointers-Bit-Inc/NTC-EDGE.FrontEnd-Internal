@@ -30,9 +30,10 @@ const ChooseNewPassword = (props) => {
 
 
     const sessionToken = useSelector((state: RootStateOrAny) => state.user.sessionToken);
+    const createdAt = useSelector((state: RootStateOrAny) => state.user.createdAt);
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(sessionToken)
+            Authorization: "Bearer ".concat(sessionToken), CreatedAt: createdAt
         }
     }
     const [formValue , setFormValue] = useSafeState({

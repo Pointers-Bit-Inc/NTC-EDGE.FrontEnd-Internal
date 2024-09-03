@@ -214,7 +214,7 @@ const Info=(props)=>{
         leaveChannel,
     }=useSignalr();
     const user=useSelector((state:RootStateOrAny)=>state.user);
-    const api=useApi(user.sessionToken);
+    const api=useApi(user.sessionToken, user.createdAt);
     const {_id,otherParticipants=[],participants=[],hasRoomName=false,name='',isGroup=false,muted=false}=useSelector(
         (state:RootStateOrAny)=>{
             const {selectedChannel}=state.channel;

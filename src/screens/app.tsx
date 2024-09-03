@@ -39,7 +39,7 @@ const App = ({ navigation }:any) => {
 
           axios.get(BASE_URL + '/check-permission', {
             headers:{
-              Authorization:"Bearer ".concat(user?.sessionToken)
+              Authorization:"Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt
             }
           } ).then((response)=>{
               dispatch(setPermission(response.data.permission))

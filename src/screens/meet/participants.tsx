@@ -175,7 +175,7 @@ const Participants = ({ navigation }) => {
     muteParticipant,
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const api = useApi(user.sessionToken);
+  const api = useApi(user.sessionToken, user.createdAt);
   const { waitingInLobby = [], inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
     const { selectedChannel = {} } = state.channel;
     const { meeting = {} } = state.meeting;
