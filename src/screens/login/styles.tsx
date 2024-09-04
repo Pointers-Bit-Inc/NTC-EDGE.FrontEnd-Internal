@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
      },
     footerContainer:{
         flexDirection : "row" ,
-        paddingVertical : 45 ,
+        paddingVertical : 30 ,
         justifyContent : "center" ,
         alignItems : "center" ,
         backgroundColor : "#fff",

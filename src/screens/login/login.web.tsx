@@ -96,8 +96,9 @@ const Login = ({ navigation }: any) => {
 
                     </View>
                 </View>
-                <View style={ [styles.footerContainer, {transform: [{ scale: 0.86 }], gap: 40}] }>
-                    <View style={styles.edgeFooter}><EdgeBlue width={ 93 } height={ 21 }/>
+                <View style={ [styles.footerContainer, { gap: 40}] }>
+                    <View style={styles.edgeFooter}>
+                        <EdgeBlue width={ 93 } height={ 21 }/>
                         <View><Text style={ [styles.footer] }> © { new Date().getFullYear() } </Text></View></View>
 
                     <Text style={ styles.footer }>User Agreement</Text>
