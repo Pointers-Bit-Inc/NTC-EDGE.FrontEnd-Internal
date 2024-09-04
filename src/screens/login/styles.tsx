@@ -64,6 +64,7 @@ export const styles = StyleSheet.create({
                 paddingHorizontal: 30,
             },
             default:{
+
                 borderBottomWidth: 0.5,
                 paddingHorizontal: 47,
 

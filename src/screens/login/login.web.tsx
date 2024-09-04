@@ -40,7 +40,7 @@ const Login = ({ navigation }: any) => {
         >
             <StatusBar barStyle="dark-content"/>
 
-                <View style={ { flex : 1 , justifyContent : "center" , alignItems : "center" } }>
+                <View style={ {  transform: [{ scale: 0.95 }], flex : 1 , justifyContent : "center" , alignItems : "center" } }>
                     <View style={ { paddingBottom : 40 } }>
                         <EdgeBlue width={ 342 } height={ 78 }></EdgeBlue>
                     </View>
