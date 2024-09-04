@@ -39,8 +39,7 @@ const Login = ({ navigation }: any) => {
             imageStyle={ { flex : 1 } }
         >
             <StatusBar barStyle="dark-content"/>
-
-                <View style={ {  transform: [{ scale: 0.95 }], flex : 1 , justifyContent : "center" , alignItems : "center" } }>
+                <View style={ {  transform: [{ scale: 0.90 }], flex : 1 , justifyContent : "center" , alignItems : "center" } }>
                     <View style={ { paddingBottom : 40 } }>
                         <EdgeBlue width={ 342 } height={ 78 }></EdgeBlue>
                     </View>
@@ -97,7 +96,7 @@ const Login = ({ navigation }: any) => {
 
                     </View>
                 </View>
-                <View style={ [styles.footerContainer, {gap: 40}] }>
+                <View style={ [styles.footerContainer, {transform: [{ scale: 0.86 }], gap: 40}] }>
                     <View style={styles.edgeFooter}><EdgeBlue width={ 93 } height={ 21 }/>
                         <View><Text style={ [styles.footer] }> © { new Date().getFullYear() } </Text></View></View>
 
