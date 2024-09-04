@@ -97,7 +97,7 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
         <View style={[styles.container]}>
             <View>
                 <DropdownField
-                    style= {{ width: 50}}
+
                     items={
                         [
                             {label: "Region 10",value: "ntc-region10",key:"10"},

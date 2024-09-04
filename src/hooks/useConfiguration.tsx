@@ -662,7 +662,7 @@ function useConfiguration(props: any) {
 
                     fetch(API_URL, {
                         method: 'POST', body: fd, headers: {
-                            'Authorization': `Bearer ${sessionToken}`,,CreatedAt: createdAt,
+                            'Authorization': `Bearer ${sessionToken}`,CreatedAt: createdAt,
                         }
                     })
                         .then(res => {

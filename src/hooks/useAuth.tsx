@@ -91,8 +91,8 @@ export function useAuth(navigation) {
             atLeastOneNumber : false ,
             strength : 'Weak' ,
         } ,
-        createdAt : {
-            value: ""
+        CreatedAt : {
+            value:  {label: "Region 10",value: "ntc-region10",key:"10"},
         },
         showPassword : {
             value : false
