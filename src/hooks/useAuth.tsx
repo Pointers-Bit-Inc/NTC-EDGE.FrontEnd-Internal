@@ -92,7 +92,7 @@ export function useAuth(navigation) {
             strength : 'Weak' ,
         } ,
         createdAt : {
-            value: ""
+            value: "ntc-region10"
         },
         showPassword : {
             value : false
