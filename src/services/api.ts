@@ -1,4 +1,4 @@
-import Axios, {AxiosRequestConfig} from 'axios';
+import Axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
 import { BASE_URL } from './config';
 import {store} from "./store";
 
@@ -9,18 +9,31 @@ function getCreatedAt(config: AxiosRequestConfig<any>) {
     config.headers['CreatedAt'] = createdAt;
   }
 }
-
+let instance: AxiosInstance | null = null;
 const api = (token:string, createdBy?: string) => {
   const state = store.getState();
   const createdAtStore = state?.user?.createdAt ?? "";
-  const instance = Axios.create({
-    baseURL: BASE_URL,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      ...(createdBy || createdAtStore ? {CreatedAt: createdBy || createdAtStore} : {})
+  if(!instance ){
+    instance = Axios.create({
+      baseURL: BASE_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        ...(createdBy || createdAtStore ? {CreatedAt: createdBy || createdAtStore} : {})
+      }
+    });
+
+  }
+  else {
+    if(instance){
+      instance.defaults.headers['Authorization'] = `Bearer ${token}`;
+      instance.defaults.headers['Content-type'] =  'application/json';
+      if (createdBy || createdAtStore) {
+        instance.defaults.headers['CreatedAt'] = createdBy || createdAtStore;
+      }
     }
-  });
+  }
+
 
   // Add a request interceptor
   instance.interceptors.request.use(function (config) {
