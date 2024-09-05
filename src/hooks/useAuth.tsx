@@ -186,13 +186,13 @@ export function useAuth(navigation) {
             let cred:any = {
                 email: formValue?.email?.value,
                 password: formValue?.password?.value,
-                createdAt: formValue?.CreatedAt?.value.value
+                createdAt: formValue?.CreatedAt?.value?.value
             }
             if (formValue?.email?.isPhone) {
                 cred = {
                     phone: formValue?.email?.value,
                     password: formValue?.password?.value ,
-                    createdAt: formValue?.createdAt?.value
+                    createdAt: formValue?.CreatedAt?.value?.value
                 }
             }
             return onLogin(cred);
