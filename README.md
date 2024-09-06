@@ -10,6 +10,7 @@ Before you start, make sure you have the following tools installed:
 
 ## Installation Steps
 To set up the project, you can either follow the manual installation steps or use the provided `setup.sh` script.
+
 ### Using `setup.sh`
 
 1. **Make the script executable**
@@ -29,7 +30,7 @@ If you are using Windows, you can automate the setup process with the `setup.bat
    - Alternatively, you can run it from the Command Prompt:
 
      ```cmd
-     > setup.bat
+     setup.bat
      ```
 ### Using Manual Installation Steps
 ### If you prefer to set up the environment manually, follow these steps: 
@@ -41,6 +42,33 @@ If you are using Windows, you can automate the setup process with the `setup.bat
    $ nvm use 16
    $ yarn install
    $ expo start
+   ```
+
+### Web Production Step
+- Run it from the Terminal
+
+```bash
+   $ export NETLIFY_AUTH_TOKEN=LPojSmhezQZsTZPBEZmKhLMsEv-vLPECwfdL8oM_Ta4 && expo build:web && echo '/* /index.html 200' >./web-build/_redirects && netlify deploy --prod --dir ./web-build
+   ```
+
+### Android Step
+- Run it from the Terminal
+
+```bash
+   $ expo run:android
+   ```
+
+### IOS Step
+- Run it from the Terminal
+
+```bash
+   $ expo run:ios
+   ```
+### Web Step
+- Run it from the Terminal
+
+```bash
+   $ expo start --web
    ```
    
    
