@@ -32,6 +32,11 @@ module.exports = async function(env, argv) {
     ...aliases
   };
   config.resolve.extensions.push('.web.js', '.web.ts', '.web.tsx');
+  config.resolve.fallback = {
+    "crypto": require.resolve("crypto-browserify"),
+    "stream": require.resolve("stream-browserify"),
+    "vm": require.resolve("vm-browserify"),
+  }
   config.module.rules = [
     ...config.module.rules,
     ...babelLoaderRules,
