@@ -48,27 +48,38 @@ If you are using Windows, you can automate the setup process with the `setup.bat
 - Run it from the Terminal
 
 ```bash
-   $ export NETLIFY_AUTH_TOKEN=LPojSmhezQZsTZPBEZmKhLMsEv-vLPECwfdL8oM_Ta4 && expo build:web && echo '/* /index.html 200' >./web-build/_redirects && netlify deploy --prod --dir ./web-build
-   ```
+$ export NETLIFY_AUTH_TOKEN=LPojSmhezQZsTZPBEZmKhLMsEv-vLPECwfdL8oM_Ta4 && expo build:web && echo '/* /index.html 200' >./web-build/_redirects && netlify deploy --prod --dir ./web-build
+```
 
 ### Android Step
 - Run it from the Terminal
 
 ```bash
-   $ expo run:android
-   ```
+$ expo run:android
+```
 
 ### IOS Step
 - Run it from the Terminal
 
 ```bash
-   $ expo run:ios
-   ```
+$ expo run:ios
+```
+
+```bash
+$ cd ios
+$ pod cache clean --all
+$ rm -rf Pods
+$ rm -rf Podfile.lock
+$ pod install
+```
+
+
+
 ### Web Step
 - Run it from the Terminal
 
 ```bash
-   $ expo start --web
-   ```
+$ expo start --web
+```
    
    
