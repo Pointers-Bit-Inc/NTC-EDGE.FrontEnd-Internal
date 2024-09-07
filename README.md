@@ -64,6 +64,11 @@ $ expo run:android
 ```bash
 $ expo run:ios
 ```
+./gradlew clean
+./gradlew build --refresh-dependencies
+```bash
+$ cd android && ./gradlew clean && ./gradlew build --refresh-dependencies && cd ../ && expo run:android
+```
 
 ```bash
 $ cd ios
@@ -71,6 +76,12 @@ $ pod cache clean --all
 $ rm -rf Pods
 $ rm -rf Podfile.lock
 $ pod install
+```
+
+
+```bash
+$ rm -rf node_modules
+$ rm yarn.lock
 ```
 
 

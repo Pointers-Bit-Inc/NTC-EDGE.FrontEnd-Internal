@@ -20,6 +20,10 @@ buildscript {
         google()
         mavenCentral()
         jcenter()
+        maven { url 'https://google.bintray.com/exoplayer/' }
+        maven { url 'https://dl.bintray.com/android/android-tools' }
+        maven { url 'https://dl.bintray.com/firebase/gradle/' }
+        maven { url 'https://www.jitpack.io' }
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.1.3")
@@ -47,11 +51,11 @@ allprojects {
         maven {
             // expo-camera bundles a custom com.google.android:cameraview
             url "$rootDir/../node_modules/expo-camera/android/maven"
-        }
-
+            }
+        jcenter()
         google()
         mavenCentral()
-        jcenter()
         maven { url 'https://www.jitpack.io' }
+        maven { url "$rootDir/../node_modules/expo-av/android" }
     }
 }
