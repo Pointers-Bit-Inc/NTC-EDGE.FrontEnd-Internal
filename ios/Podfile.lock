@@ -61,6 +61,41 @@ PODS:
     - ExpoModulesCore
   - Expo (43.0.5):
     - ExpoModulesCore
+  - expo-dev-client (0.6.3):
+    - EXManifests
+    - expo-dev-launcher
+    - expo-dev-menu
+    - expo-dev-menu-interface
+    - EXUpdatesInterface
+  - expo-dev-launcher (0.8.4):
+    - EXManifests
+    - expo-dev-launcher/Main (= 0.8.4)
+    - expo-dev-menu-interface
+    - EXUpdatesInterface
+    - React-Core
+  - expo-dev-launcher/Main (0.8.4):
+    - EXManifests
+    - expo-dev-launcher/Unsafe
+    - expo-dev-menu-interface
+    - EXUpdatesInterface
+    - React-Core
+  - expo-dev-launcher/Unsafe (0.8.4):
+    - EXManifests
+    - expo-dev-menu-interface
+    - EXUpdatesInterface
+    - React-Core
+  - expo-dev-menu (0.8.4):
+    - expo-dev-menu-interface
+    - expo-dev-menu/Main (= 0.8.4)
+    - React-Core
+  - expo-dev-menu-interface (1.8.3)
+  - expo-dev-menu/Main (0.8.4):
+    - expo-dev-menu-interface
+    - expo-dev-menu/Vendored
+    - React-Core
+  - expo-dev-menu/Vendored (0.8.4):
+    - expo-dev-menu-interface
+    - React-Core
   - ExpoModulesCore (0.4.10):
     - React-Core
   - EXScreenOrientation (4.0.3):
@@ -481,6 +516,10 @@ DEPENDENCIES:
   - EXManifests (from `../node_modules/expo-manifests/ios`)
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
   - Expo (from `../node_modules/expo/ios`)
+  - expo-dev-client (from `../node_modules/expo-dev-client`)
+  - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
+  - expo-dev-menu (from `../node_modules/expo-dev-menu`)
+  - expo-dev-menu-interface (from `../node_modules/expo-dev-menu-interface/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
   - EXScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
@@ -588,6 +627,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-permissions/ios"
   Expo:
     :path: "../node_modules/expo/ios"
+  expo-dev-client:
+    :path: "../node_modules/expo-dev-client"
+  expo-dev-launcher:
+    :path: "../node_modules/expo-dev-launcher"
+  expo-dev-menu:
+    :path: "../node_modules/expo-dev-menu"
+  expo-dev-menu-interface:
+    :path: "../node_modules/expo-dev-menu-interface/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core/ios"
   EXScreenOrientation:
@@ -722,6 +769,10 @@ SPEC CHECKSUMS:
   EXManifests: d3464cd2278f4a19cd80c1aa673231570b534c11
   EXPermissions: 7696f4c16e89981f84c04d96327f7e1e592373c0
   Expo: d9588796cd19999da4d440d87bf7eb7ae4dbd608
+  expo-dev-client: f7417249bbede98f5fa3f151ae49c46cabfce82b
+  expo-dev-launcher: 3a2b9470ed2b4ae0c60615f911c347c50cfc2526
+  expo-dev-menu: 07e44bd1432b2bdfe249f76c37a090510c5dcebc
+  expo-dev-menu-interface: be32c09f1e03833050f0ee290dcc86b3ad0e73e4
   ExpoModulesCore: c9438f6add0fb7b04b7c64eb97a833d2752a7834
   EXScreenOrientation: 80c8c07ab3f2beb8e83ba94ab6ee4fb7a6bf01a6
   EXSplashScreen: 57f329dbf25c5c12800feed79068a056453dc772
@@ -784,6 +835,6 @@ SPEC CHECKSUMS:
   Yoga: e6ecf3fa25af9d4c87e94ad7d5d292eedef49749
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: abfe760d2641f5800591e241eee5dfe644f959ee
+PODFILE CHECKSUM: 11dc6eee8244e0031d0bc884254aecea8c2398fc
 
 COCOAPODS: 1.15.2
