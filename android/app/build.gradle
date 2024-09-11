@@ -151,11 +151,11 @@ android {
 
     defaultConfig {
 
-        applicationId 'com.ntcedge.portal'
+        applicationId 'portalapp.ntcedge.com'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
-        versionName "1.1.27"
+        versionCode 1
+        versionName "1.0.4"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {

@@ -50,12 +50,6 @@ export default {
         {
           "appleTeamId": "4A3P2635GN"
         }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to upload photos from your library. This also lets you save photos to your library."
-        }
       ]
     ],
     "extra": {

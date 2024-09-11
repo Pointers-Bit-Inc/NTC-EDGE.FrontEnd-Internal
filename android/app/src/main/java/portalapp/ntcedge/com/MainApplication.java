@@ -1,4 +1,4 @@
-package com.ntcedge.portal;
+package portalapp.ntcedge.com;
 import expo.modules.updates.UpdatesDevLauncherController;
 import expo.modules.devlauncher.DevLauncherController;
 
