@@ -1,4 +1,4 @@
-import Pdf from "react-native-pdf";
+//import Pdf from "react-native-pdf";
 import {View,Text,ActivityIndicator} from "react-native";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import React, {useEffect, useState} from "react";
