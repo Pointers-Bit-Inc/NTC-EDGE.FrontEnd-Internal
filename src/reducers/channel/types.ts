@@ -1,0 +1,43 @@
+import keyMirror from 'key-mirror';
+
+export default keyMirror({
+  SET_SELECTED_CHANNEL: null,
+  SET_CHANNEL_LIST: null,
+  ADD_TO_CHANNEL_LIST: null,
+  ADD_CHANNEL: null,
+  UPDATE_CHANNEL: null,
+  REMOVE_CHANNEL: null,
+
+  SET_MESSAGES: null,
+  ADD_TO_MESSAGES: null,
+  ADD_MESSAGES: null,
+  UPDATE_MESSAGES: null,
+  REMOVE_MESSAGES: null,
+
+  SET_FILES: null,
+  ADD_TO_FILES: null,
+  ADD_FILES: null,
+  UPDATE_FILES: null,
+
+  SET_SELECTED_MESSAGES: null,
+  REMOVE_SELECTED_MESSAGES: null,
+
+  ADD_MEETING_CHANNEL: null,
+  UPDATE_MEETING_CHANNEL: null,
+  REMOVE_MEETING_CHANNEL: null,
+  SET_MEETINGS_CHANNEL: null,
+
+  SET_SEARCH_VALUE: null,
+
+  RESET_CHANNEL: null,
+
+  RESET_PENDING_MESSAGES: null,
+  ADD_PENDING_MESSAGE: null,
+  SET_PENDING_MESSAGE_ERROR: null,
+  REMOVE_PENDING_MESSAGE: null,
+
+  UPDATE_PARTICIPANTS: null,
+  UPDATE_PARTICIPANTS_STATUS: null,
+
+  SET_HAS_NEW_CHAT: null
+});
