@@ -190,7 +190,7 @@ const RootNavigator = () => {
     const [visible, setVisible] = useState(false);
 
     return (
-        <NavigationContainer linking={linking}>
+        <NavigationContainer independent={true} linking={linking}>
 
             <Stack.Navigator
 

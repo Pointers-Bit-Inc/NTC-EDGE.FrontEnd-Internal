@@ -18,17 +18,18 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export type ProgressBarProps = {
-    isIndeterminate?: boolean;
-    duration?: number;
-    isAnimated?: boolean;
-    progress?: number;
-    color?: string;
-    trackColor?: string;
-    progressImage?: ImageURISource | ImageURISource[];
-    trackImage?: ImageURISource | ImageURISource[];
-    height?: number;
-    borderRadius?: number;
-    style?: ImageBackgroundProps['style'];
+    isIndeterminate?: boolean,
+    duration?: number,
+    isAnimated?: boolean,
+    progress?: number,
+    color?: string,
+    trackColor?: string,
+    progressImage?: ImageURISource | ImageURISource[],
+    trackImage?: ImageURISource | ImageURISource[],
+    height?: number,
+    borderRadius?: number,
+    style?: ImageBackgroundProps['style'],
+    key?: any
 };
 
 const minProgress = 0;
@@ -46,6 +47,7 @@ function ProgressBar({
                          style,
                          trackImage,
                          progressImage,
+                         key
                      }: ProgressBarProps) {
     const [width, setWidth] = React.useState(0);
     const progressValue = useSharedValue(isAnimated ? 0 : progress);
@@ -55,7 +57,7 @@ function ProgressBar({
         () => progress,
         (currentProgress) => {
             if (isAnimated) {
-                progressValue.value = withTiming(currentProgress ?? 0, { duration });
+                progressValue.value = withTiming(currentProgress ?? 0, {duration});
             } else {
                 progressValue.value = currentProgress ?? 0;
             }
@@ -68,12 +70,12 @@ function ProgressBar({
         (currentIsIndeterminate) => {
             if (currentIsIndeterminate) {
                 indeterminateValue.value = withRepeat(
-                    withTiming(1, { duration }),
+                    withTiming(1, {duration}),
                     -1,
                     false
                 );
             } else {
-                indeterminateValue.value = withTiming(0, { duration });
+                indeterminateValue.value = withTiming(0, {duration});
             }
         },
         [duration]
@@ -98,7 +100,7 @@ function ProgressBar({
 
         return {
             width: animatedWidth,
-            transform: [{ translateX }],
+            transform: [{translateX}],
         } as ViewStyle;
     });
 

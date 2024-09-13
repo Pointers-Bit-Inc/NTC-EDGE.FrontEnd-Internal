@@ -2,15 +2,14 @@ import React, { FC } from 'react';
 import { LogBox, View, FlatList } from 'react-native';
 import propsStyles from './props-styles';
 import styles from './styles';
-import ProgressBar from "@organisms/progressbar/Bar";
-
+import Bar from "@atoms/expo-progress/Bar";
 interface Props {
   values?: number[];
 };
 
 const renderItem = ({item, index}: any) => {
   return (
-    <ProgressBar
+    <Bar
       key={index}
       progress={item}
       {...propsStyles.progress}
