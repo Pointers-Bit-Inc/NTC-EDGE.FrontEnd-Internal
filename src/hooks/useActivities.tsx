@@ -401,6 +401,7 @@ function useActivities(props) {
 
     const [moreModalVisible, setMoreModalVisible] = useState(false);
     const onDismissed = () => {
+        console.log("onDismissed")
         dispatch(setModalVisible(false))
     };
 

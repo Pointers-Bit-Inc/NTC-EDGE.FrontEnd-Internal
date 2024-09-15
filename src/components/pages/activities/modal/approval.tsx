@@ -17,13 +17,13 @@ import ApplicationApproved from "@assets/svg/application-approved";
 import {Ionicons} from "@expo/vector-icons";
 import axios from "axios";
 import {InputField} from "@molecules/form-fields";
-import {BASE_URL} from "../../../../services/config";
-import {ACCOUNTANT,APPROVED,CASHIER,DIRECTOR,EVALUATOR,} from "../../../../reducers/activity/initialstate";
+import {BASE_URL} from "@/src/services/config";
+import {ACCOUNTANT,APPROVED,CASHIER,DIRECTOR,EVALUATOR,} from "@/src/reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
 import useKeyboard from '@/src/hooks/useKeyboard';
 import {disabledColor, errorColor, infoColor, primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
-import {useAlert} from "../../../../hooks/useAlert";
+import {useAlert} from "@/src/hooks/useAlert";
 import {getRole} from "@pages/activities/script";
 import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -66,7 +66,10 @@ const Approval=(props:any)=>{
         }
     }, [_springHide])
 
-    useEffect(async()=>{
+    useEffect(() => {
+        currentApproval()
+    },[]);
+    const currentApproval = async()=>{
 
         setLoading(true);
         const userEvaluator=getRole(user,[EVALUATOR]);
@@ -134,8 +137,7 @@ const Approval=(props:any)=>{
             isCurrent=false
             _springHide()
         }
-    },[]);
-
+    }
     const onConfirmation=()=>{
 
         if(!(remarks) && getRole(user,[CASHIER])) return

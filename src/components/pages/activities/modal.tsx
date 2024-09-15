@@ -661,19 +661,16 @@ function ActivityModal(props: any) {
         };
     }
     const goBackAsync = () => {
-
         const promise = new Promise<void>(resolve => {
             const subscription = Platform.OS == "web" ? resolve() : props.navigation?.addListener('didBlur', () => {
                 subscription.remove();
                 resolve();
             });
         });
-
         if(props?.navigation?.canGoBack()){
             props.navigation?.goBack();
         }
         _props?.onDismissed(change);
-
         return promise;
     };
     const [initialPage, setInitialPage] = useState(true);

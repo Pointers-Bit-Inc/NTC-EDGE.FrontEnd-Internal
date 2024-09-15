@@ -60,9 +60,8 @@ const Endorsed = (props: any) => {
         setLoading(true)
         await axios.get(BASE_URL + '/employees' ,
             {
-
                 headers : {
-                    Authorization : "Bearer ".concat(user.sessionToken)
+                    Authorization : "Bearer ".concat(user.sessionToken),CreatedAt: user?.createdAt,
                 }
             }).then((response) => {
             setLoading(false)

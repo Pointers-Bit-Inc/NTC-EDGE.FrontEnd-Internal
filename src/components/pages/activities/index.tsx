@@ -163,10 +163,6 @@ const ActivitiesPage = (props) => {
     const statusCode=useSelector((state:RootStateOrAny)=>state.activity?.statusCode);
     const realtimecounts = useSelector((state: RootStateOrAny) => state.application.realtimecounts);
 
-
-
-
-
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
     const applicationItemId = useSelector((state: RootStateOrAny) => state.application.applicationItemId);
 
@@ -291,10 +287,6 @@ const ActivitiesPage = (props) => {
         [tabIndex, allScrollValue, pendingScrollValue, historyScrollValue]
     );
 
-    const translateY = useDerivedValue(
-        () => -Math.min(сurrentScrollValue.value, headerDiff)
-    );
-
     const tabBarAnimatedStyle = useAnimatedStyle(() => ({
         // transform: [{translateY: translateY.value}],
     }));
@@ -318,15 +310,19 @@ const ActivitiesPage = (props) => {
         [contentContainerStyle, sync, heightExpanded]
     );
     const onDismissedModal = (event: boolean, _id: number) => {
+        console.log("onDismissedModal sub")
         setUpdateModal(false);
+
+        console.log("onDismissedModal sub 1")
         dispatch(setApplicationItem({}));
         if (event && _id) {
             //  dispatch(deleteApplications(_id))
         }
+        console.log("onDismissedModal sub 2")
         if (event) {
-            console.log("onRefresh")
             onRefresh()
         }
+        console.log("onDismissedModal sub 3")
         onDismissed()
     };
     const onChangeAssignedId = useCallback((event) => {
@@ -644,23 +640,7 @@ const ActivitiesPage = (props) => {
 
         [rendered, headerAnimatedStyle]
     );
-    const collapsedOverlayAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            opacity: interpolate(
-                translateY.value,
-                [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
-                [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
-            ),
-            backgroundColor: primaryColor,
-            zIndex: !!translateY.value ? 3 : 1
-        }
-    });
-    
 
-    const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
-        () => [],
-        [collapsedOverlayAnimatedStyle, heightCollapsed]
-    );
     const headerContainerMergeStyle = useMemo(() => [styles1.rect, styles1.horizontal, {
         backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
         ...Platform.select({

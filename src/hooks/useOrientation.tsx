@@ -25,7 +25,7 @@ export function useOrientation(): 'PORTRAIT' | 'LANDSCAPE' {
         Dimensions.addEventListener('change', callback);
 
         return () => {
-            Dimensions.removeEventListener('change', callback);
+
         };
     }, []);
 
