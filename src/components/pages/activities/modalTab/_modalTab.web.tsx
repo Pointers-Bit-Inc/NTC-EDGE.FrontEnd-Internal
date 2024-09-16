@@ -3,7 +3,7 @@ import React, {memo, useEffect, useState} from "react";
 import {ACCOUNTANT,CASHIER,CHECKER,DIRECTOR,EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Regular,Regular500} from "@styles/font";
-import {ViewPaged} from 'react-scroll-paged-view'
+import {ViewPaged} from "@/src/components/lib";
 import TabBar from 'react-underline-tabbar'
 import BasicInfoWebIcon from "@assets/svg/basicInfoWebIcon";
 import ApplicationDetailWebIcon from "@assets/svg/applicationDetailWebIcon";
