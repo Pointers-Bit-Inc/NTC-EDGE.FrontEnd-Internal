@@ -19,7 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "usesIcloudStorage": true,
-      "bundleIdentifier": "com.ntcedgeinternal",
+      "bundleIdentifier": "com.ntcedge.portal",
       "buildNumber": "1.1.31",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera. This lets you take pictures and recording videos.",
@@ -39,7 +39,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.ntcedgeinternal",
+      "package": "com.ntcedge.portal",
       "versionCode": 1
     },
     "web": {

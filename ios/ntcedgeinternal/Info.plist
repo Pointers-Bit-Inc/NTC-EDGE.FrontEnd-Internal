@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>ntc-edge-internal</string>
-          <string>com.ntcedgeinternal</string>
+          <string>com.ntcedge.portal</string>
         </array>
       </dict>
       <dict>

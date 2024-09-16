@@ -1,4 +1,4 @@
-package com.ntcedgeinternal
+package com.ntcedge.portal
 
 import android.os.Build
 import android.os.Bundle

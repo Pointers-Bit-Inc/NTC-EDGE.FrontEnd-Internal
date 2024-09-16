@@ -30,7 +30,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="ntc-edge-internal"/>
-        <data android:scheme="com.ntcedgeinternal"/>
+        <data android:scheme="com.ntcedge.portal"/>
         <data android:scheme="exp+ntc-edge-internal"/>
       </intent-filter>
     </activity>

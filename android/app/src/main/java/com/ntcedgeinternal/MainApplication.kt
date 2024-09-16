@@ -1,4 +1,4 @@
-package com.ntcedgeinternal
+package com.ntcedge.portal
 
 import android.app.Application
 import android.content.res.Configuration
