@@ -74,7 +74,6 @@ export const StatusText = (status: string) => {
 };
 
 export const readableToHuman = (_date) => {
-    console.log(_date, "_date")
     let date = moment(_date);
 
     if (!date.isValid()) {

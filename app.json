@@ -6,7 +6,7 @@
     "owner": "ntc-edge",
     "version":"1.1.31",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/splash.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
