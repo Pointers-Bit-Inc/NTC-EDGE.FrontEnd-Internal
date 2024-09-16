@@ -1,7 +1,7 @@
 {
   "expo": {
     "scheme": "ntc-edge-internal",
-    "name": "ntc-edge-internal",
+    "name": "NTC EDGE PORTAL",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
     "version":"1.0.4",
@@ -30,6 +30,7 @@
       }
     },
     "androidStatusBar": {
+      "hidden": true,
       "backgroundColor": "#031A6E",
       "translucent": false
     },
