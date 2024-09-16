@@ -11,6 +11,7 @@ buildscript {
         ndkVersion = "26.1.10909125"
     }
     repositories {
+    gradlePluginPortal()
         google()
         mavenCentral()
     }
@@ -20,7 +21,6 @@ buildscript {
         classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
     }
 }
-
 apply plugin: "com.facebook.react.rootproject"
 
 allprojects {
