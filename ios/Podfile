@@ -34,7 +34,7 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 
-target 'ntcedgeinternal' do
+target 'NTCEDGEPORTAL' do
   use_expo_modules!
   config = use_native_modules!
 
@@ -76,7 +76,4 @@ target 'ntcedgeinternal' do
       Pod::UI.warn e
     end
   end
-end
-target 'OneSignalNotificationServiceExtension' do
-  pod 'OneSignalXCFramework', '>= 3.0', '< 4.0'
 end

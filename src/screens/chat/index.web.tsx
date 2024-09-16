@@ -70,7 +70,6 @@ import GroupImage from '@molecules/image/group';
 import FileList from '@screens/chat/file-list';
 //import FileList from '@components/organisms/chat/files';
 import { isMobile } from '@pages/activities/isMobile';
-import { ViewPaged } from 'react-scroll-paged-view';
 import TabBar from 'react-underline-tabbar';
 import CreateChatIcon from '@assets/svg/addParticipantOutline';
 import { TabView } from 'react-native-tab-view';
@@ -93,6 +92,7 @@ import IParticipants from '@/src/interfaces/IParticipants';
 import Loading from '@components/atoms/loading';
 import { FontAwesome } from '@expo/vector-icons';
 import RefreshWeb from '@assets/svg/refreshWeb';
+import {ViewPaged} from "@/src/components/lib";
 
 const { width, height } = Dimensions.get('window');
 

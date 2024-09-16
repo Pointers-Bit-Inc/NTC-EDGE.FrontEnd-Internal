@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'ntc-edge-internal'
+rootProject.name = 'NTC EDGE PORTAL'
 
 dependencyResolutionManagement {
   versionCatalogs {
