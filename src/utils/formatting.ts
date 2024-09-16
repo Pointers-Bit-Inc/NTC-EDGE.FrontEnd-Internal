@@ -338,7 +338,10 @@ export const generateForm = (savedApplication: any, form: any) => {
                                     } else if (typeof (grandchildItem) === 'object') {
                                         /** no need to update since parent condition says "typeof(grandchildItem) === 'string'" and this condition says "typeof(grandchildItem) === 'object'" */
                                     } else {
-                                        let isValid = validate ? validate(grandchildItem) : validateText(grandchildItem);
+                                        let isValid = validate && typeof validate === 'function'
+                                            ? validate(grandchildItem)
+                                            : validateText(grandchildItem);
+
                                         Form[form_parentIndex].data[childIndex][grandchildIndex] = {
                                             ...formPath,
                                             value: grandchildItem,
@@ -621,7 +624,9 @@ export const generateForm = (savedApplication: any, form: any) => {
                                                 Form[form_parentIndex].data[childIndex][grandchildIndex].data[form_ggrandchildIndex].value[form_gggrandchildIndex].value = gggrandchildItem;
                                             });
                                         } else {
-                                            let isValid = validate ? validate(ggrandchildItem) : validateText(ggrandchildItem);
+                                            let isValid = validate && typeof validate === 'function'
+                                                ? validate(ggrandchildItem)
+                                                : validateText(ggrandchildItem);
                                             Form[form_parentIndex].data[childIndex][grandchildIndex].data[form_ggrandchildIndex] = {
                                                 ...formPath,
                                                 value: ggrandchildItem,
@@ -762,7 +767,9 @@ export const generateForm = (savedApplication: any, form: any) => {
                                         Form[form_parentIndex].data[form_childIndex].value[form_grandchildIndex].value = grandchildItem;
                                     });
                                 } else {
-                                    let isValid = validate ? validate(childItem) : validateText(childItem);
+                                    let isValid = validate && typeof validate === 'function'
+                                        ? validate(childItem)
+                                        : validateText(childItem);
                                     Form[form_parentIndex].data[form_childIndex] = {
                                         ...formPath,
                                         value: childItem,

@@ -23,7 +23,7 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
                     {
                         backgroundColor:props.allButton ?  "#fff" :  isHovered ? "#DE7C8D" : "#fff" ,
                         height: undefined,
-                        paddingVertical: props.currentLoading === DECLINED ? fontValue(8.5) : fontValue(9),
+                        paddingVertical: props.currentLoading === DECLINED ? fontValue(9) : fontValue(9),
                         borderWidth: 2,
                         borderColor: (props.allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
                     }]
@@ -48,11 +48,12 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
 
 const styles = StyleSheet.create({
     rect24: {
-        height: 31,
+
         borderRadius: fontValue(24)
     },
     endorse: {
         fontSize: fontValue(12),
         textAlign: "center",
+        alignSelf: "center"
     }
 })
