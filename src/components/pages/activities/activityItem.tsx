@@ -5,7 +5,7 @@ import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {Hoverable} from 'react-native-web-hooks';
 import {
-    formatDate,
+    formatDate, formatDateHumanReadable,
     getActivityStatus,
     PaymentStatusText,
     readableToHuman,
@@ -523,7 +523,8 @@ const ActivityItem = (props: any) => {
                                                             }
                                                             numberOfLines={1}
                                                         >
-                                                            {readableToHuman(formatDate(propsMemo.activity.createdAt))}
+
+                                                            {(formatDateHumanReadable(propsMemo.activity.createdAt))}
                                                         </Text>
                                                     </View>
                                                 </View>

@@ -73,28 +73,60 @@ export const StatusText = (status: string) => {
     }
 };
 
-export const readableToHuman=(_date)=>{
+export const readableToHuman = (_date) => {
+    console.log(_date, "_date")
+    let date = moment(_date);
 
-    let date=moment(_date);
-
-    if(moment().diff(date,'days')>=2){
-        return date.fromNow();
+    if (!date.isValid()) {
+        return 'Invalid date'; // Handle invalid date
     }
-    return date.calendar().split(' ')[0];
+
+    if (moment().diff(date, 'days') >= 2) {
+        return date.fromNow(); // E.g., '2 days ago'
+    }
+
+    return date.calendar().split(' ')[0]; // E.g., 'Today', 'Yesterday'
+};
+
+export const formatDateHumanReadable = (dateString) => {
+    let date = moment(dateString);
+
+    // Validate the date
+    if (!date.isValid()) {
+        return 'Invalid date'; // Handle invalid date
+    }
+
+    // If the date is within the last 2 days, use human-readable format (e.g., 'Today', 'Yesterday', '2 days ago')
+    if (moment().diff(date, 'days') < 2) {
+        return date.calendar().split(' ')[0]; // 'Today', 'Yesterday'
+    }
+
+    // If it's older than 2 days, return the human-readable relative time (e.g., '3 days ago')
+    if (moment().diff(date, 'days') >= 2) {
+        return date.fromNow(); // E.g., '3 days ago'
+    }
+
+    // Otherwise, format the date as MM/DD/YY
+    let d = new Date(dateString),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear().toString().slice(-2);
+
+    // Ensure two digits for month and day
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [month, day, year].join('/');
 };
 export const formatDate = (date: string) => {
-
     date = !date?.split("T") ? checkFormatIso(date) : date;
     let d = new Date(date),
-        month = '' + (
-            d.getMonth() + 1),
+        month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear()?.toString()?.slice(-2);
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
 
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
     return [month, day, year].join('/');
 };
 export const checkFormatIso = (date: string, separator?: string) => {
