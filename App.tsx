@@ -8,6 +8,7 @@ import TopModal from "@pages/activities/topmodal";
 import {MenuProvider} from "react-native-popup-menu";
 import {ToastProvider} from "@atoms/toast/ToastProvider";
 import {Toast} from "@atoms/toast/Toast";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {Poppins_400Regular, Poppins_500Medium, Poppins_600SemiBold, useFonts} from "@expo-google-fonts/poppins";
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -22,6 +23,7 @@ export default function App() {
   }, [fontsLoaded]);
 
   return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={ store }>
         <PersistGate loading={ null } persistor={ persistor }>
           <ToastProvider>
@@ -35,5 +37,6 @@ export default function App() {
           </ToastProvider>
         </PersistGate>
       </Provider>
+      </GestureHandlerRootView>
   );
 }
