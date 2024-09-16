@@ -180,7 +180,7 @@ export function useAuth(navigation) {
     };
     const onCheckValidation = () => {
         // console.log('form value:', formValue)
-        api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value;
+        api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value ?? "ntc-region10";
 
         if (!formValue.email.isValid) {
             return onChangeValue('email' , formValue.email.value);
