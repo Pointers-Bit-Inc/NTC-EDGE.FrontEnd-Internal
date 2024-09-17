@@ -708,48 +708,57 @@ const DataTable = (props) => {
     }, [])
 
 
-    useEffect(()=>{
+    useEffect(() => {
         var cities = [];
-        if( !userProfileForm?.[provincesIndexMemo]?.["value"] ) return []
-        axios.get(BASE_URL + "/cities?province=" + userProfileForm?.[provincesIndexMemo]?.["value"] ).then(res =>{
-            cities = res.data
-            var _userProfileForm = [...userProfileForm]
-            if(_userProfileForm[citiesIndexMemo].hasOwnProperty("data")){
 
-                _userProfileForm[citiesIndexMemo].data = res.data.map(city => {
-                  return {value: city.provinceCode, label: city.name}
-                })
+        // Early exit if the condition fails (but don't return an array)
+        if (!userProfileForm?.[provincesIndexMemo]?.["value"]) return;
 
-
-
-
-
-                setUserProfileForm(_userProfileForm)
+        axios.get(BASE_URL + "/cities?province=" + userProfileForm?.[provincesIndexMemo]?.["value"], {
+            headers: {
+                Authorization: "Bearer ".concat(user.sessionToken),
+                CreatedAt: user?.createdAt
             }
+        }).then(res => {
+            cities = res.data;
+            var _userProfileForm = [...userProfileForm];
+            if (_userProfileForm[citiesIndexMemo].hasOwnProperty("data")) {
+                _userProfileForm[citiesIndexMemo].data = res.data.map(city => {
+                    return { value: city.cityCode, label: city.name };
+                });
+                setUserProfileForm(_userProfileForm);
+            }
+        }).catch(error => {
+            console.error("Error fetching cities:", error);
+        });
+    }, [userProfileForm[provincesIndexMemo]?.["value"]]);
 
-        })
-    }, [userProfileForm[provincesIndexMemo]?.["value"]])
-   useEffect(()=>{
+
+    useEffect(() => {
         var provinces = [];
 
-        if( !userProfileForm?.[regionIndexMemo]?.["value"] ) return []
 
-        axios.get(BASE_URL + "/provinces?region=" + userProfileForm?.[regionIndexMemo]?.["value"] ).then(res =>{
-            provinces = res.data
-            var _userProfileForm = [...userProfileForm]
-            if(_userProfileForm[provincesIndexMemo].hasOwnProperty("data")){
-                _userProfileForm[provincesIndexMemo].data = res.data.map(city => {
-                    return {value: city.provinceCode, label: city.name}
-                })
+        if (!userProfileForm?.[regionIndexMemo]?.["value"]) return;
 
-
-                console.log(_userProfileForm[provincesIndexMemo])
-
-                setUserProfileForm(_userProfileForm)
+        axios.get(BASE_URL + "/provinces?region=" + userProfileForm?.[regionIndexMemo]?.["value"], {
+            headers: {
+                Authorization: "Bearer ".concat(user.sessionToken),
+                CreatedAt: user?.createdAt
             }
+        }).then(res => {
+            provinces = res.data;
+            var _userProfileForm = [...userProfileForm];
+            if (_userProfileForm[provincesIndexMemo].hasOwnProperty("data")) {
+                _userProfileForm[provincesIndexMemo].data = res.data.map(city => {
+                    return { value: city.provinceCode, label: city.name };
+                });
 
-        })
-    }, [userProfileForm[regionIndexMemo]?.["value"], userProfileForm[provincesIndexMemo]?.['value']])
+                console.log(_userProfileForm[provincesIndexMemo]);
+
+                setUserProfileForm(_userProfileForm);
+            }
+        });
+    }, [userProfileForm[regionIndexMemo]?.["value"], userProfileForm[provincesIndexMemo]?.['value']]);
 
     const [state, setState] = useState('add');
 

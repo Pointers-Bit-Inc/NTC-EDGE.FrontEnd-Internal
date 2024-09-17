@@ -112,7 +112,6 @@ export function request_fetchSchedules(data: any) {
 
 export function request_fetchProvinces(data: any) {
   let { session, payload } = data;
-  console.log(data)
   return api(session?.token, '')
     .get(`/provinces?region=${payload?.regionCode}`)
     .then((res: any) => {

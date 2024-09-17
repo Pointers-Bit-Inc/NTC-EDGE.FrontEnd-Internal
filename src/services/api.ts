@@ -10,8 +10,10 @@ function getCreatedAt(config: AxiosRequestConfig<any>) {
   }
 }
 let instance: AxiosInstance | null = null;
-const api = (token:string, createdBy?: string) => {
+const api = (token:string, _createdBy?: string) => {
+  const createdBy = _createdBy == "" ? null : _createdBy
   const state = store.getState();
+
   const createdAtStore = state?.user?.createdAt ?? "";
   if(!instance ){
     instance = Axios.create({
