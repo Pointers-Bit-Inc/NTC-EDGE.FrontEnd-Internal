@@ -1,5 +1,6 @@
 {
   "expo": {
+    "platforms": ["ios", "android", "web"],
     "scheme": "ntc-edge-internal",
     "name": "NTC EDGE PORTAL",
     "slug": "ntc-edge-internal",
@@ -17,6 +18,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "jsEngine": "jsc",
       "supportsTablet": true,
       "usesIcloudStorage": true,
       "bundleIdentifier": "com.ntcedge.portal",
