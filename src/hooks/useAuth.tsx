@@ -39,39 +39,7 @@ export function useAuth(navigation) {
         }, []),
     );
 
-    const onLogin = async (data) => {
-        setLoading(true);
-        api.post('/internal/signin' , {
-                email: data.email,
-                phone: data.phone,
-                password: data.password,
-            }
-        )
-            .then(res => {
-                setLoading(false);
-                dispatch(setUser(res.data));
 
-                storeCredentials(res.data.email, data.password);
-                dispatch(setCreatedAt(data.createdAt));
-                navigation.dispatch(StackActions.replace('ActivitiesScreen'));
-                console.log(1)
-            })
-            .catch(e => {
-                setLoading(false);
-                if (e) {
-
-
-                    setFormValue({
-                        ...formValue ,
-                        email : {
-                            ...formValue.email ,
-                            hasValidation: true,
-                            error : e?.response?.data?.message ||'Authentication failed'
-                        }
-                    });
-                }
-            });
-    };
 
     const [formValue , setFormValue] = useSafeState({
         email : {
@@ -103,6 +71,69 @@ export function useAuth(navigation) {
             value : false ,
         }
     });
+    const onLogin = async (data) => {
+        setLoading(true);
+        const api = useApi('',  formValue?.CreatedAt?.value.value);
+        api.post('/internal/signin' , {
+              email: data.email,
+              phone: data.phone,
+              password: data.password,
+          }
+        )
+          .then(res => {
+              setLoading(false);
+              dispatch(setUser(res.data));
+
+              storeCredentials(res.data.email, data.password);
+              dispatch(setCreatedAt(data.createdAt));
+              navigation.dispatch(StackActions.replace('ActivitiesScreen'));
+              setFormValue({
+                  email : {
+                      value : '' ,
+                      isValid : false ,
+                      error : '' ,
+                      isPhone: false,
+                      hasValidation: false,
+                      description: ''
+                  } ,
+                  password : {
+                      value : '' ,
+                      isValid : false ,
+                      error : '' ,
+                      hasValidation: false,
+                      description: '',
+                      characterLength : false ,
+                      upperAndLowerCase : false ,
+                      atLeastOneNumber : false ,
+                      strength : 'Weak' ,
+                  } ,
+                  CreatedAt : {
+                      value:  {label: "Region 10",value: "ntc-region10",key:"10"},
+                  },
+                  showPassword : {
+                      value : false
+                  } ,
+                  keepLoggedIn : {
+                      value : false ,
+                  }
+              })
+          })
+          .catch(e => {
+              setLoading(false);
+              if (e) {
+
+
+                  setFormValue({
+                      ...formValue ,
+                      email : {
+                          ...formValue.email ,
+                          hasValidation: true,
+                          error : e?.response?.data?.message ||'Authentication failed'
+                      }
+                  });
+              }
+          });
+    };
     const onChangeValue = (key: string , value: any) => {
 
         switch (key) {
@@ -148,7 +179,6 @@ export function useAuth(navigation) {
                 return navigation.navigate('ForgotPassword');
             }
             case 'login': {
-                console.log(value, " dispatch(setCreatedAt(value.createdAt));")
                 dispatch(setCreatedAt(value.createdAt));
                 return onLogin(value);
             }
@@ -178,7 +208,7 @@ export function useAuth(navigation) {
         }
     };
     const onCheckValidation = () => {
-            console.log(formValue, "formValue")
+
         api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value ?? "ntc-region10";
 
         if (!formValue.email.isValid) {

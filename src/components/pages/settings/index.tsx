@@ -19,12 +19,13 @@ import {
     setPinnedApplication
 } from "@/src/reducers/application/actions";
 import {setResetFilterStatus} from "@/src/reducers/activity/actions";
-import {resetUser, setBiometricsLogin} from "@/src/reducers/user/actions";
+import { resetUser, setBiometricsLogin, setCreatedAt } from '@/src/reducers/user/actions';
 import {resetMeeting} from "@/src/reducers/meeting/actions";
 import {resetChannel} from "@/src/reducers/channel/actions";
 import useOneSignal from "../../../hooks/useOneSignal";
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import useBiometrics, {resetCredentials} from '@/src/hooks/useBiometrics';
+import Api from '@/src/services/api';
 
 
 export default ({
@@ -94,12 +95,14 @@ export default ({
     const onLogout = useCallback(() => {
         setVisible(false)
         setTimeout(() => {
+            const api=Api("", "");
             dispatch(setApplications([]))
             dispatch(setPinnedApplication([]))
             dispatch(setNotPinnedApplication([]))
             dispatch(setApplicationItem({}))
             dispatch(setResetFilterStatus([]))
             dispatch(resetUser());
+            dispatch(setCreatedAt(null));
             dispatch(resetMeeting());
             dispatch(resetChannel());
             destroy();

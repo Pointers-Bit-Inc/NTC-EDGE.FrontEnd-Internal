@@ -5,7 +5,7 @@ import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
 import {formatDate, readableToHuman} from "@pages/activities/script";
 import moment from "moment";
-import {useAlert} from "../../../hooks/useAlert";
+import {useAlert} from '@/src/hooks/useAlert';
 import ChevronUpIcon from "@assets/svg/chevron-up";
 import {fontValue} from "@pages/activities/fontValue";
 
@@ -91,4 +91,4 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
 };
 
 
-export default (ApplicationList);
+export default memo(ApplicationList);

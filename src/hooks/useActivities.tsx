@@ -35,7 +35,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import {ListFooter} from "@molecules/list-item";
 import Api from "../services/api";
 import {setResetFilterStatus} from "../reducers/activity/actions";
-import {resetUser} from "../reducers/user/actions";
+import { resetUser, setCreatedAt } from '../reducers/user/actions';
 import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import {StackActions} from "@react-navigation/native";
@@ -321,7 +321,6 @@ function useActivities(props) {
 
             })
         ).catch((err) => {
-            console.log("fnApplications", "refreshing, infinite")
 
             if(err?.message != "Operation canceled due to new request."){
                 Alert.alert('Alert', err?.message || 'Something went wrong.');
@@ -337,13 +336,14 @@ function useActivities(props) {
             }
             setInfiniteLoad(false)
             if (err?.request?.status == "401") {
-                const api = Api(user.sessionToken, user.createdAt );
+                const api=Api("", "");
                 dispatch(setApplications([]))
                 dispatch(setPinnedApplication([]))
                 dispatch(setNotPinnedApplication([]))
                 dispatch(setApplicationItem({}))
                 dispatch(setResetFilterStatus([]))
                 dispatch(resetUser());
+                dispatch(setCreatedAt(null));
                 dispatch(resetMeeting());
                 dispatch(resetChannel());
                 destroy();

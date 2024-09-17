@@ -7,14 +7,14 @@ import {
     setPinnedApplication
 } from "../reducers/application/actions";
 import {setResetFilterStatus} from "../reducers/activity/actions";
-import {resetUser} from "../reducers/user/actions";
+import { resetUser, setCreatedAt } from '../reducers/user/actions';
 import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 
 function useLogout(user, dispatch){
     const { destroy } = useOneSignal(user);
     const logoutFn=()=>{
-        const api=Api(user.sessionToken, user.createdAt);
+        const api=Api("", "");
 
         setTimeout(()=>{
             dispatch(setApplications([]))
@@ -24,6 +24,7 @@ function useLogout(user, dispatch){
             dispatch(setResetFilterStatus([]))
             dispatch(resetUser());
             dispatch(resetMeeting());
+            dispatch(setCreatedAt(null));
             dispatch(resetChannel());
             destroy();
 

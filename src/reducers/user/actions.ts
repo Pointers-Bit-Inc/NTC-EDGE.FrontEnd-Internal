@@ -13,7 +13,6 @@ export function resetUser() {
   };
 }
 export function setCreatedAt(payload) {
-  console.log(payload, "payload")
   return {
     type: SET_CREATED_AT,
     payload,

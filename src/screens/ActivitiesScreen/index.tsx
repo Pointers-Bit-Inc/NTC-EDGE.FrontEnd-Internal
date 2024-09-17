@@ -7,7 +7,7 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import styles from "@screens/HomeScreen/DrawerNavigation/styles";
 import {button, outline} from "@styles/color";
 import AwesomeAlert from "react-native-awesome-alerts";
-import {resetUser} from "../../reducers/user/actions";
+import { resetUser, setCreatedAt } from '../../reducers/user/actions';
 import { resetMeeting, addMeeting, updateMeeting, setConnectionStatus } from '@/src/reducers/meeting/actions';
 import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } from '@/src/reducers/channel/actions';
 import Api from '@/src/services/api';
@@ -69,6 +69,8 @@ const ActivitiesScreen = (props:any) => {
         setTimeout(() => {
             api.post('/user/logout')
             .then(() => {
+              const api=Api("", "");
+              dispatch(setCreatedAt(null));
                 dispatch(resetUser());
                 dispatch(resetMeeting());
                 dispatch(resetChannel());

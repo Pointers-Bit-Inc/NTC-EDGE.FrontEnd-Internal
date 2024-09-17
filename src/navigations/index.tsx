@@ -41,7 +41,7 @@ import {
 } from "../reducers/application/actions";
 import ProfileMenu from "@molecules/headerRightMenu";
 import CustomAlert from "@pages/activities/alert/alert1";
-import {resetUser} from "../reducers/user/actions";
+import { resetUser, setCreatedAt } from '../reducers/user/actions';
 import {setResetFilterStatus} from "../reducers/activity/actions";
 import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
@@ -52,6 +52,7 @@ import ChooseNewPassword from "@screens/ChooseNewPassword";
 import * as Linking from 'expo-linking';
 import EditApplication from "@pages/activities/application/editApplication";
 import useApplicationSignalr from "../hooks/useApplicationSignalr";
+import Api from '@/src/services/api';
 const prefix = Linking.createURL('/');
 type RootStackParamList = {
     App: undefined;
@@ -134,12 +135,14 @@ const HeaderRight = ({ setVisible = () => {}, visible }:any) => {
     const onLogout = () => {
         setVisible(false)
         setTimeout(()=>{
+            const api=Api("", "");
             dispatch(setApplications([]))
             dispatch(setPinnedApplication([]))
             dispatch(setNotPinnedApplication([]))
             dispatch(setApplicationItem({}))
             dispatch(setResetFilterStatus([]))
             dispatch(resetUser());
+            dispatch(setCreatedAt(null));
             dispatch(resetMeeting());
             dispatch(resetChannel());
             destroy();

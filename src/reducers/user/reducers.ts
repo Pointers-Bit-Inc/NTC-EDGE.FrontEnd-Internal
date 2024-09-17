@@ -84,7 +84,6 @@ export default function basket(state = initialState, action = {}) {
       }
     }
     case SET_CREATED_AT: {
-      console.log(action)
       return {
         ...state,
         createdAt: action.payload,
