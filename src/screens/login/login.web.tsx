@@ -134,7 +134,7 @@ const Login = ({ navigation }: any) => {
                   </Animated.View>
               </View>
 
-              <Animated.View style={[styles.footerContainer, animatedStyle]}>
+              <Animated.View style={[styles.footerContainer , { gap: 40},  animatedStyle]}>
                   <View style={styles.edgeFooter}>
                       <EdgeBlue width={93} height={21} />
                       <View>
