@@ -105,7 +105,9 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
                         ]
                     }
                     value={form?.CreatedAt?.value?.label ?? ""}
-                    onChangeValue={(value:string)=>onChangeValue('CreatedAt',value)}
+                    onChangeValue={(value:string)=>{
+                        onChangeValue('CreatedAt',value)
+                    }}
                     placeholder='Region'
                 />
             </View>

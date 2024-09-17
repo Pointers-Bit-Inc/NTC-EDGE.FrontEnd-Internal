@@ -41,7 +41,6 @@ export function useAuth(navigation) {
 
     const onLogin = async (data) => {
         setLoading(true);
-
         api.post('/internal/signin' , {
                 email: data.email,
                 phone: data.phone,
@@ -149,7 +148,7 @@ export function useAuth(navigation) {
                 return navigation.navigate('ForgotPassword');
             }
             case 'login': {
-                console.log(" dispatch(setCreatedAt(value.createdAt));")
+                console.log(value, " dispatch(setCreatedAt(value.createdAt));")
                 dispatch(setCreatedAt(value.createdAt));
                 return onLogin(value);
             }
@@ -157,7 +156,7 @@ export function useAuth(navigation) {
                 // const checkedEmail = validateEmail(value);
                 // const checkedPhone = validatePhone(value);
                 // const checked = checkedEmail || checkedPhone;
-                dispatch(setCreatedAt(value.createdAt));
+                dispatch(setCreatedAt(value.value));
                 return setFormValue({
                     ...formValue ,
                     [key] : {
@@ -179,7 +178,7 @@ export function useAuth(navigation) {
         }
     };
     const onCheckValidation = () => {
-        // console.log('form value:', formValue)
+            console.log(formValue, "formValue")
         api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value ?? "ntc-region10";
 
         if (!formValue.email.isValid) {
