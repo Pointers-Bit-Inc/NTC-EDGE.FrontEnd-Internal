@@ -3,7 +3,7 @@ import {
   Easing,
   ImageBackground,
   Modal,
-  ScrollView,
+  Animated,
   StatusBar,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -21,13 +21,13 @@ import { Regular500 } from "@styles/font";
 import ForgotPassword from "./../../navigations/forgot-password";
 import CloseIcon from "@assets/svg/close";
 
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from 'react-native-reanimated';
+import { useSharedValue, useAnimatedStyle, withTiming, withSpring } from 'react-native-reanimated';
 import { isMobile } from "@/src/utils/formatting";
 import { useAuth } from '@/src/hooks/useAuth';
 
 const background = require("@assets/webbackground.png");
 
-const PrivacyPolicyScreen = ({ navigation }: any) => {
+const Login = ({ navigation }: any) => {
     const { width, height } = useWindowDimensions();
     const { loading, formValue, onChangeValue, onCheckValidation, isValid } = useAuth(navigation);
     const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
@@ -71,6 +71,28 @@ const PrivacyPolicyScreen = ({ navigation }: any) => {
       transform: [{ translateY: translateY.value }],
     };
   });
+  const [menuVisible, setMenuVisible] = useState(false); // State for hamburger menu visibility
+  const slideAnim = useState(new Animated.Value(250))[0]; // Animation value for sliding menu
+
+  // Detect if the screen width is small (mobile)
+  const isSmallScreen = width < 1000;
+
+  const toggleMenu = () => {
+    if (menuVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 250,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setMenuVisible(false));
+    } else {
+      setMenuVisible(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
   return (
           <ImageBackground
             resizeMode="cover"
@@ -133,23 +155,59 @@ const PrivacyPolicyScreen = ({ navigation }: any) => {
                   </Animated.View>
               </View>
 
-              <Animated.View style={[styles.footerContainer , { gap: 40},  animatedStyle]}>
-                  <View style={styles.edgeFooter}>
-                      <EdgeBlue width={93} height={21} />
-                      <View>
-                          <Text style={[styles.footer]}> © {new Date().getFullYear()} </Text>
-                      </View>
-                  </View>
 
+
+
+
+
+            <Animated.View style={[styles.footerContainer , { gap: 40},  animatedStyle]}>
+              {isSmallScreen ? (
+                <View style={{ position: 'absolute', bottom: 10, right: 20 }}>
+                  <TouchableOpacity onPress={toggleMenu}>
+                    <View style={{ width: 30, height: 3, backgroundColor: '#000', marginVertical: 5 }} />
+                    <View style={{ width: 30, height: 3, backgroundColor: '#000', marginVertical: 5 }} />
+                    <View style={{ width: 30, height: 3, backgroundColor: '#000', marginVertical: 5 }} />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={[styles.footerLinks, { flexDirection: 'row', gap: 20 }]}>
+                  <View style={styles.edgeFooter}>
+                    <EdgeBlue width={93} height={21} />
+                    <View>
+                      <Text style={[styles.footer]}> © {new Date().getFullYear()} </Text>
+                    </View>
+                  </View>
                   <Text style={styles.footer}>User Agreement</Text>
                   <Text style={styles.footer}>Privacy Policy</Text>
                   <Text style={styles.footer}>Community Guidelines</Text>
                   <Text style={styles.footer}>Cookie Policy</Text>
                   <Text style={styles.footer}>Send Feedback</Text>
                   <Text style={styles.footer}>Help Center</Text>
-              </Animated.View>
-
-              {/* Forgot password modal */}
+                </View>
+              )}
+              {menuVisible && isSmallScreen && (
+                <TouchableWithoutFeedback onPress={toggleMenu}>
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    width: '100%',
+                    backgroundColor: '#333',
+                    padding: 20,
+                    transform: [{ translateY: slideAnim }],
+                  }}
+                >
+                  <Text style={styles.footerLinkIsSmall}>User Agreement</Text>
+                  <Text style={styles.footerLinkIsSmall}>Privacy Policy</Text>
+                  <Text style={styles.footerLinkIsSmall}>Community Guidelines</Text>
+                  <Text style={styles.footerLinkIsSmall}>Cookie Policy</Text>
+                  <Text style={styles.footerLinkIsSmall}>Send Feedback</Text>
+                  <Text style={styles.footerLinkIsSmall}>Help Center</Text>
+                </Animated.View>
+                </TouchableWithoutFeedback>
+              )}
+            </Animated.View>
               <Modal transparent={true} visible={forgotPasswordModal}>
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                       <TouchableWithoutFeedback onPress={() => setForgotPasswordModal(false)}>
@@ -179,4 +237,4 @@ const PrivacyPolicyScreen = ({ navigation }: any) => {
     );
 };
 
-export default PrivacyPolicyScreen;
+export default Login;

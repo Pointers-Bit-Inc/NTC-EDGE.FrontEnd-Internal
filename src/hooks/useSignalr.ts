@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import {  useState, useRef, useCallback } from "react";
 import { Alert, Platform } from "react-native";
-import DeviceInfo from 'react-native-device-info';
-import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from "@microsoft/signalr";
+import { HubConnectionBuilder, HubConnection, HttpTransportType } from "@microsoft/signalr";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
 import { BASE_URL, API_VERSION } from '@/src/services/config';
 import useApi from '@/src/services/api';
@@ -33,7 +32,10 @@ const useSignalr = () => {
     signalr.current = new HubConnectionBuilder()
         .withUrl(`${BASE_URL}/chathub`, {
           transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
-          accessTokenFactory: () => user.sessionToken
+          accessTokenFactory: () => user.sessionToken,
+          headers: {
+            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt,
+          }
         })
         .withAutomaticReconnect()
         .build();

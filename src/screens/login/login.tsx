@@ -26,7 +26,7 @@ const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/loginbackground.png');
 const { height } = Dimensions.get('screen');
 const navigationBarHeight = height - Dimensions.get('window').height;
-const PrivacyPolicyScreen = ({ navigation }: any) => {
+const Login = ({ navigation }: any) => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
     const dimension = useWindowDimensions()
     const biometricsLogin = user.biometrics;
@@ -118,4 +118,4 @@ const PrivacyPolicyScreen = ({ navigation }: any) => {
         </ImageBackground>);
 };
 
-export default PrivacyPolicyScreen
+export default Login

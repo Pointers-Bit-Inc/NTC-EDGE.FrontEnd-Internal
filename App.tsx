@@ -10,18 +10,20 @@ import {ToastProvider} from "@atoms/toast/ToastProvider";
 import {Toast} from "@atoms/toast/Toast";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {Poppins_400Regular, Poppins_500Medium, Poppins_600SemiBold, useFonts} from "@expo-google-fonts/poppins";
+import { SplashScreen } from 'expo-router';
 export default function App() {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
   });
-  useEffect(() => {
-    if (fontsLoaded) {
 
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-
   return (
       <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={ store }>

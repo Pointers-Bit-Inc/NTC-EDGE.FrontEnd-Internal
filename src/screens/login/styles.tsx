@@ -22,6 +22,22 @@ export const styles = StyleSheet.create({
         backgroundColor : "#fff",
          //flexWrap: "wrap"
     },
+    footerContainerIsSmall: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        padding: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    },
+    footerLinks: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    footerIsSmall: {
+        fontSize: 14,
+        color: '#555',
+    },
+    footerLinkIsSmall:{ color: '#fff', fontSize: 18, marginBottom: 20 },
     footer: {
         lineHeight: 24,
         fontSize: 14,

@@ -9,9 +9,11 @@
     "orientation": "portrait",
     "icon": "./assets/splash.png",
     "userInterfaceStyle": "automatic",
+    "backgroundColor": "#031A6E",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover"
+      "resizeMode": "cover",
+      "backgroundColor": "#031A6E"
     },
     "updates": {
       "enabled": false
