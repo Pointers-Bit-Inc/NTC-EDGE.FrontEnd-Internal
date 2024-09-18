@@ -4,7 +4,7 @@ import {
   ImageBackground,
   Modal,
   ScrollView,
-  StatusBar,
+  StatusBar, StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
@@ -26,8 +26,35 @@ import { isMobile } from "@/src/utils/formatting";
 import { useAuth } from '@/src/hooks/useAuth';
 
 const background = require("@assets/webbackground.png");
-
-const PrivacyPolicyScreen = ({ navigation }: any) => {
+const style = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  heading: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 5,
+  },
+  paragraph: {
+    fontSize: 16,
+    marginBottom: 10,
+    lineHeight: 22,
+  },
+  listItem: {
+    fontSize: 16,
+    marginBottom: 5,
+    paddingLeft: 10,
+  },
+});
+const Login = ({ navigation }: any) => {
     const { width, height } = useWindowDimensions();
     const { loading, formValue, onChangeValue, onCheckValidation, isValid } = useAuth(navigation);
     const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
@@ -90,47 +117,38 @@ const PrivacyPolicyScreen = ({ navigation }: any) => {
                   <Animated.View style={[{ paddingBottom: 40 }, logoAnimatedStyle]}>
                       <EdgeBlue width={342} height={78} />
                   </Animated.View>
+                <ScrollView style={style.container}>
+                  <Text style={style.title}>Privacy Policy</Text>
 
-                  {/* Animated form */}
-                  <Animated.View style={[styles.formContainer, formAnimatedStyle]}>
-                      <Text style={[styles.formTitleText]}>Login</Text>
+                  <Text style={style.heading}>1. Introduction</Text>
+                  <Text style={style.paragraph}>
+                    We at NTC EDGE ("we," "us," or "our") are committed to
+                    protecting your privacy. This Privacy Policy explains how we collect,
+                    use, and safeguard your personal information when you use our mobile
+                    application.
+                  </Text>
 
-                      <LoginForm onChangeValue={onChangeValue} form={formValue} />
+                  <Text style={style.heading}>2. Information We Collect</Text>
+                  <Text style={style.paragraph}>
+                    When you use our app, we may collect personal information such as:
+                  </Text>
+                  <Text style={style.listItem}>- Name</Text>
+                  <Text style={style.listItem}>- Email address</Text>
+                  <Text style={style.listItem}>- Biometric data</Text>
+                  <Text style={style.listItem}>- Device information</Text>
 
-                      <View style={styles.bottomContainer}>
-                          <Button
-                            testID={"login-button"}
-                            style={[
-                                styles.loginButton,
-                                {
-                                    backgroundColor: loading ? button.info : isValid ? button.primary : button.default,
-                                },
-                            ]}
-                            disabled={loading}
-                            onPress={onCheckValidation}
-                          >
-                              {loading ? (
-                                <View style={{ paddingVertical: 10 }}>
-                                    <Ellipsis color="#fff" size={10} />
-                                </View>
-                              ) : (
-                                <View>
-                                    <Text style={styles.boldText} color={isValid ? "#fff" : text.disabled} size={18}>
-                                        Login
-                                    </Text>
-                                </View>
-                              )}
-                          </Button>
-                      </View>
+                  <Text style={style.heading}>3. How We Use Your Information</Text>
+                  <Text style={style.paragraph}>
+                    We use the collected information to authenticate users, improve user
+                    experience, and ensure security.
+                  </Text>
 
-                      {!isMobile && (
-                        <View style={[{ paddingTop: 15, justifyContent: "flex-start" }]}>
-                            <TouchableOpacity onPress={() => setForgotPasswordModal(true)}>
-                                <Text style={[{ fontSize: 18, fontFamily: Regular500, color: text.info }]}>Forgot your password?</Text>
-                            </TouchableOpacity>
-                        </View>
-                      )}
-                  </Animated.View>
+                  <Text style={style.heading}>4. Your Choices and Rights</Text>
+                  <Text style={style.paragraph}>
+                    You have the right to access, modify, or delete your personal
+                    information. You can also opt out of receiving certain notifications.
+                  </Text>
+                </ScrollView>
               </View>
 
               <Animated.View style={[styles.footerContainer , { gap: 40},  animatedStyle]}>
@@ -148,35 +166,8 @@ const PrivacyPolicyScreen = ({ navigation }: any) => {
                   <Text style={styles.footer}>Send Feedback</Text>
                   <Text style={styles.footer}>Help Center</Text>
               </Animated.View>
-
-              {/* Forgot password modal */}
-              <Modal transparent={true} visible={forgotPasswordModal}>
-                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                      <TouchableWithoutFeedback onPress={() => setForgotPasswordModal(false)}>
-                          <View
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                alignItems: "center",
-                                justifyContent: "flex-end",
-                                position: "absolute",
-                                backgroundColor: "rgba(0,0,0, 0.5)",
-                            }}
-                          />
-                      </TouchableWithoutFeedback>
-                      <View style={{ padding: 20, backgroundColor: "#fff", borderColor: "#E5E5E5", borderRadius: 10, width: width * 0.28, flex: 0.77 }}>
-                          <TouchableOpacity onPress={() => setForgotPasswordModal(false)}>
-                              <View style={{ paddingRight: 20, alignItems: "flex-end" }}>
-                                  <CloseIcon />
-                              </View>
-                          </TouchableOpacity>
-
-                          <ForgotPassword />
-                      </View>
-                  </View>
-              </Modal>
           </ImageBackground>
     );
 };
 
-export default PrivacyPolicyScreen;
+export default Login;

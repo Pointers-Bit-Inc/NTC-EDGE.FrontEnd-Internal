@@ -11,7 +11,7 @@
     "win": "yarn electron-webpack && yarn electron-builder --win",
     "web-build": "expo build:web && echo '/* /index.html 200' >./web-build/_redirects",
     "web-build2": "export NETLIFY_AUTH_TOKEN=LPojSmhezQZsTZPBEZmKhLMsEv-vLPECwfdL8oM_Ta4 && expo build:web && echo '/* /index.html 200' >./web-build/_redirects && netlify deploy --prod --dir ./web-build",
-    "web-deploy": "netlify deploy --prod --dir ./web-build",
+    "web-deploy": "netlify deploy --prod --dir ./dist",
     "web-deploy3": "export NETLIFY_AUTH_TOKEN=LPojSmhezQZsTZPBEZmKhLMsEv-vLPECwfdL8oM_Ta4 && npx expo export && echo '/* /index.html 200' >./dist/_redirects && netlify deploy --prod --dir ./dist",
     "web-deploy4": "set NETLIFY_AUTH_TOKEN=LPojSmhezQZsTZPBEZmKhLMsEv-vLPECwfdL8oM_Ta4 && npx expo export && echo /* /index.html 200 > ./dist/_redirects && netlify deploy --prod --dir ./dist",
     "eject": "expo eject",

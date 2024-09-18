@@ -53,6 +53,7 @@ import * as Linking from 'expo-linking';
 import EditApplication from "@pages/activities/application/editApplication";
 import useApplicationSignalr from "../hooks/useApplicationSignalr";
 import Api from '@/src/services/api';
+import PrivacyPolicy from '@screens/privacy-policy/privacy-policy';
 const prefix = Linking.createURL('/');
 type RootStackParamList = {
     App: undefined;
@@ -82,6 +83,7 @@ type RootStackParamList = {
     UserEdit: undefined;
     ChooseNewPassword: undefined;
     SignalR: undefined;
+    PrivacyPolicy: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -110,7 +112,8 @@ const linking = {
             NewChat: 'New-Chat',
             SearchActivities: 'Search-Activities',
             Dashboard: 'Dashboard',
-            ChooseNewPassword: 'Choose-New-Password/:token?'
+            ChooseNewPassword: 'Choose-New-Password/:token?',
+            PrivacyPolicy: 'privacy-policy'
         }
     },
 };
@@ -209,6 +212,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="App" component={ App }/>
                 <Stack.Screen name="AppIntro" component={ AppIntro }/>
                 <Stack.Screen name="Login" component={ Login }/>
+                <Stack.Screen name="PrivacyPolicy" component={ PrivacyPolicy }/>
                 <Stack.Screen name="ChooseNewPassword" component={ ChooseNewPassword }/>
                 <Stack.Screen name="ForgotPassword" component={ ForgotPassword }/>
                 <Stack.Screen name="ActivitiesScreen" component={ TabBar } options={
