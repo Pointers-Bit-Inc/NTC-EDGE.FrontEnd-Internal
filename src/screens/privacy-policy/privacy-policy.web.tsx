@@ -24,6 +24,7 @@ import CloseIcon from "@assets/svg/close";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from 'react-native-reanimated';
 import { isMobile } from "@/src/utils/formatting";
 import { useAuth } from '@/src/hooks/useAuth';
+import Footer from '@atoms/footer';
 
 const background = require("@assets/webbackground.png");
 const style = StyleSheet.create({
@@ -151,21 +152,7 @@ const Login = ({ navigation }: any) => {
                 </ScrollView>
               </View>
 
-              <Animated.View style={[styles.footerContainer , { gap: 40},  animatedStyle]}>
-                  <View style={styles.edgeFooter}>
-                      <EdgeBlue width={93} height={21} />
-                      <View>
-                          <Text style={[styles.footer]}> © {new Date().getFullYear()} </Text>
-                      </View>
-                  </View>
-
-                  <Text style={styles.footer}>User Agreement</Text>
-                  <Text style={styles.footer}>Privacy Policy</Text>
-                  <Text style={styles.footer}>Community Guidelines</Text>
-                  <Text style={styles.footer}>Cookie Policy</Text>
-                  <Text style={styles.footer}>Send Feedback</Text>
-                  <Text style={styles.footer}>Help Center</Text>
-              </Animated.View>
+              <Footer></Footer>
           </ImageBackground>
     );
 };
