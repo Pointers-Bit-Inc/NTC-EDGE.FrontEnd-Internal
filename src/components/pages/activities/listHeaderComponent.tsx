@@ -6,7 +6,7 @@ import {fontValue} from "@pages/activities/fontValue";
 function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { date: string; activity: any; readableHuman: string }[], containerHeight: number, onScroll: (event) => void, ref: React.MutableRefObject<undefined>, callbackfn: (item: any, index: number) => any }) {
     const ActivityMemo = useMemo(()=> {
         return props.pnApplications
-    }, [  props.pnApplications, props.callbackfn])
+    }, [  props.callbackfn])
     return <>
         {!!props.pnApplications?.length && props.containerHeight &&
             <View style={[styles1.pinnedActivityContainer, {
@@ -14,18 +14,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
                 paddingBottom: 20,
                 backgroundColor: "#fff"
             }]}>
-                {!!props.pnApplications?.length &&
-                    <View style={[styles1.pinnedgroup, {height: undefined}]}>
-                        <View style={[styles1.pinnedcontainer, {paddingVertical: fontValue(12)}]}>
-                            <Text style={[styles1.pinnedActivity, {fontFamily: Regular500,}]}>Pinned
-                                Activity</Text>
-                        </View>
-                    </View>}
-                {/* <TouchableOpacity onPress={()=>{
-            scrollViewRef?.current?.scrollTo({ y: yPos, animated: true });
-            }}>
-                <Text>test</Text>
-            </TouchableOpacity>*/}
+
                 {
                     <View style={{maxHeight: 300}}>
 
@@ -38,14 +27,13 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
                         </View>
                         <ScrollView showsVerticalScrollIndicator={false}
                                     nestedScrollEnabled={true}
-                            //onScroll={props.onScroll}
                                     scrollEventThrottle={16}
                                     ref={props.ref}
                         >
                             <FlatList
-                                showsVerticalScrollIndicator={false}
+                                showsVerticalScrollIndicator={true}
 
-                                data={ ActivityMemo}
+                                data={ ActivityMemo }
                                 renderItem={ ({item, index})=> props.callbackfn(item, index)}
                             />
 

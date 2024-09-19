@@ -32,10 +32,7 @@ const useSignalr = () => {
     signalr.current = new HubConnectionBuilder()
         .withUrl(`${BASE_URL}/chathub`, {
           transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
-          accessTokenFactory: () => user.sessionToken,
-          headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt,
-          }
+          accessTokenFactory: () => user.sessionToken
         })
         .withAutomaticReconnect()
         .build();
@@ -197,7 +194,10 @@ const useSignalr = () => {
   };
 
   const createChannel = useCallback((payload, callback = () => {}, config = {}) => {
-    api.post('/rooms/new', payload, config)
+
+    api.post('/rooms/new', payload, { ...config,  headers: {
+        'Content-Type': 'multipart/form-data',
+      } })
     .then(res => {
       return callback(null, res.data);
     })
@@ -262,7 +262,10 @@ const useSignalr = () => {
   }, []);
 
   const sendMessage = useCallback((payload, callback = () => {}, config = {}) => {
-    api.post('/messages', payload, config)
+
+    api.post('/messages', payload, { ...config,  headers: {
+        'Content-Type': 'multipart/form-data',
+      } })
     .then(res => {
       return callback(null, res.data);
     })

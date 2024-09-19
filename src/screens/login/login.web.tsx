@@ -33,12 +33,9 @@ const Login = ({ navigation }: any) => {
     const { loading, formValue, onChangeValue, onCheckValidation, isValid } = useAuth(navigation);
     const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
 
-    // Shared values for animations
     const logoScale = useSharedValue(0);
     const formOpacity = useSharedValue(0);
     const formTranslateY = useSharedValue(50);
-
-    // Apply animations on component mount
     useEffect(() => {
         logoScale.value = withTiming(1, { duration: 800 });
         formOpacity.value = withTiming(1, { duration: 1000 });
@@ -67,11 +64,7 @@ const Login = ({ navigation }: any) => {
       mass: 1,
     });
   }, []);
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }],
-    };
-  });
+
   return (
       <View style={styles.container}>
           <ImageBackground
