@@ -73,7 +73,7 @@ export function useAuth(navigation) {
     });
     const onLogin = async (data) => {
         setLoading(true);
-        const api = useApi('',  formValue?.CreatedAt?.value.value);
+
         api.post('/internal/signin' , {
               email: data.email,
               phone: data.phone,
@@ -211,6 +211,7 @@ export function useAuth(navigation) {
 
         api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value ?? "ntc-region10";
 
+        dispatch(setCreatedAt( formValue?.CreatedAt?.value.value ?? "ntc-region10" ));
         if (!formValue.email.isValid) {
             return onChangeValue('email' , formValue.email.value);
         }
