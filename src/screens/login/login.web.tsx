@@ -136,8 +136,6 @@ const Login = ({ navigation }: any) => {
               </View>
 
               <Footer></Footer>
-
-              {/* Forgot password modal */}
               <Modal transparent={true} visible={forgotPasswordModal}>
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                       <TouchableWithoutFeedback onPress={() => setForgotPasswordModal(false)}>
