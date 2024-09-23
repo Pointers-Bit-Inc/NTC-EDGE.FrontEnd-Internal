@@ -326,6 +326,7 @@ const NewChat = ({
     } else {
       if (participants) {
         setNextLoading(true);
+
         const formData = new FormData();
         formData.append('name', groupName);
         formData.append('message', message);

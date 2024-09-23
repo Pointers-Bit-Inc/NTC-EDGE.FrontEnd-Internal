@@ -15,8 +15,6 @@ const api = (token:string, _createdBy?: string) => {
   const state = store.getState();
 
   const createdAtStore = state?.user?.createdAt ?? "";
-  console.log(createdBy, "createdBy")
-  console.log(createdAtStore, "createdAtStore")
   if(!instance ){
     instance = Axios.create({
       baseURL: BASE_URL,

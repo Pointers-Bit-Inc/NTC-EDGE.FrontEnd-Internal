@@ -185,6 +185,7 @@ const Login = ({ navigation }:any) => {
     }
   };
   const onCheckValidation = () => {
+
     if (!formValue.email.isValid) {
       return onChangeValue('email', formValue.email.value);
     } if (!formValue.password.isValid) {

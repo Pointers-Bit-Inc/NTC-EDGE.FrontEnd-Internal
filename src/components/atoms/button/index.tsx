@@ -1,12 +1,14 @@
 import React, { ReactNode, FC } from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import lodash from 'lodash'; 
+import { StyleSheet } from 'react-native';
+import lodash from 'lodash';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   default: {
     padding: 15,
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 interface Props {
@@ -17,21 +19,40 @@ interface Props {
 }
 
 const Button: FC<Props> = ({
-  children,
-  onPress = () => {},
-  style,
-  ...otherProps
-}) => {
+                             children,
+                             onPress = () => {},
+                             style,
+                             ...otherProps
+                           }) => {
   const debouncedOnPress = lodash.debounce(onPress, 300, { leading: true, trailing: false });
-  
+
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const handlePressIn = () => {
+    scale.value = withTiming(0.95, { duration: 100 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withTiming(1, { duration: 100 });
+  };
+
   return (
-    <TouchableOpacity
-      style={[styles.default, style]}
+    <TouchableWithoutFeedback
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       onPress={debouncedOnPress}
       {...otherProps}
     >
-      {children}
-    </TouchableOpacity>
+      <Animated.View style={[styles.default, style, animatedStyle]}>
+        {children}
+      </Animated.View>
+    </TouchableWithoutFeedback>
   );
 };
 

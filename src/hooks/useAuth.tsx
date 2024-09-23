@@ -73,7 +73,7 @@ export function useAuth(navigation) {
     });
     const onLogin = async (data) => {
         setLoading(true);
-        const api = useApi('',  formValue?.CreatedAt?.value.value);
+
         api.post('/internal/signin' , {
               email: data.email,
               phone: data.phone,
@@ -82,7 +82,11 @@ export function useAuth(navigation) {
         )
           .then(res => {
               setLoading(false);
-              dispatch(setUser(res.data));
+              dispatch(
+                setUser({
+                    ...res.data,
+                    createdAt: data.createdAt
+                }));
 
               storeCredentials(res.data.email, data.password);
               dispatch(setCreatedAt(data.createdAt));
@@ -210,7 +214,7 @@ export function useAuth(navigation) {
     const onCheckValidation = () => {
 
         api.defaults.headers.common['CreatedAt'] = formValue?.CreatedAt?.value.value ?? "ntc-region10";
-
+        dispatch(setCreatedAt( formValue?.CreatedAt?.value.value ?? "ntc-region10" ));
         if (!formValue.email.isValid) {
             return onChangeValue('email' , formValue.email.value);
         }

@@ -131,55 +131,66 @@ const PendingBubble:FC<Props> = ({
 }) => {
   const [progress, setProgress] = useState(0);
 
-  useEffect(async()=>{
-    const formData=new FormData();
-    const controller=new AbortController();
-    const config={
-      signal:controller.signal,
-      onUploadProgress({loaded,total}:any){
-        const percentComplete=loaded/total;
-        setProgress(percentComplete);
-      },
-    };
-    if(messageType==='file'){
-      let file:any={
-        name:attachment?.name,
-        type:attachment?.mimeType,
-        uri:attachment?.uri,
-      };
-      
-      if (Platform.OS === 'web') {
-        await fetch(attachment?.uri).then(res=>{
-          return res?.blob()
-        }).then(blob=>{
-          const fd=new FormData();
+  useEffect(() => {
+    const controller = new AbortController();
+    const sendMessage = async () => {
+      const formData = new FormData();
 
-          var mime = attachment?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
-          var attachmentMime = mime[1]?.split("/")?.[1]
-          if (mime && mime.length) {
-            file=new File([blob],attachment?.name +  (attachmentMime.length < 5 ? "." + attachmentMime: '') );
+      const config = {
+        signal: controller.signal,
+        onUploadProgress({ loaded, total }: any) {
+          const percentComplete = loaded / total;
+          setProgress(percentComplete);
+        },
+      };
+
+      if (messageType === 'file') {
+        let file: any = {
+          name: attachment?.name,
+          type: attachment?.mimeType,
+          uri: attachment?.uri,
+        };
+
+        if (Platform.OS === 'web') {
+          try {
+            const response = await fetch(attachment?.uri);
+            const blob = await response.blob();
+
+            const mime = attachment?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+            const attachmentMime = mime?.[1]?.split("/")?.[1];
+            if (mime && mime.length) {
+              file = new File([blob], attachment?.name + (attachmentMime.length < 5 ? "." + attachmentMime : ''));
+            }
+          } catch (error) {
+            console.error('Error fetching and converting file:', error);
           }
-        })
+        }
+
+        formData.append('file', file);
       }
 
-      formData.append('file',file);
-    }
+      formData.append('message', message);
 
-    formData.append('message',message);
+      if (!channelId) {
+        formData.append('name', groupName);
+        formData.append('participants', JSON.stringify(participants));
+      } else {
+        formData.append('roomId', channelId);
+      }
 
-    if(!channelId){
-      formData.append('name',groupName);
-      formData.append('participants',JSON.stringify(participants));
-    } else{
-      formData.append('roomId',channelId);
-    }
+      // Call your send message function
+      onSendMessage(formData, messageId, config, !channelId);
+    };
 
-    onSendMessage(formData,messageId,config,!channelId);
+    // Call the async function
+    sendMessage();
 
-    return ()=>{
+    // Cleanup function to abort the request if the component unmounts or messageId changes
+    return () => {
       controller.abort();
-    }
+    };
   }, [messageId]);
+
 
   return (
     <TouchableOpacity

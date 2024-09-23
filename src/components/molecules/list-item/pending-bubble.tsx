@@ -130,54 +130,59 @@ const PendingBubble:FC<Props> = ({
 }) => {
   const [progress, setProgress] = useState(0);
 
-  useEffect(async()=>{
-    const formData=new FormData();
-    const controller=new AbortController();
-    const config={
-      signal:controller.signal,
-      onUploadProgress({loaded,total}:any){
-        const percentComplete=loaded/total;
-        setProgress(percentComplete);
-      },
-    };
-    if(messageType==='file'){
-      let file:any={
-        name:attachment?.name,
-        type:attachment?.mimeType,
-        uri:attachment?.uri,
-      };
-      
-      if (Platform.OS === 'web') {
-        await fetch(attachment?.uri).then(res=>{
-          return res?.blob()
-        }).then(blob=>{
-          const fd=new FormData();
+  useEffect(() => {
+    const formData = new FormData();
+    const controller = new AbortController();
 
-          var mime = attachment?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
-          var attachmentMime = mime[1]?.split("/")?.[1]
-          if (mime && mime.length) {
-            file=new File([blob],attachment?.name +  (attachmentMime.length < 5 ? "." + attachmentMime: '') );
-          }
-        })
+    const uploadFile = async () => {
+      const config = {
+        signal: controller.signal,
+        onUploadProgress({ loaded, total }: any) {
+          const percentComplete = loaded / total;
+          setProgress(percentComplete);
+        },
+      };
+
+      if (messageType === 'file') {
+        let file: any = {
+          name: attachment?.name,
+          type: attachment?.mimeType,
+          uri: attachment?.uri,
+        };
+
+        if (Platform.OS === 'web') {
+          await fetch(attachment?.uri)
+            .then(res => res.blob())
+            .then(blob => {
+              const fd = new FormData();
+              const mime = attachment?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+              const attachmentMime = mime?.[1]?.split("/")?.[1];
+              if (mime && mime.length) {
+                file = new File([blob], attachment?.name + (attachmentMime.length < 5 ? "." + attachmentMime : ''));
+              }
+            });
+        }
+
+        formData.append('file', file);
       }
 
-      formData.append('file',file);
-    }
+      formData.append('message', message);
 
-    formData.append('message',message);
+      if (!channelId) {
+        formData.append('name', groupName);
+        formData.append('participants', JSON.stringify(participants));
+      } else {
+        formData.append('roomId', channelId);
+      }
 
-    if(!channelId){
-      formData.append('name',groupName);
-      formData.append('participants',JSON.stringify(participants));
-    } else{
-      formData.append('roomId',channelId);
-    }
+      onSendMessage(formData, messageId, config, !channelId);
+    };
 
-    onSendMessage(formData,messageId,config,!channelId);
+    uploadFile();
 
-    return ()=>{
+    return () => {
       controller.abort();
-    }
+    };
   }, [messageId]);
 
   return (
