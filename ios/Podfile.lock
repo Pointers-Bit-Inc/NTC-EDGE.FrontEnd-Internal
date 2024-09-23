@@ -1656,6 +1656,7 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - OneSignalXCFramework (< 4.0, >= 3.0)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -2049,6 +2050,6 @@ SPEC CHECKSUMS:
   Yoga: 2246eea72aaf1b816a68a35e6e4b74563653ae09
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: 477012f0e2aedbbbb3a5a92870e8e65241c46704
+PODFILE CHECKSUM: 2c1cba72f6cbe2889e04d2d9849c37a43da8ed40
 
 COCOAPODS: 1.15.2
