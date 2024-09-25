@@ -47,7 +47,7 @@ const Types: FC<Props> = ({
   return (
     <FlatList
       style={styles.container}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
       data={elements}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${index}`}

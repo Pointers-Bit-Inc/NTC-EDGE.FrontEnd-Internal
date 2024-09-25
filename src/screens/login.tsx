@@ -212,7 +212,7 @@ const Login = ({ navigation }:any) => {
 
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
         >
 
           <Image

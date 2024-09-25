@@ -57,7 +57,7 @@ import {
                                 Platform?.isPad || isTablet()))) && dimensions?.width > 768 &&
                     <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <ScrollView showsVerticalScrollIndicator={true}>
 
                                 <View>
 

@@ -222,7 +222,7 @@ const Registration = ({ navigation }:any) => {
       >
       <ScrollView
         style={{ paddingHorizontal: 20 }}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
       >
         <Text size={24} weight={'500'} style={styles.title}>
           Sign up

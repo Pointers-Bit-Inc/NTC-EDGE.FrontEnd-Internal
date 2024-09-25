@@ -459,7 +459,7 @@ const ServicesForm: FC<Props> = ({
 
     return (
         <SectionList
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             style={styles.container}
             sections={form}
             keyExtractor={(item, index) => `${index}`}

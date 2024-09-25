@@ -506,7 +506,7 @@ const NewChat = ({
         >
           <FlatList
             data={contacts}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             refreshControl={
               <RefreshControl
                 tintColor={primaryColor} // ios

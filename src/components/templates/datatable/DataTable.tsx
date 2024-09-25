@@ -1562,7 +1562,7 @@ const DataTable = (props) => {
                                 </View>
                             </View>
 
-                            <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+                            <ScrollView showsVerticalScrollIndicator={true} style={{flex: 1}}>
                                 <ProfileData data={data}/>
 
 
@@ -1609,7 +1609,7 @@ const DataTable = (props) => {
                             </View>
 
 
-                            <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+                            <ScrollView showsVerticalScrollIndicator={true} style={{flex: 1}}>
                                 <FormField
                                     formElements={userProfileForm}
                                     onChange={onUpdateForm}

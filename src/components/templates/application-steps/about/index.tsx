@@ -59,7 +59,7 @@ const About: FC<Props> = ({
   return (
     <FlatList
       style={styles.flatlist}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
       data={[0, 1]}
       renderItem={({item}) => {
         if (item === 0) {
@@ -77,7 +77,7 @@ const About: FC<Props> = ({
           return (
               <View style={{...Platform.select({web: {top: -20}})}}>
                   <FlatList
-                      showsVerticalScrollIndicator={false}
+                      showsVerticalScrollIndicator={true}
                       style={styles.flatlistContainer}
 
                       data={whoMayAvail}

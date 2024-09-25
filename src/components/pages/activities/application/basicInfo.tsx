@@ -598,7 +598,7 @@ const BasicInfo = (_props: any) => {
                         onRefresh={onRefresh}
                     />
                 }
-                showsVerticalScrollIndicator={false}
+                showsVerticalScrollIndicator={true}
                 ref={scrollRef}
                 style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 

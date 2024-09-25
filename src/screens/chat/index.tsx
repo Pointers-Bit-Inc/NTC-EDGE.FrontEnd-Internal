@@ -425,7 +425,7 @@ const onClose = (item:IMeetings, leave = false) => {
         ) : (
           <FlatList
             data={channelList}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             refreshControl={
               <RefreshControl
                 tintColor={primaryColor} // ios

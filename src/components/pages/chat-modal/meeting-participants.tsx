@@ -322,7 +322,7 @@ const MeetingParticipants = ({
       </View>
       <FlatList
         data={contacts}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios

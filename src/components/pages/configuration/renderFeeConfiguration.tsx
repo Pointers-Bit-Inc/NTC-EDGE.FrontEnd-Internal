@@ -180,7 +180,7 @@ const RenderFeeConfiguration = (props) => {
     return (
         <FlatList
             nestedScrollEnabled={true}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             style={styles.group3}
             data={Object.entries(flatten(_.omit(service, props.exclude))).filter(e => {
                 return fuzzysearch(props.search, transformText(e?.[0]))

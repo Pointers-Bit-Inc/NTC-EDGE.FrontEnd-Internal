@@ -416,7 +416,7 @@ const ActivitiesPage = (props) => {
                                                                    key={index}
                                                                    nestedScrollEnabled={true}
                                                                    listKey={(item, index) => `_key${index.toString()}`}
-                                                                   showsVerticalScrollIndicator={false}
+                                                                   showsVerticalScrollIndicator={true}
                                                                    data={item?.activity}
                                                                    renderItem={(act, i) => {
                                                                        return getRenderItem(act, i, index)
@@ -516,7 +516,7 @@ const ActivitiesPage = (props) => {
             }
 
             showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
             ListHeaderComponent={listHeaderComponent()}
@@ -548,7 +548,7 @@ const ActivitiesPage = (props) => {
             }
 
             showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyAssigned}
             data={pnApplications}
@@ -581,7 +581,7 @@ const ActivitiesPage = (props) => {
                 />
             }
             //estimatedItemSize={300}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             showsHorizontalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyUnassigned}

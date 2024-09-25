@@ -512,7 +512,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
       return (
         <FlatList
           data={contacts}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           refreshControl={
             <RefreshControl
               tintColor={primaryColor} // ios

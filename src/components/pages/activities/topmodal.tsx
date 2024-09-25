@@ -171,7 +171,7 @@ function TopModal(props: any) {
 
 
                         </View> }
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <ScrollView showsVerticalScrollIndicator={true}>
                             <View style={ !(isMobile && !(Platform?.isPad || isTablet())) ? {
                                 width : filterRect?.width ,
                                 left : filterRect?.left || (drawerLayout?.width || 0),

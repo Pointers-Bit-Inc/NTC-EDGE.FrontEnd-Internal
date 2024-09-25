@@ -23,7 +23,7 @@
       "jsEngine": "jsc",
       "supportsTablet": true,
       "usesIcloudStorage": true,
-      "bundleIdentifier": "com.ntcedge.portal",
+      "bundleIdentifier": "portalapp.ntcedge.com",
       "buildNumber": "1.1.31",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera. This lets you take pictures and recording videos.",

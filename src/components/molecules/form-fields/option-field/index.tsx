@@ -56,7 +56,7 @@ const OptionField: FC<Props> = ({
   return (
     <FlatList
       style={styles.container}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
       data={items}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${index}`}

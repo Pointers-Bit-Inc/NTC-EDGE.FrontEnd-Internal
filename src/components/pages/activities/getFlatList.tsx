@@ -33,7 +33,7 @@ const GetFlatList = forwardRef(
                 onRefresh={props.onRefresh}
             />
         }
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         nestedScrollEnabled={true}
         ListEmptyComponent={props.listEmptyComponent}
         ListHeaderComponent={props.header ? props.element : null}

@@ -25,7 +25,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
 
 
                         </View>
-                        <ScrollView showsVerticalScrollIndicator={false}
+                        <ScrollView showsVerticalScrollIndicator={true}
                                     nestedScrollEnabled={true}
                                     scrollEventThrottle={16}
                                     ref={props.ref}
@@ -45,7 +45,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
 
 
 
-             {/*   <ScrollView showsVerticalScrollIndicator={false}
+             {/*   <ScrollView showsVerticalScrollIndicator={true}
                             nestedScrollEnabled={true}
                             onScroll={props.onScroll}
                             scrollEventThrottle={16}

@@ -618,7 +618,7 @@ function Chat(props: {
             },
             ...channelList
           ]}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           refreshControl={
             <RefreshControl
               tintColor={primaryColor} // ios

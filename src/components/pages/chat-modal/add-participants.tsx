@@ -408,7 +408,7 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
     return (
       <FlatList
         data={contacts}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios
