@@ -660,7 +660,7 @@ export const generateForm = (savedApplication: any, form: any) => {
                             });
                         }
                         else {
-                            let isValid = validate ? validate(childItem) : validateText(childItem);
+                            let isValid = typeof validate === 'function' ? validate(childItem) : validateText(childItem);
                             Form[form_parentIndex].data[form_childIndex] = {
                                 ...formPath,
                                 value: childItem,
