@@ -515,7 +515,7 @@ const ActivitiesPage = (props) => {
                 />
             }
 
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={true}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
@@ -547,7 +547,7 @@ const ActivitiesPage = (props) => {
                 />
             }
 
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={true}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyAssigned}
@@ -582,7 +582,7 @@ const ActivitiesPage = (props) => {
             }
             //estimatedItemSize={300}
             showsVerticalScrollIndicator={true}
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyUnassigned}
             data={notPnApplications}
@@ -840,7 +840,7 @@ const ActivitiesPage = (props) => {
                                             data={meetingList}
                                             bounces={false}
                                             horizontal
-                                            showsHorizontalScrollIndicator={true}
+                                            showsHorizontalScrollIndicator={false}
                                             snapToInterval={sizeComponent?.width || dimensions?.width}
                                             decelerationRate={0}
                                             keyExtractor={(item: any) => item._id}
@@ -884,7 +884,7 @@ const ActivitiesPage = (props) => {
                                         </View>
                                         <FlatList
                                             contentContainerStyle={{padding: 5}}
-                                            showsHorizontalScrollIndicator={true}
+                                            showsHorizontalScrollIndicator={false}
                                             horizontal={true}
 
                                             data={statusCode.filter((item: any) => {
@@ -908,7 +908,7 @@ const ActivitiesPage = (props) => {
                                             </View>
                                     <FlatList
                                         contentContainerStyle={{padding: 5}}
-                                        showsHorizontalScrollIndicator={true}
+                                        showsHorizontalScrollIndicator={false}
                                         horizontal={true}
                                         data={filterCode.filter((item: any) => {
                                             return getRole(user , item?.isShow) && item.checked

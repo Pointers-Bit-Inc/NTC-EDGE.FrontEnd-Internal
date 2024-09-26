@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         color: '#555',
     },
-    footerLinkIsSmall:{ color: '#fff', fontSize: 18, marginBottom: 20 },
+    footerLinkIsSmall:{ fontFamily: Regular,  color: '#fff', fontSize: 18, marginBottom: 20 },
     footer: {
         lineHeight: 24,
         fontSize: 14,

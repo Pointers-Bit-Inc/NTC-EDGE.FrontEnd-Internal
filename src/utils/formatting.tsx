@@ -369,7 +369,7 @@ export const generateForm = (savedApplication: any, form: any) => {
                                                             });
                                                         }
                                                         else {
-                                                            let isValid = validate ? validate(specification) : validateText(specification);
+                                                            let isValid = typeof validate === 'function' ? validate(specification) : validateText(specification);
                                                             Form[form_parentIndex].data[childIndex][form_grandchildIndex].data[ggrandchildIndex][form_gggrandchildIndex].items[form_ggggrandchildIndex].specification = {
                                                                 ...formPath,
                                                                 value: specification,
@@ -505,7 +505,7 @@ export const generateForm = (savedApplication: any, form: any) => {
                                                         });
                                                     }
                                                     else {
-                                                        let isValid = validate ? validate(specification) : validateText(specification);
+                                                        let isValid = typeof validate === 'function' ? validate(specification) : validateText(specification);
                                                         Form[form_parentIndex].data[childIndex][grandchildIndex].data[form_ggrandchildIndex].items[form_gggrandchildIndex].specification = {
                                                             ...formPath,
                                                             value: specification,
@@ -645,7 +645,7 @@ export const generateForm = (savedApplication: any, form: any) => {
                                             });
                                         }
                                         else {
-                                            let isValid = validate ? validate(specification) : validateText(specification);
+                                            let isValid = typeof validate === 'function' ? validate(specification) : validateText(specification);
                                             Form[form_parentIndex].data[form_childIndex].items[form_grandchildIndex].specification = {
                                                 ...formPath,
                                                 value: specification,
@@ -669,7 +669,7 @@ export const generateForm = (savedApplication: any, form: any) => {
                             });
                         }
                         else {
-                            let isValid = validate ? validate(childItem) : validateText(childItem);
+                            let isValid = typeof validate === 'function' ? validate(childItem) : validateText(childItem);
                             Form[form_parentIndex].data[form_childIndex] = {
                                 ...formPath,
                                 value: childItem,
