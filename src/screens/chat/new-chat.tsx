@@ -215,7 +215,7 @@ const NewChat = ({ navigation }:any) => {
         )}
         keyExtractor={(item) => item._id}
         ListFooterComponent={() => <View style={{ width: 20 }} />}
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={true}
       />
       <View style={styles.contactTitle}>
         <ArrowDownIcon

@@ -264,7 +264,7 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
       >
       <ScrollView
         style={{ paddingHorizontal: 20 }}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
       >
         <View style={{ marginTop: 35 }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>

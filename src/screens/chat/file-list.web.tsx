@@ -453,7 +453,7 @@ const FileList = () => {
             data={messages}
             renderItem={_renderItem}
             keyExtractor={(item:any) => item._id}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             ListEmptyComponent={emptyComponent}
             onEndReached={() => fetchMoreMessages()}
             onEndReachedThreshold={0.5}

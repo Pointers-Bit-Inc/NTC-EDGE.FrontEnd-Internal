@@ -146,7 +146,7 @@ const ResetPassword = ({ navigation, route }: any) => {
         >
           <ScrollView
               style={styles.scrollview}
-              showsVerticalScrollIndicator={false}
+              showsVerticalScrollIndicator={true}
           >
             <PasswordForm onChangeValue={onChangeText} form={formValue} />
           </ScrollView>

@@ -614,7 +614,7 @@ const Preview: FC<Props> = ({
         })
       }
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={true}>
         <View style={styles.reviewContainer}>
           {
             !pageOnly &&

@@ -182,7 +182,7 @@ export function SearchActivity(props: { navigation: any, setApplications: any, i
                 }
                 <View style={{flex: 1}}>
                     {props.value.length < 1 ?
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <ScrollView showsVerticalScrollIndicator={true}>
                             {CallBackFn}
                         </ScrollView>
                         : <>
@@ -195,7 +195,7 @@ export function SearchActivity(props: { navigation: any, setApplications: any, i
                                 </View>
                             }
                             <FlatList
-                                showsVerticalScrollIndicator={false}
+                                showsVerticalScrollIndicator={true}
                                 style={{flex: 1}}
                                 data={props.applications}
                                 keyExtractor={(item, index) => index.toString()}

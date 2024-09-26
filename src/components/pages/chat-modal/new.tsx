@@ -415,7 +415,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         keyExtractor={(item) => item._id}
         ListFooterComponent={() => <View style={{ width: 20 }} />}
         ItemSeparatorComponent={() => <View style={{ width: RFValue(5) }} />}
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={true}
       />
       <View style={[styles.contactTitle, !!lodash.size(participants) && { paddingTop: 15 }]}>
         <ArrowDownIcon
@@ -512,7 +512,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
       return (
         <FlatList
           data={contacts}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           refreshControl={
             <RefreshControl
               tintColor={primaryColor} // ios

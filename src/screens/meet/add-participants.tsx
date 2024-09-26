@@ -239,7 +239,7 @@ const AddParticipants = ({ navigation }:any) => {
       <FlatList
         style={[styles.outlineBorder, !lodash.size(selectedParticipants) && { borderBottomWidth: 0 }]}
         horizontal
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={true}
         data={selectedParticipants}
         renderItem={({ item }) => (
           <SelectedContact
@@ -357,7 +357,7 @@ const AddParticipants = ({ navigation }:any) => {
       </View>
       <FlatList
         data={contacts}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios

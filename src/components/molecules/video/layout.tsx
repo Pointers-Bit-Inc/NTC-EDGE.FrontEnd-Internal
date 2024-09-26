@@ -623,7 +623,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                     data={peerList}
                     bounces={false}
                     horizontal
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={true}
                     renderItem={renderItem}
                     ItemSeparatorComponent={separator}
                     ListHeaderComponent={separator}

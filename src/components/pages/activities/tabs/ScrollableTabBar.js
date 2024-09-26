@@ -177,8 +177,8 @@ const ScrollableTabBar = createReactClass({
           ] }
           ref={(scrollView) => { this._scrollView = scrollView; }}
           horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={true}
+          showsVerticalScrollIndicator={true}
           directionalLockEnabled={true}
           bounces={false}
           scrollsToTop={false}

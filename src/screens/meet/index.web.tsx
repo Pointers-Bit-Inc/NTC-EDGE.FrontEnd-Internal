@@ -508,7 +508,7 @@ const Meet = ({ navigation }) => {
                             onRefresh={onRequestData}
                         />
                       }
-                      showsVerticalScrollIndicator={false}
+                      showsVerticalScrollIndicator={true}
                       renderItem={renderItem}
                       keyExtractor={(item:any)=>item._id}
                       ListFooterComponent={ListFooterComponent}

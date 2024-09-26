@@ -201,7 +201,7 @@ const MeetingParticipants = ({
       <FlatList
         style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={true}
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
@@ -322,7 +322,7 @@ const MeetingParticipants = ({
       </View>
       <FlatList
         data={contacts}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios

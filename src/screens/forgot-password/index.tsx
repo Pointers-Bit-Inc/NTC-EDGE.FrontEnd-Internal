@@ -82,7 +82,7 @@ const ForgotPassword = ({ navigation }:any) => {
             >
                 <ScrollView
                     style={styles.scrollview}
-                    showsVerticalScrollIndicator={false}
+                    showsVerticalScrollIndicator={true}
                 >
                     <Text
                         size={22}

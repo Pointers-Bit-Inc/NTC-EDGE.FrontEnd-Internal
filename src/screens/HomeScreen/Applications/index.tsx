@@ -21,7 +21,7 @@ const Applications: FC<Props> = ({ navigation }) => {
     return (
         <ScrollView
             style={[styles.container]}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
         >
             {
                 Array(10).fill(0).map((_, i) =>

@@ -60,7 +60,7 @@ export default memo(ProfileData)
                         <Text style={styles.header}>Basic Information</Text>
 
                         <FlatList
-                            showsVerticalScrollIndicator={false}
+                            showsVerticalScrollIndicator={true}
                             style={styles.group3}
                             data={Object.keys(_.omit(data, ['_id', 'role', 'profilePicture', 'createdAt'] ))}
                             renderItem={(a) => {

@@ -488,7 +488,7 @@ const UserProfileScreen=({navigation}:any)=>{
             <ScrollView ref={scrollView}
                         keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"}
                         style={styles.scrollview}
-                        showsVerticalScrollIndicator={false}>
+                        showsVerticalScrollIndicator={true}>
                 <View style={Platform.select({
                     web: { flexDirection: "row"},
                     native: { flexDirection: "column"}

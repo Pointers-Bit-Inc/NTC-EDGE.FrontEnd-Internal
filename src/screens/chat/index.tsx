@@ -377,7 +377,7 @@ const onClose = (item:IMeetings, leave = false) => {
                 data={meetingList}
                 bounces={false}
                 horizontal
-                showsHorizontalScrollIndicator={false}
+                showsHorizontalScrollIndicator={true}
                 snapToInterval={width}
                 decelerationRate={0}
                 keyExtractor={(item: any) => item._id}
@@ -425,7 +425,7 @@ const onClose = (item:IMeetings, leave = false) => {
         ) : (
           <FlatList
             data={channelList}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             refreshControl={
               <RefreshControl
                 tintColor={primaryColor} // ios
