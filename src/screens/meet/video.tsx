@@ -75,35 +75,46 @@ const VideoCall = ({ navigation, route }) => {
   useEffect(() => {
     let unmounted = false;
 
-    requestCameraAndAudioPermission((err, result) => {
-      if (err) {
-        Alert.alert(
-          "Unable to access camera",
-          "Please allow camera access from device settings.",
-        );
-        navigation.goBack();
-      } else {
-        joinMeeting({ meetingId: meeting._id, muted: options?.isMute }, (err:any, result:any) => {
-          if (!unmounted) {
-            if (result) {
-              setLoading(false);
-              if (result) {
-                dispatch(updateMeetingParticipants(result.meeting));
-                setAgora(result?.agora);
-              }
-            } else {
-              setLoading(false);
-              Alert.alert('Something went wrong.');
-            }
+    const initializeMeeting = async () => {
+      try {
+        const permissionGranted = await requestCameraAndAudioPermission();
+
+        if (!permissionGranted) {
+          Alert.alert(
+            "Unable to access camera",
+            "Please allow camera access from device settings."
+          );
+          navigation.goBack();
+          return;
+        }
+
+        const meetingResult = await joinMeeting({ meetingId: meeting._id, muted: options?.isMute });
+
+        if (!unmounted) {
+          if (meetingResult) {
+            setLoading(false);
+            dispatch(updateMeetingParticipants(meetingResult.meeting));
+            setAgora(meetingResult?.agora);
+          } else {
+            setLoading(false);
+            Alert.alert('Something went wrong.');
           }
-        });
+        }
+      } catch (error) {
+        if (!unmounted) {
+          setLoading(false);
+          Alert.alert('An unexpected error occurred.');
+          console.error('Meeting initialization error:', error);
+        }
       }
-    });
-  
+    };
+
+    initializeMeeting();
+
     return () => {
       unmounted = true;
-    }
-  }, []);
+    };
+  }, [meeting._id, options?.isMute, navigation, dispatch]);
 
   useEffect(() => {
     let interval:any = null;

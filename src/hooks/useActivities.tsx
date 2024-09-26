@@ -537,7 +537,7 @@ function useActivities(props) {
             url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
             pinned: 1
         }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
-        console.log("pinnedPage", _pinnedPage, "pinned", _page, "else")
+
         await axios.all(endpoint.map((ep) => axios.get(ep.url, {
             ...{cancelToken: cancelToken.current?.token},
             ...config,

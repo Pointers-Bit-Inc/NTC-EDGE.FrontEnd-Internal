@@ -20,6 +20,7 @@ import {
 } from '@/src/reducers/channel/actions';
 import {Audio} from "expo-av";
 import * as React from "react";
+import axios from "axios";
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -93,8 +94,6 @@ const useSignalr = () => {
               del ? require('@assets/sound/delete.mp3') : require('@assets/sound/notification_sound.mp3'),
             {shouldPlay: true}
         );
-
-        console.log(status, "status")
         playbackInstance.current = sound;
       } catch (e) {
         console.log(e)
@@ -252,13 +251,34 @@ const useSignalr = () => {
   }, []);
 
   const getParticipantList = useCallback((payload, callback = () => {}, config = {}) => {
-    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, config)
-    .then(res => {
-      return callback(null, res.data);
-    })
-    .catch(err => {
-      return callback(err);
+
+    const api1 = axios.get(BASE_URL + `/users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, {
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
+      }
     });
+    const api2 = axios.get(BASE_URL + `/users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, {
+      headers: {
+        "Content-Type": 'application/json',
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region7',
+      }
+    });
+
+    Promise.all([api1, api2])
+      .then(axios.spread((response1, response2) => {
+        return callback(null, {
+          ...response1.data,
+          ...response2.data,
+          list: [ ...response1.data.list, ...response2.data.list ],
+          rooms: [...response1.data.rooms, ...response2.data.rooms]
+        });
+      }))
+      .catch(error => {
+        return callback(error);
+      });
   }, []);
 
   const sendMessage = useCallback((payload, callback = () => {}, config = {}) => {
@@ -337,7 +357,21 @@ const useSignalr = () => {
   }, []);
 
   const createMeeting = useCallback((payload, callback = () => {}, config = {}) => {
-    api.post('/meetings', payload, config)
+    console.log( Object.keys(config).length === 0 , {
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt,
+      }
+    } , config)
+    api.post('/meetings', payload, Object.keys(config).length === 0 ? {
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt,
+      }
+    } : config )
+
     .then(res => {
       return callback(null, res.data);
     })
