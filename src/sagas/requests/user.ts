@@ -61,7 +61,7 @@ export function request_updateUserProfile(data: any) {
 
 export function request_updateUserPhoto(data: any) {
   let { session, payload } = data;
-  return api(session?.token, 'multipart/form-data', true)
+  return api(session?.token, null, true)
     .post(`/users/${session._id}/upload-photo`, payload)
     .then((res: any) => {
       return {

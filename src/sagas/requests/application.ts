@@ -59,7 +59,7 @@ export function request_fetchApplications(data: any) {
 
 export function request_uploadRequirement(data: any) {
   let { session, payload } = data;
-  return api(session?.token, 'multipart/form-data', true)
+  return api(session?.token, null, true)
     .post(`/applications/upload-requirement`, payload)
     .then((res: any) => {
       return {
