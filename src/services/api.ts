@@ -21,7 +21,7 @@ const api = (token:string, _createdBy?: string) => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
-        ...(createdBy || createdAtStore ? {CreatedAt: createdBy || createdAtStore} : {})
+        ...(createdBy || createdAtStore ? {CreatedAt: createdBy || createdAtStore} : {CreatedAt: "ntc-region10"})
       }
     });
 

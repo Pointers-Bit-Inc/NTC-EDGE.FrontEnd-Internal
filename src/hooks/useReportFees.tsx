@@ -125,9 +125,7 @@ export function useReportFees() {
             dispatch(setDateEnd(_dateEnd));
             dispatch(setDateStart(_dateStart));
         }
-        console.log(getReport)
         if(getReport == "cashier" ){
-
             dispatch(setGetReport("cashier"))
         }else if(getReport){
             dispatch(setGetReport(true))
