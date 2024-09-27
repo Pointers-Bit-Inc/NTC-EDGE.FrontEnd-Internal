@@ -104,9 +104,12 @@ export function useReportFees() {
             let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
             dispatch(setDateEnd(_date));
         } else {
-            let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
-            dispatch(setDateEnd(null));
-            dispatch(setDateStart(_date));
+            if(date){
+                let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
+                dispatch(setDateEnd(null));
+                dispatch(setDateStart(_date));
+            }
+
         }
     }
 
