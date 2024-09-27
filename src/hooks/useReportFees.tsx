@@ -100,17 +100,20 @@ export function useReportFees() {
         extrapolate: 'clamp',
     });
     const onDateChange = (date, type) => {
-        if (type === 'END_DATE') {
-            let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
-            dispatch(setDateEnd(_date));
-        } else {
-            if(date){
-                let _date = date?.set({"hour": 23, "minute": 59, "second": 59})
-                dispatch(setDateEnd(null));
-                dispatch(setDateStart(_date));
+        const momentDate = moment(date); // Convert to moment if necessary
+        if(date){
+            if (type === 'END_DATE') {
+                let _date = momentDate.set({ hour: 23, minute: 59, second: 59 });
+                dispatch(setDateEnd(_date));
+            } else {
+                if (momentDate.isValid()) {
+                    let _date = momentDate.set({ hour: 23, minute: 59, second: 59 });
+                    dispatch(setDateEnd(null));
+                    dispatch(setDateStart(_date));
+                }
             }
-
         }
+
     }
 
     const calendarPress = (getReport = false) => {
