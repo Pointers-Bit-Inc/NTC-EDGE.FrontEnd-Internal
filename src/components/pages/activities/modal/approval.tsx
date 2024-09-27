@@ -389,7 +389,8 @@ const Approval=(props:any)=>{
                                                     onBlur={()=>setOnFocus(false)}
                                                     onFocus={()=>setOnFocus(true)}
                                                     containerStyle={{
-                                                        height:undefined,
+                                                        [Platform.OS=="android" ? "height" : "height"]:(
+                                                            height<720&&isKeyboardVisible) ? 70 : height*0.15,
                                                         borderColor:"#D1D1D6",
                                                         borderWidth:1,
                                                         backgroundColor:undefined,
@@ -398,8 +399,7 @@ const Approval=(props:any)=>{
                                                     outlineStyle={{
                                                         borderColor:"rgba(202,210,225,1)",
                                                         paddingTop:5,
-                                                        height:(
-                                                            height<720&&isKeyboardVisible) ? 70 : height*0.15
+
                                                     }}
                                                     placeholder= {getRole(user,[CASHIER]) ? 'OR Number' : 'Remarks'}
                                                     multiline={true}
