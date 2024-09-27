@@ -364,13 +364,13 @@ const useSignalr = () => {
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt,
       }
     } , config)
-    api.post('/meetings', payload, Object.keys(config).length === 0 ? {
+    api.post('/meetings', payload, {
       headers: {
         "Content-Type": "application/json",
         'Accept': 'application/json',
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: user?.createdAt,
       }
-    } : config )
+    } )
 
     .then(res => {
       return callback(null, res.data);
