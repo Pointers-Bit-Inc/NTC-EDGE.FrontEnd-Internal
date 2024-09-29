@@ -184,7 +184,7 @@ export function useAuth(navigation) {
             }
             case 'login': {
                 dispatch(setCreatedAt(value.createdAt));
-                return onLogin(value);
+                return onCheckValidation();
             }
             case 'CreatedAt': {
                 // const checkedEmail = validateEmail(value);

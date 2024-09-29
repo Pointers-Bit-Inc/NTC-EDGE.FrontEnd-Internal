@@ -33,7 +33,11 @@ const useSignalr = () => {
     signalr.current = new HubConnectionBuilder()
         .withUrl(`${BASE_URL}/chathub`, {
           transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
-          accessTokenFactory: () => user.sessionToken
+          accessTokenFactory: () => user.sessionToken,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user.createdAt}`
+          }
         })
         .withAutomaticReconnect()
         .build();

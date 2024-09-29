@@ -157,6 +157,7 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
                 showPassword={()=>onChangeValue('showPassword')}
                 onChangeText={(value:string)=>onChangeValue('password',value)}
                 onSubmitEditing={(event:any)=>{
+
                     let cred:any = {
                         email:form?.email?.value,
                         password:form?.password?.value

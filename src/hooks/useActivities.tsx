@@ -286,10 +286,11 @@ function useActivities(props) {
         setInfiniteLoad(true)
         setRefreshing(true)
         dispatch(setApplications({data: [], user: user}))
+        console.log(config, "config")
         axios.all(endpoint.map((ep) => axios.get(ep.url, {
             ...{ cancelToken: cancelToken.current?.token },
             ...config,
-            params: {...{fnApplication: "test"}, ...query(ep.pinned)}
+            params: {...{fnApplication: "test"}, ...query(ep.pinned)},
         }))).then(
             axios.spread((pinned, notPinned) => {
                 if (pinned?.data?.message) Alert.alert(pinned.data.message);
@@ -469,10 +470,11 @@ function useActivities(props) {
                 url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
                 pinned: 1
             }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
-
+            console.log(config, "config")
             await axios.all(endpoint.map((ep) => axios.get(ep.url, {
                 ...{ cancelToken: cancelToken.current?.token },
-                ...config, params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),} ,...query(ep.pinned)}}))).then(
+                ...config,
+                params: {...{...{handle: "if"}, ...(dateEndMemo && {dateEnd: dateEndMemo}), ...(dateStartMemo && {dateStart: dateStartMemo}),} ,...query(ep.pinned)}}))).then(
                 axios.spread((pinned, notPinned) => {
 
 
@@ -537,7 +539,7 @@ function useActivities(props) {
             url: BASE_URL + `/users/${user._id}/assigned-applications${_pinnedPage}`,
             pinned: 1
         }, {url: BASE_URL + `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
-
+        console.log(config, "config")
         await axios.all(endpoint.map((ep) => axios.get(ep.url, {
             ...{cancelToken: cancelToken.current?.token},
             ...config,

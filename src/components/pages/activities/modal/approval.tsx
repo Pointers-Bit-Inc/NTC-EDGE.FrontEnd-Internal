@@ -335,7 +335,7 @@ const Approval=(props:any)=>{
                                 <View style={styles.rect}>
                                     <View style={{alignSelf:'flex-start'}}>
                                         <TouchableOpacity onPress={closeButton}>
-                                            <Ionicons name="md-close" style={{fontSize:fontValue(25)}}/>
+                                            <Ionicons  name={"close"} style={{fontSize:fontValue(25)}}/>
                                         </TouchableOpacity>
                                     </View>
                                     <ApplicationApproved style={styles.icon}/>

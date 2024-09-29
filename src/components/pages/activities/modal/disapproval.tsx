@@ -171,7 +171,8 @@ function Disapproval(props: any) {
                         <InputField
 
                             containerStyle={ {
-                                height : undefined ,
+                                [Platform.OS=="android" ? "height" : "height"]:(
+                                    height<720&&isKeyboardVisible) ? 70 : height*0.25,
                                 borderColor : "#D1D1D6" ,
                                 borderWidth : 1 ,
                                 backgroundColor : undefined ,
@@ -187,7 +188,7 @@ function Disapproval(props: any) {
                             inputStyle={{
                                 textAlignVertical: "top",
                                 [Platform.OS=="android" ? "height" : "height"]:(
-                                    height<720&&isKeyboardVisible) ? 70 : height*0.15,
+                                    height<720&&isKeyboardVisible) ? 70 : height*0.25,
                                 fontWeight:"400",
                                 fontSize:fontValue(14)
                             }}
