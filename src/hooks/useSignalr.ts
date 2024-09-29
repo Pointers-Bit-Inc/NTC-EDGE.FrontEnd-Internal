@@ -36,7 +36,8 @@ const useSignalr = () => {
           accessTokenFactory: () => user.sessionToken,
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${user.createdAt}`
+            CreatedAt: `Bearer ${user.createdAt}`,
+            Authorization: `Bearer ${user.sessionToken}`
           }
         })
         .withAutomaticReconnect()
