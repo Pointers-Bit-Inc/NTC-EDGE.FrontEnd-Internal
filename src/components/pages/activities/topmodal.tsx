@@ -165,7 +165,7 @@ function TopModal(props: any) {
 
                             <View>
                                 <TouchableOpacity onPress={ () => dispatch(setVisible(false)) }>
-                                    <Ionicons name="md-close" style={ styles.icon1 }></Ionicons>
+                                    <Ionicons name="close" style={ styles.icon1 }></Ionicons>
                                 </TouchableOpacity>
                             </View>
 

@@ -19,7 +19,7 @@ const CloseIcon: FC<Props> = ({
     case 'md-close':
       return (
           <Ionicons
-              name="md-close"
+              name="close"
               size={size}
               color={color}
               {...otherProps}

@@ -22,7 +22,7 @@ function QrBasicInfo(props: any) {
                            <TouchableOpacity onPress={()=>{
                                props.dismiss()
                            }} >
-                               <Ionicons  name="md-close" style={styles.icon2}></Ionicons>
+                               <Ionicons  name="close" style={styles.icon2}></Ionicons>
                            </TouchableOpacity>
 
 

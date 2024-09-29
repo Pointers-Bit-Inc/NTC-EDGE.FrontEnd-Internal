@@ -152,7 +152,7 @@ function ActivityModal(props: any) {
                                                 props.onDismissed()
                                             }}>
                                                 <Ionicons
-                                                    name="md-close"
+                                                    name="close"
                                                     style={styles.icon}
                                                 ></Ionicons>
                                             </TouchableOpacity>

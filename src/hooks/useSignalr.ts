@@ -34,12 +34,14 @@ const useSignalr = () => {
         .withUrl(`${BASE_URL}/chathub`, {
           transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
           accessTokenFactory: () => user.sessionToken,
+          withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
-            CreatedAt: `${user.createdAt}`,
-            Authorization: `Bearer ${user.sessionToken}`
+            'CreatedAt': `${user.createdAt}`,
+            'Authorization': `Bearer ${user.sessionToken}`
           }
         })
+
         .withAutomaticReconnect()
         .build();
     signalr.current.onclose(() => setConnectionStatus('disconnected'));

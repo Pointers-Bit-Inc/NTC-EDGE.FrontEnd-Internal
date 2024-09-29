@@ -18,7 +18,7 @@ const SpeakerIcon: FC<Props> = ({
   if (type === 'speaker-off') {
     return (
       <Ionicons
-        name="md-volume-off"
+        name="volume-off"
         size={size}
         color={color}
         {...otherProps}
@@ -28,7 +28,7 @@ const SpeakerIcon: FC<Props> = ({
 
   return (
     <Ionicons
-      name="md-volume-medium-sharp"
+      name="volume-medium-sharp"
       size={size}
       color={color}
       {...otherProps}

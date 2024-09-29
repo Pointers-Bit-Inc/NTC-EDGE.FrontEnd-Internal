@@ -46,7 +46,13 @@ function useApplicationSignalr() {
         signalr.current = new HubConnectionBuilder()
             .withUrl(`${BASE_URL}/applicationhub`, {
                 transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
-                accessTokenFactory: () => user.sessionToken
+                accessTokenFactory: () => user.sessionToken,
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'CreatedAt': `${user.createdAt}`,
+                    'Authorization': `Bearer ${user.sessionToken}`
+                }
             })
             .withAutomaticReconnect()
             .build();
