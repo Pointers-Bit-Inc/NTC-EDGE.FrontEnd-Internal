@@ -120,7 +120,7 @@ class TabBar extends Component{
         if (!underlineRef) return;
         const matrix = createTranslateXScaleX(scaleXFactor, dx);
         transformOrigin(matrix, { x: -0.5, y: 0, z: 0 });
-        underlineRef.setNativeProps({
+        underlineRef?.setNativeProps({
             style: {
                 transform: [
                     {
