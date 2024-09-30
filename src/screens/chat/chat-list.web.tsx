@@ -289,9 +289,13 @@ const List = () => {
   };
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
-      setRendered(true);
-    });
+    try {
+      InteractionManager.runAfterInteractions(() => {
+        setRendered(true);
+      });
+    } catch (error) {
+      console.error('Error in InteractionManager:', error); // Or use a logging service
+    }
   }, []);
   const isMounted = useRef(true);
   useEffect(() => {
