@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useRef } from 'react'
 import { View, FlatList, Dimensions, StyleSheet, ActivityIndicator, Platform } from 'react-native'
 import lodash from 'lodash';
 import Text from '@components/atoms/text';
-import { chatSameDate } from '@/src/utils/formatting'; 
+import { chatSameDate } from '@/src/utils/formatting';
 import { ChatBubble, GroupBubble, PendingBubble } from '@components/molecules/list-item';
 import { text } from '@/src/styles/color';
 import IParticipants from '@/src/interfaces/IParticipants';
@@ -49,36 +49,39 @@ interface Props {
 }
 
 const ChatList: FC<Props> = ({
-  messages,
-  user,
-  isGroup,
-  loading,
-  error,
-  participants = [],
-  lastMessage,
-  showOption = () => {},
-  onSendMessage = () => {},
-  onSendFile = () => {},
-  onPreview = () => {},
-  onCallAgain = () => {},
-  ...otherProps
-}) => {
+                               messages,
+                               user,
+                               isGroup,
+                               loading,
+                               error,
+                               participants = [],
+                               lastMessage,
+                               showOption = () => {},
+                               onSendMessage = () => {},
+                               onSendFile = () => {},
+                               onPreview = () => {},
+                               onCallAgain = () => {},
+                               ...otherProps
+                             }) => {
   const ref:any = useRef(null);
 
   useEffect(() => {
-    let scrollNode = ref.current && ref.current.getScrollableNode();
-    if (!scrollNode) return;
-    const listener = scrollNode.addEventListener("wheel", (e:any) => {
-      scrollNode.scrollTop -= e.deltaY;
-      e.preventDefault();
-    });
-      if(ref?.current?.setNativeProps){
-        ref?.current?.setNativeProps({ style: { transform: "translate3d(0,0,0) scaleY(-1)" } });
-      }
+    if (Platform.OS === 'web') {
+      let scrollNode = ref.current && ref.current.getScrollableNode();
+      if (!scrollNode) return;
 
+      // Add scroll listener for web to adjust the scroll position
+      const listener = scrollNode.addEventListener("wheel", (e: any) => {
+        scrollNode.scrollTop -= e.deltaY;
+        e.preventDefault();
+      });
 
-    return () => scrollNode?.removeEventListener("wheel", listener);
-  });
+      return () => scrollNode?.removeEventListener("wheel", listener);
+    } else if (ref?.current?.setNativeProps) {
+      // Apply native transformations only for non-web platforms
+      ref.current.setNativeProps({ style: { transform: [{ scaleY: -1 }] } });
+    }
+  }, [ref]);
 
   const emptyComponent = () => (
     <View style={styles.empty}>
@@ -86,14 +89,14 @@ const ChatList: FC<Props> = ({
         color={error ? text.error : text.default}
         size={14}
       >
-        {error? 'Unable to fetch messages' : 'No messages yet'}
+        {error ? 'Unable to fetch messages' : 'No messages yet'}
       </Text>
     </View>
   );
 
   const listHeaderComponent = () => <View style={{ height: 15 }} />;
 
-  const renderItem = ({ item, index }:any) => {
+  const renderItem = ({ item, index }: any) => {
     if (!lodash.size(item.sender)) {
       return (
         <View style={[styles.bubbleContainer, { alignItems: 'flex-end' }]}>
@@ -123,14 +126,14 @@ const ChatList: FC<Props> = ({
     const latestSeenSize = lodash.size(latestSeen) - 1;
     let seenByOthers = lodash.reject(
       item.seen,
-      (seen:any) =>
+      (seen: any) =>
         seen._id === item.sender._id ||
         seen._id === user._id
     );
     if (latestSeenSize > 0) {
       if (latestSeenSize < lodash.size(participants)) {
-        seenByOthers = lodash.reject(seenByOthers, (p:IParticipants) =>
-          lodash.find(latestSeen, (l:IParticipants) => l._id === p._id)
+        seenByOthers = lodash.reject(seenByOthers, (p: IParticipants) =>
+          lodash.find(latestSeen, (l: IParticipants) => l._id === p._id)
         );
       }
     }
@@ -140,15 +143,15 @@ const ChatList: FC<Props> = ({
       latestSeenSize === 0 ||
       seenByOthersCount > 0 && seenByOthersCount < lodash.size(participants);
     let specialMessage = item.type === 'newmeeting';
-    
+
     if (Platform.OS === 'web') {
       specialMessage = item.type === 'newmeeting' ||
-      item.type === 'callended' ||
-      item.type === 'leave' ||
-      item.type === 'removed' ||
-      item.type === 'added' ||
-      item.type === 'newroom' ||
-      (item.type === 'text' && item.system);
+        item.type === 'callended' ||
+        item.type === 'leave' ||
+        item.type === 'removed' ||
+        item.type === 'added' ||
+        item.type === 'newroom' ||
+        (item.type === 'text' && item.system);
     }
 
     return (
@@ -166,7 +169,7 @@ const ChatList: FC<Props> = ({
           isSeen={lodash.size(item.seen) - 1 > 0}
           showDate={!isSameDate}
           maxWidth={width * 0.6}
-          onLongPress={(type?:string) => showOption(item, type)}
+          onLongPress={(type?: string) => showOption(item, type)}
           deleted={item.deleted}
           unSend={item.unSend}
           edited={item.edited}
@@ -190,6 +193,7 @@ const ChatList: FC<Props> = ({
       </View>
     )
   }
+
   return (
     <FlatList
       ref={ref}
@@ -197,7 +201,7 @@ const ChatList: FC<Props> = ({
       inverted={true}
       data={error ? [] : messages}
       renderItem={renderItem}
-      keyExtractor={(item:any) => item._id}
+      keyExtractor={(item: any) => item._id}
       ListEmptyComponent={emptyComponent}
       ListFooterComponent={() => <View style={{ height: 15 }} />}
       ListHeaderComponent={listHeaderComponent}
@@ -206,4 +210,4 @@ const ChatList: FC<Props> = ({
   )
 }
 
-export default ChatList
+export default ChatList;
