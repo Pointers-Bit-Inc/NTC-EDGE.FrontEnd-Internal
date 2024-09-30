@@ -288,18 +288,9 @@ const List = () => {
     );
   };
 
-  useEffect(() => {
-    try {
-      InteractionManager.runAfterInteractions(() => {
-        setRendered(true);
-      });
-    } catch (error) {
-      console.error('Error in InteractionManager:', error); // Or use a logging service
-    }
-  }, []);
   const isMounted = useRef(true);
   useEffect(() => {
-    if (rendered) {
+
       setLoading(true);
       setPageIndex(1);
       setHasMore(false);
@@ -322,7 +313,6 @@ const List = () => {
       return () => {
         isMounted.current = false;
       };
-    }
   }, [rendered, channelId, dispatch, getMessages]);
 
   useEffect(() => {
