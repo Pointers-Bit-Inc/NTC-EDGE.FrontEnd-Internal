@@ -306,7 +306,11 @@ const List = () => {
           setLoading(false);
           if (res) {
             dispatch(setMessages(channelId, res.list));
-            setPageIndex((current) => current + 1);
+
+            setPageIndex((current) => {
+              console.log(current, "current")
+              return current + 1
+            });
             setHasMore(res.hasMore);
           }
           if (err) {

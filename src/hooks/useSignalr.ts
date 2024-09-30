@@ -354,11 +354,13 @@ const useSignalr = () => {
   const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}, config = {}) => {
     api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`, config)
     .then(res => {
+      console.log(res, "res messages" )
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(messageSchema));
       return callback(null, { hasMore, list: normalized?.entities?.messages || {} });
     })
     .catch(err => {
+      console.log(err, "err messages")
       return callback(err);
     });
   }, []);
