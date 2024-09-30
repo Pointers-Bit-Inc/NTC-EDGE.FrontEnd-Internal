@@ -72,7 +72,10 @@ const ChatList: FC<Props> = ({
       scrollNode.scrollTop -= e.deltaY;
       e.preventDefault();
     });
-    ref.current?.setNativeProps({ style: { transform: "translate3d(0,0,0) scaleY(-1)" } });
+    if(ref.current?.setNativeProps){
+      ref.current?.setNativeProps({ style: { transform: "translate3d(0,0,0) scaleY(-1)" } });
+    }
+
     return () => scrollNode?.removeEventListener("wheel", listener);
   });
 
