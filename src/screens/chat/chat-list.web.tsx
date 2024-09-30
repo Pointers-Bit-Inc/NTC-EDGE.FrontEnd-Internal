@@ -293,38 +293,33 @@ const List = () => {
       setRendered(true);
     });
   }, []);
-
+  const isMounted = useRef(true);
   useEffect(() => {
-    setLoading(true);
-    setPageIndex(1);
-    setHasMore(false);
-    setHasError(false);
-    let unmount = false;
     if (rendered) {
+      setLoading(true);
+      setPageIndex(1);
+      setHasMore(false);
+      setHasError(false);
+
+
+
       getMessages(channelId, 1, false, (err, res) => {
-        if (!unmount) {
           setLoading(false);
           if (res) {
             dispatch(setMessages(channelId, res.list));
-
-            setPageIndex((current) => {
-              console.log(current, "current")
-              return current + 1
-            });
+            setPageIndex((current) => current + 1);
             setHasMore(res.hasMore);
-          }
-          if (err) {
-            console.log('ERR', err);
+          } else {
+            console.log('Error fetching messages:', err);
             setHasError(true);
           }
-        }
       });
-    }
 
-    return () => {
-      unmount = true;
-    };
-  }, [rendered, channelId]);
+      return () => {
+        isMounted.current = false;
+      };
+    }
+  }, [rendered, channelId, dispatch, getMessages]);
 
   useEffect(() => {
     if (lastMessage && rendered) {
