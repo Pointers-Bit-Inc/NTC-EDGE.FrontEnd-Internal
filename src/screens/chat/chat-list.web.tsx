@@ -293,7 +293,7 @@ const List = () => {
   }, []);
   const isMounted = useRef(true);
   useEffect(() => {
-    if (rendered) {
+
       setLoading(true);
       setPageIndex(1);
       setHasMore(false);
@@ -302,7 +302,7 @@ const List = () => {
 
 
       getMessages(channelId, 1, false, (err, res) => {
-        if (isMounted.current) {
+
           setLoading(false);
           if (res) {
             dispatch(setMessages(channelId, res.list));
@@ -312,13 +312,11 @@ const List = () => {
             console.log('Error fetching messages:', err);
             setHasError(true);
           }
-        }
       });
 
       return () => {
         isMounted.current = false;
       };
-    }
   }, [rendered, channelId, dispatch, getMessages]);
 
   useEffect(() => {
