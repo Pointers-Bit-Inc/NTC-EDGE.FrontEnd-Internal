@@ -290,9 +290,8 @@ const ChatView: FC<Props> = ({
       animateTo(0, evt.duration);
     });
 
-    InteractionManager.runAfterInteractions(() => {
+
       setRendered(true);
-    });
 
     return () => {
       showSubscription.remove();
