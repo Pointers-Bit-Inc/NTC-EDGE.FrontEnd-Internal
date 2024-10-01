@@ -944,9 +944,8 @@ const ChatList = ({ navigation }: any) => {
   };
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
+
       setRendered(true);
-    });
 
     return () => {
       dispatch(setSelectedChannel({}));
