@@ -267,7 +267,6 @@ const NewChat = ({
       : { pageIndex: 1 };
 
     if (!lodash.size(participants) || searchValue || isGroup || isFocused) {
-      InteractionManager.runAfterInteractions(() => {
         getParticipantList(payload, (err: any, res: any) => {
           if (!unmount) {
             if (res) {
@@ -289,7 +288,6 @@ const NewChat = ({
             setLoading(false);
           }
         });
-      });
     } else {
       setLoading(false);
     }
