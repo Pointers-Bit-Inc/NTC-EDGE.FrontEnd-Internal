@@ -281,9 +281,8 @@ const ChatView = ({ navigation, route }:any) => {
   }, [selectedFile]);
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
+
       setRendered(true);
-    })
     return () => {
       dispatch(setSelectedChannel({}));
       dispatch(resetPendingMessages());
