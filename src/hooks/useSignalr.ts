@@ -214,7 +214,14 @@ const useSignalr = () => {
   }, []);
 
   const getChannel = useCallback((id, callback = () => {}, config = {}) => {
-    axios.get(`/rooms/${id}`, config)
+    axios.get(`/rooms/${id}`, {
+      ...config,
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
+      }
+    })
     .then(res => {
       return callback(null, res.data);
     })
@@ -226,7 +233,14 @@ const useSignalr = () => {
   const getChannelByParticipants = useCallback(({ participants }, callback = () => {}, config = {}) => {
     axios.post('/rooms/get-room', {
       participants,
-    }, config)
+    }, {
+      ...config,
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
+      }
+    })
     .then(res => {
       return callback(null, res.data);
     })
@@ -236,7 +250,14 @@ const useSignalr = () => {
   }, []);
 
   const leaveChannel = useCallback((channelId, callback = () => {}, config = {}) => {
-    axios.delete(`/rooms/${channelId}/delete`, config)
+    axios.delete(`/rooms/${channelId}/delete`, {
+      ...config,
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
+      }
+    })
     .then(res => {
       return callback(null, res.data);
     })
@@ -246,7 +267,14 @@ const useSignalr = () => {
   }, []);
 
   const getChatList = useCallback((payload, callback = () => {}, config = {}) => {
-    axios.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, config)
+    axios.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, {
+      ...config,
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
+      }
+    })
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(roomSchema));
