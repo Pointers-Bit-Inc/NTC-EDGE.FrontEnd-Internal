@@ -359,7 +359,7 @@ const useSignalr = () => {
   }, []);
 
   const unSendMessage = useCallback((messageId, callback = () => {}, config = {}) => {
-    axios.patch(BASE_URL +`/messages/${messageId}/unsend`, {
+    axios.patch(BASE_URL +`/messages/${messageId}/unsend`, {},{
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -385,7 +385,7 @@ const useSignalr = () => {
   }, []);
 
   const seenMessage = useCallback((id, callback = () => {}, config = {}) => {
-    axios.patch(BASE_URL + `/messages/${id}/seen`, {
+    axios.patch(BASE_URL + `/messages/${id}/seen`, {}, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -508,7 +508,7 @@ const useSignalr = () => {
   }, []);
 
   const leaveMeeting = useCallback((id, status, callback = () => {}, config = {}) => {
-    axios.patch(BASE_URL +`/meetings/${id}/leave?status=${status}`, {
+    axios.patch(BASE_URL +`/meetings/${id}/leave?status=${status}`, {}, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
