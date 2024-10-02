@@ -483,7 +483,7 @@ const useSignalr = () => {
   }, []);
 
   const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
-    axios.patch(BASE_URL +`/meetings/${id}/callend`, {
+    axios.patch(BASE_URL +`/meetings/${id}/callend`, {}, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
