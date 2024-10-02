@@ -201,8 +201,8 @@ const useSignalr = () => {
 
   const createChannel = useCallback((payload, callback = () => {}, config = {}) => {
 
-    axios.post('/rooms/new', payload, { ...config,  headers: {
-        'Content-Type': 'multipart/form-data',
+    axios.post(BASE_URL +'/rooms/new', payload, { ...config,  headers: {
+        'Content-Type': 'multipart/form-data',   Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
     .then(res => {
       return callback(null, res.data);
@@ -214,7 +214,7 @@ const useSignalr = () => {
   }, []);
 
   const getChannel = useCallback((id, callback = () => {}, config = {}) => {
-    axios.get(`/rooms/${id}`, {
+    axios.get(BASE_URL +`/rooms/${id}`, {
       ...config,
       headers: {
         "Content-Type": "application/json",
@@ -231,7 +231,7 @@ const useSignalr = () => {
   }, []);
 
   const getChannelByParticipants = useCallback(({ participants }, callback = () => {}, config = {}) => {
-    axios.post('/rooms/get-room', {
+    axios.post(BASE_URL +'/rooms/get-room', {
       participants,
     }, {
       ...config,
@@ -250,7 +250,7 @@ const useSignalr = () => {
   }, []);
 
   const leaveChannel = useCallback((channelId, callback = () => {}, config = {}) => {
-    axios.delete(`/rooms/${channelId}/delete`, {
+    axios.delete(BASE_URL +`/rooms/${channelId}/delete`, {
       ...config,
       headers: {
         "Content-Type": "application/json",
@@ -267,7 +267,7 @@ const useSignalr = () => {
   }, []);
 
   const getChatList = useCallback((payload, callback = () => {}, config = {}) => {
-    axios.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, {
+    axios.get(BASE_URL +`/rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, {
       ...config,
       headers: {
         "Content-Type": "application/json",
@@ -320,7 +320,7 @@ const useSignalr = () => {
 
   const sendMessage = useCallback((payload, callback = () => {}, config = {}) => {
 
-    axios.post('/messages', payload, { ...config,  headers: {
+    axios.post(BASE_URL +'/messages', payload, { ...config,  headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -333,7 +333,7 @@ const useSignalr = () => {
   }, []);
 
   const sendFile = useCallback((channelId, payload, callback = () => {}, config = {}) => {
-    axios.post(`/messages/${channelId}/upload-file`, payload, {
+    axios.post(BASE_URL +`/messages/${channelId}/upload-file`, payload, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -346,7 +346,7 @@ const useSignalr = () => {
   }, []);
 
   const editMessage = useCallback((payload, callback = () => {}, config = {}) => {
-    axios.patch(`/messages/${payload.messageId}`, payload, {
+    axios.patch(BASE_URL +`/messages/${payload.messageId}`, payload, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -359,7 +359,7 @@ const useSignalr = () => {
   }, []);
 
   const unSendMessage = useCallback((messageId, callback = () => {}, config = {}) => {
-    axios.patch(`/messages/${messageId}/unsend`, {
+    axios.patch(BASE_URL +`/messages/${messageId}/unsend`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -372,7 +372,7 @@ const useSignalr = () => {
   }, []);
 
   const deleteMessage = useCallback((messageId, callback = () => {}, config = {}) => {
-    axios.delete(`/messages/${messageId}/delete`, {
+    axios.delete(BASE_URL + `/messages/${messageId}/delete`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -385,7 +385,7 @@ const useSignalr = () => {
   }, []);
 
   const seenMessage = useCallback((id, callback = () => {}, config = {}) => {
-    axios.patch(`/messages/${id}/seen`, {
+    axios.patch(BASE_URL + `/messages/${id}/seen`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -398,7 +398,7 @@ const useSignalr = () => {
   }, []);
 
   const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}, config = {}) => {
-    axios.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`,  {
+    axios.get(BASE_URL +`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`,  {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -414,7 +414,7 @@ const useSignalr = () => {
 
   const createMeeting = useCallback((payload, callback = () => {}, config = {}) => {
 
-    axios.post('/meetings', payload, {
+    axios.post(BASE_URL +'/meetings', payload, {
       headers: {
         "Content-Type": "application/json",
         'Accept': 'application/json',
@@ -431,7 +431,7 @@ const useSignalr = () => {
   }, []);
 
   const joinMeeting = useCallback(({ meetingId, muted = false }, callback = () => {}, config = {}) => {
-    axios.get(`/meetings/${meetingId}/join?muted=${muted}`, {
+    axios.get(BASE_URL + `/meetings/${meetingId}/join?muted=${muted}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -444,7 +444,7 @@ const useSignalr = () => {
   }, []);
 
   const meetingLobby = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
-    axios.post(`/meetings/${meetingId}/lobby`, {
+    axios.post(BASE_URL +`/meetings/${meetingId}/lobby`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -457,7 +457,7 @@ const useSignalr = () => {
   }, []);
 
   const admitMeeting = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
-    axios.get(`/meetings/${meetingId}/admit`, {
+    axios.get(BASE_URL +`/meetings/${meetingId}/admit`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -470,7 +470,7 @@ const useSignalr = () => {
   }, []);
 
   const getMeeting = useCallback((id, callback = () => {}, config = {}) => {
-    axios.get(`/meetings/${id}`, {
+    axios.get(BASE_URL +`/meetings/${id}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -483,7 +483,7 @@ const useSignalr = () => {
   }, []);
 
   const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
-    axios.patch(`/meetings/${id}/callend`, {
+    axios.patch(BASE_URL +`/meetings/${id}/callend`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -508,7 +508,7 @@ const useSignalr = () => {
   }, []);
 
   const leaveMeeting = useCallback((id, status, callback = () => {}, config = {}) => {
-    axios.patch(`/meetings/${id}/leave?status=${status}`, {
+    axios.patch(BASE_URL +`/meetings/${id}/leave?status=${status}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -521,7 +521,7 @@ const useSignalr = () => {
   }, []);
 
   const muteParticipant = useCallback((id, payload, callback = () => {}, config = {}) => {
-    axios.patch(`/meetings/${id}/toggle-mute`, payload, {
+    axios.patch(BASE_URL +`/meetings/${id}/toggle-mute`, payload, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -535,7 +535,7 @@ const useSignalr = () => {
   }, []);
 
   const getMeetingList = useCallback((payload, callback = () => {}, config = {}) => {
-    axios.get(`meetings?pageIndex=${payload.pageIndex || 1}`, {
+    axios.get(BASE_URL +`/meetings?pageIndex=${payload.pageIndex || 1}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -550,7 +550,7 @@ const useSignalr = () => {
   }, []);
 
   const getActiveMeetingList = useCallback((callback = () => {}, config = {}) => {
-    axios.get(`/users/${user._id}/meetings?status=active`, {
+    axios.get(BASE_URL +`/users/${user._id}/meetings?status=active`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
