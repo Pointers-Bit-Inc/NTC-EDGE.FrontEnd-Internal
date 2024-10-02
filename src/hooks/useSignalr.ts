@@ -201,7 +201,7 @@ const useSignalr = () => {
 
   const createChannel = useCallback((payload, callback = () => {}, config = {}) => {
 
-    api.post('/rooms/new', payload, { ...config,  headers: {
+    axios.post('/rooms/new', payload, { ...config,  headers: {
         'Content-Type': 'multipart/form-data',
       } })
     .then(res => {
@@ -214,7 +214,7 @@ const useSignalr = () => {
   }, []);
 
   const getChannel = useCallback((id, callback = () => {}, config = {}) => {
-    api.get(`/rooms/${id}`, config)
+    axios.get(`/rooms/${id}`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -224,7 +224,7 @@ const useSignalr = () => {
   }, []);
 
   const getChannelByParticipants = useCallback(({ participants }, callback = () => {}, config = {}) => {
-    api.post('/rooms/get-room', {
+    axios.post('/rooms/get-room', {
       participants,
     }, config)
     .then(res => {
@@ -236,7 +236,7 @@ const useSignalr = () => {
   }, []);
 
   const leaveChannel = useCallback((channelId, callback = () => {}, config = {}) => {
-    api.delete(`/rooms/${channelId}/delete`, config)
+    axios.delete(`/rooms/${channelId}/delete`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -246,7 +246,7 @@ const useSignalr = () => {
   }, []);
 
   const getChatList = useCallback((payload, callback = () => {}, config = {}) => {
-    api.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, config)
+    axios.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, config)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(roomSchema));
@@ -292,7 +292,7 @@ const useSignalr = () => {
 
   const sendMessage = useCallback((payload, callback = () => {}, config = {}) => {
 
-    api.post('/messages', payload, { ...config,  headers: {
+    axios.post('/messages', payload, { ...config,  headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -305,7 +305,7 @@ const useSignalr = () => {
   }, []);
 
   const sendFile = useCallback((channelId, payload, callback = () => {}, config = {}) => {
-    api.post(`/messages/${channelId}/upload-file`, payload, {
+    axios.post(`/messages/${channelId}/upload-file`, payload, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -318,7 +318,7 @@ const useSignalr = () => {
   }, []);
 
   const editMessage = useCallback((payload, callback = () => {}, config = {}) => {
-    api.patch(`/messages/${payload.messageId}`, payload, {
+    axios.patch(`/messages/${payload.messageId}`, payload, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -331,7 +331,7 @@ const useSignalr = () => {
   }, []);
 
   const unSendMessage = useCallback((messageId, callback = () => {}, config = {}) => {
-    api.patch(`/messages/${messageId}/unsend`, {
+    axios.patch(`/messages/${messageId}/unsend`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -344,7 +344,7 @@ const useSignalr = () => {
   }, []);
 
   const deleteMessage = useCallback((messageId, callback = () => {}, config = {}) => {
-    api.delete(`/messages/${messageId}/delete`, {
+    axios.delete(`/messages/${messageId}/delete`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -357,7 +357,7 @@ const useSignalr = () => {
   }, []);
 
   const seenMessage = useCallback((id, callback = () => {}, config = {}) => {
-    api.patch(`/messages/${id}/seen`, {
+    axios.patch(`/messages/${id}/seen`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -370,7 +370,7 @@ const useSignalr = () => {
   }, []);
 
   const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}, config = {}) => {
-    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`,  {
+    axios.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`,  {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -386,7 +386,7 @@ const useSignalr = () => {
 
   const createMeeting = useCallback((payload, callback = () => {}, config = {}) => {
 
-    api.post('/meetings', payload, {
+    axios.post('/meetings', payload, {
       headers: {
         "Content-Type": "application/json",
         'Accept': 'application/json',
@@ -403,7 +403,7 @@ const useSignalr = () => {
   }, []);
 
   const joinMeeting = useCallback(({ meetingId, muted = false }, callback = () => {}, config = {}) => {
-    api.get(`/meetings/${meetingId}/join?muted=${muted}`, {
+    axios.get(`/meetings/${meetingId}/join?muted=${muted}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -416,7 +416,7 @@ const useSignalr = () => {
   }, []);
 
   const meetingLobby = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
-    api.post(`/meetings/${meetingId}/lobby`, {
+    axios.post(`/meetings/${meetingId}/lobby`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -429,7 +429,7 @@ const useSignalr = () => {
   }, []);
 
   const admitMeeting = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
-    api.get(`/meetings/${meetingId}/admit`, {
+    axios.get(`/meetings/${meetingId}/admit`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -442,7 +442,7 @@ const useSignalr = () => {
   }, []);
 
   const getMeeting = useCallback((id, callback = () => {}, config = {}) => {
-    api.get(`/meetings/${id}`, {
+    axios.get(`/meetings/${id}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -455,7 +455,7 @@ const useSignalr = () => {
   }, []);
 
   const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
-    api.patch(`/meetings/${id}/callend`, {
+    axios.patch(`/meetings/${id}/callend`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -480,7 +480,7 @@ const useSignalr = () => {
   }, []);
 
   const leaveMeeting = useCallback((id, status, callback = () => {}, config = {}) => {
-    api.patch(`/meetings/${id}/leave?status=${status}`, {
+    axios.patch(`/meetings/${id}/leave?status=${status}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -493,7 +493,7 @@ const useSignalr = () => {
   }, []);
 
   const muteParticipant = useCallback((id, payload, callback = () => {}, config = {}) => {
-    api.patch(`/meetings/${id}/toggle-mute`, payload, {
+    axios.patch(`/meetings/${id}/toggle-mute`, payload, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -507,7 +507,7 @@ const useSignalr = () => {
   }, []);
 
   const getMeetingList = useCallback((payload, callback = () => {}, config = {}) => {
-    api.get(`meetings?pageIndex=${payload.pageIndex || 1}`, {
+    axios.get(`meetings?pageIndex=${payload.pageIndex || 1}`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -522,7 +522,7 @@ const useSignalr = () => {
   }, []);
 
   const getActiveMeetingList = useCallback((callback = () => {}, config = {}) => {
-    api.get(`/users/${user._id}/meetings?status=active`, {
+    axios.get(`/users/${user._id}/meetings?status=active`, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
@@ -539,7 +539,7 @@ const useSignalr = () => {
     const version = API_VERSION;
     const os = Platform.OS;
     if (os) {
-      api.post('/check-version', { os, version }, config)
+      axios.post('/check-version', { os, version }, config)
       .then(res => {
         return callback(null, res.data);
       })
