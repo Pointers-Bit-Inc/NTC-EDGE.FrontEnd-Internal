@@ -259,7 +259,7 @@ const useSignalr = () => {
 
   const getParticipantList = useCallback((payload, callback = () => {}, config = {}) => {
 
-    const api1 = api.get(BASE_URL + `/users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, {
+    const api1 = axios.get(BASE_URL + `/users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, {
       headers: {
         "Content-Type": "application/json",
         'Accept': 'application/json',
@@ -267,7 +267,7 @@ const useSignalr = () => {
       }
     });
 
-    const api2 = api.get(BASE_URL + `/users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, {
+    const api2 = axios.get(BASE_URL + `/users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, {
       headers: {
         "Content-Type": "application/json",
         'Accept': 'application/json',
