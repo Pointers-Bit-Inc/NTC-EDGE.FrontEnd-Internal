@@ -431,10 +431,7 @@ const useSignalr = () => {
   }, []);
 
   const joinMeeting = useCallback(({ meetingId, muted = false }, callback = () => {}, config = {}) => {
-    axios.get(BASE_URL + `/meetings/${meetingId}/join?muted=${muted}`, {
-      ...config, headers:{
-        Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
-      } })
+    api.get(BASE_URL + `/meetings/${meetingId}/join?muted=${muted}`, config)
     .then(res => {
       return callback(null, res.data);
     })
