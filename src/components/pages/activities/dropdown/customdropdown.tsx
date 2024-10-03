@@ -7,19 +7,19 @@ import {
     StatusBar,
     StyleSheet,
     Text,
-    TouchableOpacity,
+    TouchableOpacity, TouchableWithoutFeedback,
     useWindowDimensions,
-    View,
+    View
 } from 'react-native';
 import CaretDownIcon from "@assets/svg/caret-down";
-import {useOrientation} from "../../../../hooks/useOrientation";
+import {useOrientation} from '@/src/hooks/useOrientation';
 
 import {Regular,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {errorColor, outline, text} from "@styles/color";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setDropdownVisible} from "../../../../reducers/activity/actions";
+import {setDropdownVisible} from '@/src/reducers/activity/actions';
 
 interface Props {
     required: boolean,
@@ -125,35 +125,42 @@ interface Props {
                        visible={visible}
                        transparent
                        animationType="none">
-                    <TouchableOpacity
+                    <TouchableWithoutFeedback
                         style={styles.overlay}
                         onPress={() => {
                             dispatch(setDropdownVisible(false))
                             setVisible(false)
                         }}
                     >
-                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6   ? undefined  : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top:  dropdownTop + 5}]}>
+                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[
+                            styles.dropdown,
+                            { top: dropdownTop + 5, height: dimension.height * 0.4, },
+                            {
+                                ...Platform.select({
+                                    web: {
+                                        width: dropdownWidth,
+                                        left: dropdownLeft,
+                                        overflow: 'auto'
+                                    }
+                                }),
+
+                            }
+                        ]}>
                             {data?.length > 0 ? <FlatList
                                 showsVerticalScrollIndicator={true}
                                 showsHorizontalScrollIndicator={true}
                                 style={styles.items}
                                 data={data}
-
+                                initialNumToRender={100}
                                 initialScrollIndex={selectedIndex || 0 || null}
-                                ref={flatListRef}
-                               onScrollToIndexFailed={info => {
-                                const wait = new Promise(resolve => setTimeout(resolve, 100));
-                                wait.then(() => {
-                                    flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
-                                });
-                            }}
+
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
                             /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
                                 {loading ? <ActivityIndicator/> :<Text>No Data</Text>}
                             </View>}
                         </View>}
-                    </TouchableOpacity>
+                    </TouchableWithoutFeedback>
                 </Modal>
             );
         };
@@ -231,7 +238,7 @@ interface Props {
             marginRight: 10,
         },
         dropdown: {
-           // overflow: "scroll",
+            overflow: "scroll",
             alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
 

@@ -28,12 +28,11 @@ export default StyleSheet.create({
     valueText: {
         ...Platform.select({
             native:{
-                marginTop: RFValue(-5),
-                marginBottom: RFValue(5),
+                marginTop: RFValue(-2),
+                marginBottom: RFValue(2),
             },
             web: {
-                marginTop: RFValue(-3),
-                marginBottom: RFValue(3),
+                marginTop: RFValue(-2),
             }
         })
 

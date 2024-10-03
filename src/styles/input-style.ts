@@ -46,7 +46,8 @@ export default StyleSheet.create({
     maxHeight: width * .60,
   },
   dropdownElementContainer: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
     borderRadius: 10,
   },
   labelContainer: {
@@ -102,5 +103,18 @@ export default StyleSheet.create({
   iconStyle: {
     height: fontValue(20),
     width: fontValue(20),
+  },
+  input: {
+    padding: 10,
+    width: '100%',
+    backgroundColor: 'transparent',
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none'
+      }
+    }),
+    paddingVertical: Platform.OS === 'android' ? 5 : 10,
+    fontFamily: Regular,
+    color: '#000',
   }
 });
