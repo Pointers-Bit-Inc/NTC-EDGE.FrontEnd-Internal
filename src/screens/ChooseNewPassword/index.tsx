@@ -21,6 +21,7 @@ import {BASE_URL} from "../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import Alert from "@atoms/alert";
 import ArrowLeft from "@atoms/icon/arrow-left";
+import { setCreatedAt } from '@/src/reducers/user/actions';
 const errorResponse = {
     password: 'Password must be atleast 6 characters',
     confirm: 'Passwords do not match',
@@ -45,6 +46,9 @@ const ChooseNewPassword = (props) => {
             upperAndLowerCase: false,
             atLeastOneNumber: false,
             strength: 'Weak',
+        },
+        CreatedAt : {
+            value:  {label: "Region 10",value: "ntc-region10",key:"10"},
         },
         confirmPassword: {
             value: '',
@@ -75,6 +79,17 @@ const ChooseNewPassword = (props) => {
                         ...formValue.confirmPassword,
                         isValid: checked,
                         error: !checked ? errorResponse['confirm'] : ''
+                    }
+                });
+            }
+            case 'CreatedAt': {
+                dispatch(setCreatedAt(value.value));
+                return setFormValue({
+                    ...formValue ,
+                    [key] : {
+                        value : value ,
+                        isValid : !!value ,
+                        error : '' ,
                     }
                 });
             }
@@ -137,7 +152,7 @@ const ChooseNewPassword = (props) => {
                 newPassword: formValue.password.value,
                 confirmNewPassword: formValue.confirmPassword.value
             }
-
+            config.headers.CreatedAt = formValue?.CreatedAt?.value?.value
             axios.post(BASE_URL + `/internal/users/${props.route.params.token}/choose-new-password`, params, config).then((response) => {
 
                 setFormValue({

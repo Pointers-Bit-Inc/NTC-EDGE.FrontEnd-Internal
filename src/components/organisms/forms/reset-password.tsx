@@ -2,7 +2,8 @@ import React,{FC,useEffect,useState} from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckIcon, CloseIcon } from '@atoms/icon';
 import {
-  InputField, PasswordField,
+  DropdownField,
+  InputField, PasswordField
 } from '@molecules/form-fields';
 import InputStyles from '@/src/styles/input-style';
 import { input, text } from '@/src/styles/color';
@@ -111,6 +112,20 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   }
   return (
     <View style={styles.container}>
+      <DropdownField
+
+        items={
+          [
+            {label: "Region 10",value: "ntc-region10",key:"10"},
+            {label: "Region 7",value: "ntc-region7",key:"7"},
+          ]
+        }
+        value={form?.CreatedAt?.value?.label ?? ""}
+        onChangeValue={(value:string)=>{
+          onChangeValue('CreatedAt',value)
+        }}
+        placeholder='Region'
+      />
       <PasswordField
         label={'New password'}
         placeholder="New password"
