@@ -83,6 +83,7 @@ const SignalR = () => {
             color="#841584"
         />
         <FlatList
+          initialNumToRender={100}
             data={messages}
             renderItem={({item}) => <Text>{item}</Text>}
         />

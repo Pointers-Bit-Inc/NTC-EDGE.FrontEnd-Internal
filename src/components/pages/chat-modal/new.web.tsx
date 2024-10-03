@@ -503,6 +503,7 @@ const NewChat = ({
           }}
         >
           <FlatList
+            initialNumToRender={100}
             data={contacts}
             showsVerticalScrollIndicator={true}
             refreshControl={

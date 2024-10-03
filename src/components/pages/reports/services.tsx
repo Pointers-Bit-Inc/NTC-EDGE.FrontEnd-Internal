@@ -27,6 +27,7 @@ export const  ServicesScreen = () => {
             <ScrollView style={{padding: 15}}>
                 {/*{servicesTotal > 0 ? <PieChart style={{ height: 200 }} data={servicesMemo} /> : <PieChart style={{ height: 200 }} data={noService} />}*/}
                     <FlatList
+                      initialNumToRender={100}
                         contentContainerStyle={{flex: 1, padding: 15 }}
                         key={numColumns}
                         data={formatData(servicesMemo, numColumns)}

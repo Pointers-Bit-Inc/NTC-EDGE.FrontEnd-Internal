@@ -312,6 +312,7 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
   const headerComponent = () => (
     <>
       <FlatList
+        initialNumToRender={100}
         style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
         data={participants}
@@ -408,6 +409,7 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
   const renderList = () => {
     return (
       <FlatList
+        initialNumToRender={100}
         data={contacts}
         showsVerticalScrollIndicator={true}
         refreshControl={

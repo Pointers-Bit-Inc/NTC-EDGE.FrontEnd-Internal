@@ -428,6 +428,7 @@ const BasicInfo = (_props: any) => {
                     </View>
 
                     { !isRemarkMore  ?  <FlatList
+                      initialNumToRender={100}
                         data={historyArrayMemo}
                         renderItem={({item, index}) => {
 

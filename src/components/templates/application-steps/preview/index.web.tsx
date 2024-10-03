@@ -308,6 +308,7 @@ const Preview: FC<Props> = ({
         const parentLabel = item?.label;
         return (
             <FlatList
+              initialNumToRender={100}
                 data={item?.items?.filter((i: any) => i?.selected) || []}
                 renderItem={({item}) => renderOption({item, parentLabel})}
                 keyExtractor={(item, index) => `${index}`}
@@ -346,6 +347,7 @@ const Preview: FC<Props> = ({
     const renderSubChild = ({item, index, parentId}: any) => {
         return (
             <FlatList
+              initialNumToRender={100}
                 data={item}
                 renderItem={({item}) => {
                     if (item?.isSet) return renderChild({item, parentId});
@@ -361,6 +363,7 @@ const Preview: FC<Props> = ({
         if (item?.type === 'info') return <></>;
         return (
             <FlatList
+              initialNumToRender={100}
                 style={styles.tableContainer}
                 data={item?.data}
                 renderItem={({item, index}) => {
@@ -380,6 +383,7 @@ const Preview: FC<Props> = ({
     const renderParent = () => {
         return (
             <FlatList
+              initialNumToRender={100}
                 data={form}
                 renderItem={({item}) => renderChild({item, parentId: item?.id})}
                 keyExtractor={(item, index) => `${index}`}
@@ -410,6 +414,7 @@ const Preview: FC<Props> = ({
                     !!item?.description && <Text style={styles?.descriptionText}>{item?.description}</Text>
                 }
                 <FlatList
+                  initialNumToRender={100}
                     style={styles.uploadFlatlist}
                     data={forApplication ? item?.files : item?.links}
                     renderItem={renderUploadRow}
@@ -432,6 +437,7 @@ const Preview: FC<Props> = ({
             <View style={styles.tableContainer}>
                 {renderHeader('DOCUMENTS UPLOADED')}
                 <FlatList
+                  initialNumToRender={100}
                     style={styles.uploadFlatlist}
                     data={myApplication?.service?.applicationType?.requirements}
                     renderItem={renderUploads}
@@ -584,6 +590,7 @@ const Preview: FC<Props> = ({
                                         <View style={styles.tableContainer}>
                                             {renderHeader(`${isNaN(Number(gchildLabel)) ? gchildLabel : transformText(childItem)} #${index + 1}`, true)}
                                             <FlatList
+                                              initialNumToRender={100}
                                                 data={Object.keys(gchildValue)}
                                                 renderItem={_renderGGGGChild}
                                                 keyExtractor={(item, index) => `${index}`}
@@ -600,6 +607,7 @@ const Preview: FC<Props> = ({
                                 <View style={styles.tableContainer}>
                                     {renderHeader(isNaN(Number(label)) ? transformText(label) : transformText(childItem), true)}
                                     <FlatList
+                                      initialNumToRender={100}
                                         data={Object.keys(childValue)}
                                         renderItem={_renderGGGChild}
                                         keyExtractor={(item, index) => `${index}`}
@@ -614,6 +622,7 @@ const Preview: FC<Props> = ({
                     };
                     return (
                         <FlatList
+                          initialNumToRender={100}
                             data={Object.keys(values)}
                             renderItem={_renderGGChild}
                             keyExtractor={(item, index) => `${index}`}
@@ -634,6 +643,7 @@ const Preview: FC<Props> = ({
                     <View style={styles.tableContainer}>
                         {renderHeader(parentLabel?.toUpperCase())}
                         <FlatList
+                          initialNumToRender={100}
                             data={Object.keys(service[item])}
                             renderItem={_renderChild}
                             keyExtractor={(item, index) => `${index}`}
@@ -650,6 +660,7 @@ const Preview: FC<Props> = ({
         };
         return (
             <FlatList
+              initialNumToRender={100}
                 data={Object.keys(service)}
                 renderItem={_renderParent}
                 keyExtractor={(item, index) => `${index}`}

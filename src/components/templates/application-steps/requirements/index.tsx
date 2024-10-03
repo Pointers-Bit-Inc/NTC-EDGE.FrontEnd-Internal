@@ -54,6 +54,7 @@ const Requirements: FC<Props> = ({
   const ListFooterComponent = <View style={{height: height * .15}} />;
   return (
     <FlatList
+      initialNumToRender={100}
       showsVerticalScrollIndicator={true}
       keyExtractor={(item, index) => `${index}`}
       data={requirements}

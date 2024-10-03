@@ -37,6 +37,7 @@ const renderList = ({item, index}: any) => {
       {
         hasList &&
         <FlatList
+          initialNumToRender={100}
           style={styles.flatlist2}
           data={list}
           renderItem={renderSubList}
@@ -58,6 +59,7 @@ const About: FC<Props> = ({
   } = content;
   return (
     <FlatList
+      initialNumToRender={100}
       style={styles.flatlist}
       showsVerticalScrollIndicator={true}
       data={[0, 1]}
@@ -77,6 +79,7 @@ const About: FC<Props> = ({
           return (
               <View style={{...Platform.select({web: {top: -20}})}}>
                   <FlatList
+                    initialNumToRender={100}
                       showsVerticalScrollIndicator={true}
                       style={styles.flatlistContainer}
 

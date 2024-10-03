@@ -22,6 +22,7 @@ const List: FC<Props> = ({
 }) => {
   return (
     <FlatList
+      initialNumToRender={100}
       style={flastlistStyle}
       scrollEnabled={false}
       data={requirements}

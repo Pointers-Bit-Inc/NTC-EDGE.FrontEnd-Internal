@@ -544,6 +544,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                     )
                   }
                   <FlatList
+                    initialNumToRender={100}
                     data={peerList}
                     bounces={false}
                     horizontal

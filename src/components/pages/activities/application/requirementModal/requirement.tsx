@@ -322,6 +322,7 @@ const Requirement=(_props:any)=>{
                                 style={requirementDescriptionStyle}>{requirement?.description}</Text>
                         </View>
                         <FlatList
+                          initialNumToRender={100}
                             style={{flex:1,}}
                             data={requirement?.links}
                             keyExtractor={(item, index)=> index}

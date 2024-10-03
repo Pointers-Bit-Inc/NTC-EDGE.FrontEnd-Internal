@@ -713,6 +713,7 @@ const Payment = (_props: any) => {
                                                 })
                                             }}>
                                                 <FlatList
+                                                  initialNumToRender={100}
                                                     style={{
 
                                                         padding: 15,

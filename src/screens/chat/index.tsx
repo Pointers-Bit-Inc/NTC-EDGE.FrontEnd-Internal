@@ -373,7 +373,7 @@ const onClose = (item:IMeetings, leave = false) => {
         <View>
           {
             !!lodash.size(meetingList) && (
-              <FlatList
+              <FlatList initialNumToRender={100}
                 data={meetingList}
                 bounces={false}
                 horizontal
@@ -423,7 +423,7 @@ const onClose = (item:IMeetings, leave = false) => {
             </Text>
           </View>
         ) : (
-          <FlatList
+          <FlatList initialNumToRender={100}
             data={channelList}
             showsVerticalScrollIndicator={true}
             refreshControl={

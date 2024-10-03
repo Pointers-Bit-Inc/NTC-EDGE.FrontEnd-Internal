@@ -103,6 +103,7 @@ const ServicesForm: FC<Props> = ({
         else if (section?.type === 'list') {
             return (
                 <FlatList
+                  initialNumToRender={100}
                     style={styles?.listFieldContainer}
                     data={item}
                     renderItem={({item, index}) => {
@@ -111,6 +112,7 @@ const ServicesForm: FC<Props> = ({
                             if (item?.type === 'list') {
                                 return (
                                     <FlatList
+                                      initialNumToRender={100}
                                         style={styles?.setMainView}
                                         data={item?.data}
                                         renderItem={({item, index}) => {

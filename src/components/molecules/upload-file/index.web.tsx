@@ -150,6 +150,7 @@ const UploadFile: FC<Props> = ({
 				onDismiss={() => setVisible(false)}
 			>
 				<FlatList
+					initialNumToRender={100}
 					data={selection}
 					renderItem={renderItem}
 					keyExtractor={(item, index) => `${index}`}
@@ -278,6 +279,7 @@ const UploadFile: FC<Props> = ({
 				!raw &&
 				multipleFiles &&
 				<FlatList
+					initialNumToRender={100}
 					horizontal={Platform.select({web: true, native: false})}
 					data={defaultFiles}
 					renderItem={({item, index}) => renderItem(item, index)}

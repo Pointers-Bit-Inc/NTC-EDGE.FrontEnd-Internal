@@ -196,6 +196,7 @@ const Preview: FC<Props> = ({
     const parentLabel = item?.label;
     return (
       <FlatList
+        initialNumToRender={100}
         data={item?.items?.filter((i: any) => i?.selected) || []}
         renderItem={({item}) => renderOption({item, parentLabel})}
         keyExtractor={(item, index) => `${index}`}

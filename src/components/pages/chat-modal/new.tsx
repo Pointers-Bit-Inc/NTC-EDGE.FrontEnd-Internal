@@ -401,6 +401,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const headerComponent = () => (
     <>
       <FlatList
+        initialNumToRender={100}
         style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
         data={participants}
@@ -511,6 +512,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         
       return (
         <FlatList
+          initialNumToRender={100}
           data={contacts}
           showsVerticalScrollIndicator={true}
           refreshControl={

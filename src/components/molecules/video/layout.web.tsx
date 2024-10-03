@@ -661,6 +661,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         </View>
         <View style={[styles.videoList, width < 1000 && { width: layout.width }]}>
           <FlatList
+            initialNumToRender={100}
             horizontal={width < 1000 ? true : false}
             data={peerIds}
             renderItem={({ item }) => renderVideoItem(
@@ -682,6 +683,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         </MenuTrigger>
         <MenuOptions optionsContainerStyle={styles.menuOptions}>
           <FlatList
+            initialNumToRender={100}
             data={list}
             renderItem={({ item, index})=>
               <MenuOption

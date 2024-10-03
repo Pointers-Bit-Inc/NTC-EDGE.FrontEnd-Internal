@@ -205,6 +205,7 @@ const NewChat = ({ navigation }:any) => {
       <FlatList
         style={{ paddingHorizontal: 10, paddingBottom: 10 }}
         horizontal
+        initialNumToRender={100}
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
@@ -355,6 +356,7 @@ const NewChat = ({ navigation }:any) => {
         ItemSeparatorComponent={
           () => <View style={styles.separator} />
         }
+        initialNumToRender={100}
         ListHeaderComponent={headerComponent}
         ListEmptyComponent={emptyComponent}
         ListFooterComponent={ListFooterComponent}

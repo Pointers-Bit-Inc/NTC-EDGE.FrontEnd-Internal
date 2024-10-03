@@ -195,6 +195,7 @@ export function SearchActivity(props: { navigation: any, setApplications: any, i
                                 </View>
                             }
                             <FlatList
+                              initialNumToRender={100}
                                 showsVerticalScrollIndicator={true}
                                 style={{flex: 1}}
                                 data={props.applications}

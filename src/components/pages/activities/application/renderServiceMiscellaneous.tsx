@@ -500,6 +500,7 @@ const RenderServiceMiscellaneous = (props) => {
     return (
         <FlatList
             showsVerticalScrollIndicator={true}
+            initialNumToRender={100}
             style={styles.group3}
             data={Object.entries(flatten(_.omit(service, props.exclude)))}
             renderItem={_renderParent}

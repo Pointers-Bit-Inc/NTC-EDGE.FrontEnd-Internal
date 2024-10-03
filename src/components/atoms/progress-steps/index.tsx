@@ -22,6 +22,7 @@ const ProgressSteps: FC<Props> = ({ values = [0] }) => {
   return (
     <View style={styles.flatlist}>
       <FlatList
+        initialNumToRender={100}
         horizontal
         data={values}
         renderItem={renderItem}

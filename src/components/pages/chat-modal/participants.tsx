@@ -202,6 +202,7 @@ const MeetingParticipants = ({
   const headerComponent = () => (
     <View>
       <FlatList
+        initialNumToRender={100}
         style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
         showsHorizontalScrollIndicator={Platform.OS === 'web'}
@@ -288,6 +289,7 @@ const MeetingParticipants = ({
         />
       </View>
       <FlatList
+        initialNumToRender={100}
         data={contacts}
         showsVerticalScrollIndicator={Platform.OS === 'web'}
         refreshControl={

@@ -449,7 +449,7 @@ const FileList = () => {
             <Text color={text.default}>Fetching files...</Text>
           </View>
         ) : (
-          <FlatList
+          <FlatList initialNumToRender={100}
             data={messages}
             renderItem={_renderItem}
             keyExtractor={(item:any) => item._id}

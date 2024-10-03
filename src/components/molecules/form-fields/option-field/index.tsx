@@ -55,6 +55,7 @@ const OptionField: FC<Props> = ({
   };
   return (
     <FlatList
+      initialNumToRender={100}
       style={styles.container}
       showsVerticalScrollIndicator={true}
       data={items}

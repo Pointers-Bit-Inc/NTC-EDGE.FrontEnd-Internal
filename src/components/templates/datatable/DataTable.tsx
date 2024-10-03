@@ -1265,9 +1265,11 @@ const DataTable = (props) => {
                                 </View>
                             </TouchableOpacity>*/}
                                     <FlatList
+                                      initialNumToRender={100}initialNumToRender={100}
                                         ref={flatListRef}
                                         contentContainerStyle={style.contentContainer}
                                         data={docs}
+                                        initialNumToRender={100}
                                         keyExtractor={item => item._id}
                                         renderItem={renderItems}
                                     />

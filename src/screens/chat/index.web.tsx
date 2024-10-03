@@ -533,7 +533,7 @@ function Chat(props: {
         </View>
 
         {!!lodash.size(meetingList) && (
-            <FlatList
+            <FlatList initialNumToRender={100}
               data={meetingList}
               bounces={false}
               horizontal
@@ -595,7 +595,7 @@ function Chat(props: {
           </Text>
         </View>
       ) : (
-        <FlatList
+        <FlatList initialNumToRender={100}
           data={[
             {
               id: -1,
@@ -1383,7 +1383,7 @@ const ChatList = ({ navigation }: any) => {
         {_id && showLayout && !onNewChat && (
           <View>
             {!!lodash.size(meetingList) && (
-              <FlatList
+              <FlatList initialNumToRender={100}
                 data={meetingList}
                 bounces={false}
                 horizontal

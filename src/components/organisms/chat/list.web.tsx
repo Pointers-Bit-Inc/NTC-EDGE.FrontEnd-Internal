@@ -197,6 +197,7 @@ const ChatList: FC<Props> = ({
   return (
     <FlatList
       ref={ref}
+      initialNumToRender={100}
       showsVerticalScrollIndicator={Platform.OS === 'web'}
       inverted={true}
       data={error ? [] : messages}

@@ -123,6 +123,7 @@ export default function SchedulePage(props: any) {
                 </View>
                 <View style={{flex: 1}}>
                     <FlatList
+                      initialNumToRender={100}
                         ListEmptyComponent={listEmptyComponent}
                         data={filterMemo}
                         contentContainerStyle={{padding: 10,}}

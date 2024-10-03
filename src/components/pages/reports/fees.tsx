@@ -30,6 +30,7 @@ export const  FeesScreen = () => {
                     feesTotal > 0 ? <PieChart style={{ height: 200 }} data={fees} /> : <PieChart style={{ height: 200 }} data={noService} />
                 }*/}
                 <FlatList
+                  initialNumToRender={100}
                     contentContainerStyle={{flex: 1, padding: 15 }}
                     key={numFeeColumns}
                     data={formatData(fees, numFeeColumns)}

@@ -32,7 +32,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
                         >
                             <FlatList
                                 showsVerticalScrollIndicator={true}
-
+                                initialNumToRender={100}
                                 data={ ActivityMemo }
                                 renderItem={ ({item, index})=> props.callbackfn(item, index)}
                             />

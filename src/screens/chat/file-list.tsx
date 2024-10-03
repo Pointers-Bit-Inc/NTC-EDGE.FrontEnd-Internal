@@ -459,6 +459,7 @@ const FileList = () => {
           </View>
         ) : (
           <FlatList
+            initialNumToRender={100}
             data={messages}
             renderItem={_renderItem}
             keyExtractor={(item:any) => item._id}

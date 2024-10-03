@@ -179,6 +179,7 @@ const RenderFeeConfiguration = (props) => {
 
     return (
         <FlatList
+          initialNumToRender={100}
             nestedScrollEnabled={true}
             showsVerticalScrollIndicator={true}
             style={styles.group3}

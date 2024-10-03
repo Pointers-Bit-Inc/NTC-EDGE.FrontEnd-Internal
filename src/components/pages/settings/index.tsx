@@ -176,6 +176,7 @@ export default ({
 
                 <View style={styles.sectionContainer}>
                     <FlatList
+                      initialNumToRender={100}
                         data={settings}
                         renderItem={renderRow}
                         keyExtractor={(item, index) => `${index}`}

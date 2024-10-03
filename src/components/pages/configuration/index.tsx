@@ -97,7 +97,7 @@ export default function ConfigurationPage(props: any) {
                                   size={16}>Other</Text>
                         </>}>
                             <FlatList
-
+                              initialNumToRender={100}
                                 data={regionsMemo}
                                 contentContainerStyle={{padding: 10,}}
                                 renderItem={renderListItem}

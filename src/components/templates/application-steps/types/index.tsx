@@ -46,6 +46,7 @@ const Types: FC<Props> = ({
   }
   return (
     <FlatList
+      initialNumToRender={100}
       style={styles.container}
       showsVerticalScrollIndicator={true}
       data={elements}
@@ -62,6 +63,7 @@ const Types: FC<Props> = ({
       )}
       ListFooterComponent={() => (
         <FlatList
+          initialNumToRender={100}
           showsVerticalScrollIndicator={true}
           data={requirements}
           renderItem={renderRequirement}

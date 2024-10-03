@@ -837,6 +837,7 @@ const ActivitiesPage = (props) => {
                                 {
                                     !!lodash.size(meetingList) && (
                                         <FlatList
+                                          initialNumToRender={100}
                                             data={meetingList}
                                             bounces={false}
                                             horizontal
@@ -883,6 +884,7 @@ const ActivitiesPage = (props) => {
                                             </Text>
                                         </View>
                                         <FlatList
+                                          initialNumToRender={100}
                                             contentContainerStyle={{padding: 5}}
                                             showsHorizontalScrollIndicator={true}
                                             horizontal={true}
