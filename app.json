@@ -5,7 +5,7 @@
     "name": "NTC EDGE PORTAL",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
-    "version":"1.1.32",
+    "version":"1.1.33",
     "orientation": "portrait",
     "icon": "./assets/splash.png",
     "userInterfaceStyle": "automatic",
@@ -24,7 +24,7 @@
       "supportsTablet": true,
       "usesIcloudStorage": true,
       "bundleIdentifier": "portalapp.ntcedge.com",
-      "buildNumber": "1.1.32",
+      "buildNumber": "1.1.33",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera. This lets you take pictures and recording videos.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone. This lets you make voice, video calls and more.",
