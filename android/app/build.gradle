@@ -114,7 +114,7 @@ android {
         applicationId 'com.ntcedge.portal'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1132
+        versionCode 1133
         versionName "1.1.33"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
