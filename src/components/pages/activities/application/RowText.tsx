@@ -32,6 +32,7 @@ const RowText = (_props: { display?: string, label: string, applicant?: any }) =
     return  <>{(props.display || props.applicant )? <View style={styles.group2}>
             <Text style={styles.detail}>{props.label}</Text>
             <Text style={styles.detailInput}>{props.display || props.applicant}</Text>
+
         </View> : <></>}</>
 };
 

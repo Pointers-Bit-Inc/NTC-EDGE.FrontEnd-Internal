@@ -54,6 +54,7 @@ import {
     setUserProfileForm, updateChangeEvent
 } from "../../../../reducers/application/actions";
 import {isTablet} from "@/src/utils/formatting";
+import ReferenceAndPermitNumbers from '@pages/activities/application/ReferenceAndPermitNumbers';
 const flatten = require('flat')
 
 function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
@@ -585,6 +586,41 @@ const BasicInfo = (_props: any) => {
                                 (basicCompanyName ? basicCompanyName :
                                     ""))))))
     }, [applicant])
+
+
+
+    const handleSave = async (value, isEditing, setIsEditing, callback : () => {}) => {
+        // Define the regex pattern for the dynamic format {two number}-{two number}-{anything number}-{anything number}
+        const regexPattern = /^(\d{2})-(\d{2})-(\d+)-(\d+)$/;
+        const match = value.match(regexPattern);
+
+        if (!match) {
+            console.log(
+              "Invalid format. The reference number must be in the format {two number}-{two number}-{anything number}-{anything number}"
+            );
+            return;
+        }
+        const firstPart = match[1];
+        const secondPart = match[2];
+        const thirdPart = match[3];
+        const editablePartStr = match[4];
+
+        const prefixStr = `${firstPart}-${secondPart}-${thirdPart}`;
+
+
+
+        try {
+            const response = await axios.patch(BASE_URL + `/applications/${userProfileForm?._id}/reference-number/${value}`, {
+                id: userProfileForm?._id,
+                referenceNumber: value,
+            }, config);
+            callback(true)
+            setIsEditing(false, "");
+        } catch (error) {
+            callback(false, error?.response?.data?.message )
+        }
+    };
+
     return <View ref={containerRef} style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -676,7 +712,9 @@ const BasicInfo = (_props: any) => {
                                                 </View>
                                             </View>
 
-                                            <RowText label={"Reference Number:"}
+
+
+                                            <ReferenceAndPermitNumbers handleSave={handleSave} label={"Reference Number:"}
                                                      applicant={userProfileForm?.["referenceNumber"]}/>
                                             <RowText label={"Permit Number:"}
                                                      display={userProfileForm?.["permitNumber"]}/>

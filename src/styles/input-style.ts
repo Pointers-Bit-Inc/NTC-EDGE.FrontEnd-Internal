@@ -72,6 +72,7 @@ export default StyleSheet.create({
   validationText: {
     fontSize: fontValue(12),
     marginTop: 5,
+    whiteSpace: 'nowrap'
   },
   placeholderText: {
     color: text?.defaultColor,

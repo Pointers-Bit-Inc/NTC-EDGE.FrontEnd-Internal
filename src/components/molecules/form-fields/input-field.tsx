@@ -214,8 +214,9 @@ containerStyle
 
             {
                 hasValidation && (!!error || !!description) && (
-                    <View>
+                    <View style={{ width: '100%' }}>
                         <Text
+                          numberOfLines={0}
                             style={[
                                 inputStyles?.validationText,
                                 !!error && { color: input.text?.errorColor },
