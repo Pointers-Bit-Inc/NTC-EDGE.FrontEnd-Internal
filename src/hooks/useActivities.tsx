@@ -509,8 +509,17 @@ function useActivities(props) {
                     }else{
                         setHasMore(false)
                     }
+                    const updatedDocs = pinned?.data?.docs?.map(c => ({
+                        ...c,
+                        assignedPersonnel: {
+                            ...c.assignedPersonnel,  // Retain other personnel details if present
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            middleName: user.middleName
+                        }
+                    }));
                     dispatch(handleInfiniteLoad({
-                        data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
+                        data: getList([...(updatedDocs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
                         user: user
                     }));
 
@@ -575,12 +584,19 @@ function useActivities(props) {
                 }else{
                     setHasMore(false)
                 }
-
+                const updatedDocs = pinned?.data?.docs?.map(c => ({
+                    ...c,
+                    assignedPersonnel: {
+                        ...c.assignedPersonnel,  // Retain other personnel details if present
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        middleName: user.middleName
+                    }
+                }));
                 dispatch(handleInfiniteLoad({
-                    data: getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
+                    data: getList([...(updatedDocs || []), ...(notPinned?.data?.docs || [])], selectedChangeStatus),
                     user: user
                 }));
-                console.log(pinned.statusText || notPinned.statusText)
 
                 // setRefreshing(false);
                 setInfiniteLoad(false)
