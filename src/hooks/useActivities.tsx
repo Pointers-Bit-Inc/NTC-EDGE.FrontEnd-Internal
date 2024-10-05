@@ -278,9 +278,7 @@ function useActivities(props) {
     function fnApplications(endpoint) {
         if (typeof cancelToken != typeof undefined) {
             cancelToken.current?.cancel("Operation canceled due to new request.")
-
         }
-        //Save the cancel token for the current request
         cancelToken.current = axios.CancelToken.source()
         let isCurrent = true;
         setInfiniteLoad(true)
@@ -311,9 +309,18 @@ function useActivities(props) {
                         if((notPinned?.data?.page * notPinned?.data?.size) < notPinned?.data?.total){
                             setPage(page + 1 )
                         }
+                        const updatedDocs = pinned?.data?.docs?.map(c => ({
+                            ...c,
+                            assignedPersonnel: {
+                                ...c.assignedPersonnel,  // Retain other personnel details if present
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                middleName: user.middleName
+                            }
+                        }));
                         dispatch(setApplications({data: [], user: user}))
                         dispatch(setApplications({
-                            data: [...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],
+                            data: [...(updatedDocs || []), ...(notPinned?.data?.docs || [])],
                             user: user
                         }))
                     }

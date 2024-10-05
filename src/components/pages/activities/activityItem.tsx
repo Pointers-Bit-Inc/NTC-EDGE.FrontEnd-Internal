@@ -240,7 +240,7 @@
                         size={fontValue(12)}
                         numberOfLines={1}
                     >
-                        {personnel != undefined ? `Assigned to ${personnel?.firstName} ${personnel?.lastName}` : ``}
+                        {personnel != undefined   ? `Assigned to ${personnel?.firstName} ${personnel?.lastName}` : ``}
                     </Text>
                 }
             </View>
