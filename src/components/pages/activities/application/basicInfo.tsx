@@ -55,6 +55,7 @@ import {
 } from "../../../../reducers/application/actions";
 import {isTablet} from "@/src/utils/formatting";
 import ReferenceAndPermitNumbers from '@pages/activities/application/ReferenceAndPermitNumbers';
+import AnimatedScrollView from '@/components/AnimatedScrollView';
 const flatten = require('flat')
 
 function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
@@ -318,7 +319,6 @@ const BasicInfo = (_props: any) => {
     const [isRemarkMore, setIsRemarkMore] = useState(false)
     const [isEditNote, setIsEditNote] = useState(false)
     const RemarkFn = useMemoizedFn(() => {
-        console.log( getStatusText(props, personnel),personnel,  " getStatusText(props, personnel)")
         return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
 
                <ContainerRemarkStyle>
@@ -628,7 +628,7 @@ const BasicInfo = (_props: any) => {
             behavior={Platform.OS === 'ios' ? 'position' : "height"}
         >
 
-            <ScrollView
+            <AnimatedScrollView
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
@@ -1029,7 +1029,7 @@ const BasicInfo = (_props: any) => {
                 </View>
 
 
-            </ScrollView>
+            </AnimatedScrollView>
 
         </KeyboardAvoidingView>
     </View>

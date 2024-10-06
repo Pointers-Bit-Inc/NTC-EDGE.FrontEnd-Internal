@@ -324,7 +324,8 @@ function useActivities(props) {
                             user: user
                         }))
                     }
-                }setRefreshing(false);
+                }
+                setRefreshing(false);
                 setInfiniteLoad(false)
 
             })
@@ -356,7 +357,6 @@ function useActivities(props) {
                 dispatch(resetChannel());
                 destroy();
                 setTimeout(() => {
-
                     props.navigation.dispatch(StackActions.replace('Login'));
                 }, 500);
             }
@@ -491,7 +491,6 @@ function useActivities(props) {
                     pinned?.data?.size ? setPinnedSize(pinned?.data?.size) : setPinnedSize(0);
                     pinned?.data?.total ? setPinnedTotal(pinned?.data?.total) : setPinnedTotal(0);
                     if((pinned?.data?.page * pinned?.data?.size) < pinned?.data?.total){
-                       console.log(pinnedPage)
                         setPinnedPage(pinnedPage + 1 )
                         setPinnedHasMore(true)
                     }else{
