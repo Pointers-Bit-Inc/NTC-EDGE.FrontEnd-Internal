@@ -483,11 +483,13 @@ const useSignalr = () => {
   }, []);
 
   const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
+
     axios.patch(BASE_URL +`/meetings/${id}/callend`, {}, {
       ...config, headers:{
         Authorization: "Bearer ".concat(user?.sessionToken), CreatedAt: 'ntc-region10',
       } })
     .then(res => {
+
       if (res.data) {
         const data = res.data;
         dispatch(updateMessages(data.roomId, data));

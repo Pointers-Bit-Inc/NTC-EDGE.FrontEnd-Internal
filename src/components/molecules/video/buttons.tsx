@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { View, TouchableOpacity, StyleSheet, StyleSheetProperties } from 'react-native'
+import { View, Text,TouchableOpacity, StyleSheet, StyleSheetProperties } from 'react-native'
 import { SpeakerIcon, MicIcon, VideoIcon, MenuIcon, PhoneIcon } from '@components/atoms/icon'
 import { text } from '@/src/styles/color';
 
@@ -115,6 +115,7 @@ const VideoButtons: FC<Props> = ({
             type='hangup'
             color='white'
           />
+
         </View>
       </TouchableOpacity>
     </View>

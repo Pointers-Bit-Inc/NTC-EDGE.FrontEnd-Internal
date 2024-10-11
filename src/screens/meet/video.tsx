@@ -178,8 +178,9 @@ const VideoCall = ({ navigation, route }) => {
   )
 
   const onEndCall = (endCall) => {
+
     if (isHost || endCall) {
-      endMeeting(meeting._id);
+      endMeeting(meetingendCall._id);
     } else {
       leaveMeeting(meeting._id, 'leave');
       navigation.goBack();
@@ -189,6 +190,7 @@ const VideoCall = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
+
       <VideoLayout
         loading={loading}
         header={header()}

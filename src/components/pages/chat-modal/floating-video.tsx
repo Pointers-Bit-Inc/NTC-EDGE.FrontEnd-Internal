@@ -165,8 +165,8 @@ const FloatingVideo = ({ tracks }: any) => {
   const [waiting, setWaiting] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
-  const snapPointsX = (defaultSnapX);
-  const snapPointsY = (defaultSnapY);
+   const snapPointsX = useSharedValue(defaultSnapX);
+    const snapPointsY = useSharedValue(defaultSnapY);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const currentX = useSharedValue(0);
@@ -254,22 +254,22 @@ const FloatingVideo = ({ tracks }: any) => {
   }, [ready, meetingId, roomId, userStatus]);
 
   const panGesture = Gesture.Pan()
-    .onUpdate(({ translationX, translationY }) => {
-      translateX.value = currentX.value + translationX;
-      translateY.value = currentY.value + translationY;
-    })
-    .onEnd(({ velocityX, velocityY }) => {
-      runOnUI(() => {
-        const closestSnapX = getClosestSnapPoint(translateX.value, snapPointsX);
-        const closestSnapY = getClosestSnapPoint(translateY.value, snapPointsY);
+      .onUpdate(({ translationX, translationY }) => {
+        translateX.value = currentX.value + translationX;
+        translateY.value = currentY.value + translationY;
+      })
+      .onEnd(({ velocityX, velocityY }) => {
+
+        const closestSnapX = getClosestSnapPoint(translateX.value, snapPointsX.value);
+        const closestSnapY = getClosestSnapPoint(translateY.value, snapPointsY.value);
+
         translateX.value = withSpring(closestSnapX);
         translateY.value = withSpring(closestSnapY);
         currentX.value = closestSnapX;
         currentY.value = closestSnapY;
-      })();
 
-      scale.value = withSpring(1);
-    });
+        scale.value = withSpring(1);
+      });
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -282,7 +282,26 @@ const FloatingVideo = ({ tracks }: any) => {
   const onFullScreen = () => {
     dispatch(setOptions({ isFullScreen: !isMaximized }));
   };
+    const onEndCall = (endCall = false) => {
+    if (isHost || endCall) {
+      endMeeting(meeting._id);
+    } else {
+      leaveMeeting(meeting._id, 'leave');
+      dispatch(resetCurrentMeeting());
+    }
+  }
 
+
+  const onMute = (muted:boolean, selectedParticipant:any) => {
+      if (selectedParticipant) {
+        muteParticipant(meetingId, {
+          participantId: selectedParticipant._id,
+          muted: !selectedParticipant.muted,
+        });
+      } else {
+        muteParticipant(meetingId, { muted });
+      }
+    }
   return (
       <GestureDetector gesture={panGesture}>
         <AnimatedPressable
@@ -306,6 +325,7 @@ const FloatingVideo = ({ tracks }: any) => {
                   </TouchableOpacity>
                 </View>
             )}
+
             <VideoLayout
                 ref={videoRef}
                 loading={loading}
@@ -320,8 +340,8 @@ const FloatingVideo = ({ tracks }: any) => {
                 hasRoomName={meeting?.hasRoomName}
                 name={meeting?.name}
                 setNotification={() => dispatch(setNotification(null))}
-                onEndCall={endMeeting}
-                onMute={() => muteParticipant(meeting._id, user._id, !isMute)}
+                onEndCall={onEndCall}
+                onMute={onMute}
                 isGroup={meeting?.isGroup}
                 isMaximize={isMaximized}
                 isHost={isHost}

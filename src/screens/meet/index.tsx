@@ -154,7 +154,10 @@ const Meet = ({ navigation }) => {
       const meeting = normalizedMeetingList[m];
       const { room } = meeting;
       meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
-      room.otherParticipants =  meeting.otherParticipants;
+      if(room?.otherParticipants ){
+            room.otherParticipants =  meeting?.otherParticipants;
+          }
+
       return meeting;
     });
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');

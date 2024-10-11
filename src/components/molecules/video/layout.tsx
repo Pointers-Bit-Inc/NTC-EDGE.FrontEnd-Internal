@@ -274,7 +274,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     toggleIsMute,
     toggleRemoteAudio,
     toggleIsSpeakerEnable,
-    toggleIsVideoEnable,
+    toggleIsVideoEnable
   }));
 
   useEffect(() => {
@@ -296,7 +296,9 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   }, [isInit]);
 
   useEffect(() => {
+
     if (callEnded) {
+
       setStarted(false);
       destroyAgoraEngine();
     }
@@ -756,6 +758,9 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     return null;
   }
 
+
+
+
   return (
     <View style={styles.container}>
       {renderHeader()}
@@ -768,7 +773,9 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               onMute={onToggleMute}
               onVideoEnable={toggleIsVideoEnable}
               onMore={() => {}}
-              onEndCall={() => onEndCall(joinSucceed && lodash.size(peerIds) <= 2)}
+              onEndCall={() => {
+                  onEndCall(joinSucceed && lodash.size(peerIds) <= 2)
+                  } }
               isSpeakerEnabled={isSpeakerEnable}
               isMute={isMute}
               isVideoEnabled={isVideoEnable}

@@ -841,7 +841,31 @@ const ServiceFormPage = (props) =>{
             return _typeItems;
         }
     };
+const validateField = (validate, value) => {
+        const validateName = validate?.name;
 
+        if (validateName === "validateNumber") {
+            return validateNumber(value);
+        } else if (validateName === "validateEmail") {
+            return validateEmail(value);
+        } else if (validateName === "validatePhone") {
+            return validatePhone(value);
+        } else if (validateName === "validateZipCode") {
+            return validateZipCode(value);
+        }else if (validateName === "validateIMEI") {
+            return validateIMEI(value);
+        }else if (validateName === "validateDate") {
+            return validateDate(value);
+        }else if (validateName === "validateYear") {
+            return validateYear(value);
+        } else if (validateName === "validatePassword") {
+            return validatePassword(value);
+        }else if (validateName === "validateText") {
+            return validateText(value);
+        } else {
+            return validate(value);
+        }
+    }
     const onFormUpdate = ({
                               parentId, // main parent ex.basic-info
                               id, // child id ex.firstName, lastName
@@ -902,8 +926,13 @@ const ServiceFormPage = (props) =>{
                     if (typeof(value) === 'object') value = value?.value;
                 }
 
-                let isValid = type === 'time' ? true : (!required && !value) ? true : !!validate ? validate(value) : validateText(value);
-
+               let isValid = type === 'time'
+                                   ? true
+                                   : (!required && !value)
+                                       ? true
+                                       : typeof validate === 'function' && !!value
+                                           ? validateField(validate, value)
+                                           : validateText(value);
                 let _typeItems = [];
                 let isFieldService = id === 'service' && hasDependent;
                 if (isFieldService) {

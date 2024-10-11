@@ -48,7 +48,7 @@ const initialState = new InitialState();
 export default function basket(state = initialState, action:any) {
   switch (action.type) {
     case SET_SELECTED_CHANNEL: {
-      if (!!state.normalizedChannelList[action.payload._id]) {
+      if (!!state.normalizedChannelList?.[action?.payload?._id]) {
         return state.setIn(['selectedChannel'], state.normalizedChannelList[action.payload._id]);
       }
 

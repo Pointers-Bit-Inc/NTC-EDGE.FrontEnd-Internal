@@ -271,7 +271,7 @@ const ChatList = ({ navigation }:any) => {
       dispatch(resetCurrentMeeting());
       setTimeout(() => {
         dispatch(setOptions({
-          isHost: item.host._id === user._id,
+          isHost: item?.host?._id === user._id,
           isVoiceCall: item.isVoiceCall,
           isMute: false,
           isVideoEnable: true,
@@ -284,7 +284,7 @@ const onClose = (item:IMeetings, leave = false) => {
     if (leave && item.isGroup) {
       dispatch(removeActiveMeeting(item._id));
       return leaveMeeting(item._id, 'busy');
-    } else if (item.host._id === user._id || !item.isGroup) {
+    } else if (item?.host?._id === user._id || !item.isGroup) {
       return endMeeting(item._id);
     } else {
       return dispatch(removeActiveMeeting(item._id));
