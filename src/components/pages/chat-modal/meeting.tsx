@@ -95,6 +95,7 @@ const CreateMeeting = ({
   const onBack = onClose;
   const onStartMeeting = () => {
     setLoading(true);
+    console.log(isChannelExist, "isChannelExist")
     if (isChannelExist) {
       createMeeting({ roomId: channelId, isVoiceCall, participants, name: meetingName }, (error, data) => {
         setLoading(false);
@@ -217,11 +218,13 @@ const CreateMeeting = ({
             </TouchableOpacity>
           </View>
         </View>
+
         <Button
           style={styles.button}
           disabled={loading}
           onPress={onStartMeeting}
         >
+
           {
             loading ? (
               <ActivityIndicator color={'white'} size={24} />

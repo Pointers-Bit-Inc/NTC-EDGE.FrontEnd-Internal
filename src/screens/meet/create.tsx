@@ -91,6 +91,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const onBack = () => navigation.goBack();
   const onStartMeeting = () => {
     setLoading(true);
+
     if (isChannelExist) {
       createMeeting({ roomId: channelId, isVoiceCall, participants, name: meetingName }, (error, data) => {
         setLoading(false);

@@ -2,8 +2,7 @@ import React, { ReactNode, FC } from 'react';
 import { StyleSheet } from 'react-native';
 import lodash from 'lodash';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-
+import { TouchableOpacity } from 'react-native';
 const styles = StyleSheet.create({
   default: {
     padding: 15,
@@ -43,16 +42,16 @@ const Button: FC<Props> = ({
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={debouncedOnPress}
-      {...otherProps}
-    >
-      <Animated.View style={[styles.default, style, animatedStyle]}>
-        {children}
-      </Animated.View>
-    </TouchableWithoutFeedback>
+     <TouchableOpacity
+       onPressIn={handlePressIn}
+       onPressOut={handlePressOut}
+       onPress={debouncedOnPress}
+       {...otherProps}
+     >
+       <Animated.View style={[styles.default, style, animatedStyle]}>
+         {children}
+       </Animated.View>
+     </TouchableOpacity>
   );
 };
 

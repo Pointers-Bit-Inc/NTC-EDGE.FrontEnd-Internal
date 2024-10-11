@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   }
 });
 const getClosestSnapPoint = (value: number, snapPoints: number[]): number => {
+  'worklet';
   return snapPoints.reduce((closest, point) => {
     return Math.abs(point - value) < Math.abs(closest - value) ? point : closest;
   }, snapPoints[0]);
@@ -253,20 +254,22 @@ const FloatingVideo = ({ tracks }: any) => {
   }, [ready, meetingId, roomId, userStatus]);
 
   const panGesture = Gesture.Pan()
-      .onUpdate(({ translationX, translationY }) => {
-        translateX.value = currentX.value + translationX;
-        translateY.value = currentY.value + translationY;
-      })
-      .onEnd(({ velocityX, velocityY }) => {
+    .onUpdate(({ translationX, translationY }) => {
+      translateX.value = currentX.value + translationX;
+      translateY.value = currentY.value + translationY;
+    })
+    .onEnd(({ velocityX, velocityY }) => {
+      runOnUI(() => {
         const closestSnapX = getClosestSnapPoint(translateX.value, snapPointsX);
         const closestSnapY = getClosestSnapPoint(translateY.value, snapPointsY);
         translateX.value = withSpring(closestSnapX);
         translateY.value = withSpring(closestSnapY);
         currentX.value = closestSnapX;
         currentY.value = closestSnapY;
+      })();
 
-        scale.value = withSpring(1);
-      });
+      scale.value = withSpring(1);
+    });
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [

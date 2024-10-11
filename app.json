@@ -5,7 +5,7 @@
     "name": "NTC EDGE PORTAL",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
-    "version":"1.1.33",
+    "version":"1.1.34",
     "orientation": "portrait",
     "icon": "./assets/splash.png",
     "userInterfaceStyle": "automatic",
@@ -24,7 +24,7 @@
       "supportsTablet": true,
       "usesIcloudStorage": true,
       "bundleIdentifier": "portalapp.ntcedge.com",
-      "buildNumber": "1.1.33",
+      "buildNumber": "1.1.34",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera. This lets you take pictures and recording videos.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone. This lets you make voice, video calls and more.",
@@ -39,6 +39,7 @@
       "translucent": false
     },
     "android": {
+      "googleServicesFile": "./ntcedge-595af-firebase-aminsdk-jd83m-318632b2e8.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
