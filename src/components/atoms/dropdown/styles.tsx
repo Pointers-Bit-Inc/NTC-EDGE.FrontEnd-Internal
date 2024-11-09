@@ -1,6 +1,7 @@
 import {StyleSheet,Dimensions,Platform} from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { text } from '@styles/color';
+import {fontValue} from "@pages/activities/fontValue";
 
 const { width } = Dimensions.get('window');
 
@@ -21,6 +22,7 @@ export default StyleSheet.create({
     },
     placeholder: {
         width: '90%',
+        fontSize: fontValue(12),
     },
     labelText: {
         marginTop: RFValue(5),
